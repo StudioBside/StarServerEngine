@@ -1,0 +1,3 @@
+[submodule "BaseEnvironment"]
+	path = BaseEnvironment
+	url = git@github.com:StudioBside/BaseEnvironment.git
