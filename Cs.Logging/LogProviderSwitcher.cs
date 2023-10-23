@@ -1,20 +1,19 @@
-﻿namespace Cs.Logging
+﻿namespace Cs.Logging;
+
+using System;
+
+public readonly struct LogProviderSwitcher : IDisposable
 {
-    using System;
+    private readonly ILogProvider prevProvider;
 
-    public readonly struct LogProviderSwitcher : IDisposable
+    public LogProviderSwitcher(ILogProvider newProvider)
     {
-        private readonly ILogProvider prevProvider;
+        this.prevProvider = Log.Provider;
+        Log.Provider = newProvider;
+    }
 
-        public LogProviderSwitcher(ILogProvider newProvider)
-        {
-            this.prevProvider = Log.Provider;
-            Log.Provider = newProvider;
-        }
-
-        public void Dispose()
-        {
-            Log.Provider = this.prevProvider;
-        }
+    public void Dispose()
+    {
+        Log.Provider = this.prevProvider;
     }
 }

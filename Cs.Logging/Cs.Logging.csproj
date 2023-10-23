@@ -3,7 +3,8 @@
   <PropertyGroup>
 	  <TargetFramework>net7.0</TargetFramework>
 	  <CodeAnalysisRuleSet>..\BaseEnvironment\CodingStyle.ruleset</CodeAnalysisRuleSet>
-      <Nullable>enable</Nullable>
+    <Nullable>enable</Nullable>
+    <warningsAsErrors>true</warningsAsErrors>
   </PropertyGroup>
 
   <PropertyGroup>

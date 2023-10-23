@@ -1,11 +1,10 @@
-﻿namespace Cs.Logging
-{
-    using System.Runtime.CompilerServices;
+﻿namespace Cs.Logging;
 
-    public interface IDesignLogger
-    {
-        IDesignLogger WriteHead(string message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0);
-        IDesignLogger WriteLine(string message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0);
-        IDesignLogger WriteLine();
-    }
+using System.Runtime.CompilerServices;
+
+public interface IDesignLogger
+{
+    IDesignLogger WriteHead(string message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0);
+    IDesignLogger WriteLine(string message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0);
+    IDesignLogger WriteLine();
 }

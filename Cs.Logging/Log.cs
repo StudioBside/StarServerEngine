@@ -1,143 +1,142 @@
-﻿namespace Cs.Logging
+﻿namespace Cs.Logging;
+
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
+using Cs.Logging.Providers;
+
+public enum LogLevelConfig
 {
-    using System;
-    using System.Diagnostics.CodeAnalysis;
-    using System.IO;
-    using System.Runtime.CompilerServices;
+    All,
+    Negative,
+    Error,
+}
 
-    public enum LogLevelConfig
+public interface ILogProvider
+{
+    void Info(string message);
+    void Debug(string message);
+    void DebugBold(string message);
+    void Warn(string message);
+    void Error(string message);
+    [DoesNotReturn]
+    void ErrorAndExit(string message);
+    string BuildTag(string file, int line);
+}
+
+public static class Log
+{
+    private static LogLevel writeType = LogLevel.All;
+
+    [Flags]
+    public enum LogLevel
     {
-        All,
-        Negative,
-        Error,
+        Info = 0x01,
+        Debug = 0x02,
+        Warn = 0x04,
+        Error = 0x08,
+        All = Info | Debug | Warn | Error,
     }
 
-    public interface ILogProvider
+    public static bool WriteFileLine { get; set; } = true;
+    internal static ILogProvider Provider { get; set; } = new ConsoleLogProvider();
+
+    public static void Initialize(ILogProvider logProvider, LogLevelConfig levelConfig)
     {
-        void Info(string message);
-        void Debug(string message);
-        void DebugBold(string message);
-        void Warn(string message);
-        void Error(string message);
-        [DoesNotReturn]
-        void ErrorAndExit(string message);
-        string BuildTag(string file, int line);
+        if (logProvider != null)
+        {
+            Provider = logProvider;
+        }
+
+        switch (levelConfig)
+        {
+            case LogLevelConfig.All:
+                writeType = LogLevel.All;
+                break;
+
+            case LogLevelConfig.Negative:
+                writeType = LogLevel.Warn | LogLevel.Error;
+                break;
+
+            case LogLevelConfig.Error:
+                writeType = LogLevel.Error;
+                break;
+        }
     }
 
-    public static class Log
+    public static IDisposable SwitchProvider(ILogProvider newProvider)
     {
-        private static LogLevel writeType = LogLevel.All;
+        return new LogProviderSwitcher(newProvider);
+    }
 
-        [Flags]
-        public enum LogLevel
+    public static void Info(string message)
+    {
+        if (writeType.HasFlag(LogLevel.Info) == false)
         {
-            Info = 0x01,
-            Debug = 0x02,
-            Warn = 0x04,
-            Error = 0x08,
-            All = Info | Debug | Warn | Error,
+            return;
         }
 
-        public static bool WriteFileLine { get; set; } = true;
-        internal static ILogProvider Provider { get; set; } = new ConsoleLogProvider();
+        Provider.Info($"{message}");
+    }
 
-        public static void Initialize(ILogProvider logProvider, LogLevelConfig levelConfig)
+    public static void Debug(string message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+    {
+        if (writeType.HasFlag(LogLevel.Debug) == false)
         {
-            if (logProvider != null)
-            {
-                Provider = logProvider;
-            }
-
-            switch (levelConfig)
-            {
-                case LogLevelConfig.All:
-                    writeType = LogLevel.All;
-                    break;
-
-                case LogLevelConfig.Negative:
-                    writeType = LogLevel.Warn | LogLevel.Error;
-                    break;
-
-                case LogLevelConfig.Error:
-                    writeType = LogLevel.Error;
-                    break;
-            }
+            return;
         }
 
-        public static IDisposable SwitchProvider(ILogProvider newProvider)
+        Provider.Debug(BuildMessage(message, file, line));
+    }
+
+    public static void DebugBold(string message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+    {
+        if (writeType.HasFlag(LogLevel.Debug) == false)
         {
-            return new LogProviderSwitcher(newProvider);
+            return;
         }
 
-        public static void Info(string message)
-        {
-            if (writeType.HasFlag(LogLevel.Info) == false)
-            {
-                return;
-            }
+        Provider.DebugBold(BuildMessage(message, file, line));
+    }
 
-            Provider.Info($"{message}");
+    public static void Warn(string message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+    {
+        if (writeType.HasFlag(LogLevel.Warn) == false)
+        {
+            return;
         }
 
-        public static void Debug(string message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
-        {
-            if (writeType.HasFlag(LogLevel.Debug) == false)
-            {
-                return;
-            }
+        Provider.Warn(BuildMessage(message, file, line));
+    }
 
-            Provider.Debug(BuildMessage(message, file, line));
+    public static void Error(string message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+    {
+        if (writeType.HasFlag(LogLevel.Error) == false)
+        {
+            return;
         }
 
-        public static void DebugBold(string message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
-        {
-            if (writeType.HasFlag(LogLevel.Debug) == false)
-            {
-                return;
-            }
+        Provider.Error($"{message} ({Provider.BuildTag(file, line)})");
+    }
 
-            Provider.DebugBold(BuildMessage(message, file, line));
+    public static string BuildHead(string message)
+    {
+        return $"-- [{message}] --".PadRight(70, '-');
+    }
+
+    [DoesNotReturn]
+    public static void ErrorAndExit(string message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+    {
+        Provider.ErrorAndExit($"{message} ({Provider.BuildTag(file, line)})");
+    }
+
+    private static string BuildMessage(string message, string file, int line)
+    {
+        if (WriteFileLine)
+        {
+            return $"{message} ({Provider.BuildTag(file, line)})";
         }
 
-        public static void Warn(string message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
-        {
-            if (writeType.HasFlag(LogLevel.Warn) == false)
-            {
-                return;
-            }
-
-            Provider.Warn(BuildMessage(message, file, line));
-        }
-
-        public static void Error(string message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
-        {
-            if (writeType.HasFlag(LogLevel.Error) == false)
-            {
-                return;
-            }
-
-            Provider.Error($"{message} ({Provider.BuildTag(file, line)})");
-        }
-
-        public static string BuildHead(string message)
-        {
-            return $"-- [{message}] --".PadRight(70, '-');
-        }
-
-        [DoesNotReturn]
-        public static void ErrorAndExit(string message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
-        {
-            Provider.ErrorAndExit($"{message} ({Provider.BuildTag(file, line)})");
-        }
-
-        private static string BuildMessage(string message, string file, int line)
-        {
-            if (WriteFileLine)
-            {
-                return $"{message} ({Provider.BuildTag(file, line)})";
-            }
-
-            return message;
-        }
+        return message;
     }
 }
