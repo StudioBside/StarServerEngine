@@ -8,7 +8,7 @@ using System.IO;
 /// <summary>
 /// 별도 초기화가 없을 땐 기본 동작으로 콘솔만 출력한다.
 /// </summary>
-internal sealed class ConsoleLogProvider : ILogProvider
+public sealed class ConsoleLogProvider : ILogProvider
 {
     public void Debug(string message) => Console.WriteLine(message);
     public void DebugBold(string message) => Console.WriteLine(message);
