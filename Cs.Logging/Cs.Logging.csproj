@@ -10,7 +10,29 @@
   <PropertyGroup>
     <DebugType>Full</DebugType>
   </PropertyGroup>
+  
+  <PropertyGroup>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>Cs.Logging</PackageId>
+    <PackageVersion>0.0.1.0</PackageVersion>
+    <Title>Cs.Logging</Title>
+    <Authors>StudioBside</Authors>
+    <PackageLicenseExpression>MS-PL</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/StudioBside/Cs.Logging </PackageProjectUrl>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageReadmeFile>nuget.readme.md</PackageReadmeFile>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageReleaseNotes>first release</PackageReleaseNotes>
+    <Description>Defines an interface for logging to files or the console.</Description>
+    <Copyright>Copyright © 2023 StudioBside Limited</Copyright>
+    <PackageTags>log</PackageTags>
+  </PropertyGroup>
     
+  <ItemGroup>
+    <None Include="..\Document\Images\icon.png" Pack="true" PackagePath="\"/>
+    <None Include="..\Document\nuget.readme.md" Pack="true" PackagePath="\"/>
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="stylecop.analyzers" Version="1.2.0-beta.376">
       <PrivateAssets>all</PrivateAssets>
