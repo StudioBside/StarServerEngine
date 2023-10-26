@@ -1,5 +1,7 @@
 # <img src="./Document/Images/icon.png" width=50> Cs.Logging
 
+[![.NET](https://github.com/leafbird/Cs.Logging/actions/workflows/dotnet.yml/badge.svg)](https://github.com/leafbird/Cs.Logging/actions/workflows/dotnet.yml)
+
 StubioBside gameserver logging interface
 
 The main purpose is to define an interface for writing log messages, and the actual log recording part requires users to connect by creating a `LogProvider` directly.
