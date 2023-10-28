@@ -1,6 +1,6 @@
 # <img src="./Document/Images/icon.png" width=50> Cs.Logging
 
-[![.NET](./actions/workflows/dotnet.yml/badge.svg)](./actions/workflows/dotnet.yml)
+[![.NET](https://github.com/leafbird/Cs.Logging/actions/workflows/dotnet.yml/badge.svg)](https://github.com/leafbird/Cs.Logging/actions/workflows/dotnet.yml)
 
 StubioBside gameserver logging interface
 
