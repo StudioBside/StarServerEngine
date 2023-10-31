@@ -3,6 +3,12 @@
 * nuget 설정 필요
 * github actions 설정. 
 
+```shell
+dotnet build -c Release
+dotnet pack -c Release
+dotnet nuget push ./Cs.Logging/bin/Release/Cs.Logging.0.0.1.nupkg --source https://api.nuget.org/v3/index.json --api-key $NUGET_API_KEY 
+```
+
 ## done
 
 * namespace 사용 스타일 정리
