@@ -12,7 +12,7 @@
   </PropertyGroup>
   
   <PropertyGroup>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageId>Cs.Logging</PackageId>
     <PackageVersion>0.0.1.0</PackageVersion>
     <Title>Cs.Logging</Title>
