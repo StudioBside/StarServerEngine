@@ -20,10 +20,10 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build -c Relase --no-restore
+      run: dotnet build -c Release --no-restore
     - name: Test
       run: dotnet test -c Release --no-build --verbosity normal
     - name: pack
       run: dotnet pack -c Release
     - name: pack
-      run: dotnet nuget push ./Cs.Logging/*.nupkg --source https://api.nuget.org/v3/index.json --api-key $NUGET_API_KEY 
+      run: dotnet nuget push ./Cs.Logging/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
