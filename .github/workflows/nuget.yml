@@ -4,7 +4,15 @@
 name: push to nuget.org
 
 on:
+  push:
+    branches:
+      - makeup
+    tags:
+      - 'v*.*.*'
   workflow_dispatch:
+    
+env:
+  BUILD_CONFIGURATION: Release
 
 jobs:
   build:
@@ -12,25 +20,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Get version from tag
+      id: get_version
+      run: echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/v}
+
     - name: Checkout
       uses: actions/checkout@v3
       with:
-        submodules: 'recursive'
-    - name: Initialize and update submodules
-      run: |
-        git submodule update --init --recursive
-      working-directory: ${{ github.workspace }}
+        submodules: 'recursive' # submodule 받아오지 않으면 stylecop이 제대로 동작하지 않는다.
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 7.0.x
+
     - name: Restore dependencies
       run: dotnet restore
+
     - name: Build
-      run: dotnet build -c Release --no-restore
+      run: dotnet build -c ${{env.BUILD_CONFIGURATION}} --no-restore
+
     - name: Test
-      run: dotnet test -c Release --no-build --verbosity normal
+      run: dotnet test -c ${{env.BUILD_CONFIGURATION}} --no-build --verbosity normal
+
     - name: pack
-      run: dotnet pack -c Release
+      run: dotnet pack --version ${{ steps.get_version.outputs.VERSION }} -c ${{env.BUILD_CONFIGURATION}}
+
     - name: push
       run: dotnet nuget push ./Cs.Logging/**/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
