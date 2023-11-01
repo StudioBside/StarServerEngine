@@ -1,10 +1,10 @@
+<div align="center">
+    <img src="https://raw.githubusercontent.com/StudioBside/.github/main/Images/logo_horizontal.png" height=50>
+</div>
+
 [![.NET](https://github.com/StudioBside/Cs.Logging/actions/workflows/dotnet.yml/badge.svg)](https://github.com/StudioBside/Cs.Logging/actions/workflows/dotnet.yml)
 
 # Cs.Logging
-
-<div align="center">
-    <img src="./Document/Images/logo_horizontal.png" height=50/> 
-</div>
 
 Log interface for gameserver development.
 
@@ -29,7 +29,7 @@ It provides console or file logging output by default but does not guarantee per
 ### Installation
 
 ```
-nuget  
+dotnet add package Cs.Logging
 ```
 
 ### Usage
@@ -47,7 +47,7 @@ Log.Error("프로그램의 실행에 문제가 있는 수준의 오류. 진행�
 Log.ErrorAndExit("프로그램의 실행에 치명적인 오류. 프로그램을 종료한다.");
 ```
 
-## License
+### License
 
 This project is licensed under the MIT License. For details, see the [License File](LICENSE).
 
