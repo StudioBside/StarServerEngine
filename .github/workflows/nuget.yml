@@ -12,7 +12,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        submodules: 'recursive'
+    - name: Initialize and update submodules
+      run: |
+        git submodule update --init --recursive
+      working-directory: ${{ github.workspace }}
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
@@ -20,10 +27,10 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build -c Relase --no-restore
+      run: dotnet build -c Release --no-restore
     - name: Test
       run: dotnet test -c Release --no-build --verbosity normal
     - name: pack
       run: dotnet pack -c Release
-    - name: pack
-      run: dotnet nuget push ./Cs.Logging/*.nupkg --source https://api.nuget.org/v3/index.json --api-key $NUGET_API_KEY 
+    - name: push
+      run: dotnet nuget push ./Cs.Logging/**/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
