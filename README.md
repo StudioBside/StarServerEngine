@@ -2,7 +2,7 @@
     <img src="https://raw.githubusercontent.com/StudioBside/.github/main/Images/logo_horizontal.png" height=50>
 </div>
 
-[![.NET](https://github.com/StudioBside/Cs.Logging/actions/workflows/dotnet.yml/badge.svg)](https://github.com/StudioBside/Cs.Logging/actions/workflows/dotnet.yml)
+[![.NET](https://github.com/StudioBside/Cs.Logging/actions/workflows/dotnet.yml/badge.svg)](https://github.com/StudioBside/Cs.Logging/actions/workflows/dotnet.yml) [![push to nuget.org](https://github.com/StudioBside/Cs.Logging/actions/workflows/nuget.yml/badge.svg)](https://github.com/StudioBside/Cs.Logging/actions/workflows/nuget.yml)
 
 # Cs.Logging
 
