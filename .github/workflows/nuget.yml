@@ -22,17 +22,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        submodules: 'recursive' # submodule 받아오지 않으면 stylecop이 제대로 동작하지 않는다.
+
     - name: Get Version from Tag
       id: get_version
       run: |
         TAG_VERSION=$(git describe --tags --abbrev=0 | sed 's/v//')
         echo "TAG_VERSION=$TAG_VERSION" >> $GITHUB_ENV
       shell: bash
-
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        submodules: 'recursive' # submodule 받아오지 않으면 stylecop이 제대로 동작하지 않는다.
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
