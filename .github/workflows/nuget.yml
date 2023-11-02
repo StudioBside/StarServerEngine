@@ -5,8 +5,6 @@ name: push to nuget.org
 
 on:
   push:
-    branches:
-      - makeup
     tags:
       - 'v*.*.*'
   workflow_dispatch:
