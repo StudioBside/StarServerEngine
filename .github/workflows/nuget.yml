@@ -49,7 +49,7 @@ jobs:
       run: dotnet test -c ${{env.BUILD_CONFIGURATION}} --no-build --verbosity normal
 
     - name: pack
-      run: dotnet pack --version $TAG_VERSION -c ${{env.BUILD_CONFIGURATION}}
+      run: dotnet pack -p:PackageVersion=$TAG_VERSION -c ${{env.BUILD_CONFIGURATION}}
 
     - name: push
       run: dotnet nuget push ./Cs.Logging/**/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
