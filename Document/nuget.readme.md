@@ -1,6 +1,6 @@
 ![](https://raw.githubusercontent.com/StudioBside/.github/main/Images/logo_horizontal.png)
 
-[![.NET](https://github.com/StudioBside/Cs.Logging/actions/workflows/dotnet.yml/badge.svg)](https://github.com/StudioBside/Cs.Logging/actions/workflows/dotnet.yml) [![push to nuget.org](https://github.com/StudioBside/Cs.Logging/actions/workflows/nuget.yml/badge.svg)](https://github.com/StudioBside/Cs.Logging/actions/workflows/nuget.yml)
+![.NET](https://github.com/StudioBside/Cs.Logging/actions/workflows/dotnet.yml/badge.svg) ![push to nuget.org](https://github.com/StudioBside/Cs.Logging/actions/workflows/nuget.yml/badge.svg?event=push)
 
 # Cs.Logging
 
