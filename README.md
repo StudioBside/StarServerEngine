@@ -26,6 +26,7 @@ It provides console or file logging output by default but does not guarantee per
 
 ### Installation
 
+download from [nuget.org](https://www.nuget.org/packages/Cs.Logging/)
 ```
 dotnet add package Cs.Logging
 ```
