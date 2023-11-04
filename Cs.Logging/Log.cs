@@ -71,6 +71,11 @@ public static class Log
 
     public static void Info(string? message)
     {
+        if (message is null)
+        {
+            return;
+        }
+
         if (writeType.HasFlag(LogLevel.Info) == false)
         {
             return;
@@ -81,6 +86,11 @@ public static class Log
 
     public static void Debug(string? message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
     {
+        if (message is null)
+        {
+            return;
+        }
+
         if (writeType.HasFlag(LogLevel.Debug) == false)
         {
             return;
@@ -91,6 +101,11 @@ public static class Log
 
     public static void DebugBold(string? message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
     {
+        if (message is null)
+        {
+            return;
+        }
+
         if (writeType.HasFlag(LogLevel.Debug) == false)
         {
             return;
@@ -101,6 +116,11 @@ public static class Log
 
     public static void Warn(string? message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
     {
+        if (message is null)
+        {
+            return;
+        }
+
         if (writeType.HasFlag(LogLevel.Warn) == false)
         {
             return;
@@ -111,6 +131,11 @@ public static class Log
 
     public static void Error(string? message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
     {
+        if (message is null)
+        {
+            return;
+        }
+
         if (writeType.HasFlag(LogLevel.Error) == false)
         {
             return;
@@ -119,7 +144,7 @@ public static class Log
         Provider.Error($"{message} ({Provider.BuildTag(file, line)})");
     }
 
-    public static string BuildHead(string? message)
+    public static string BuildHead(string message)
     {
         return $"-- [{message}] --".PadRight(70, '-');
     }
