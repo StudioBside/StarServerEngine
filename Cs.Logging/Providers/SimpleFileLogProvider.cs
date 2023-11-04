@@ -10,9 +10,9 @@ public sealed class SimpleFileLogProvider : ILogProvider, IDisposable
 {
     private readonly FileStream fileStream;
 
-    private SimpleFileLogProvider()
+    public SimpleFileLogProvider(string fileName)
     {
-        this.fileStream = File.Open("log.txt", FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
+        this.fileStream = File.Open(fileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
         
         this.fileStream.Write(Encoding.UTF8.GetPreamble());
     }

@@ -69,8 +69,13 @@ public static class Log
         return new LogProviderSwitcher(newProvider);
     }
 
-    public static void Info(string message)
+    public static void Info(string? message)
     {
+        if (message is null)
+        {
+            return;
+        }
+
         if (writeType.HasFlag(LogLevel.Info) == false)
         {
             return;
@@ -79,8 +84,13 @@ public static class Log
         Provider.Info($"{message}");
     }
 
-    public static void Debug(string message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+    public static void Debug(string? message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
     {
+        if (message is null)
+        {
+            return;
+        }
+
         if (writeType.HasFlag(LogLevel.Debug) == false)
         {
             return;
@@ -89,8 +99,13 @@ public static class Log
         Provider.Debug(BuildMessage(message, file, line));
     }
 
-    public static void DebugBold(string message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+    public static void DebugBold(string? message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
     {
+        if (message is null)
+        {
+            return;
+        }
+
         if (writeType.HasFlag(LogLevel.Debug) == false)
         {
             return;
@@ -99,8 +114,13 @@ public static class Log
         Provider.DebugBold(BuildMessage(message, file, line));
     }
 
-    public static void Warn(string message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+    public static void Warn(string? message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
     {
+        if (message is null)
+        {
+            return;
+        }
+
         if (writeType.HasFlag(LogLevel.Warn) == false)
         {
             return;
@@ -109,8 +129,13 @@ public static class Log
         Provider.Warn(BuildMessage(message, file, line));
     }
 
-    public static void Error(string message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+    public static void Error(string? message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
     {
+        if (message is null)
+        {
+            return;
+        }
+
         if (writeType.HasFlag(LogLevel.Error) == false)
         {
             return;
