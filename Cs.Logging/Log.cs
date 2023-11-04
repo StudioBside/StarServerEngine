@@ -69,7 +69,7 @@ public static class Log
         return new LogProviderSwitcher(newProvider);
     }
 
-    public static void Info(string message)
+    public static void Info(string? message)
     {
         if (writeType.HasFlag(LogLevel.Info) == false)
         {
@@ -79,7 +79,7 @@ public static class Log
         Provider.Info($"{message}");
     }
 
-    public static void Debug(string message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+    public static void Debug(string? message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
     {
         if (writeType.HasFlag(LogLevel.Debug) == false)
         {
@@ -89,7 +89,7 @@ public static class Log
         Provider.Debug(BuildMessage(message, file, line));
     }
 
-    public static void DebugBold(string message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+    public static void DebugBold(string? message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
     {
         if (writeType.HasFlag(LogLevel.Debug) == false)
         {
@@ -99,7 +99,7 @@ public static class Log
         Provider.DebugBold(BuildMessage(message, file, line));
     }
 
-    public static void Warn(string message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+    public static void Warn(string? message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
     {
         if (writeType.HasFlag(LogLevel.Warn) == false)
         {
@@ -109,7 +109,7 @@ public static class Log
         Provider.Warn(BuildMessage(message, file, line));
     }
 
-    public static void Error(string message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+    public static void Error(string? message, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
     {
         if (writeType.HasFlag(LogLevel.Error) == false)
         {
@@ -119,7 +119,7 @@ public static class Log
         Provider.Error($"{message} ({Provider.BuildTag(file, line)})");
     }
 
-    public static string BuildHead(string message)
+    public static string BuildHead(string? message)
     {
         return $"-- [{message}] --".PadRight(70, '-');
     }
