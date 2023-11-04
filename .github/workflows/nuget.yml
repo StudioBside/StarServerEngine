@@ -10,6 +10,8 @@ on:
     
 env:
   BUILD_CONFIGURATION: Release
+  PACKAGE_PATH: ./Cs.Logging/bin/Release/
+  ARTIFACT_PATH: ./Artifacts/
 
 jobs:
   build:
@@ -47,6 +49,47 @@ jobs:
 
     - name: pack
       run: dotnet pack -p:PackageVersion=$TAG_VERSION -c ${{env.BUILD_CONFIGURATION}}
+        
+    - name: gather artifacts
+      run: |
+        mkdir ${{env.ARTIFACT_PATH}}
+        cp -r ${{env.PACKAGE_PATH}} ${{env.ARTIFACT_PATH}}
+      shell: bash
+        
+    - name: upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: nuget
+        path: ${{env.ARTIFACT_PATH}}
+        
+  push-to-nuget:
+    needs: build
+    runs-on: ubuntu-latest
+      
+    steps:
+
+    - name: download artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: nuget
+        path: ${{env.ARTIFACT_PATH}}
 
     - name: push
-      run: dotnet nuget push ./Cs.Logging/**/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
+      run: dotnet nuget push ${{env.ARTIFACT_PATH}}/**/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
+        
+
+  push-to-github-package:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: download artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: nuget
+        path: ${{env.ARTIFACT_PATH}}
+
+    - name: push
+      # run : dotnet nuget push ${{env.ARTIFACT_PATH}}/**/*.nupkg --source https://nuget.pkg.github.com/${{ github.repository }}/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
+      run : dotnet nuget push ${{env.ARTIFACT_PATH}}/**/*.nupkg --source "github"
