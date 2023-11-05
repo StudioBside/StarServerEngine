@@ -10,8 +10,8 @@ on:
     
 env:
   BUILD_CONFIGURATION: Release
-  PACKAGE_PATH: ./Cs.Logging/bin/Release/
-  ARTIFACT_PATH: ./Artifacts/
+  PACKAGE_PATH: ./Cs.Logging/bin/Release
+  ARTIFACT_PATH: ./Artifacts
 
 jobs:
   build:
@@ -53,7 +53,7 @@ jobs:
     - name: gather artifacts
       run: |
         mkdir ${{env.ARTIFACT_PATH}}
-        cp -r ${{env.PACKAGE_PATH}} ${{env.ARTIFACT_PATH}}
+        cp -r ${{env.PACKAGE_PATH}}/*.nupkg ${{env.ARTIFACT_PATH}}
       shell: bash
         
     - name: upload artifact
@@ -91,5 +91,5 @@ jobs:
         path: ${{env.ARTIFACT_PATH}}
 
     - name: push
-      # run : dotnet nuget push ${{env.ARTIFACT_PATH}}/**/*.nupkg --source https://nuget.pkg.github.com/${{ github.repository }}/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
-      run : dotnet nuget push ${{env.ARTIFACT_PATH}}/**/*.nupkg --source "github"
+      run : dotnet nuget push ${{env.ARTIFACT_PATH}}/**/*.nupkg --source https://nuget.pkg.github.com/${{ github.repository }}/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
+      # run : dotnet nuget push ${{env.ARTIFACT_PATH}}/**/*.nupkg --source "github"
