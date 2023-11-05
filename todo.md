@@ -1,13 +1,7 @@
 ## todo
 
-* nuget 설정 필요
-* github actions 설정. 
-
-```shell
-dotnet build -c Release
-dotnet pack -c Release
-dotnet nuget push ./Cs.Logging/bin/Release/Cs.Logging.0.0.1.nupkg --source https://api.nuget.org/v3/index.json --api-key $NUGET_API_KEY 
-```
+* workflow : job 분리하기. 
+* workdlow : github release 기능 확인.
 
 ## done
 
@@ -16,3 +10,5 @@ dotnet nuget push ./Cs.Logging/bin/Release/Cs.Logging.0.0.1.nupkg --source https
 * visual studio에서는 제대로 빌드되지 않는 문제
 * test 프로젝트 추가
 * readme 파일 적기
+* nuget 설정 필요
+* github actions 설정. 
