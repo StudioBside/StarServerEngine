@@ -19,7 +19,6 @@ jobs:
       fail-fast: true
 
     runs-on: ubuntu-latest
-    if: false # github package 테스트를 위해 잠시 비활성화
 
     steps:
     - name: Checkout
@@ -66,6 +65,8 @@ jobs:
   push-to-nuget:
     needs: build
     runs-on: ubuntu-latest
+
+    if: false # github package 테스트를 위해 잠시 비활성화
       
     steps:
 
