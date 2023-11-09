@@ -19,6 +19,7 @@
     <Authors>StudioBside</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/StudioBside/Cs.Logging </PackageProjectUrl>
+    <RepositoryUrl>https://github.com/StudioBside/Cs.Logging </RepositoryUrl>
     <PackageIcon>icon.png</PackageIcon>
     <PackageReadmeFile>nuget.readme.md</PackageReadmeFile>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>

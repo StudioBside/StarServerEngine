@@ -66,8 +66,6 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
 
-    if: false # github package 테스트를 위해 잠시 비활성화
-      
     steps:
 
     - name: download artifact
@@ -93,5 +91,27 @@ jobs:
         path: ${{env.ARTIFACT_PATH}}
 
     - name: push
-      run : dotnet nuget push ${{env.ARTIFACT_PATH}}/**/*.nupkg --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
-      # run : dotnet nuget push ${{env.ARTIFACT_PATH}}/**/*.nupkg --source "github"
+      # 지금은 개인키를 secret에 등록해 사용. 다른 방법이 있는가?
+      run : dotnet nuget push ${{env.ARTIFACT_PATH}}/**/*.nupkg --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json --api-key ${{ secrets.PRIVATE_ACCESS_TOKEN }}
+
+  create-relase:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: download artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: nuget
+        path: ${{env.ARTIFACT_PATH}}
+      
+    - name: create release
+      id: create_release
+      uses: ncipollo/release-action@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        draft: false
+        prerelease: false
+        artifacts: ${{env.ARTIFACT_PATH}}/**/*.nupkg
