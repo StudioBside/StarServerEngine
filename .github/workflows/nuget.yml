@@ -110,7 +110,8 @@ jobs:
       id: create_release
       uses: ncipollo/release-action@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PRIVATE_ACCESS_TOKEN }}
       with:
         draft: false
         prerelease: false
