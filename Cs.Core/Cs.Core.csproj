@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <CodeAnalysisRuleSet>..\..\CodingStyle.ruleset</CodeAnalysisRuleSet>
+    <nullable>Enable</nullable>
+    <Platforms>x64</Platforms>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+  </PropertyGroup>
+  <PropertyGroup>
+    <DebugType>Full</DebugType>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="newtonsoft.json" Version="13.0.1" />
+    <PackageReference Include="stylecop.analyzers" Version="1.2.0-beta.376">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.Collections" Version="4.3.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Cs.Logging\Cs.Logging.csproj" />
+  </ItemGroup>
+</Project>
