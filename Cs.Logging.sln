@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cs.Logging.Test", "Cs.Loggi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResourceLink", "ResourceLink\ResourceLink.csproj", "{B08C6F39-AEA7-42FA-AC05-44AEA5B86C1A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cs.Core", "Cs.Core\Cs.Core.csproj", "{59102B6E-9E6E-4427-8CCC-4AAC28394C2C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{B08C6F39-AEA7-42FA-AC05-44AEA5B86C1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B08C6F39-AEA7-42FA-AC05-44AEA5B86C1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B08C6F39-AEA7-42FA-AC05-44AEA5B86C1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59102B6E-9E6E-4427-8CCC-4AAC28394C2C}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{59102B6E-9E6E-4427-8CCC-4AAC28394C2C}.Debug|Any CPU.Build.0 = Debug|x64
+		{59102B6E-9E6E-4427-8CCC-4AAC28394C2C}.Release|Any CPU.ActiveCfg = Release|x64
+		{59102B6E-9E6E-4427-8CCC-4AAC28394C2C}.Release|Any CPU.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
