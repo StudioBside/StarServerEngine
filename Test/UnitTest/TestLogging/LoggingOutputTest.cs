@@ -1,10 +1,10 @@
-﻿namespace Cs.Logging.Test;
+﻿namespace UnitTest.TestLogging;
 
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Cs.Logging;
 
 [TestClass]
-public sealed class Logging_OutputTest
+public sealed class LoggingOutputTest
 {
     [TestMethod]
     public void Provider_커스텀()
@@ -13,7 +13,7 @@ public sealed class Logging_OutputTest
         Log.Initialize(provider, LogLevelConfig.All);
         
         Log.Debug("custom provider test");
-        Assert.AreEqual("[DEBUG] custom provider test (Logging_OutputTest.cs:15)", provider.Buffer);
+        Assert.AreEqual("[DEBUG] custom provider test (LoggingOutputTest.cs:15)", provider.Buffer);
     }
 
     [TestMethod]
@@ -28,7 +28,7 @@ public sealed class Logging_OutputTest
 
         Log.WriteFileLine = true;
         Log.Debug("custom provider test");
-        Assert.AreEqual("[DEBUG] custom provider test (Logging_OutputTest.cs:30)", provider.Buffer);
+        Assert.AreEqual("[DEBUG] custom provider test (LoggingOutputTest.cs:30)", provider.Buffer);
     }
 
     private sealed class MockProvider : ILogProvider
