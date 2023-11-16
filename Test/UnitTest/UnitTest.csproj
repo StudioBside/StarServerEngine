@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
-	  <CodeAnalysisRuleSet>..\BaseEnvironment\CodingStyle.ruleset</CodeAnalysisRuleSet>
+	  <CodeAnalysisRuleSet>..\..\BaseEnvironment\CodingStyle.ruleset</CodeAnalysisRuleSet>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <warningsAsErrors>true</warningsAsErrors>
@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Cs.Logging\Cs.Logging.csproj" />
+    <ProjectReference Include="..\..\Engine\Cs.Logging\Cs.Logging.csproj" />
   </ItemGroup>
 
 </Project>

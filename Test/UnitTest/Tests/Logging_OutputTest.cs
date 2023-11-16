@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [TestClass]
-public sealed class OutputTest
+public sealed class Logging_OutputTest
 {
     [TestMethod]
     public void Provider_커스텀()
@@ -13,7 +13,7 @@ public sealed class OutputTest
         Log.Initialize(provider, LogLevelConfig.All);
         
         Log.Debug("custom provider test");
-        Assert.AreEqual("[DEBUG] custom provider test (OutputTest.cs:15)", provider.Buffer);
+        Assert.AreEqual("[DEBUG] custom provider test (Logging_OutputTest.cs:15)", provider.Buffer);
     }
 
     [TestMethod]
@@ -28,7 +28,7 @@ public sealed class OutputTest
 
         Log.WriteFileLine = true;
         Log.Debug("custom provider test");
-        Assert.AreEqual("[DEBUG] custom provider test (OutputTest.cs:30)", provider.Buffer);
+        Assert.AreEqual("[DEBUG] custom provider test (Logging_OutputTest.cs:30)", provider.Buffer);
     }
 
     private sealed class MockProvider : ILogProvider

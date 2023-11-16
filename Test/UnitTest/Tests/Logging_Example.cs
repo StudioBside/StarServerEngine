@@ -5,7 +5,7 @@ using Cs.Logging.Providers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [TestClass]
-public sealed class ExampleTest
+public sealed class Logging_Example
 {
     [TestMethod]
     public void 기본_사용법()

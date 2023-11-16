@@ -1,6 +1,5 @@
 ## todo
 
-* workflow : github release 기능 확인.
 
 ## done
 
@@ -12,3 +11,4 @@
 * nuget 설정 필요
 * github actions 설정. 
 * workflow : job 분리하기. 
+* workflow : github release 기능 확인.

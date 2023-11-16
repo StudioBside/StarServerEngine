@@ -2,7 +2,7 @@
 
   <PropertyGroup>
 	  <TargetFramework>net7.0</TargetFramework>
-	  <CodeAnalysisRuleSet>..\BaseEnvironment\CodingStyle.ruleset</CodeAnalysisRuleSet>
+	  <CodeAnalysisRuleSet>..\..\BaseEnvironment\CodingStyle.ruleset</CodeAnalysisRuleSet>
     <Nullable>enable</Nullable>
     <warningsAsErrors>true</warningsAsErrors>
   </PropertyGroup>
@@ -41,4 +41,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>UnitTest</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
 </Project>

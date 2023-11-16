@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
-	  <CodeAnalysisRuleSet>..\BaseEnvironment\CodingStyle.ruleset</CodeAnalysisRuleSet>
+	  <CodeAnalysisRuleSet>..\..\BaseEnvironment\CodingStyle.ruleset</CodeAnalysisRuleSet>
     <nullable>Enable</nullable>
     <warningsAsErrors>true</warningsAsErrors>
   </PropertyGroup>
@@ -41,6 +41,11 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="System.Collections" Version="4.3.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>UnitTest</_Parameter1>
+    </AssemblyAttribute>
   </ItemGroup>
 
 </Project>
