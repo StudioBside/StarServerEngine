@@ -2,7 +2,7 @@
 
   <PropertyGroup>
 	  <TargetFramework>net7.0</TargetFramework>
-	  <CodeAnalysisRuleSet>..\BaseEnvironment\CodingStyle.ruleset</CodeAnalysisRuleSet>
+	  <CodeAnalysisRuleSet>..\..\BaseEnvironment\CodingStyle.ruleset</CodeAnalysisRuleSet>
     <Nullable>enable</Nullable>
     <warningsAsErrors>true</warningsAsErrors>
   </PropertyGroup>
@@ -35,10 +35,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="stylecop.analyzers" Version="1.2.0-beta.376">
+    <PackageReference Include="stylecop.analyzers" Version="1.2.0-beta.507">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>UnitTest</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
 </Project>

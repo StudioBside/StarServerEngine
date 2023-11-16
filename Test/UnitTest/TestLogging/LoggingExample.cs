@@ -1,11 +1,10 @@
-namespace Cs.Logging.Test;
+namespace UnitTest.TestLogging;
 
 using Cs.Logging;
 using Cs.Logging.Providers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 [TestClass]
-public sealed class ExampleTest
+public sealed class LoggingExample
 {
     [TestMethod]
     public void 기본_사용법()

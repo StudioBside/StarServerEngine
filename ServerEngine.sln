@@ -3,13 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cs.Logging", "Cs.Logging\Cs.Logging.csproj", "{7BB928A5-35F4-4E4E-A4A0-76AB8534DCAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cs.Logging", "Engine\Cs.Logging\Cs.Logging.csproj", "{7BB928A5-35F4-4E4E-A4A0-76AB8534DCAF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cs.Logging.Test", "Cs.Logging.Test\Cs.Logging.Test.csproj", "{ABB72E59-20D3-435E-8E90-7BDF42EFEA11}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cs.Core", "Engine\Cs.Core\Cs.Core.csproj", "{59102B6E-9E6E-4427-8CCC-4AAC28394C2C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ResourceLink", "ResourceLink\ResourceLink.csproj", "{B08C6F39-AEA7-42FA-AC05-44AEA5B86C1A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Resource", "Resource\Resource.csproj", "{B08C6F39-AEA7-42FA-AC05-44AEA5B86C1A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cs.Core", "Cs.Core\Cs.Core.csproj", "{59102B6E-9E6E-4427-8CCC-4AAC28394C2C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTest", "Test\UnitTest\UnitTest.csproj", "{ABB72E59-20D3-435E-8E90-7BDF42EFEA11}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Engine", "Engine", "{B3B57015-5868-489F-AB82-CFB7D785B18A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{B3A4B4AB-F19A-4C68-AACE-E58CD347AD1E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resource", "Resource", "{4A517A09-9E18-4DA8-A2F6-02DFFE763DBE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,6 +42,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7BB928A5-35F4-4E4E-A4A0-76AB8534DCAF} = {B3B57015-5868-489F-AB82-CFB7D785B18A}
+		{59102B6E-9E6E-4427-8CCC-4AAC28394C2C} = {B3B57015-5868-489F-AB82-CFB7D785B18A}
+		{B08C6F39-AEA7-42FA-AC05-44AEA5B86C1A} = {4A517A09-9E18-4DA8-A2F6-02DFFE763DBE}
+		{ABB72E59-20D3-435E-8E90-7BDF42EFEA11} = {B3A4B4AB-F19A-4C68-AACE-E58CD347AD1E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9AF6D16B-AA70-42FB-BC55-BE2E4E5406C3}

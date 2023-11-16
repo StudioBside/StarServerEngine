@@ -16,6 +16,10 @@ dotnet_code_quality.CA2213.excluded_symbol_names = DbClient # IDisposable.Dispos
 dotnet_diagnostic.SA1316.severity = suggestion # tuple element names should use correct casing
 dotnet_diagnostic.SA1414.severity = suggestion # tuple types in signatures should have elemnt names
 
+[GlobalUsings.cs]
+
+# SA1200: Using directives should be placed correctly
+dotnet_diagnostic.SA1200.severity = silent
 
 [*.cs]
 #### 명명 스타일 ####
