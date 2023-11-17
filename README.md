@@ -9,7 +9,7 @@ This is the game server engine code for a new project at Studio Biside. Not all 
 ---
 
 스튜디오비사이드의 신규 프로젝트의 게임서버 엔진 코드입니다. 
-모든 엔진코드를 공개하지는 않습니다. side project 개발시 쓰일만한 기본적인 내용들만 공개됩니다.
+모든 엔진코드를 공개하지는 않습니다. side project 개발에 쓰일만한 기본적인 내용들만 공개됩니다.
 
 ## Modules by functionaliry
 
