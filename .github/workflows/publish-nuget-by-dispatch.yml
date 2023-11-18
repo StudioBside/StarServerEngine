@@ -17,7 +17,6 @@ on:
     
 env:
   BUILD_CONFIGURATION: Release
-  PACKAGE_PATH: ./Engine/${{ github.event.inputs.project }}/bin/Release
   ARTIFACT_PATH: ./Artifacts
   PACKAGE_VERSION: ${{ github.event.inputs.version }}
   PROJECT_NAME: ${{ github.event.inputs.project }}
@@ -57,7 +56,7 @@ jobs:
     - name: gather artifacts
       run: |
         mkdir ${{env.ARTIFACT_PATH}}
-        cp -r ./Engine/${{env.PROJECT_NAME}}/bin/release/*.nupkg ${{env.ARTIFACT_PATH}}
+        cp -r ./Engine/${{env.PROJECT_NAME}}/bin/Release/*.nupkg ${{env.ARTIFACT_PATH}}
       shell: bash
         
     - name: upload artifact
