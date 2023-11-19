@@ -1,3 +1,5 @@
+![](https://raw.githubusercontent.com/StudioBside/.github/main/Images/logo_horizontal.png)
+
 ![.NET](https://github.com/StudioBside/Cs.Logging/actions/workflows/dotnet.yml/badge.svg) ![publish nuget](https://github.com/StudioBside/StarServerEngine/actions/workflows/publish-nuget.yml/badge.svg)
 
 # Cs.Core
