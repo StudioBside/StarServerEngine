@@ -1,4 +1,4 @@
-![.NET](https://github.com/StudioBside/Cs.Logging/actions/workflows/dotnet.yml/badge.svg) ![push to nuget.org](https://github.com/StudioBside/Cs.Logging/actions/workflows/nuget.yml/badge.svg?event=push)
+![.NET](https://github.com/StudioBside/Cs.Logging/actions/workflows/dotnet.yml/badge.svg) ![publish nuget](https://github.com/StudioBside/StarServerEngine/actions/workflows/publish-nuget.yml/badge.svg)
 
 # Cs.Core
 
