@@ -1,3 +1,36 @@
+# 모든 파일을 기본적으로 무시
+*
+
+!.github/
+!.github/**
+
+!Document/
+Document/*
+!Document/Images
+!Document/Images/**
+
+# Engine 폴더 안의 모든 것 무시
+!Engine/
+Engine/*
+
+# Engine/ 하위 공개 프로젝트 명시
+!Engine/Cs.Logging/
+!Engine/Cs.Logging/**
+!Engine/Cs.Core/
+!Engine/Cs.Core/**
+!Engine/Cs.Math/
+!Engine/Cs.Math/**
+
+!.editorconfig
+!.gitignore
+!.gitmodules
+!LICENSE
+!README.md
+!OpenEngine.sln
+.Ds_Store
+*.swp
+
+# -------------------------------------------------------------------------------------------------------
 # Created by https://www.toptal.com/developers/gitignore/api/csharp,visualstudiocode,visualstudio
 # Edit at https://www.toptal.com/developers/gitignore?templates=csharp,visualstudiocode,visualstudio
 
@@ -595,5 +628,6 @@ FodyWeavers.xsd
 
 # End of https://www.toptal.com/developers/gitignore/api/csharp,visualstudiocode,visualstudio
 
-.Ds_Store
-Storage/
+
+
+

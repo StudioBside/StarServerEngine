@@ -20,7 +20,7 @@ It provides console or file logging output by default but does not guarantee per
 
 ### Prerequisites
 
-- .net SDK 7.0
+- .net SDK 8.0
 
 ### Installation
 

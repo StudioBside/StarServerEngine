@@ -2,8 +2,8 @@
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
-    using System.IO;
     using System.Runtime.CompilerServices;
+    using Cs.Logging.Providers;
 
     public enum LogLevelConfig
     {
