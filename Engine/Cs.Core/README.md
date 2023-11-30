@@ -28,7 +28,7 @@ It also encompasses several data structures not provided by System.Collection.Ge
 
 ### Installation
 
-download from [nuget.org](https://www.nuget.org/packages/Cs.Logging/)
+download from [nuget.org](https://www.nuget.org/packages/Cs.Core/)
 ```
 dotnet add package Cs.Core
 ```
