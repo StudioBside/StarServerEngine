@@ -1,0 +1,61 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Platforms>AnyCPU;x64</Platforms>
+    <CodeAnalysisRuleSet>..\..\BaseEnvironment\CodingStyle.ruleset</CodeAnalysisRuleSet>
+    <!--<PublishSingleFile>true</PublishSingleFile>-->
+    <!--<PublishTrimmed>true</PublishTrimmed>-->
+    <!--https://github.com/dotnet/cli/issues/12723 : 이게 없으면 pwrshplugin.pdb 파일이 없어서 오류발생. 별도 배포해도 해결 불가.-->
+    <!--<IncludeSymbolsInSingleFile>true</IncludeSymbolsInSingleFile>-->
+    <SonarQubeTestProject>true</SonarQubeTestProject>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+  </PropertyGroup>
+  <PropertyGroup>
+    <DebugType>Full</DebugType>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="Moq" Version="4.20.69" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.1.1" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.1.1" />
+    <PackageReference Include="StackExchange.Redis" Version="2.7.4" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.376">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="system.management.automation" Version="7.4.0" />
+    <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.421302">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Contents\Cs.Backend\Cs.Backend.csproj" />
+    <ProjectReference Include="..\..\Contents\Cs.Templets\Cs.Templets.csproj" />
+    <ProjectReference Include="..\..\Engine\Cs.Core\Cs.Core.csproj" />
+    <ProjectReference Include="..\..\Engine\Cs.HttpServer\Cs.HttpServer.csproj" />
+    <ProjectReference Include="..\..\Engine\Cs.Math\Cs.Math.csproj" />
+    <ProjectReference Include="..\..\Engine\Cs.Messaging\Cs.Messaging.csproj" />
+    <ProjectReference Include="..\..\Engine\Cs.Protocol\Cs.Protocol.csproj" />
+    <ProjectReference Include="..\..\Engine\Cs.Redis\Cs.Redis.csproj" />
+    <ProjectReference Include="..\..\Engine\Cs.ServerEngine\Cs.ServerEngine.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Resource\RandomNumbers">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
