@@ -22,19 +22,6 @@ It also encompasses several data structures not provided by System.Collection.Ge
 * `LruCache` : LinkedList<T> 사용한 캐시 컨테이너. (멀티스레드 접근에 안전하지 않음)
 * `PriorityQueue` : Heap 자료구조를 이용한 우선순위 큐. (하지만 이제는 [.net6부터 기본 제공](https://learn.microsoft.com/ko-kr/dotnet/api/system.collections.generic.priorityqueue-2)됩니다.)
 
-## Getting Started
-
-### Prerequisites
-
-- .net SDK 8.0
-
-### Installation
-
-download from [nuget.org](https://www.nuget.org/packages/Cs.Core/)
-```
-dotnet add package Cs.Core
-```
-
-### Contact
+## Contact
 
 mailto: github@studiobside.com

@@ -32,6 +32,7 @@ Log.Warn("정상적이지 않은 경우이지만, 프로그램의 실행에는 �
 Log.Error("프로그램의 실행에 문제가 있는 수준의 오류. 진행하던 로직은 중단되어야 한다.");
 Log.ErrorAndExit("프로그램의 실행에 치명적인 오류. 프로그램을 종료한다.");
 ```
+
 ## Contact
 
 mailto: github@studiobside.com

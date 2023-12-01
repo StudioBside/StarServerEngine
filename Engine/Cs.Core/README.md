@@ -24,7 +24,7 @@ It also encompasses several data structures not provided by System.Collection.Ge
 
 ### Prerequisites
 
-- .net SDK 7.0
+- .net SDK 8.0
 
 ### Installation
 

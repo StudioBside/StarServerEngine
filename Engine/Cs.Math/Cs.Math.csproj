@@ -4,13 +4,21 @@
     <CodeAnalysisRuleSet>..\..\BaseEnvironment\CodingStyle.ruleset</CodeAnalysisRuleSet>
     <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
-
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+  </PropertyGroup>
   <PropertyGroup>
     <DebugType>Full</DebugType>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="stylecop.analyzers" Version="1.2.0-beta.376">
+    <PackageReference Include="stylecop.analyzers" Version="1.2.0-beta.507">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -18,10 +26,8 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Cs.Core\Cs.Core.csproj" />
     <ProjectReference Include="..\Cs.Logging\Cs.Logging.csproj" />
   </ItemGroup>
-
 </Project>

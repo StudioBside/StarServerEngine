@@ -30,12 +30,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\..\Document\Images\icon.png" Pack="true" PackagePath="\"/>
-    <None Include=".\nuget.readme.md" Pack="true" PackagePath="\"/>
+      <None Include="..\..\Document\Images\icon.png" Pack="true" PackagePath="\"/>
+      <None Include=".\nuget.readme.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="stylecop.analyzers" Version="1.2.0-beta.376">
+  <ItemGroup>    <PackageReference Include="stylecop.analyzers" Version="1.2.0-beta.507">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
