@@ -6,9 +6,9 @@
 
 This is a project that gathers mathematical logics. It includes a BasisPoint type to represent probabilities, random functions, an implementation for random selection (lottery), and partial implementations for 2D geometry.
 
-RatioLottery: Logic that performs random selection based on the weight of candidates in the list.
-RateLottery: Logic that performs random selection based on the probability of candidates in the list (there might be losing outcomes depending on the settings).
-BasisPoint: Represents a basis point type, ranging from 0 to 10000.
+* `RatioLottery` : Logic that performs random selection based on the weight of candidates in the list.
+* `RateLottery` : Logic that performs random selection based on the probability of candidates in the list (there might be losing outcomes depending on the settings).
+* `BasisPoint` : Represents a basis point type, ranging from 0 to 10000.
  
 ---
 
