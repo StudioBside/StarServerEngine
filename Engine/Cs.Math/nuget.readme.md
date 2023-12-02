@@ -1,4 +1,6 @@
-![.NET](https://github.com/StudioBside/Cs.Logging/actions/workflows/dotnet.yml/badge.svg) ![publish nuget](https://github.com/StudioBside/StarServerEngine/actions/workflows/publish-nuget.yml/badge.svg)
+![](https://raw.githubusercontent.com/StudioBside/.github/main/Images/logo_horizontal.png)
+
+![.NET](https://github.com/StudioBside/StarServerEngine/actions/workflows/dotnet.yml/badge.svg) ![publish nuget](https://github.com/StudioBside/StarServerEngine/actions/workflows/publish-nuget.yml/badge.svg)
 
 # Cs.Logging
 
@@ -16,21 +18,7 @@ It provides console or file logging output by default but does not guarantee per
 
 기본적으로 콘솔이나 파일로 출력하는 기능을 제공하지만 성능이나 스레드 안전성 등을 보장하지 않습니다.
 
-## Getting Started
-
-### Prerequisites
-
-- .net SDK 8.0
-
-### Installation
-
-download from [nuget.org](https://www.nuget.org/packages/Cs.Logging/)
-
-```
-dotnet add package Cs.Logging
-```
-
-### Usage
+## Usage
 
 ```Csharp
 using Cs.Logging;
@@ -45,15 +33,6 @@ Log.Error("프로그램의 실행에 문제가 있는 수준의 오류. 진행�
 Log.ErrorAndExit("프로그램의 실행에 치명적인 오류. 프로그램을 종료한다.");
 ```
 
-### License
-
-This project is licensed under the MIT License. For details, see the [License File](../../LICENSE).
-
-### Contact
+## Contact
 
 mailto: github@studiobside.com
-
-### Additional Information
-
-* [LoggingExample.cs](../../Test/UnitTest/TestLogging/LoggingExample.cs)
-* [OutputTest.cs](../../Test/UnitTest/TestLogging/LoggingOutputTest.cs)
