@@ -25,6 +25,7 @@ Please join us as a companion in the journey of creating unprecedented joy in th
 
 * [Cs.Logging](./Engine/Cs.Logging/README.md)
 * [Cs.Core](./Engine/Cs.Core/README.md)
+* [Cs.Math](./Engine/Cs.Math/README.md)
 
 ## Installation
 
