@@ -3,6 +3,7 @@
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
 
     public sealed class RatioLottery<T> : IReadOnlyList<T>
@@ -68,6 +69,7 @@
             return result;
         }
 
+        [DebuggerDisplay("{Value} {Ratio} {AccumulatedRatio}")]
         public readonly struct CaseData
         {
             public CaseData(int ratio, int accumulatedRatio, T value)
