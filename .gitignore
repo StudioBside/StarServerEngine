@@ -24,6 +24,8 @@ Engine/*
 !Engine/Cs.Legacy/**
 !Engine/Cs.Exception/
 !Engine/Cs.Exception/**
+!Engine/Cs.HttpClient/
+!Engine/Cs.HttpClient/**
 
 # Test 폴더 하위 규칙 변경을 위해 global rule을 덮어쓴다
 !Test/
