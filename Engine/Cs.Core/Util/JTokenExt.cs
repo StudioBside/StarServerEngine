@@ -164,6 +164,16 @@
             return self.Value<long>(key);
         }
 
+        public static long GetInt64(this JToken self, string key, long defValue)
+        {
+            if (self[key] == null)
+            {
+                return defValue;
+            }
+
+            return self.Value<long>(key);
+        }
+
         public static bool GetInt64(this JToken self, string key, out long result)
         {
             if (self[key] == null)
