@@ -31,10 +31,10 @@ download from [nuget.org](https://www.nuget.org/packages/Cs.Math/)
 dotnet add package Cs.Math
 ```
 
-### License
+## License
 
 This project is licensed under the MIT License. For details, see the [License File](../../LICENSE).
 
-### Contact
+## Contact
 
 mailto: github@studiobside.com
