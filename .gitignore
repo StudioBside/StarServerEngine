@@ -26,6 +26,8 @@ Engine/*
 !Engine/Cs.Exception/**
 !Engine/Cs.HttpClient/
 !Engine/Cs.HttpClient/**
+!Engine/Cs.Slack/
+!Engine/Cs.Slack/**
 
 # Test 폴더 하위 규칙 변경을 위해 global rule을 덮어쓴다
 !Test/
