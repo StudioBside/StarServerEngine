@@ -8,8 +8,8 @@ Generally, for lightweight requests with low load, there are no issues. However,
  
 ---
 
-C#에서 외부 rest api를 사용하기 위해 필요한 http request 처리에 관한 로직들을 모았습니다. 
-C#으로 http 요청을 처리하는 데에는 HttpRequest, WebClient, HttpClient등 많은 인터페이스가 있습니다. 가장 최종적인 형태는 HttpClient이지만, 사용시에 주의가 필요합니다. 
+C#에서 외부 rest api를 사용하기 위해 필요한 http request 처리에 관한 로직들을 모았습니다. C#으로 http 요청을 처리하는 데에는 HttpRequest, WebClient, HttpClient등 많은 인터페이스가 있습니다. 가장 최종적인 형태는 HttpClient이지만, 사용시에 주의가 필요합니다. 
+
 일반적으로 부하가 크지 않은 가벼운 요청의 경우는 아무런 문제가 없지만, 다수의 스레드가 순간적으로 대량의 throughput을 처리하고자 할 땐 성능 문제가 발생할 수 있습니다. 이와 관련된 문서들의 링크를 아래에 정리했으니 참고 바랍니다.
 
 ## Getting Started
