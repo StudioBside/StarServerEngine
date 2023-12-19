@@ -28,7 +28,25 @@ dotnet add package Cs.HttpClient
 
 ### Usage
 ```csharp
+using Cs.HttpClient;
+using Cs.Logging;
 
+var apiClient = new RestApiClient("Https://slack.com/api/");
+
+var parameters = new Dictioary<string, string>
+{
+    { "token", endpoint.Token },
+    // ... fill parameters
+}
+var content = new FormUrlEncodedContent(parameters);
+var response = await apiClient.PostAsync("files.upload", content);
+if (response.IsSuccessStatusCode == false)
+{
+    Log.Error($"files.upload failed. response:{response}");
+    return;
+}
+
+Log.Info($"uploading file succeed. responseCode:{response.StatusCode}");
 ```
 
 ## License
