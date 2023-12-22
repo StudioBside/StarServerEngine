@@ -20,8 +20,8 @@ Engine/*
 !Engine/Cs.Core/**
 !Engine/Cs.Math/
 !Engine/Cs.Math/**
-!Engine/Cs.Legacy/
-!Engine/Cs.Legacy/**
+!Engine/Cs.Dynamic/
+!Engine/Cs.Dynamic/**
 !Engine/Cs.Exception/
 !Engine/Cs.Exception/**
 !Engine/Cs.HttpClient/

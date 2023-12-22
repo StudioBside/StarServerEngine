@@ -1,4 +1,4 @@
-﻿namespace Cs.Legacy.Dynamic
+﻿namespace Cs.Dynamic
 {
     using System;
     using System.Linq;
