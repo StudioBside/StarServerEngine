@@ -32,12 +32,17 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Engine\Cs.Core\Cs.Core.csproj" />
     <ProjectReference Include="..\..\Engine\Cs.Math\Cs.Math.csproj" />
+    <ProjectReference Include="..\..\Engine\Cs.HttpClient\Cs.HttpClient.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <None Update="Resource\RandomNumbers">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="TestHttpClient/" />
   </ItemGroup>
 
 </Project>

@@ -13,19 +13,14 @@
 
         public void Initialize()
         {
-            Debug.Assert(OperatingSystem.IsWindows(), string.Empty);
+            var builder = new HostBuilder()
+                .ConfigureServices((hostContext, services) =>
+                {
+                    services.AddHttpClient();
+                    services.AddTransient<BasicFactoryHolder>();
+                }).UseConsoleLifetime();
 
-            if (OperatingSystem.IsWindows())
-            {
-                var builder = new HostBuilder()
-                    .ConfigureServices((hostContext, services) =>
-                    {
-                        services.AddHttpClient();
-                        services.AddTransient<BasicFactoryHolder>();
-                    }).UseConsoleLifetime();
-
-                this.Host = builder.Build();
-            }
+            this.Host = builder.Build();
         }
     }
 }

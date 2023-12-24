@@ -48,3 +48,11 @@ mailto: github@studiobside.com
 * https://www.aspnetmonsters.com/2016/08/2016-08-27-httpclientwrong/
 * https://learn.microsoft.com/en-us/dotnet/core/extensions/httpclient-factory#httpclient-lifetime-management
 * https://learn.microsoft.com/en-us/dotnet/architecture/microservices/implement-resilient-applications/use-httpclientfactory-to-implement-resilient-http-requests
+
+## Version History
+
+#### v0.0.4
+
+* 단위 테스트 추가. GetStringAsync() 동작상태 확인
+* MacOS에서 동작하지 않는 현상 수정. DotNetHost.cs에 있던 윈도우 전용 조건 삭제.
+* Cs.Logging 종속성 참조가 0.0.22로 잡히도록 조정.
