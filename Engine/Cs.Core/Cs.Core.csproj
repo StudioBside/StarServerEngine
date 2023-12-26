@@ -21,7 +21,7 @@
     <PackageProjectUrl>https://github.com/StudioBside/StarServerEngine</PackageProjectUrl>
     <RepositoryUrl>https://github.com/StudioBside/StarServerEngine</RepositoryUrl>
     <PackageIcon>icon.png</PackageIcon>
-    <PackageReadmeFile>nuget.readme.md</PackageReadmeFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageReleaseNotes>first release</PackageReleaseNotes>
     <Description>Gathers commonly used basic functionalities across various projects.</Description>
@@ -31,7 +31,7 @@
 
   <ItemGroup>
       <None Include="..\..\Document\Images\icon.png" Pack="true" PackagePath="\"/>
-      <None Include=".\nuget.readme.md" Pack="true" PackagePath="\"/>
+      <None Include=".\README.md" Pack="true" PackagePath="\"/>
   </ItemGroup>
   <ItemGroup>    <PackageReference Include="stylecop.analyzers" Version="1.2.0-beta.507">
       <PrivateAssets>all</PrivateAssets>

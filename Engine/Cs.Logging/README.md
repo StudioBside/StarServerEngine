@@ -1,3 +1,5 @@
+![](https://raw.githubusercontent.com/StudioBside/.github/main/Images/logo_horizontal.png)
+
 ![.NET](https://github.com/StudioBside/Cs.Logging/actions/workflows/dotnet.yml/badge.svg) ![publish nuget](https://github.com/StudioBside/StarServerEngine/actions/workflows/publish-nuget.yml/badge.svg)
 
 # Cs.Logging
@@ -45,15 +47,15 @@ Log.Error("프로그램의 실행에 문제가 있는 수준의 오류. 진행�
 Log.ErrorAndExit("프로그램의 실행에 치명적인 오류. 프로그램을 종료한다.");
 ```
 
-### License
+## License
 
 This project is licensed under the MIT License. For details, see the [License File](../../LICENSE).
 
-### Contact
+## Contact
 
 mailto: github@studiobside.com
 
-### Additional Information
+## Additional Information
 
 * [LoggingExample.cs](../../Test/UnitTest/TestLogging/LoggingExample.cs)
 * [OutputTest.cs](../../Test/UnitTest/TestLogging/LoggingOutputTest.cs)

@@ -1,3 +1,5 @@
+![](https://raw.githubusercontent.com/StudioBside/.github/main/Images/logo_horizontal.png)
+
 ![.NET](https://github.com/StudioBside/Cs.Logging/actions/workflows/dotnet.yml/badge.svg) ![publish nuget](https://github.com/StudioBside/StarServerEngine/actions/workflows/publish-nuget.yml/badge.svg)
 
 # Cs.Core
@@ -34,10 +36,10 @@ download from [nuget.org](https://www.nuget.org/packages/Cs.Core/)
 dotnet add package Cs.Core
 ```
 
-### License
+## License
 
 This project is licensed under the MIT License. For details, see the [License File](../../LICENSE).
 
-### Contact
+## Contact
 
 mailto: github@studiobside.com
