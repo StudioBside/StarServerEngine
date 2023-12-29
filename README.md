@@ -27,10 +27,13 @@ Please join us as a companion in the journey of creating unprecedented joy in th
 * [Cs.Core](./Engine/Cs.Core/README.md)
 * [Cs.Math](./Engine/Cs.Math/README.md)
 * [Cs.HttpClient](./Engine/Cs.HttpClient/README.md)
+* Cs.Dynamic
+* Cs.Slack
+* Cs.Exception
 
 ## Installation
 
-download from [nuget.org](https://www.nuget.org/packages/Cs.Logging/)
+download from [nuget.org](https://www.nuget.org/packages?q=studiobside)
 ```
 dotnet add package Cs.Logging
 dotnet add package Cs.Core
