@@ -28,6 +28,8 @@ Engine/*
 !Engine/Cs.HttpClient/**
 !Engine/Cs.Slack/
 !Engine/Cs.Slack/**
+!Engine/Cs.Antlr/
+!Engine/Cs.Antlr/**
 
 # Test 폴더 하위 규칙 변경을 위해 global rule을 덮어쓴다
 !Test/
@@ -39,6 +41,13 @@ Test/*
 Test/UnitTest/Tests
 Test/UnitTest/Utility
 
+# Tool 폴더 하위 규칙 변경을 위해 global rule을 덮어쓴다
+!Tool/
+Tool/*
+
+# Tool/ 하위 공개 프로젝트 명시
+!Tool/Excel2Json/
+!Tool/Excel2Json/**
 
 !.editorconfig
 !.gitignore

@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "Excel2Json": {
+        "commandName": "Project",
+        "commandLineArgs": "P4Opened",
+        "workingDirectory": "..\\..\\..\\Bin\\Excel2Json"
+    }
+  }
+}
