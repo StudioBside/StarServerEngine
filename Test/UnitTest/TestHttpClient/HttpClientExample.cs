@@ -1,5 +1,6 @@
 ﻿namespace UnitTest.TestHttpClient;
 
+using System.Threading.Tasks;
 using Cs.HttpClient;
 using Cs.Logging;
 
