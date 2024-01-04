@@ -1,0 +1,6 @@
+{
+    "Migration": {
+        "TargetPath": "../../../StarClient/Assets/ASSET_BUNDLE/AB_BUILTIN/ABB_SCRIPT_TXT/BATTLE/",
+        "StepScriptPath": "./Steps"
+    }
+}

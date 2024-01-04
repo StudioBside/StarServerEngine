@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "JsonSchemaChecker": {
+      "commandName": "Project",
+      "workingDirectory": "./"
+    }
+  }
+}
