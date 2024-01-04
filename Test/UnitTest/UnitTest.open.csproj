@@ -28,6 +28,10 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="tests\**" />
+    <Compile Remove="Utility\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Engine\Cs.Core\Cs.Core.csproj" />
