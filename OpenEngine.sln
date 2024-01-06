@@ -29,7 +29,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JsonSchemaValidator", "Tool
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cs.Perforce", "Engine\Cs.Perforce\Cs.Perforce.csproj", "{E63A97DD-CFFB-4A13-BDFD-BD46C3B40CB4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cs.HttpServer", "Engine\Cs.HttpServer\Cs.HttpServer.csproj", "{809D4A8A-E8AE-42E1-B38D-69DA347D5B9F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cs.HttpServer", "Engine\Cs.HttpServer\Cs.HttpServer.csproj", "{809D4A8A-E8AE-42E1-B38D-69DA347D5B9F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
