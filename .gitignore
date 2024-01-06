@@ -48,8 +48,6 @@ Test/UnitTest/Utility
 Tool/*
 
 # Tool/ 하위 공개 프로젝트 명시
-!Tool/Excel2Json/
-!Tool/Excel2Json/**
 !Tool/JsonMigrator/
 !Tool/JsonMigrator/**
 Tool/JsonMigrator/Steps/**

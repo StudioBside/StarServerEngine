@@ -30,6 +30,7 @@ Please join us as a companion in the journey of creating unprecedented joy in th
 * Cs.Dynamic
 * Cs.Slack
 * Cs.Exception
+* Cs.Perforce
 
 ## Tools
 
@@ -37,7 +38,6 @@ Several internal development tools listed below will be made public. They do not
 
 다음의 몇가지 내부 개발용 툴이 공개됩니다. 프로젝트에 종속적인 내용이 없어 바로 사용도 가능하지만, 빌드한 실행파일을 별도로 배포할 예정은 없습니다.
 
-* [Excel2Json](https://github.com/StudioBside/StarServerEngine/tree/main/Tool/Excel2Json)
 * [JsonMigrator](https://github.com/StudioBside/StarServerEngine/tree/main/Tool/JsonMigrator)
 * [JsonSchemaValidator](https://github.com/StudioBside/StarServerEngine/tree/main/Tool/JsonSchemaValidator)
 
