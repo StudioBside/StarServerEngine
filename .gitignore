@@ -24,6 +24,8 @@ Engine/*
 !Engine/Cs.Dynamic/**
 !Engine/Cs.Exception/
 !Engine/Cs.Exception/**
+!Engine/Cs.HttpServer/
+!Engine/Cs.HttpServer/**
 !Engine/Cs.HttpClient/
 !Engine/Cs.HttpClient/**
 !Engine/Cs.Slack/
