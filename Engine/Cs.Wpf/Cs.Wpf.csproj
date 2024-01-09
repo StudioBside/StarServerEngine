@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0-windows</TargetFramework>
+		<CodeAnalysisRuleSet>..\..\BaseEnvironment\CodingStyle.ruleset</CodeAnalysisRuleSet>
+		<Nullable>enable</Nullable>
+		<UseWPF>true</UseWPF>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<DebugType>Full</DebugType>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="stylecop.analyzers" Version="1.2.0-beta.507">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+	</ItemGroup>
+
+</Project>
