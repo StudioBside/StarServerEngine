@@ -22,5 +22,11 @@
                 Log.ErrorAndExit($"[ErrorContainer] {errorCount}개의 오류 발생");
             }
         }
+
+        public static void Clear()
+        {
+            // 서버 실행 도중 hotswap을 하기 전에 상태 초기화 하기 위한 용도.
+            errorCount = 0;
+        }
     }
 }
