@@ -1,4 +1,7 @@
-﻿[*.cs]
+﻿[*]
+charset = utf-8
+
+[*.cs]
 
 # IDE0065: 위치가 잘못된 using 지시문
 csharp_using_directive_placement = inside_namespace:silent
