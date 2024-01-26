@@ -1,0 +1,18 @@
+{
+  "Slack": {
+    "ApiBotToken": "xoxb-439979672484-4825344091991-VCzpbrUz48JbmjoVXqOSSIXq",
+    "AppLevelToken": "xapp-1-A04QLSLFX9T-4839743363139-aad24206b3b8793e0515d9c03754486f415e2e4b8993bca378fb1ac8a3fc93ce",
+    "SlashCommand": "csredmine"
+  },
+
+  "Redmine": {
+    "ServerAddress": "http://cts-redmine.bside.com/redmine/",
+    "ApiKey": "227a81d1c61837ee5aed31372428d25f195d52cc"
+  },
+
+  "GameRank": {
+    "StoragePath": "C:/GameRank.Crawler/Storage"
+  },
+
+  "LogPath": "./"
+}

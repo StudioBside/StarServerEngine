@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "SlackAssist": {
+      "commandName": "Project",
+      "commandLineArgs": "--target StarSavior",
+      "workingDirectory": ".\\"
+    }
+  }
+}
