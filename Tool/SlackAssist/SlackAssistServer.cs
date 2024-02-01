@@ -3,7 +3,6 @@ namespace SlackAssist
     using System.Threading;
     using System.Threading.Tasks;
     using Cs.Logging;
-    using Cs.Messaging;
     using Cs.ServerEngine.Util;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Hosting;
@@ -15,20 +14,9 @@ namespace SlackAssist
     using SlackNet.Handlers;
 
     internal sealed class SlackAssistServer(IConfiguration configuration, IHostApplicationLifetime appLifetime)
-        : IHostedService
+        : BackgroundService
     {
-        public Task StartAsync(CancellationToken cancellationToken)
-        {
-            BackgroundJob.Execute(this.InitializeAsync);
-            return Task.CompletedTask;
-        }
-
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
-            return Task.CompletedTask;
-        }
-
-        public async Task InitializeAsync()
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             var config = SlackAssistConfig.Load(configuration);
             if (config is null)

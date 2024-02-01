@@ -73,16 +73,16 @@ internal sealed class RedmineList : ISlashSubCommand, IWorkflowCommand
 
         result.Blocks.Add(new DividerBlock());
 
-        // 카테고리별 분류
-        var issueCategorys = issues
-            .GroupBy(e => e.Category?.Name ?? "미분류")
+        // 트래커별 분류
+        var issueTrackers = issues
+            .GroupBy(e => e.Tracker?.Name ?? "미분류")
             .ToDictionary(e => e.Key, e => e.ToList());
 
         // 내용 추가
-        foreach (var category in issueCategorys)
+        foreach (var tracker in issueTrackers)
         {
             using var builder = new MarkdownBuilder();
-            Issue issue = category.Value.FirstOrDefault(e => e.Project.Id == 1) ?? category.Value[0];
+            Issue issue = tracker.Value.FirstOrDefault(e => e.Project.Id == 1) ?? tracker.Value[0];
             string redmineUrl;
             var project = Redmine.Instance.GetProjects(issue.Project.Id);
             if (project is null)
@@ -91,22 +91,22 @@ internal sealed class RedmineList : ISlashSubCommand, IWorkflowCommand
             }
             else
             {
-                var categoryQueryString = "category_id&op%5Bcategory_id%5D=%21*&f%5B%5D=&c%5B%5D=";
-                if (issue.Category is not null)
+                var trackerQueryString = "tracker_id&op%5Btracker_id%5D=%21*&f%5B%5D=&c%5B%5D=";
+                if (issue.Tracker is not null)
                 {
-                    categoryQueryString = $"category_id&op%5Bcategory_id%5D=%3D&v%5Bcategory_id%5D%5B%5D={issue.Category.Id}";
+                    trackerQueryString = $"tracker_id&op%5Btracker_id%5D=%3D&v%5Btracker_id%5D%5B%5D={issue.Tracker.Id}";
                 }
 
                 var versionQueryString = $"fixed_version_id&op%5Bfixed_version_id%5D=%3D&v%5Bfixed_version_id%5D%5B%5D={issue.FixedVersion.Id}";
                 redmineUrl = Redmine.Instance.Host.AppendToURL(
                 "projects",
                 project.Identifier,
-                $"""issues?utf8=%E2%9C%93&set_filter=1&sort=id%3Adesc&f%5B%5D={categoryQueryString}&f%5B%5D={versionQueryString}""");
+                $"""issues?utf8=%E2%9C%93&set_filter=1&sort=id%3Adesc&f%5B%5D={trackerQueryString}&f%5B%5D={versionQueryString}""");
             }
 
-            var categoryTitle = string.IsNullOrEmpty(redmineUrl) ? category.Key : $"<{redmineUrl}|{category.Key}>";
+            var categoryTitle = string.IsNullOrEmpty(redmineUrl) ? tracker.Key : $"<{redmineUrl}|{tracker.Key}>";
             builder.WriteBoldLine(categoryTitle);
-            builder.Write(category.Value.ToProgressBar(e => e.IsCompleted()));
+            builder.Write(tracker.Value.ToProgressBar(e => e.IsCompleted()));
             result.Blocks.Add(builder.FlushToSectionBlock());
 
             // 버튼 레이아웃이 폰에서 볼 때 너무 과한 면이 있다. 제거 고려중.

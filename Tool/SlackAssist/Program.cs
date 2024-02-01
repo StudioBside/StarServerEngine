@@ -23,6 +23,7 @@ internal class Program
             })
             .ConfigureServices((hostContext, services) =>
             {
+                services.AddWindowsService();
                 services.AddHostedService<SlackAssistServer>();
             })
             .Build();
