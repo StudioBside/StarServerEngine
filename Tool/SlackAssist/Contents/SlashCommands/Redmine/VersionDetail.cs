@@ -1,11 +1,11 @@
-namespace SlackAssist.Contents.SlashSlackAssist;
+namespace SlackAssist.Contents.SlashCommands.Redmine;
 
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 using Cs.Core.Util;
-
+using Cs.Messaging;
 using global::Redmine.Net.Api.Types;
 using SlackAssist.Contents.Detail;
 using SlackAssist.Fremawork.Redmines;
@@ -17,9 +17,9 @@ using SlackNet.Blocks;
 using SlackNet.Interaction;
 using SlackNet.WebApi;
 
-internal sealed class RedmineList : ISlashSubCommand, IWorkflowCommand
+internal sealed class VersionDetail : ISlashSubCommand, IWorkflowCommand
 {
-    public SlashCommandCategory Category { get; } = SlashCommandCategory.Redmine;
+    public string Command => SlashCommandHandler.BuildCommand("redmine");
     public IEnumerable<string> CommandLiterals { get; } = new[] { "list", "목록" };
 
     public Block GetIntroduceBlock()
@@ -29,14 +29,21 @@ internal sealed class RedmineList : ISlashSubCommand, IWorkflowCommand
         builder.WriteLine($"효과 : 주어진 검색어로 목표버전을 찾고, 해당 목표가 설정된 일감 목록을 가져옵니다");
         builder.WriteLine($" - `summary` 명령에서 detail 버튼 사용시에도 해당 명령이 수행됩니다.");
         builder.WriteLine($"문법 : <서브명령> <목표 검색어>");
-        builder.WriteLine($"예시 : *{this.Category.GetMainCommand()} list 2023년 1월*");
+        builder.WriteLine($"예시 : *{this.Command} list 2023년 1월*");
 
         return builder.FlushToSectionBlock();
     }
 
     public Task<Message> Process(ISlackApiClient slack, SlashCommand command, IReadOnlyList<string> arguments)
     {
-        return this.Process(slack, arguments);
+        BackgroundJob.Execute(async () =>
+        {
+            var message = await this.Process(slack, arguments);
+            message.Channel = command.ChannelId;
+            await slack.Chat.PostEphemeral(command.UserId, message);
+        });
+
+        return Task.FromResult(new Message { Text = ":loading:" });
     }
 
     public async Task<Message> Process(ISlackApiClient slack, IReadOnlyList<string> arguments)
@@ -101,7 +108,7 @@ internal sealed class RedmineList : ISlashSubCommand, IWorkflowCommand
                 redmineUrl = Redmine.Instance.Host.AppendToURL(
                 "projects",
                 project.Identifier,
-                $"""issues?utf8=%E2%9C%93&set_filter=1&sort=id%3Adesc&f%5B%5D={trackerQueryString}&f%5B%5D={versionQueryString}""");
+                $"""issues?utf8=%E2%9C%93&set_filter=1&sort=id%3Adesc&f%5B%5D={trackerQueryString}&f%5B%5D={versionQueryString}&f%5B%5D=status_id&op%5Bstatus_id%5D=o""");
             }
 
             var categoryTitle = string.IsNullOrEmpty(redmineUrl) ? tracker.Key : $"<{redmineUrl}|{tracker.Key}>";

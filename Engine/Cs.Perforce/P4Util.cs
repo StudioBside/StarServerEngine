@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using Cs.Core.Util;
+using Cs.Logging;
 
 public static class P4Util
 {
@@ -18,11 +19,13 @@ public static class P4Util
         var host = Dns.GetHostName();
         if (string.IsNullOrEmpty(host))
         {
+            Log.Error("Failed to get hostname");
             return false;
         }
 
         if (OutProcess.Run("p4", $"-F \"%client%{Separator}%Host%{Separator}%Root%\" -ztag clients", out string p4Output) == false)
         {
+            Log.Error($"Failed to get p4 client|host|root info. output:{p4Output}");
             return false;
         }
 

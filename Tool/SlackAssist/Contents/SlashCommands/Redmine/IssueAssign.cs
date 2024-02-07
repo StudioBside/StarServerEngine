@@ -1,4 +1,4 @@
-namespace SlackAssist.Contents.SlashSlackAssist;
+namespace SlackAssist.Contents.SlashCommands.Redmine;
 
 using System.Collections.Generic;
 using System.Data;
@@ -16,10 +16,9 @@ using SlackNet.Blocks;
 using SlackNet.Interaction;
 using SlackNet.WebApi;
 
-internal sealed class RedmineAssign : ISlashSubCommand, IWorkflowCommand
+internal sealed class IssueAssign : ISlashSubCommand, IWorkflowCommand
 {
-    public SlashCommandCategory Category { get; } = SlashCommandCategory.Redmine;
-
+    public string Command => SlashCommandHandler.BuildCommand("redmine");
     public IEnumerable<string> CommandLiterals { get; set; } = new[] { "assign" };
 
     public Block GetIntroduceBlock()
@@ -28,15 +27,9 @@ internal sealed class RedmineAssign : ISlashSubCommand, IWorkflowCommand
         builder.WriteLine($"명령 : {string.Join(", ", this.CommandLiterals.Select(e => $"`{e}`"))} :redmine:");
         builder.WriteLine($"효과 : 레드마인의 일감 할당 상황을 요약하여 알려줍니다.");
         builder.WriteLine($"문법 : <서브명령>");
-        builder.WriteLine($"예시 : *{this.Category.GetMainCommand()} assign*");
+        builder.WriteLine($"예시 : *{this.Command} assign*");
 
         return builder.FlushToSectionBlock();
-    }
-
-    public Task<Message> Process(ISlackApiClient slack, SlashCommand command, IReadOnlyList<string> arguments)
-    {
-        BackgroundJob.Execute(() => this.LazyProcess(slack, command, arguments));
-        return Task.FromResult(new Message { Text = "내용 만드는중..." });
     }
 
     public async Task<Message> Process(ISlackApiClient slack, IReadOnlyList<string> arguments)
@@ -137,10 +130,15 @@ internal sealed class RedmineAssign : ISlashSubCommand, IWorkflowCommand
         return result;
     }
 
-    public async Task LazyProcess(ISlackApiClient slack, SlashCommand command, IReadOnlyList<string> arguments)
+    public Task<Message> Process(ISlackApiClient slack, SlashCommand command, IReadOnlyList<string> arguments)
     {
-        var message = await this.Process(slack, arguments);
-        message.Channel = command.ChannelId;
-        await slack.Chat.PostMessage(message);
+        BackgroundJob.Execute(async () =>
+        {
+            var message = await this.Process(slack, arguments);
+            message.Channel = command.ChannelId;
+            await slack.Chat.PostEphemeral(command.UserId, message);
+        });
+
+        return Task.FromResult(new Message { Text = ":loading:" });
     }
 }

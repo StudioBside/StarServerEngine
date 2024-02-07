@@ -1,4 +1,4 @@
-﻿namespace SlackAssist.Fremawork.Slack.MessageHandlerBase;
+﻿namespace SlackAssist.Fremawork.Slack.ChatReactionBase;
 
 using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;

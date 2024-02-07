@@ -7,6 +7,7 @@ namespace SlackAssist.SlackNetHandlers
     using System.Reflection;
     using System.Threading.Tasks;
     using Cs.Dynamic;
+    using SlackAssist.Configs;
     using SlackAssist.Fremawork.Slack;
     using SlackNet;
     using SlackNet.Blocks;
@@ -15,12 +16,15 @@ namespace SlackAssist.SlackNetHandlers
 
     internal sealed class SlashCommandHandler : ISlashCommandHandler
     {
-        public const string DefaultCommand = "/slackassist";
-        private static readonly Dictionary<string, ISlashSubCommand> SubCommands = new();
+        private static readonly Dictionary<string, SlashCommandHolder> Commands = new();
         private readonly ISlackApiClient slack;
         public SlashCommandHandler(ISlackApiClient slack) => this.slack = slack;
 
-        public static bool UseDefaultCommand { get; private set; } = false;
+        public static string BuildCommand(string command)
+        {
+            var commandPrefix = SlackAssistConfig.Instance.Slack.SlashCommandPrefix;
+            return $"/{commandPrefix}{command}".ToLowerInvariant();
+        }
 
         public static void Initialize(SlackServiceBuilder slackServices, ISlackApiClient slack, string commandPrefix)
         {
@@ -36,25 +40,15 @@ namespace SlackAssist.SlackNetHandlers
                     continue;
                 }
 
-                foreach (var literal in subCommand.CommandLiterals)
+                var command = subCommand.Command.ToLowerInvariant();
+                if (Commands.TryGetValue(command, out var holder) == false)
                 {
-                    SubCommands.Add(literal.ToLowerInvariant(), subCommand);
+                    holder = new SlashCommandHolder();
+                    Commands.Add(command, holder);
+                    slackServices.RegisterSlashCommandHandler(command, instance);
                 }
-            }
 
-            if (string.IsNullOrEmpty(commandPrefix))
-            {
-                UseDefaultCommand = true;
-            }
-
-            slackServices.RegisterSlashCommandHandler(DefaultCommand, instance);
-
-            if (UseDefaultCommand == false)
-            {
-                foreach (var mainCommand in SubCommands.Values.GroupBy(e => e.Category.GetMainCommand()))
-                {
-                    slackServices.RegisterSlashCommandHandler(mainCommand.Key, instance);
-                }
+                holder.Add(subCommand);
             }
 
             static bool Filter(Type type)
@@ -64,21 +58,27 @@ namespace SlackAssist.SlackNetHandlers
             }
         }
 
-        public static bool TryGetSubCommand(string literal, [MaybeNullWhen(false)] out ISlashSubCommand subCommand)
+        public static bool TryGetCommand(string command, string literal, [MaybeNullWhen(false)] out ISlashSubCommand subCommand)
         {
-            return SubCommands.TryGetValue(literal, out subCommand);
+            if (Commands.TryGetValue(command.ToLowerInvariant(), out var holder))
+            {
+                return holder.TryGetValue(literal, out subCommand);
+            }
+
+            subCommand = null;
+            return false;
         }
 
         public static IEnumerable<Block> GetIntroduceBlocks()
         {
-            foreach (var subCommandGroup in SubCommands.Values.GroupBy(e => e.Category))
+            foreach (var command in Commands)
             {
                 yield return new HeaderBlock
                 {
-                    Text = subCommandGroup.Key.GetMainCommand(),
+                    Text = command.Key,
                 };
 
-                foreach (var subCommand in subCommandGroup)
+                foreach (var subCommand in command.Value.SubCommands)
                 {
                     yield return subCommand.GetIntroduceBlock();
                     yield return new DividerBlock();
@@ -88,9 +88,9 @@ namespace SlackAssist.SlackNetHandlers
 
         public async Task<SlashCommandResponse> Handle(SlashCommand command)
         {
-            SlashCommandResponse FailFactory(string additionalMessage) => new SlashCommandResponse
+            SlashCommandResponse FailFactory() => new SlashCommandResponse
             {
-                Message = new Message { Text = $"`{command.Command} {command.Text}` : 올바르지 않은 명령입니다. {additionalMessage}" },
+                Message = new Message { Text = $"`{command.Command} {command.Text}` : 올바르지 않은 명령입니다." },
             };
 
             Console.WriteLine($"user:@{command.UserName} channel:{command.ChannelName} command:{command.Text}");
@@ -98,17 +98,13 @@ namespace SlackAssist.SlackNetHandlers
             var tokens = command.Text.Split(' ');
             if (string.IsNullOrEmpty(command.Text) || tokens.Length < 1)
             {
-                return FailFactory(additionalMessage: string.Empty);
+                return FailFactory();
             }
 
             (string subLiteral, string[] arguments) = (tokens[0], tokens[1..]);
-            if (SubCommands.TryGetValue(subLiteral.ToLowerInvariant(), out var subCommand) == false)
+            if (TryGetCommand(command.Command, subLiteral, out var subCommand) == false)
             {
-                return FailFactory(additionalMessage: string.Empty);
-            }
-            else if (command.Command.Contains(subCommand.Category.ToString().ToLowerInvariant()) == false)
-            {
-                return FailFactory($"`{subCommand.Category.GetMainCommand()} {command.Text}` 명령을 사용하세요.");
+                return FailFactory();
             }
 
             return new SlashCommandResponse
@@ -116,6 +112,25 @@ namespace SlackAssist.SlackNetHandlers
                 Message = await subCommand.Process(this.slack, command, arguments),
                 ResponseType = ResponseType.Ephemeral,
             };
+        }
+
+        private sealed record SlashCommandHolder
+        {
+            private readonly List<ISlashSubCommand> subCommands = new();
+            private readonly Dictionary<string, ISlashSubCommand> subCommandLiterals = new();
+
+            public IEnumerable<ISlashSubCommand> SubCommands => this.subCommands;
+
+            public bool TryGetValue(string literal, [MaybeNullWhen(false)] out ISlashSubCommand subCommand) => this.subCommandLiterals.TryGetValue(literal.ToLowerInvariant(), out subCommand);
+
+            public void Add(ISlashSubCommand subCommand)
+            {
+                this.subCommands.Add(subCommand);
+                foreach (var literal in subCommand.CommandLiterals)
+                {
+                    this.subCommandLiterals.Add(literal.ToLowerInvariant(), subCommand);
+                }
+            }
         }
     }
 }

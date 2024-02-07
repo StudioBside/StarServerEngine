@@ -1,4 +1,4 @@
-﻿namespace SlackAssist.Handlers;
+﻿namespace SlackAssist.SlackNetHandlers;
 
 using System;
 using System.Threading.Tasks;

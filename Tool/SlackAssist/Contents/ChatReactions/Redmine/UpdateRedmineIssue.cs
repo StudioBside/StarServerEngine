@@ -7,11 +7,9 @@ using System.Threading.Tasks;
 using System.Web;
 using Cs.Core.Util;
 using Cs.Logging;
-
-using SlackAssist;
 using SlackAssist.Fremawork.Redmines;
 using SlackAssist.Fremawork.Slack;
-using SlackAssist.Fremawork.Slack.MessageHandlerBase;
+using SlackAssist.Fremawork.Slack.ChatReactionBase;
 
 using SlackNet;
 using SlackNet.Blocks;

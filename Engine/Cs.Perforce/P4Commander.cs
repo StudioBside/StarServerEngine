@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using Cs.Core.Util;
+using Cs.Logging;
 
 public readonly struct P4Commander
 {
@@ -23,6 +24,7 @@ public readonly struct P4Commander
         // 현재 위치를 기반으로 workspace 이름을 알아낸다.
         if (P4Util.TryGetP4Workspace(out var workspace) == false)
         {
+            Log.Error($"Failed to get p4 workspace info.");
             result = default;
             return false;
         }
@@ -30,6 +32,7 @@ public readonly struct P4Commander
         // 알아낸 workspace 이름으로 stream, clientRoot를 알아낸다.
         if (OutProcess.Run("p4", $"-F \"%Stream%{Seperator}%Root%\" -ztag clients -E {workspace}", out string p4Output) == false)
         {
+            Log.Error($"Failed to get p4 stream|root info. output:{p4Output}");
             result = default;
             return false;
         }
@@ -56,6 +59,7 @@ public readonly struct P4Commander
             return true;
         }
 
+        Log.Error($"failed to parse p4 stream|root info. output:{p4Output}");
         result = default;
         return false;
     }

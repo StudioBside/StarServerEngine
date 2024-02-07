@@ -110,13 +110,14 @@
         public static void SetResponseJson(this HttpListenerContext context, byte[] buffer, HttpStatusCode statusCode)
         {
             var response = context.Response;
-            response.ContentType = "application/json";
-            response.ContentEncoding = Encoding.UTF8;
-            response.AddHeader("Access-Control-Allow-Origin", "*");
-            response.ContentLength64 = buffer.Length;
 
             try
             {
+                response.ContentType = "application/json";
+                response.ContentEncoding = Encoding.UTF8;
+                response.AddHeader("Access-Control-Allow-Origin", "*");
+                response.ContentLength64 = buffer.Length;
+
                 using var output = response.OutputStream;
                 output.Write(buffer, 0, buffer.Length);
                 response.StatusCode = (int)statusCode;
@@ -138,14 +139,15 @@
         public static void SetResponseXml(this HttpListenerContext context, string xml)
         {
             var response = context.Response;
-            response.ContentType = "text/xml";
-            response.ContentEncoding = Encoding.UTF8;
-            response.StatusCode = 200;
-            var buffer = Encoding.UTF8.GetBytes(xml);
-            response.ContentLength64 = buffer.Length;
 
             try
             {
+                response.ContentType = "text/xml";
+                response.ContentEncoding = Encoding.UTF8;
+                response.StatusCode = 200;
+                var buffer = Encoding.UTF8.GetBytes(xml);
+                response.ContentLength64 = buffer.Length;
+
                 using var output = response.OutputStream;
                 output.Write(buffer, 0, buffer.Length);
                 response.StatusCode = 200;

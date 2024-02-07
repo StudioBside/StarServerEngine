@@ -9,6 +9,7 @@ using Cs.Logging;
 using global::Redmine.Net.Api;
 using global::Redmine.Net.Api.Async;
 using global::Redmine.Net.Api.Types;
+using SlackAssist.Fremawork.Redmines;
 using static SlackAssist.Fremawork.Redmines.Enums;
 
 internal sealed partial class IssueUpdater(RedmineManager manager, Issue issue) : IAsyncDisposable

@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using global::Redmine.Net.Api.Types;
+    using SlackAssist.Fremawork.Redmines;
 
     internal static class RedmineController
     {

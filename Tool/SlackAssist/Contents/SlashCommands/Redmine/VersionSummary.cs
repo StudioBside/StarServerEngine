@@ -1,11 +1,11 @@
-namespace SlackAssist.Contents.SlashSlackAssist;
+namespace SlackAssist.Contents.SlashCommands.Redmine;
 
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 using Cs.Core.Util;
-
+using Cs.Messaging;
 using SlackAssist.Contents.ButtonActions;
 using SlackAssist.Contents.Detail;
 using SlackAssist.Fremawork.Redmines;
@@ -17,10 +17,9 @@ using SlackNet.Blocks;
 using SlackNet.Interaction;
 using SlackNet.WebApi;
 
-internal sealed class RedmineSummary : ISlashSubCommand, IWorkflowCommand
+internal sealed class VersionSummary : ISlashSubCommand, IWorkflowCommand
 {
-    public SlashCommandCategory Category { get; } = SlashCommandCategory.Redmine;
-
+    public string Command => SlashCommandHandler.BuildCommand("redmine");
     public IEnumerable<string> CommandLiterals { get; set; } = new[] { "summary", "요약" };
 
     public Block GetIntroduceBlock()
@@ -29,14 +28,21 @@ internal sealed class RedmineSummary : ISlashSubCommand, IWorkflowCommand
         builder.WriteLine($"명령 : {string.Join(", ", this.CommandLiterals.Select(e => $"`{e}`"))} :redmine:");
         builder.WriteLine($"효과 : 검색어로 목표버전을 찾고 일감의 진행상황을 요약해서 표시합니다.");
         builder.WriteLine($"문법 : <서브명령> <목표 검색어>");
-        builder.WriteLine($"예시 : *{this.Category.GetMainCommand()} summary 1월*");
+        builder.WriteLine($"예시 : *{this.Command} summary 1월*");
 
         return builder.FlushToSectionBlock();
     }
 
     public Task<Message> Process(ISlackApiClient slack, SlashCommand command, IReadOnlyList<string> arguments)
     {
-        return this.Process(slack, arguments);
+        BackgroundJob.Execute(async () =>
+        {
+            var message = await this.Process(slack, arguments);
+            message.Channel = command.ChannelId;
+            await slack.Chat.PostEphemeral(command.UserId, message);
+        });
+
+        return Task.FromResult(new Message { Text = ":loading:" });
     }
 
     public async Task<Message> Process(ISlackApiClient slack, IReadOnlyList<string> arguments)
@@ -59,7 +65,7 @@ internal sealed class RedmineSummary : ISlashSubCommand, IWorkflowCommand
             IconEmoji = ":redmine:",
             Username = "Readmine",
         };
-        
+
         var fixedVersionName = issues[0].FixedVersion.Name;
         result.Blocks.Add(new HeaderBlock { Text = $"{fixedVersionName} ({issues.Count}개)" });
 
@@ -69,8 +75,12 @@ internal sealed class RedmineSummary : ISlashSubCommand, IWorkflowCommand
             builder.WriteLine($"기준시각 : {ServiceTime.RecentDefaultString}");
             builder.WriteLine($"전체 진행률 : {issues.ToProgressBar(e => e.IsCompleted())}");
             var sectionBlock = builder.FlushToSectionBlock();
-            sectionBlock.Accessory = GoalSummaryDetailButton.Create("Detail", searchKeyword);
             result.Blocks.Add(sectionBlock);
+
+            var actionsBlock = new ActionsBlock();
+            actionsBlock.Elements.Add(SummaryDetailButton.Create("Detail (Me)", searchKeyword));
+            actionsBlock.Elements.Add(SummaryDetailChannelButton.Create("Detail (Ch.)", searchKeyword));
+            result.Blocks.Add(actionsBlock);
         }
 
         return result;

@@ -1,10 +1,9 @@
-namespace SlackAssist.Handlers;
+namespace SlackAssist.SlackNetHandlers;
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Cs.Logging;
 using SlackAssist.Fremawork.Slack;
-using SlackAssist.SlackNetHandlers;
 using SlackNet;
 using SlackNet.Blocks;
 using SlackNet.Events;
@@ -12,7 +11,7 @@ using SlackNet.Events;
 internal sealed class AppHome : IEventHandler<AppHomeOpened>
 {
     private readonly ISlackApiClient slack;
-  
+
     public AppHome(ISlackApiClient slack)
     {
         this.slack = slack;

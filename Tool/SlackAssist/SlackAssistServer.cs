@@ -7,7 +7,7 @@ namespace SlackAssist
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Hosting;
     using SlackAssist.Configs;
-    using SlackAssist.Handlers;
+    using SlackAssist.Fremawork.Redmines;
     using SlackAssist.SlackNetHandlers;
     using SlackNet;
     using SlackNet.Blocks;

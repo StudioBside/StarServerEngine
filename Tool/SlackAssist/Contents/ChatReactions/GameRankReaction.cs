@@ -1,16 +1,12 @@
 ﻿namespace SlackAssist.Contents.ChatReactions;
 
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Cs.Logging;
-using GameRank.Core;
-using SlackAssist.Configs;
 using SlackAssist.Contents.Detail;
 using SlackAssist.Fremawork.Slack;
-using SlackAssist.Fremawork.Slack.MessageHandlerBase;
+using SlackAssist.Fremawork.Slack.ChatReactionBase;
 using SlackNet;
 using SlackNet.Blocks;
 using SlackNet.WebApi;

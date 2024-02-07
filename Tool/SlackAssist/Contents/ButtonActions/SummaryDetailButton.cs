@@ -1,36 +1,34 @@
-﻿namespace SlackAssist.Contents.ButtonActions;
+namespace SlackAssist.Contents.ButtonActions;
 
-using System.Linq;
 using System.Threading.Tasks;
 
 using Cs.Logging;
-
-using SlackAssist.Contents.SlashSlackAssist;
+using SlackAssist.Contents.SlashCommands.Redmine;
 using SlackAssist.Fremawork.Slack;
 
 using SlackNet;
 using SlackNet.Blocks;
 using SlackNet.Interaction;
 
-internal class GoalSummaryDetailButton : IButtonAction
+internal class SummaryDetailButton : IButtonAction
 {
-    public string ActionId => "goal_summary";
+    public string ActionId => "goal_summary_me";
 
     public static SlackNet.Blocks.Button Create(string text, string version)
     {
-        return IButtonAction.MakeActionButton(new GoalSummaryDetailButton(), text, version);
+        return IButtonAction.MakeActionButton(new SummaryDetailButton(), text, version);
     }
 
     public async Task Process(ISlackApiClient slack, ButtonAction action, BlockActionRequest request)
     {
         var arguments = action.Value.Split(FormProcessing.Separator);
-        if (arguments.Any() == false)
+        if (arguments.Length <= 0)
         {
             Log.Warn($"not enough argument. argumentCount:{arguments.Length}");
             return;
         }
 
-        var result = new RedmineList();
+        var result = new VersionDetail();
         var message = await result.Process(slack, arguments);
         message.IconEmoji = ":redmine:";
         message.Username = "Redmine";

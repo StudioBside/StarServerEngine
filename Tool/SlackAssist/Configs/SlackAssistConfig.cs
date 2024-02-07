@@ -1,8 +1,6 @@
 namespace SlackAssist.Configs
 {
-    using System;
     using System.Collections.Generic;
-    using Cs.Core;
     using Cs.Logging;
     using Microsoft.Extensions.Configuration;
 

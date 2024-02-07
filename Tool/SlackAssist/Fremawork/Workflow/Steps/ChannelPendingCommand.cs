@@ -1,4 +1,4 @@
-namespace SlackAssist.Fremawork.Workflow;
+namespace SlackAssist.Fremawork.Workflow.Steps;
 
 using System;
 using System.Collections.Generic;
@@ -103,7 +103,7 @@ internal class ChannelPendingCommand : IWorkflowStep
         //// 지금 command가 하나 뿐이라... 구분 처리 생략합니다.
         string[] arguments = tokens.Length >= 3 ? tokens[2..] : Array.Empty<string>();
 
-        if (SlashCommandHandler.TryGetSubCommand(literal, out var subCommand) == false)
+        if (SlashCommandHandler.TryGetCommand(command, literal, out var subCommand) == false)
         {
             await SendErrorMessage(commandText, $"지원하지 않는 명령어 `{literal}` 입니다.");
             return;

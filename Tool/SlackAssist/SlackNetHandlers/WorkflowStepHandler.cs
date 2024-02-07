@@ -1,4 +1,4 @@
-﻿namespace SlackAssist.SlackNetHandlers;
+namespace SlackAssist.SlackNetHandlers;
 
 using System;
 using System.Collections.Generic;

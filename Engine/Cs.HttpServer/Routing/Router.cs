@@ -6,6 +6,7 @@
     using System.Reflection;
     using System.Threading.Tasks;
     using Cs.Core.Util;
+    using Cs.Exception;
     using Cs.Logging;
     using static Cs.HttpServer.Enums;
 
@@ -73,7 +74,16 @@
                 return false;
             }
 
-            await handler.ExecuteAsync(handlerArgs.ToArray());
+            try
+            {
+                await handler.ExecuteAsync(handlerArgs.ToArray());
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ExceptionUtil.FlattenInnerExceptions(ex));
+                return false;
+            }
+
             return true;
         }
 

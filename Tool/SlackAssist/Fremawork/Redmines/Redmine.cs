@@ -1,4 +1,4 @@
-namespace SlackAssist;
+namespace SlackAssist.Fremawork.Redmines;
 
 using System;
 using System.Collections.Generic;
@@ -11,8 +11,8 @@ using Cs.Logging;
 using global::Redmine.Net.Api;
 using global::Redmine.Net.Api.Async;
 using global::Redmine.Net.Api.Types;
+using SlackAssist;
 using SlackAssist.Configs;
-using SlackAssist.Fremawork.Redmines;
 
 internal sealed class Redmine
 {
@@ -90,7 +90,7 @@ internal sealed class Redmine
             };
 
             var user = await this.manager.GetObjectAsync<User>(userId.ToString(), perUserParameters);
-        
+
             // 이름이 중복인 경우는 처리하지 않음
             this.users.Add($"{user.GetFullName()}", user);
         }

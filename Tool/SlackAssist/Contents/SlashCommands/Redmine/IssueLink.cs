@@ -1,4 +1,4 @@
-namespace SlackAssist.Contents.SlashSlackAssist;
+namespace SlackAssist.Contents.SlashCommands.Redmine;
 
 using System.Collections.Generic;
 using System.IO;
@@ -14,9 +14,9 @@ using SlackNet.Blocks;
 using SlackNet.Interaction;
 using SlackNet.WebApi;
 
-internal sealed class RedmineLink : ISlashSubCommand
+internal sealed class IssueLink : ISlashSubCommand
 {
-    public SlashCommandCategory Category { get; } = SlashCommandCategory.Redmine;
+    public string Command => SlashCommandHandler.BuildCommand("redmine");
     public IEnumerable<string> CommandLiterals { get; } = new[] { "link", "연결" };
 
     public Block GetIntroduceBlock()
@@ -25,7 +25,7 @@ internal sealed class RedmineLink : ISlashSubCommand
         builder.WriteLine($"명령 : {string.Join(", ", this.CommandLiterals.Select(e => $"`{e}`"))} :redmine:");
         builder.WriteLine($"효과 : 명령을 수행하는 채널 정보를 레드마인 일감 본문에 기록합니다.");
         builder.WriteLine($"문법 : <서브명령> <일감번호1..>");
-        builder.WriteLine($"예시 : *{this.Category.GetMainCommand()} link 223 224 225 226*");
+        builder.WriteLine($"예시 : *{this.Command} link 223 224 225 226*");
 
         return builder.FlushToSectionBlock();
     }
@@ -79,6 +79,7 @@ internal sealed class RedmineLink : ISlashSubCommand
         return result;
     }
 
+    // ----------------------------------------------------------------------------------------------------
     private static async Task ShareToChannel(ISlackApiClient slack, string channelId, List<IssueData> successList)
     {
         var slackResponse = new Message
