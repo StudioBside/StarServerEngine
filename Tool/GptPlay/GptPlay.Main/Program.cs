@@ -1,2 +1,6 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿using System;
+using Cs.Repl;
+using GptPlay.Main;
+
+var console = new ReplConsole("번역", new InputHandler());
+console.Run();

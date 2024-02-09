@@ -15,4 +15,8 @@
         </PackageReference>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\Engine\Cs.Repl\Cs.Repl.csproj" />
+    </ItemGroup>
+
 </Project>
