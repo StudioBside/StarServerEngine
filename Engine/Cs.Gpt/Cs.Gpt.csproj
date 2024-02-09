@@ -1,28 +1,39 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <CodeAnalysisRuleSet>..\..\BaseEnvironment\CodingStyle.ruleset</CodeAnalysisRuleSet>
-    <nullable>Enable</nullable>
-    <warningsAsErrors>true</warningsAsErrors>    
-    <Platforms>AnyCPU</Platforms>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <CodeAnalysisRuleSet>..\..\BaseEnvironment\CodingStyle.ruleset</CodeAnalysisRuleSet>
+        <nullable>Enable</nullable>
+        <WarningsAsErrors>true</WarningsAsErrors>
+        <Platforms>AnyCPU</Platforms>
+    </PropertyGroup>
 
-  <PropertyGroup>
-    <DebugType>Full</DebugType>
-  </PropertyGroup>
+    <PropertyGroup>
+        <!--스타일캅 경고를 에러로 취급하려면 아래 구문이 추가로 필요. 차후 props 파일로 설정 적용 검토할 것.-->
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <WarningsAsErrors />
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="stylecop.analyzers" Version="1.2.0-beta.507">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
+    <PropertyGroup>
+        <DebugType>Full</DebugType>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-      <_Parameter1>UnitTest</_Parameter1>
-    </AssemblyAttribute>
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Betalgo.OpenAI" Version="7.4.6" />
+        <PackageReference Include="stylecop.analyzers" Version="1.2.0-beta.507">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+            <_Parameter1>UnitTest</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Cs.Logging\Cs.Logging.csproj" />
+    </ItemGroup>
 
 </Project>
