@@ -34,10 +34,11 @@ public sealed class GptClient : IDisposable
 
     public async Task<string> GetResponse(string input)
     {
+        var systemMessage = "You are a {0} translator who translate user input. Just tell the translation for user input, no further explanation. If there is a color tag in the format '<color=#ffffff>' in the original text, do not omit it and keep it as is as much as possible.";
         var roleContent = this.serviceMode switch
         {
-            ServiceMode.TranslateToEnglish => "You are a English translator who translate user input. Just tell the translation for user input, no further explanation.",
-            ServiceMode.TranslateToChinese => "You are a Chinese translator who translate user input. Just tell the translation for user input, no further explanation.",
+            ServiceMode.TranslateToEnglish => string.Format(systemMessage, "English"),
+            ServiceMode.TranslateToChinese => string.Format(systemMessage, "Chinese"),
             _ => throw new NotImplementedException(),
         };
 

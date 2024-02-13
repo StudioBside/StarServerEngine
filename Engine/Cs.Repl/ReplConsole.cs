@@ -31,6 +31,11 @@ public sealed class ReplConsole
                 break;
             }
 
+            if (string.IsNullOrEmpty(input))
+            {
+                continue;
+            }
+
             try
             {
                 var result = await this.Handler.Evaluate(input);

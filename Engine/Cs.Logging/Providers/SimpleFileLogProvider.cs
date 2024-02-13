@@ -5,6 +5,8 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
+using Cs.Logging.Detail;
+using static Cs.Logging.Log;
 
 public sealed class SimpleFileLogProvider : ILogProvider, IDisposable
 {
@@ -17,6 +19,8 @@ public sealed class SimpleFileLogProvider : ILogProvider, IDisposable
         this.fileStream.Write(Encoding.UTF8.GetPreamble());
     }
 
+    public bool WriteToConsole { get; init; }
+
     public void Dispose()
     {
         this.fileStream.Dispose();
@@ -25,21 +29,41 @@ public sealed class SimpleFileLogProvider : ILogProvider, IDisposable
     public void Debug(string message)
     {
         this.WriteLine($"[DEBUG] {message}");
+
+        if (this.WriteToConsole)
+        {
+            ConsoleWriter.PutLog(LogLevel.Debug, message);
+        }
     }
 
     public void DebugBold(string message)
     {
         this.WriteLine($"[DEBUG] {message}");
+
+        if (this.WriteToConsole)
+        {
+            ConsoleWriter.PutLog(LogLevel.Debug, message, ConsoleColor.Cyan);
+        }
     }
-    
+
     public void Info(string message)
     {
         this.WriteLine($"[INFO] {message}");
+
+        if (this.WriteToConsole)
+        {
+            ConsoleWriter.PutLog(LogLevel.Info, message);
+        }
     }
 
     public void Warn(string message)
     {
         this.WriteLine($"[WARN] {message}");
+
+        if (this.WriteToConsole)
+        {
+            ConsoleWriter.PutLog(LogLevel.Warn, message);
+        }
     }
 
     [DoesNotReturn]
@@ -53,6 +77,11 @@ public sealed class SimpleFileLogProvider : ILogProvider, IDisposable
     public void Error(string message)
     {
         this.WriteLine($"[ERROR] {message}");
+
+        if (this.WriteToConsole)
+        {
+            ConsoleWriter.PutLog(LogLevel.Error, message);
+        }
     }
 
     public string BuildTag(string file, int line)
