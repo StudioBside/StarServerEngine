@@ -36,8 +36,8 @@ public sealed class GptClient : IDisposable
     {
         var roleContent = this.serviceMode switch
         {
-            ServiceMode.TranslateToEnglish => "You are a English translator who translate user input.",
-            ServiceMode.TranslateToChinese => "You are a Chinese translator who translate user input.",
+            ServiceMode.TranslateToEnglish => "You are a English translator who translate user input. Just tell the translation for user input, no further explanation.",
+            ServiceMode.TranslateToChinese => "You are a Chinese translator who translate user input. Just tell the translation for user input, no further explanation.",
             _ => throw new NotImplementedException(),
         };
 
