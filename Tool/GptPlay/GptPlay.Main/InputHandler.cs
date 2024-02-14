@@ -3,17 +3,17 @@
 using System;
 using Cs.Gpt;
 using Cs.Repl;
-using static Cs.Gpt.GptClient;
+using static Cs.Gpt.GptTranslator;
 
 internal sealed class InputHandler : ReplHandlerBase, IDisposable
 {
     private readonly ReplConsole console;
-    private readonly GptClient client;
+    private readonly GptTranslator client;
 
     public InputHandler(ReplConsole console, GptPlayConfig config)
     {
         this.console = console;
-        this.client = new GptClient(config.ApiKey, ServiceMode.TranslateToChinese);
+        this.client = new GptTranslator(config.ApiKey, ServiceMode.TranslateToChinese);
     }
 
     public void Dispose()

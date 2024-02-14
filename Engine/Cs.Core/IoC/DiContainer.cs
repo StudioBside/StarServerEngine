@@ -64,7 +64,7 @@ namespace Cs.Core.IoC
         {
             if (this.TryGet(typeof(T), out var instance) == false)
             {
-                throw new Exception($"instance not exist. type:{typeof(T).Name}");
+                throw new Exception($"instance not exist. #instance:{this.instances.Count} type:{typeof(T).Name}");
             }
 
             return instance.GetInstance<T>(param);

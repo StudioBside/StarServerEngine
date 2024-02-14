@@ -25,6 +25,27 @@
             return JsonConvert.DeserializeObject<T>(body) ?? throw new Exception($"deserialize failed. fileName:{fileName}");
         }
 
+        public static bool WriteToFile<T>(string fileName, T data)
+        {
+            var settings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                Formatting = Formatting.Indented,
+            };
+
+            try
+            {
+                string body = JsonConvert.SerializeObject(data, settings);
+                File.WriteAllText(fileName, body);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"[JsonUtil] write failed. fileName:{fileName} message:{ex.Message}");
+                return false;
+            }
+        }
+
         public static bool TryLoad<T>(string fileName, [MaybeNullWhen(false)] out T result)
         {
             if (File.Exists(fileName) == false)
