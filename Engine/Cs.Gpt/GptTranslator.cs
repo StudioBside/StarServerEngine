@@ -7,62 +7,67 @@
 
     public sealed class GptTranslator : GptClient
     {
-        private readonly ServiceMode serviceMode;
-
-        public GptTranslator(string apiKey, ServiceMode mode) : base(apiKey)
+        public GptTranslator(string apiKey) : base(apiKey)
         {
-            this.serviceMode = mode;
         }
 
-        public enum ServiceMode
+        public enum TranslateMode
         {
-            TranslateToEnglish,
-            TranslateToChinese,
+            ToEnglish,
+            ToChinese,
+            ToJapanese,
         }
 
-        public Task<string> GetResponse(string input)
+        public Task<string> Translate(TranslateMode mode, string input)
         {
-            var request = this.CreateRequest(input);
+            var request = this.CreateRequest(mode, input);
             return this.GetResponse(request);
         }
 
-        public Task<string> GetResponse(string input, string firstResponse)
+        public Task<string> ReTranslate(TranslateMode mode, string input, string firstResponse)
         {
-            var request = this.CreateRequest(input);
+            var languageName = ToLanguageName(mode);
+          
+            var request = this.CreateRequest(mode, input);
             request.Messages.Add(ChatMessage.FromAssistant(firstResponse));
-            request.Messages.Add(ChatMessage.FromSystem("You must translate it into Chinese, not into English."));
+            request.Messages.Add(ChatMessage.FromSystem($"You must translate it into {languageName}, not into English."));
             request.Messages.Add(ChatMessage.FromUser(input));
             return this.GetResponse(request);
         }
 
         //// -----------------------------------------------------------------------------------------------
 
-        private ChatCompletionCreateRequest CreateRequest(string input)
+        private static string ToLanguageName(TranslateMode mode)
         {
-            string systemMessage;
+            return mode switch
+            {
+                TranslateMode.ToEnglish => "English",
+                TranslateMode.ToChinese => "Chinese",
+                TranslateMode.ToJapanese => "Japanese",
+                _ => throw new NotImplementedException(),
+            };
+        }
+
+        private ChatCompletionCreateRequest CreateRequest(TranslateMode mode, string input)
+        {
+            var languageName = ToLanguageName(mode);
+            string roleContent;
           
             // 원문에 컬러키가 있다면 누락하지 말 것을 명시한다.
             if (input.Contains("<color=#"))
             {
-                systemMessage = "You are a {0} translator who translate user input. Just tell the translation for user input, no further explanation. If there is a color tag in the format '<color=#ffffff>' in the original text, do not omit it and keep it as is as much as possible.";
+                roleContent = $"You are a {languageName} translator who translate user input. Just tell the translation for user input, no further explanation. If there is a color tag in the format '<color=#ffffff>' in the original text, do not omit it and keep it as is as much as possible.";
             }
             else
             {
-                systemMessage = "You are a {0} translator who translate user input. Just tell the translation for user input, no further explanation.";
+                roleContent = $"You are a {languageName} translator who translate user input. Just tell the translation for user input, no further explanation.";
             }
 
-            // 중문 번역인 경우, 영어로 번역하지 말 것을 강조한다. 
-            if (this.serviceMode == ServiceMode.TranslateToChinese)
+            // 영문 번역 이외의 경우, 영어로 번역하지 말 것을 강조한다. 
+            if (mode != TranslateMode.ToEnglish)
             {
-                systemMessage += " You must translate it into Chinese, not into English.";
+                roleContent += $" You must translate it into {languageName}, not into English.";
             }
-
-            var roleContent = this.serviceMode switch
-            {
-                ServiceMode.TranslateToEnglish => string.Format(systemMessage, "English"),
-                ServiceMode.TranslateToChinese => string.Format(systemMessage, "Chinese"),
-                _ => throw new NotImplementedException(),
-            };
 
             return new ChatCompletionCreateRequest
             {

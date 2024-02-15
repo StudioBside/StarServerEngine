@@ -45,7 +45,7 @@ public abstract class GptClient : IDisposable
                 if (i == RetryCount - 1)
                 {
                     Log.Error($"retry:{i} #error:{e.Message}");
-                    return "Error: 오류가 발생했습니다";
+                    return string.Empty;
                 }
 
                 var waitingSeconds = (int)Math.Pow(2, i + 1); // 2, 4, 8
@@ -66,10 +66,10 @@ public abstract class GptClient : IDisposable
                 continue;
             }
 
-            return result.Choices[0].Message.Content ?? "(empty contents)";
+            return result.Choices[0].Message.Content ?? string.Empty;
         }
 
-        return "Error: 오류가 발생했습니다";
+        return string.Empty;
     }
 
     protected virtual void Dispose(bool disposing)

@@ -46,7 +46,7 @@ internal sealed class IssueAssign : ISlashSubCommand, IWorkflowCommand
 
         using var versionBuilder = new MarkdownBuilder();
         // 현재 열려있는 버전만을 대상으로 한다.
-        foreach (var version in Redmine.Instance.OpenedVersions)
+        foreach (var version in Redmine.Instance.OpenedVersions.OrderBy(e => e.Name))
         {
             var issues = await version.GetIssues(statusId: "open");
             if (issues is null || issues.Any() == false)
