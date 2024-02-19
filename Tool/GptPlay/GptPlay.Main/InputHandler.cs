@@ -3,18 +3,11 @@
 using System;
 using Cs.Gpt;
 using Cs.Repl;
-using static Cs.Gpt.GptTranslator;
 
-internal sealed class InputHandler : ReplHandlerBase, IDisposable
+internal sealed class InputHandler(ReplConsole console, GptPlayConfig config) : ReplHandlerBase, IDisposable
 {
-    private readonly ReplConsole console;
-    private readonly GptTranslator client;
-
-    public InputHandler(ReplConsole console, GptPlayConfig config)
-    {
-        this.console = console;
-        this.client = new GptTranslator(config.ApiKey, ServiceMode.TranslateToChinese);
-    }
+    private readonly ReplConsole console = console;
+    private readonly GptTranslator client = new GptTranslator(config.ApiKey);
 
     public void Dispose()
     {
@@ -23,6 +16,6 @@ internal sealed class InputHandler : ReplHandlerBase, IDisposable
 
     public override Task<string> Evaluate(string input)
     {
-        return this.client.GetResponse(input);
+        return this.client.Translate(GptTranslator.TranslateMode.ToChinese, input);
     }
 }
