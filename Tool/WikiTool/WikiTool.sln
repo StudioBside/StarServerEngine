@@ -1,0 +1,63 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34511.84
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencies", "{21459BA6-BA11-4565-BBE9-649C8CC26590}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cs.Logging", "..\..\Engine\Cs.Logging\Cs.Logging.csproj", "{D2E594AA-43CA-435D-9831-F818F1E6EC1F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cs.Repl", "..\..\Engine\Cs.Repl\Cs.Repl.csproj", "{E7092E3D-F5BF-46E6-8F2C-1044094E06CD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cs.Gpt", "..\..\Engine\Cs.Gpt\Cs.Gpt.csproj", "{1B7C362F-5522-483D-9CD1-7DD6EF2101A4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cs.Core", "..\..\Engine\Cs.Core\Cs.Core.csproj", "{D089D0F5-84BE-4DF7-8F97-AA8D873E8BCB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WikiTool.Core", "WikiTool.Core\WikiTool.Core.csproj", "{0D90980E-3765-4B99-B5AD-305AB1029B0E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WikiTool.Cli", "WikiTool.Cli\WikiTool.Cli.csproj", "{32EC8F3F-653F-4754-AFB4-A35026F278D8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D2E594AA-43CA-435D-9831-F818F1E6EC1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2E594AA-43CA-435D-9831-F818F1E6EC1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2E594AA-43CA-435D-9831-F818F1E6EC1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2E594AA-43CA-435D-9831-F818F1E6EC1F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7092E3D-F5BF-46E6-8F2C-1044094E06CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7092E3D-F5BF-46E6-8F2C-1044094E06CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7092E3D-F5BF-46E6-8F2C-1044094E06CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7092E3D-F5BF-46E6-8F2C-1044094E06CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B7C362F-5522-483D-9CD1-7DD6EF2101A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B7C362F-5522-483D-9CD1-7DD6EF2101A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B7C362F-5522-483D-9CD1-7DD6EF2101A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B7C362F-5522-483D-9CD1-7DD6EF2101A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D089D0F5-84BE-4DF7-8F97-AA8D873E8BCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D089D0F5-84BE-4DF7-8F97-AA8D873E8BCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D089D0F5-84BE-4DF7-8F97-AA8D873E8BCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D089D0F5-84BE-4DF7-8F97-AA8D873E8BCB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D90980E-3765-4B99-B5AD-305AB1029B0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D90980E-3765-4B99-B5AD-305AB1029B0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D90980E-3765-4B99-B5AD-305AB1029B0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D90980E-3765-4B99-B5AD-305AB1029B0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32EC8F3F-653F-4754-AFB4-A35026F278D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32EC8F3F-653F-4754-AFB4-A35026F278D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32EC8F3F-653F-4754-AFB4-A35026F278D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32EC8F3F-653F-4754-AFB4-A35026F278D8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D2E594AA-43CA-435D-9831-F818F1E6EC1F} = {21459BA6-BA11-4565-BBE9-649C8CC26590}
+		{E7092E3D-F5BF-46E6-8F2C-1044094E06CD} = {21459BA6-BA11-4565-BBE9-649C8CC26590}
+		{1B7C362F-5522-483D-9CD1-7DD6EF2101A4} = {21459BA6-BA11-4565-BBE9-649C8CC26590}
+		{D089D0F5-84BE-4DF7-8F97-AA8D873E8BCB} = {21459BA6-BA11-4565-BBE9-649C8CC26590}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0D0E6384-B181-46CA-A361-9A20F627DCBC}
+	EndGlobalSection
+EndGlobal

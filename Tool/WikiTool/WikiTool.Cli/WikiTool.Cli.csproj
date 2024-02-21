@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <CodeAnalysisRuleSet>..\..\..\BaseEnvironment\CodingStyle.ruleset</CodeAnalysisRuleSet>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="stylecop.analyzers" Version="1.2.0-beta.507">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\Engine\Cs.Core\Cs.Core.csproj" />
+      <ProjectReference Include="..\..\..\Engine\Cs.Gpt\Cs.Gpt.csproj" />
+      <ProjectReference Include="..\..\..\Engine\Cs.Repl\Cs.Repl.csproj" />
+    </ItemGroup>
+
+</Project>
