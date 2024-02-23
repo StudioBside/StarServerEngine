@@ -61,7 +61,7 @@ Tool/JsonMigrator/Steps/**
 !Tool/JsonSchemaValidator/**
 !Tool/SlackAssist/
 !Tool/SlackAssist/**
-Tool/SlackAssist/*.json
+Tool/SlackAssist/**/*.json
 !Tool/GptPlay/
 !Tool/GptPlay/**
 Tool/GptPlay/**/*.json
