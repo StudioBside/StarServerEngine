@@ -132,7 +132,7 @@ internal sealed class IssueAssign : ISlashSubCommand, IWorkflowCommand
 
     public Task<Message> Process(ISlackApiClient slack, SlashCommand command, IReadOnlyList<string> arguments)
     {
-        BackgroundJob.Execute(async () =>
+        Task.Run(async () =>
         {
             var message = await this.Process(slack, arguments);
             message.Channel = command.ChannelId;

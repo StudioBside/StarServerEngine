@@ -1,9 +1,10 @@
 namespace SlackAssist
 {
+    using System.IO;
     using System.Threading;
     using System.Threading.Tasks;
     using Cs.Logging;
-    using Cs.ServerEngine.Util;
+    using Cs.Logging.Providers;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Hosting;
     using SlackAssist.Configs;
@@ -25,7 +26,8 @@ namespace SlackAssist
                 return;
             }
 
-            Log.Initialize(new LogProvider(config.LogPath, "Log.txt", writeTimeAndLevel: true), LogLevelConfig.All);
+            var logPath = Path.Join(config.LogPath, "Log.txt");
+            Log.Initialize(new SimpleFileLogProvider(logPath), LogLevelConfig.All);
 
             var slackServices = new SlackServiceBuilder()
                 .UseApiToken(config.Slack.ApiBotToken)

@@ -7,6 +7,7 @@ namespace SlackAssist.SlackNetHandlers
     using System.Reflection;
     using System.Threading.Tasks;
     using Cs.Dynamic;
+    using Cs.Logging;
     using SlackAssist.Configs;
     using SlackAssist.Fremawork.Slack;
     using SlackNet;
@@ -93,7 +94,7 @@ namespace SlackAssist.SlackNetHandlers
                 Message = new Message { Text = $"`{command.Command} {command.Text}` : 올바르지 않은 명령입니다." },
             };
 
-            Console.WriteLine($"user:@{command.UserName} channel:{command.ChannelName} command:{command.Text}");
+            Log.Debug($"user:@{command.UserName} channel:{command.ChannelName} command:{command.Text}");
 
             var tokens = command.Text.Split(' ');
             if (string.IsNullOrEmpty(command.Text) || tokens.Length < 1)
