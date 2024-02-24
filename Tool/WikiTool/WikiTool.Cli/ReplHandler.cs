@@ -10,4 +10,10 @@ public sealed class ReplHandler : ReplHandlerBase
         await Task.Delay(0);
         return input;
     }
+    
+    [ReplCommand(Name = "hello", Description = "Says hello to the given name.")]
+    public string Hello(string argument)
+    {
+        return $"Hello, {argument}!";
+    }
 }
