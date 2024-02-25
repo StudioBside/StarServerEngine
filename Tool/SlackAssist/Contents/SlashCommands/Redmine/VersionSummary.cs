@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Cs.Core.Util;
-using Cs.Messaging;
 using SlackAssist.Contents.ButtonActions;
 using SlackAssist.Contents.Detail;
 using SlackAssist.Fremawork.Redmines;

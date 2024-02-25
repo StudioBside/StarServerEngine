@@ -36,7 +36,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Engine\Cs.Core\Cs.Core.csproj" />
     <ProjectReference Include="..\..\Engine\Cs.Dynamic\Cs.Dynamic.csproj" />
-    <ProjectReference Include="..\..\Engine\Cs.Messaging\Cs.Messaging.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="appsettings.json">

@@ -5,7 +5,6 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Cs.Logging;
-using Cs.Messaging;
 using SlackAssist.Configs;
 using SlackAssist.Fremawork.Redmines;
 using SlackAssist.Fremawork.Slack;

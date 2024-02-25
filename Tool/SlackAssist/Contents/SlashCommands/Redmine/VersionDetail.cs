@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Cs.Core.Util;
-using Cs.Messaging;
 using global::Redmine.Net.Api.Types;
 using SlackAssist.Contents.Detail;
 using SlackAssist.Fremawork.Redmines;
