@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
+using Cs.Logging;
 using Cs.Repl.Detail;
 
 public sealed class ReplConsole
@@ -19,15 +20,20 @@ public sealed class ReplConsole
         this.Handler.SetConsole(this);
         
         var handlerType = handler.GetType();
-        foreach (var method in handlerType.GetMethods())
+        var bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
         {
-            var attr = method.GetCustomAttribute<ReplCommandAttribute>();
-            if (attr is not null)
+            foreach (var method in handlerType.GetMethods(bindingFlags))
             {
-                var command = new Command(attr.Name, attr.Description, method);
-                this.commands.Add(command.Name, command);
+                var attr = method.GetCustomAttribute<ReplCommandAttribute>();
+                if (attr is not null)
+                {
+                    var command = new Command(attr.Name, attr.Description, method);
+                    this.commands.Add(command.Name, command);
+                }
             }
         }
+        
+        Log.Info($"Initialized {this.commands.Count} commands.");
     }
 
     public async Task Run()
