@@ -9,10 +9,11 @@ using Cs.Repl.Detail;
 
 public sealed class ReplConsole
 {
-    private readonly Dictionary<string, Command> commands = new();
+    private readonly Dictionary<string, Command> commands = new(StringComparer.CurrentCultureIgnoreCase);
     
     public string Prompt { get; set; } = "REPL";
     public ReplHandlerBase Handler { get; private set; } = null!;
+    internal IEnumerable<Command> Commands => this.commands.Values;
 
     public void Initialize(ReplHandlerBase handler)
     {
