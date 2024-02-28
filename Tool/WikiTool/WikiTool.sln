@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WikiTool.Core", "WikiTool.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WikiTool.Cli", "WikiTool.Cli\WikiTool.Cli.csproj", "{32EC8F3F-653F-4754-AFB4-A35026F278D8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cs.Dynamic", "..\..\Engine\Cs.Dynamic\Cs.Dynamic.csproj", "{E3B999D2-B463-4869-8A7C-8865A2FD9839}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{32EC8F3F-653F-4754-AFB4-A35026F278D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{32EC8F3F-653F-4754-AFB4-A35026F278D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{32EC8F3F-653F-4754-AFB4-A35026F278D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3B999D2-B463-4869-8A7C-8865A2FD9839}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3B999D2-B463-4869-8A7C-8865A2FD9839}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3B999D2-B463-4869-8A7C-8865A2FD9839}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3B999D2-B463-4869-8A7C-8865A2FD9839}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -56,6 +62,7 @@ Global
 		{E7092E3D-F5BF-46E6-8F2C-1044094E06CD} = {21459BA6-BA11-4565-BBE9-649C8CC26590}
 		{1B7C362F-5522-483D-9CD1-7DD6EF2101A4} = {21459BA6-BA11-4565-BBE9-649C8CC26590}
 		{D089D0F5-84BE-4DF7-8F97-AA8D873E8BCB} = {21459BA6-BA11-4565-BBE9-649C8CC26590}
+		{E3B999D2-B463-4869-8A7C-8865A2FD9839} = {21459BA6-BA11-4565-BBE9-649C8CC26590}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0D0E6384-B181-46CA-A361-9A20F627DCBC}

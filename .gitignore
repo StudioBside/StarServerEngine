@@ -67,6 +67,7 @@ Tool/SlackAssist/**/*.json
 Tool/GptPlay/**/*.json
 !Tool/WikiTool/
 !Tool/WikiTool/**
+Tool/WikiTool/**/*.json
 
 
 
