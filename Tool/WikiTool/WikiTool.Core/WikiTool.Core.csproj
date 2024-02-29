@@ -18,6 +18,7 @@
       <ProjectReference Include="..\..\..\Engine\Cs.Core\Cs.Core.csproj" />
       <ProjectReference Include="..\..\..\Engine\Cs.Gpt\Cs.Gpt.csproj" />
       <ProjectReference Include="..\..\..\Engine\Cs.Repl\Cs.Repl.csproj" />
+      <ProjectReference Include="..\..\..\Engine\Cs.HttpClient\Cs.HttpClient.csproj" />
     </ItemGroup>
 
 </Project>

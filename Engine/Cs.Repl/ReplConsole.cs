@@ -80,7 +80,7 @@ public sealed class ReplConsole
                 string result = string.Empty;
                 if (this.commands.TryGetValue(command, out var cmd))
                 {
-                    result = cmd.Invoke(this.Handler, argument);
+                    result = await cmd.Invoke(this.Handler, argument);
                 }
                 else
                 {

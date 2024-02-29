@@ -18,4 +18,10 @@ public sealed class ReplHandler : ReplHandlerBase
     {
         return $"Hello, {argument}!";
     }
+    
+    [ReplCommand(Name = "spaces", Description = "Gets the list of spaces.")]
+    public async Task<string> GetSpaces(string argument)
+    {
+        return await this.tool.GetSpaces();
+    }
 }
