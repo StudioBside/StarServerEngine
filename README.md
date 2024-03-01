@@ -23,15 +23,18 @@ Please join us as a companion in the journey of creating unprecedented joy in th
 
 ## Modules by functionality
 
-* [Cs.Logging](./Engine/Cs.Logging/README.md)
+* Cs.Antlr
 * [Cs.Core](./Engine/Cs.Core/README.md)
-* [Cs.Math](./Engine/Cs.Math/README.md)
-* Cs.HttpServer
-* [Cs.HttpClient](./Engine/Cs.HttpClient/README.md)
 * Cs.Dynamic
-* Cs.Slack
 * Cs.Exception
+* Cs.Gpt
+* [Cs.HttpClient](./Engine/Cs.HttpClient/README.md)
+* Cs.HttpServer
+* [Cs.Logging](./Engine/Cs.Logging/README.md)
+* [Cs.Math](./Engine/Cs.Math/README.md)
 * Cs.Perforce
+* Cs.Repl
+* Cs.Slack
 
 ## Tools
 
@@ -39,8 +42,11 @@ Several internal development tools listed below will be made public. They do not
 
 다음의 몇가지 내부 개발용 툴이 공개됩니다. 프로젝트에 종속적인 내용이 없어 바로 사용도 가능하지만, 빌드한 실행파일을 별도로 배포할 예정은 없습니다.
 
+* GptPlay
 * [JsonMigrator](https://github.com/StudioBside/StarServerEngine/tree/main/Tool/JsonMigrator)
 * [JsonSchemaValidator](https://github.com/StudioBside/StarServerEngine/tree/main/Tool/JsonSchemaValidator)
+* SlackAssist
+* WikiTool
 
 ## Installation
 
