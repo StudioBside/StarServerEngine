@@ -83,7 +83,7 @@
             {
                 var debugTarget = Path.GetFileName(target);
                 var rowText = File.ReadAllText(target);
-                var json = JsonConvert.DeserializeObject<JToken>(rowText);
+                var json = JObject.Parse(rowText);
                 if (json is null)
                 {
                     ErrorContainer.Add($"Migration target is not json format. target:{debugTarget}");

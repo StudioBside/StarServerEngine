@@ -18,9 +18,9 @@
         {
             #if !OPEN_TO_GITHUB
             FindSolutionPath();
-            var serverScriptPath = Path.Combine(solutionPath, "TempletBin");
+            var serverTempletPath = Path.Combine(solutionPath, "../StarServerAsset/ServerTemplet/Bytes");
             var clientScriptPath = Path.Combine(solutionPath, "../StarClient/Assets/ASSET_BUNDLE/AB_BUILTIN/ABB_SCRIPT_TXT");
-            TempletPathResolver.Initialize(serverScriptPath, clientScriptPath);
+            TempletPathResolver.Initialize(serverTempletPath, clientScriptPath, commonBasePath: string.Empty);
             ConfigPathResolver.Initialize(solutionPath);
 
             GlobalTimer.Start(includeCaller: false);

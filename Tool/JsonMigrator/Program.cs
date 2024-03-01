@@ -46,7 +46,7 @@
                 var stopwatch = Stopwatch.StartNew();
                 if (P4Commander.TryCreate(out var p4Commander) == false)
                 {
-                    Log.Error($"P4Commander 객체 생성 실패");
+                    Log.Error($"p4 환경 정보 조회 실패");
                     return -3;
                 }
 
