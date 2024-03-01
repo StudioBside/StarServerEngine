@@ -8,7 +8,7 @@ public abstract class ReplHandlerBase
 {
     protected ReplConsole Console { get; private set; } = null!;
     
-    internal virtual Task<string> Evaluate(string input)
+    public virtual Task<string> Evaluate(string input)
     {
         var result = $"Unknown command: {input}";
         return Task.FromResult(result);
