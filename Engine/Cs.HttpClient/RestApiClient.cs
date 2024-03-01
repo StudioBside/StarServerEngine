@@ -3,6 +3,8 @@
     using System;
     using System.Net;
     using System.Net.Http;
+    using System.Net.Http.Headers;
+
     using System.Threading.Tasks;
     using Cs.HttpClient.Detail;
     using Cs.Logging;
@@ -11,6 +13,8 @@
     public sealed class RestApiClient
     {
         public static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(5);
+        
+        private string authorization = string.Empty;
 
         static RestApiClient()
         {
@@ -29,6 +33,13 @@
         }
 
         public Uri Uri { get; }
+        
+        public void SetBasicAutohrization(string username, string password)
+        {
+            var authInfo = $"{username}:{password}";
+            var authInfoEnc = Convert.ToBase64String(System.Text.Encoding.Default.GetBytes(authInfo));
+            this.authorization = $"Basic {authInfoEnc}";
+        }
 
         public async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request)
         {
@@ -89,6 +100,11 @@
             var client = factoryHolder.CreateClient();
             client.BaseAddress = this.Uri;
             client.Timeout = DefaultTimeout;
+            if (string.IsNullOrEmpty(this.authorization) == false)
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Add("Authorization", this.authorization);
+            }
 
             return client;
         }

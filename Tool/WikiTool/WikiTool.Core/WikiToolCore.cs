@@ -12,13 +12,12 @@ public sealed class WikiToolCore
     {
         this.config = JsonUtil.Load<WikiToolConfig>("wikitool.config.json");
         this.client = new RestApiClient(this.config.Confluence.Url);
+        this.client.SetBasicAutohrization(this.config.Confluence.Username, this.config.Confluence.Password);
     }
     
     public async Task<string> GetSpaces()
     {
-        var request = new HttpRequestMessage(HttpMethod.Get, "wiki/rest/api/space?type=global&limit=1000");
-        request.Headers.Add("Accept", "application/json");
-        request.Headers.Add("Authorization", "Basic " + this.config.Confluence.Password);
+        var request = new HttpRequestMessage(HttpMethod.Get, "wiki/api/v2/spaces?type=global&limit=100");
         var response = await this.client.SendAsync(request);
         return await response.GetRawContent();
     }
