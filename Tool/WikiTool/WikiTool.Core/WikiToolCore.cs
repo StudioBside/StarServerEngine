@@ -16,7 +16,10 @@ public sealed class WikiToolCore
     
     public async Task<string> GetSpaces()
     {
-        var response = await this.client.GetStringAsync("/rest/api/space?type=global&limit=1000");
-        return response;
+        var request = new HttpRequestMessage(HttpMethod.Get, "wiki/rest/api/space?type=global&limit=1000");
+        request.Headers.Add("Accept", "application/json");
+        request.Headers.Add("Authorization", "Basic " + this.config.Confluence.Password);
+        var response = await this.client.SendAsync(request);
+        return await response.GetRawContent();
     }
 }

@@ -54,6 +54,11 @@
             }
         }
 
+        public static async Task<string> GetRawContent(this HttpResponseMessage self)
+        {
+            return await self.Content.ReadAsStringAsync();
+        }
+        
         //// -------------------------------------------------------------------
        
         private static async Task<string> ReadContentString(HttpContent content)
