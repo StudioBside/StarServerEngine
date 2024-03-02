@@ -15,8 +15,13 @@ public sealed class ReplConsole
     public ReplHandlerBase Handler { get; private set; } = null!;
     internal IEnumerable<Command> Commands => this.commands.Values;
 
-    public void Initialize(ReplHandlerBase handler)
+    public async Task<bool> InitializeAsync(ReplHandlerBase handler)
     {
+        if (await handler.InitializeAsync() == false)
+        {
+            return false;
+        }
+
         this.Handler = handler;
         this.Handler.SetConsole(this);
         
@@ -35,6 +40,7 @@ public sealed class ReplConsole
         }
         
         Log.Info($"Initialized {this.commands.Count} commands.");
+        return true;
     }
 
     public async Task Run()

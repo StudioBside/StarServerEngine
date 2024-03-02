@@ -10,27 +10,26 @@ public sealed class SpaceModel
 
 /*
 {
-    "id": 24281093,
-    "key": "QkL2rjCmJyjr",
-    "name": "스타 테크",
-    "type": "global",
-    "status": "current",
-    "_expandable": {
-        "settings": "/rest/api/space/QkL2rjCmJyjr/settings",
-        "metadata": "",
-        "operations": "",
-        "lookAndFeel": "/rest/api/settings/lookandfeel?spaceKey=QkL2rjCmJyjr",
-        "identifiers": "",
-        "permissions": "",
-        "icon": "",
-        "description": "",
-        "theme": "/rest/api/space/QkL2rjCmJyjr/theme",
-        "history": "",
-        "homepage": "/rest/api/content/24281301"
-    },
-    "_links": {
-        "webui": "/spaces/QkL2rjCmJyjr",
-        "self": "https://starsavior.atlassian.net/wiki/rest/api/space/QkL2rjCmJyjr"
-    }
-},
+  "results": [
+        {
+            "createdAt": "2024-02-01T02:34:13.928Z",
+            "authorId": "70121:837c953e-d704-419c-a5db-e1a80bb4134e",
+            "homepageId": "24281301",
+            "icon": null,
+            "name": "스타 테크",
+            "key": "QkL2rjCmJyjr",
+            "id": "24281093",
+            "type": "global",
+            "description": null,
+            "status": "current",
+            "_links": {
+                "webui": "/spaces/QkL2rjCmJyjr"
+            }
+        }
+  ],
+  "_links": {
+    "next": "<string>",
+    "base": "<string>"
+  }
+}
 */

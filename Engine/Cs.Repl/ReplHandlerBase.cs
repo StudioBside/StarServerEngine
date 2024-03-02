@@ -8,6 +8,11 @@ public abstract class ReplHandlerBase
 {
     protected ReplConsole Console { get; private set; } = null!;
     
+    public virtual Task<bool> InitializeAsync()
+    {
+        return Task.FromResult(true);
+    }
+    
     public virtual Task<string> Evaluate(string input)
     {
         var result = $"Unknown command: {input}";

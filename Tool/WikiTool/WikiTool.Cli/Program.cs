@@ -3,5 +3,9 @@ using Cs.Repl;
 using WikiTool.Cli;
 
 var console = new ReplConsole();
-console.Initialize(new ReplHandler());
+if (await console.InitializeAsync(new ReplHandler()) == false)
+{
+    return;
+}
+
 await console.Run();
