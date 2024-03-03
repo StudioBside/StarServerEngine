@@ -20,6 +20,7 @@ public sealed class WikiToolCore
     }
     
     public IReadOnlyList<SpaceModel> Spaces => this.spaces;
+    public SpaceModel? CurrentSpace { get; private set; }
     
     public async Task<bool> InitializeAsync()
     {
@@ -35,6 +36,34 @@ public sealed class WikiToolCore
 
         Log.Info($"Got {spaces.Count} spaces.");
         this.spaces.AddRange(spaces);
+        
+        foreach (var space in this.spaces)
+        {
+            Log.Info($"id:{space.Id} key:{space.Key} name:{space.Name}");
+        }
+
+        this.CurrentSpace = this.spaces.FirstOrDefault();
+        return true;
+    }
+    
+    public bool SetSpaceById(int id)
+    {
+        var space = this.spaces.FirstOrDefault(e => e.Id == id);
+        if (space is null)
+        {
+            Log.Error($"Space not found: {id}");
+            return false;
+        }
+        
+        if (this.CurrentSpace == space)
+        {
+            Log.Info($"Space is already set to {space.Name}.");
+            return false;
+        }
+
+        var prevName = this.CurrentSpace?.Name ?? "No space";
+        this.CurrentSpace = space;
+        Log.Info($"Set space:{prevName} -> {space.Name}.");
         return true;
     }
 }

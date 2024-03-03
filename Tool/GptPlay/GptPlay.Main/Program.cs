@@ -4,10 +4,7 @@ using Cs.Logging;
 using Cs.Repl;
 using GptPlay.Main;
 
-var console = new ReplConsole()
-{
-    Prompt = "번역",
-};
+var console = new ReplConsole();
 
 // create config instance from config.json file
 if (JsonUtil.TryLoad<GptPlayConfig>("config.json", out var config) == false)
@@ -16,6 +13,10 @@ if (JsonUtil.TryLoad<GptPlayConfig>("config.json", out var config) == false)
     return;
 }
 
-console.Initialize(new InputHandler(console, config));
+if (await console.InitializeAsync(new InputHandler(config)) == false)
+{
+    Log.Error($"Failed to initialize console.");
+    return;
+}
 
 await console.Run();

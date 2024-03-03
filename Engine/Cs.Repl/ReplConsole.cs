@@ -11,7 +11,6 @@ public sealed class ReplConsole
 {
     private readonly Dictionary<string, Command> commands = new(StringComparer.CurrentCultureIgnoreCase);
     
-    public string Prompt { get; set; } = "REPL";
     public ReplHandlerBase Handler { get; private set; } = null!;
     internal IEnumerable<Command> Commands => this.commands.Values;
 
@@ -51,7 +50,7 @@ public sealed class ReplConsole
         while (true)
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.Write($"{this.Prompt}> ");
+            Console.Write($"{this.Handler.GetPrompt()}> ");
 
             Console.ForegroundColor = ConsoleColor.White;
             string input = Console.ReadLine() ?? string.Empty;

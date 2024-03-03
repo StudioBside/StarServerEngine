@@ -19,6 +19,11 @@ public sealed class ReplHandler : ReplHandlerBase
         return this.tool.InitializeAsync();
     }
     
+    public override string GetPrompt()
+    {
+        return this.tool.CurrentSpace?.Name ?? "No space";
+    }
+    
     [ReplCommand(Name = "hello", Description = "Says hello to the given name.")]
     public string Hello(string argument)
     {
@@ -40,13 +45,16 @@ public sealed class ReplHandler : ReplHandlerBase
     [ReplCommand(Name = "set-space", Description = "Sets the space to the given key.")]
     public string SetSpace(string argument)
     {
-        var space = this.tool.Spaces.FirstOrDefault(e => e.Id.ToString() == argument);
-        if (space is null)
+        if (int.TryParse(argument, out int spaceId) == false)
+        {
+            return $"Invalid space id: {argument}";
+        }
+
+        if (this.tool.SetSpaceById(spaceId) == false)
         {
             return $"Space not found: {argument}";
         }
-
-        this.Console.Prompt = space.Name;
-        return $"Set space to {argument}.";
+        
+        return string.Empty;
     }
 }

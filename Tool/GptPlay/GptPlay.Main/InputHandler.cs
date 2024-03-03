@@ -4,9 +4,8 @@ using System;
 using Cs.Gpt;
 using Cs.Repl;
 
-internal sealed class InputHandler(ReplConsole console, GptPlayConfig config) : ReplHandlerBase, IDisposable
+internal sealed class InputHandler(GptPlayConfig config) : ReplHandlerBase, IDisposable
 {
-    private readonly ReplConsole console = console;
     private readonly GptTranslator client = new GptTranslator(config.ApiKey);
 
     public void Dispose()

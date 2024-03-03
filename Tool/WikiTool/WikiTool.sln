@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cs.Dynamic", "..\..\Engine\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cs.HttpClient", "..\..\Engine\Cs.HttpClient\Cs.HttpClient.csproj", "{59D5EA64-92DE-445F-BDF9-D769A9B3CFC3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GptPlay.Main", "..\GptPlay\GptPlay.Main\GptPlay.Main.csproj", "{07528992-6E8F-432A-981E-280E7CD750A4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{59D5EA64-92DE-445F-BDF9-D769A9B3CFC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59D5EA64-92DE-445F-BDF9-D769A9B3CFC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59D5EA64-92DE-445F-BDF9-D769A9B3CFC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07528992-6E8F-432A-981E-280E7CD750A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07528992-6E8F-432A-981E-280E7CD750A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07528992-6E8F-432A-981E-280E7CD750A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07528992-6E8F-432A-981E-280E7CD750A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -70,6 +76,7 @@ Global
 		{D089D0F5-84BE-4DF7-8F97-AA8D873E8BCB} = {21459BA6-BA11-4565-BBE9-649C8CC26590}
 		{E3B999D2-B463-4869-8A7C-8865A2FD9839} = {21459BA6-BA11-4565-BBE9-649C8CC26590}
 		{59D5EA64-92DE-445F-BDF9-D769A9B3CFC3} = {21459BA6-BA11-4565-BBE9-649C8CC26590}
+		{07528992-6E8F-432A-981E-280E7CD750A4} = {21459BA6-BA11-4565-BBE9-649C8CC26590}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0D0E6384-B181-46CA-A361-9A20F627DCBC}

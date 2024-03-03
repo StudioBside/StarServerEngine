@@ -13,6 +13,11 @@ public abstract class ReplHandlerBase
         return Task.FromResult(true);
     }
     
+    public virtual string GetPrompt()
+    {
+        return "REPL";
+    }
+    
     public virtual Task<string> Evaluate(string input)
     {
         var result = $"Unknown command: {input}";
