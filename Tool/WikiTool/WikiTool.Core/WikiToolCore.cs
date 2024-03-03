@@ -37,9 +37,9 @@ public sealed class WikiToolCore
         Log.Info($"Got {spaces.Count} spaces.");
         this.spaces.AddRange(spaces);
         
-        foreach (var space in this.spaces)
+        foreach (var space in this.spaces.OrderBy(e => e.Name))
         {
-            Log.Info($"id:{space.Id} key:{space.Key} name:{space.Name}");
+            Log.Info($" - id:{space.Id} key:{space.Key} name:{space.Name}");
         }
 
         this.CurrentSpace = this.spaces.FirstOrDefault();

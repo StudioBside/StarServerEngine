@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 using Cs.Repl;
 using WikiTool.Core;
 
-public sealed class ReplHandler : ReplHandlerBase
+public sealed class WikiToolHandler : ReplHandlerBase
 {
     private readonly WikiToolCore tool;
 
-    public ReplHandler()
+    public WikiToolHandler()
     {
         this.tool = new WikiToolCore();
     }
@@ -24,17 +24,11 @@ public sealed class ReplHandler : ReplHandlerBase
         return this.tool.CurrentSpace?.Name ?? "No space";
     }
     
-    [ReplCommand(Name = "hello", Description = "Says hello to the given name.")]
-    public string Hello(string argument)
-    {
-        return $"Hello, {argument}!";
-    }
-    
     [ReplCommand(Name = "spaces", Description = "Gets the list of spaces.")]
     public string GetSpaces(string argument)
     {
         var sb = new StringBuilder();
-        foreach (var space in this.tool.Spaces)
+        foreach (var space in this.tool.Spaces.OrderBy(e => e.Name))
         {
             sb.AppendLine($"id:{space.Id} key:{space.Key} name:{space.Name}");
         }

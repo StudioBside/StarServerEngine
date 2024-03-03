@@ -13,7 +13,7 @@ if (JsonUtil.TryLoad<GptPlayConfig>("config.json", out var config) == false)
     return;
 }
 
-if (await console.InitializeAsync(new InputHandler(config)) == false)
+if (await console.InitializeAsync(new GptPlayHandler(config)) == false)
 {
     Log.Error($"Failed to initialize console.");
     return;

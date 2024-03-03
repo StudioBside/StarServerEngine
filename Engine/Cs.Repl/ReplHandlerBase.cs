@@ -1,6 +1,7 @@
 ﻿namespace Cs.Repl;
 
 using System;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -33,7 +34,7 @@ public abstract class ReplHandlerBase
     internal string DumpHelp(string argument)
     {
         var sb = new StringBuilder();
-        foreach (var command in this.Console.Commands)
+        foreach (var command in this.Console.Commands.OrderBy(e => e.Name))
         {
             if (string.IsNullOrEmpty(argument) || command.Name.Equals(argument, StringComparison.CurrentCultureIgnoreCase))
             {
