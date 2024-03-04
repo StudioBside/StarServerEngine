@@ -1,6 +1,6 @@
-﻿namespace WikiTool.Core;
+﻿namespace WikiTool.Core.ConfluenceTypes;
 
-public sealed class SpaceModel
+public sealed class CfSpaceBulk
 {
     public int Id { get; set; }
     public string Key { get; set; } = string.Empty;

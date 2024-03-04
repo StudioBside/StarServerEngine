@@ -3,12 +3,13 @@
 using Cs.Core.Util;
 using Cs.HttpClient;
 using Cs.Logging;
+using WikiTool.Core.ConfluenceTypes;
 
 public sealed class WikiToolCore
 {
     private readonly WikiToolConfig config;
     private readonly RestApiClient client;
-    private readonly List<SpaceModel> spaces = new();
+    private readonly List<CfSpaceBulk> spaces = new();
 
     public WikiToolCore()
     {
@@ -19,15 +20,15 @@ public sealed class WikiToolCore
         Log.Info($"wiki url:{this.config.Confluence.Url}");
     }
     
-    public IReadOnlyList<SpaceModel> Spaces => this.spaces;
-    public SpaceModel? CurrentSpace { get; private set; }
+    public IReadOnlyList<CfSpaceBulk> Spaces => this.spaces;
+    public CfSpaceBulk? CurrentSpace { get; private set; }
     
     public async Task<bool> InitializeAsync()
     {
         // cache spaces
         var request = new HttpRequestMessage(HttpMethod.Get, "wiki/api/v2/spaces?type=global&limit=100");
         var response = await this.client.SendAsync(request);
-        var spaces = await response.GetContentAs(obj => obj["results"]!.ToObject<List<SpaceModel>>());
+        var spaces = await response.GetContentAs(obj => obj["results"]!.ToObject<List<CfSpaceBulk>>());
         if (spaces is null)
         {
             Log.Error("Failed to get spaces.");
