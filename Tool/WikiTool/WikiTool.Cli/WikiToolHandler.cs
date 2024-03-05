@@ -37,14 +37,14 @@ public sealed class WikiToolHandler : ReplHandlerBase
     }
 
     [ReplCommand(Name = "set-space", Description = "Sets the space to the given key.")]
-    public string SetSpace(string argument)
+    public async Task<string> SetSpace(string argument)
     {
         if (int.TryParse(argument, out int spaceId) == false)
         {
             return $"Invalid space id: {argument}";
         }
 
-        if (this.tool.SetSpaceById(spaceId) == false)
+        if (await this.tool.SetSpaceById(spaceId) == false)
         {
             return $"Space not found: {argument}";
         }

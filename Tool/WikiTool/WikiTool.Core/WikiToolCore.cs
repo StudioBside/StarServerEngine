@@ -21,7 +21,7 @@ public sealed class WikiToolCore
     }
     
     public IReadOnlyList<CfSpaceBulk> Spaces => this.spaces;
-    public CfSpaceBulk? CurrentSpace { get; private set; }
+    public CfSpace? CurrentSpace { get; private set; }
     
     public async Task<bool> InitializeAsync()
     {
@@ -43,11 +43,10 @@ public sealed class WikiToolCore
             Log.Info($" - id:{space.Id} key:{space.Key} name:{space.Name}");
         }
 
-        this.CurrentSpace = this.spaces.FirstOrDefault();
         return true;
     }
     
-    public bool SetSpaceById(int id)
+    public async Task<bool> SetSpaceById(int id)
     {
         var space = this.spaces.FirstOrDefault(e => e.Id == id);
         if (space is null)
@@ -56,15 +55,23 @@ public sealed class WikiToolCore
             return false;
         }
         
-        if (this.CurrentSpace == space)
+        if (this.CurrentSpace is not null &&
+            this.CurrentSpace.Id == space.Id)
         {
             Log.Info($"Space is already set to {space.Name}.");
             return false;
         }
 
+        var newSpace = await CfSpace.CreateAsync(this.client, space);
+        if (newSpace is null)
+        {
+            Log.Error($"Failed to create space: {space.Name}");
+            return false;
+        }
+
         var prevName = this.CurrentSpace?.Name ?? "No space";
-        this.CurrentSpace = space;
-        Log.Info($"Set space:{prevName} -> {space.Name}.");
+        this.CurrentSpace = newSpace;
+        Log.Info($"Set space:{prevName} -> {space.Name}");
         return true;
     }
 }
