@@ -69,7 +69,7 @@
                     return -6;
                 }
 
-                p4Commander.RevertUnchnaged(targetFullPath, string.Empty, out _);
+                p4Commander.RevertUnchnaged(targetFullPath, out _);
                 Log.DebugBold($"migration End. elapsed:{stopwatch.Elapsed}");
             }
             catch (Exception e)

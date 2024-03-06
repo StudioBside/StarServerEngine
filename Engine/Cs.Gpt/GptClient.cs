@@ -1,7 +1,6 @@
 ﻿namespace Cs.Gpt;
 
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Cs.Logging;
@@ -21,6 +20,9 @@ public abstract class GptClient : IDisposable
         var options = new OpenAiOptions { ApiKey = apiKey };
         this.service = new OpenAIService(options);
     }
+
+    public string LastErrorCode { get; protected set; } = string.Empty;
+    public bool LimitExceed => this.LastErrorCode == "rate_limit_exceeded";
 
     public void Dispose()
     {
@@ -60,9 +62,9 @@ public abstract class GptClient : IDisposable
             if (result.Error is not null)
             {
                 var error = result.Error;
-                Log.Error($"errorCode:{error.Code}");
-                Log.Error($"errorType:{error.Type}");
-                Log.Error($"errorMessage:{error.Message}");
+                this.LastErrorCode = error.Code ?? string.Empty;
+                Log.Error($"receive error response. code:{error.Code} type:{error.Type} message:{error.Message}");
+                this.OnError(error);
                 continue;
             }
 
@@ -87,4 +89,6 @@ public abstract class GptClient : IDisposable
             this.disposed = true;
         }
     }
+
+    protected abstract void OnError(Error error);
 }

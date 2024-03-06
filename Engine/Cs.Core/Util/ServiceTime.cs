@@ -44,6 +44,13 @@
             }
         }
 
+        public static void Initialize(TimeSpan utcOffSet)
+        {
+            UtcOffset = utcOffSet;
+
+            Log.Info($"[ServiceTime] initialized to {TimezoneInfo}. offset:{UtcOffset}");
+        }
+
         public static void InitializeWithSummerTime(string timezoneId, DateTime currentUtc)
         {
             TimezoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timezoneId)
@@ -84,6 +91,13 @@
         {
             // bridge -> gameserver로 동기화할 땐 DebugOffset을 직접 설정
             DebugOffset = span;
+            lastRecentTicks = 0;
+        }
+
+        public static void SetUtcOffset(TimeSpan utcOffset)
+        {
+            // server -> client 동기화 시에 사용
+            UtcOffset = utcOffset;
             lastRecentTicks = 0;
         }
 

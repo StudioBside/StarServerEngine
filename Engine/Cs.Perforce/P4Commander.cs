@@ -52,7 +52,7 @@ public readonly struct P4Commander
             // 예외처리. dev의 virtual stream들은 dev로 변경해주어야 함. 
             if (stream.StartsWith("//stream/dev"))
             {
-                stream = stream.Substring(startIndex: 0, length: 12);
+                stream = stream[..12];
             }
 
             result = new P4Commander(stream, clientRoot);
@@ -114,6 +114,11 @@ public readonly struct P4Commander
         return true;
     }
 
+    public bool RevertUnchnaged(string localPath, out string p4Output)
+    {
+        return this.RevertUnchnaged(localPath, extension: string.Empty, out p4Output);
+    }
+
     public bool RevertUnchnaged(string localPath, string extension, out string p4Output)
     {
         var depotPath = this.ToDepotPath(localPath, extension);
@@ -166,9 +171,17 @@ public readonly struct P4Commander
         return true;
     }
     
-    public void AddNewFiles(string localPath, string extension)
+    public void AddNewFiles(string localDirPath, string extension)
     {
-        var depotPath = this.ToDepotPath(localPath, extension);
+        var depotPath = this.ToDepotPath(localDirPath, extension);
+
+        // note: 더할 파일이 없으면 실패처리된다.
+        OutProcess.Run("p4", $"reconcile -a {depotPath}", out var p4Output);
+    }
+
+    public void AddNewFile(string localFilePath)
+    {
+        var depotPath = this.ToSingleDepotPath(localFilePath);
 
         // note: 더할 파일이 없으면 실패처리된다.
         OutProcess.Run("p4", $"reconcile -a {depotPath}", out var p4Output);
@@ -205,6 +218,13 @@ public readonly struct P4Commander
         OutProcess.Run("p4", $"opened {depotPath}", out var p4Output);
         return p4Output.Contains(" - edit") || // 이미 열려있을 때
             p4Output.Contains(" - add "); // 신규 생성된 파일
+    }
+
+    public bool CheckIfRegistered(string localFilePath)
+    {
+        var depotPath = this.ToSingleDepotPath(localFilePath);
+        OutProcess.Run("p4", $"fstat {depotPath}", out var p4Output);
+        return p4Output.Contains("headRev");
     }
 
     public List<string>? GetOpenedFiles(string localPath, string extension, out string p4Output)
