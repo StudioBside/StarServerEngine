@@ -3,6 +3,7 @@
 using System;
 using Cs.Gpt;
 using Cs.Repl;
+using static Cs.Gpt.GptTranslator;
 
 internal sealed class GptPlayHandler(GptPlayConfig config) : ReplHandlerBase, IDisposable
 {
@@ -15,6 +16,6 @@ internal sealed class GptPlayHandler(GptPlayConfig config) : ReplHandlerBase, ID
 
     public override Task<string> Evaluate(string input)
     {
-        return this.client.Translate(GptTranslator.TranslateMode.ToChinese, input);
+        return this.client.Translate(TranslationMode.ToEnglish, input);
     }
 }

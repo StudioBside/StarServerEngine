@@ -57,7 +57,7 @@ public sealed class CfSpace
             return false;
         }
 
-        Log.Info($"Got {pages.Count} pages for space: {this.bulk.Key}");
+        Log.Info($"Got {pages.Count} pages for space: {this.bulk.Name}");
         this.pages.AddRange(pages);
         
         foreach (var page in this.pages.OrderBy(e => e.Title))

@@ -7,7 +7,7 @@ public sealed class CfPageBulk
 {
     public int Id { get; set; }
     public required string Title { get; set; }
-    public required string Body { get; set; }
+    public required JToken? Body { get; set; }
     public required string Status { get; set; }
     
     public static CfPageBulk LoadFromJson(JToken obj, int index)
@@ -16,7 +16,7 @@ public sealed class CfPageBulk
         {
             Id = obj.GetInt32("id"),
             Title = obj.GetString("title"),
-            Body = obj.GetString("body"),
+            Body = obj["body"],
             Status = obj.GetString("status"),
         };
     }
