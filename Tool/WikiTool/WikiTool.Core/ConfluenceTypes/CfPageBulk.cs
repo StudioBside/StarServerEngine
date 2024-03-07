@@ -9,6 +9,8 @@ public sealed class CfPageBulk
     public required string Title { get; set; }
     public required JToken? Body { get; set; }
     public required string Status { get; set; }
+    public required PageVersion Version { get; set; }
+    public int VersionNumber => this.Version.Number;
     
     public static CfPageBulk LoadFromJson(JToken obj, int index)
     {
@@ -18,7 +20,17 @@ public sealed class CfPageBulk
             Title = obj.GetString("title"),
             Body = obj["body"],
             Status = obj.GetString("status"),
+            Version = obj["version"]!.ToObject<PageVersion>()!,
         };
+    }
+
+    public sealed class PageVersion
+    {
+        public int Number { get; set; }
+        public string Message { get; set; } = string.Empty;
+        public bool MinorEdit { get; set; }
+        public string AuthorId { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; }
     }
 }
 

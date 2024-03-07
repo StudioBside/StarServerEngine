@@ -1,6 +1,5 @@
 ﻿namespace WikiTool.Core.ConfluenceTypes;
 
-using System.Text;
 using Cs.Core.Util;
 using Cs.HttpClient;
 using Cs.Logging;
@@ -62,7 +61,7 @@ public sealed class CfSpace
         
         foreach (var page in this.pages.OrderBy(e => e.Title))
         {
-            Log.Info($" - id:{page.Id} title:{page.Title}");
+            Log.Info($" - id:{page.Id} title:{page.Title} (Ver:{page.VersionNumber})");
         }
         
         return true;
