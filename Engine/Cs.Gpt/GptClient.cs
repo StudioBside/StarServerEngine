@@ -11,6 +11,8 @@ using OpenAI.ObjectModels.ResponseModels;
 
 public abstract class GptClient : IDisposable
 {
+    public const string LimitExceedErrorCode = "rate_limit_exceeded";
+
     private const int RetryCount = 3;
     private readonly OpenAIService service;
     private bool disposed;
@@ -22,7 +24,7 @@ public abstract class GptClient : IDisposable
     }
 
     public string LastErrorCode { get; protected set; } = string.Empty;
-    public bool LimitExceed => this.LastErrorCode == "rate_limit_exceeded";
+    public bool LimitExceed => this.LastErrorCode == LimitExceedErrorCode;
 
     public void Dispose()
     {

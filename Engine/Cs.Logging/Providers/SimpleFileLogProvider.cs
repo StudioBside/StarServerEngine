@@ -19,7 +19,7 @@ public sealed class SimpleFileLogProvider : ILogProvider, IDisposable
         this.fileStream.Write(Encoding.UTF8.GetPreamble());
     }
 
-    public bool WriteToConsole { get; init; }
+    public bool WriteToConsole { get; private set; }
 
     public void Dispose()
     {
@@ -64,6 +64,11 @@ public sealed class SimpleFileLogProvider : ILogProvider, IDisposable
         {
             ConsoleWriter.PutLog(LogLevel.Warn, message);
         }
+    }
+
+    public void SetWriteToConsole(bool value)
+    {
+        this.WriteToConsole = value;
     }
 
     [DoesNotReturn]

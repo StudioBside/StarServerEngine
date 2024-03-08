@@ -8,11 +8,10 @@
     using OpenAI.ObjectModels;
     using OpenAI.ObjectModels.RequestModels;
     using OpenAI.ObjectModels.ResponseModels;
+    using static Cs.Gpt.GptTranslator.SingleProcessResult;
 
     public sealed class GptTranslator : GptClient
     {
-        private const string LimitExceedErrorCode = "rate_limit_exceeded";
-
         private long apiCallCount;
         private string modelName = Models.Gpt_3_5_Turbo_0125;
 
@@ -28,7 +27,69 @@
         }
 
         public long ApiCallCount => this.apiCallCount;
-      
+
+        public static bool ValidateResult(string source, string translated, TranslationMode mode)
+        {
+            if (string.IsNullOrEmpty(translated))
+            {
+                return false;
+            }
+
+            if (source.All(e => e == '…') && translated.Any(e => e != '…'))
+            {
+                return false;
+            }
+
+            if (translated.Any(IsKoreanCompleted))
+            {
+                return false;
+            }
+
+            switch (mode)
+            {
+                case TranslationMode.ToEnglish:
+                    if (IsSymbolNumeric(source) && HasAlphabet(translated))
+                    {
+                        return false;
+                    }
+
+                    break;
+
+                case TranslationMode.ToChinese:
+                    if (IsAlphaNumeric(source) == false && // 원본이 영문이 아닌데
+                        string.IsNullOrEmpty(translated) == false && // 번역문을 제대로 받아왔고
+                        IsAlphaNumeric(translated)) // 번역문이 영문이라면
+                    {
+                        return false;
+                    }
+
+                    if (translated.Contains("translate", StringComparison.CurrentCultureIgnoreCase) ||
+                        translated.Contains("translation", StringComparison.CurrentCultureIgnoreCase) ||
+                        translated.Contains("Sorry,", StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        return false;
+                    }
+
+                    if (source.Length < 5 &&
+                        translated.Length > 10 &&
+                        translated.StartsWith("抱歉，", StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        return false;
+                    }
+
+                    break;
+            }
+
+            return true;
+
+            static bool IsKoreanCompleted(char code)
+            {
+                int bottom = 0xAC00;
+                int top = 0xD7A3;
+                return bottom <= code && code <= top; // 완성된 한글
+            }
+        }
+
         public Task<string> Translate(TranslationMode mode, string sourceText)
         {
             var request = CreateRequest(mode, sourceText, this.modelName);
@@ -40,17 +101,11 @@
             // 예전 번역이 존재하는 경우
             if (string.IsNullOrEmpty(translatedOld) == false)
             {
-                // 예전의 번역 결과가 유효했다고 판단하면 아무것도 하지 않는다.
-                if (ValidateResult(sourceText, translatedOld, mode))
-                {
-                    return new SingleProcessResult(false, translatedOld);
-                }
-
                 Log.Warn($"예전의 번역 결과가 유효하지 않습니다. translated:{translatedOld}");
             }
 
             string translatedNew;
-            bool translated = true;
+            var translated = true;
             // 영문 번역일 때 원문이 이미 영문숫자라면 스킵한다.
             if (mode == TranslationMode.ToEnglish && IsAlphaNumeric(sourceText))
             {
@@ -80,6 +135,31 @@
                     translatedNew = string.Empty;
                     translated = false;
                 }
+            }
+
+            return new SingleProcessResult(translated, translatedNew);
+        }
+
+        public async Task<SingleProcessResult> RetranslateWithMultiInput(
+            TranslationMode mode,
+            string sourceKor,
+            string sourceEng,
+            string translatedOld)
+        {
+            var request = CreateRequest(mode, sourceKor, sourceEng, this.modelName);
+            var translatedNew = await this.GetResponse(request);
+            ++this.apiCallCount;
+            var translated = true;
+
+            if (ValidateResult(sourceKor, translatedNew, mode) == false)
+            {
+                Log.Warn($"3회차 번역 결과도 유효하지 않습니다. mode:{mode} translated:{translatedNew}");
+                translatedNew = string.Empty;
+                translated = false;
+            }
+            else
+            {
+                Log.Info($"3회차 번역 성공. mode:{mode} text:{translatedOld} -> {translatedNew}");
             }
 
             return new SingleProcessResult(translated, translatedNew);
@@ -131,47 +211,6 @@
             return text.Any(c => char.IsLetter(c));
         }
 
-        private static bool ValidateResult(string source, string translated, TranslationMode mode)
-        {
-            if (string.IsNullOrEmpty(translated))
-            {
-                return false;
-            }
-
-            if (source.All(e => e == '…') && translated.Any(e => e != '…'))
-            {
-                return false;
-            }
-
-            switch (mode)
-            {
-                case TranslationMode.ToEnglish:
-                    if (IsSymbolNumeric(source) && HasAlphabet(translated))
-                    {
-                        return false;
-                    }
-
-                    break;
-
-                case TranslationMode.ToChinese:
-                    if (IsAlphaNumeric(source) == false && // 원본이 영문이 아닌데
-                        string.IsNullOrEmpty(translated) == false && // 번역문을 제대로 받아왔고
-                        IsAlphaNumeric(translated)) // 번역문이 영문이라면
-                    {
-                        return false;
-                    }
-
-                    if (translated.Contains("translate", StringComparison.CurrentCultureIgnoreCase))
-                    {
-                        return false;
-                    }
-
-                    break;
-            }
-
-            return true;
-        }
-
         private static ChatCompletionCreateRequest CreateRequest(TranslationMode mode, string input, string modelName)
         {
             var languageName = ToLanguageName(mode);
@@ -186,6 +225,40 @@
             {
                 roleContent = $"You are a {languageName} translator who translate user input. Just tell the translation for user input, no further explanation.";
             }
+
+            // 영문 번역 이외의 경우, 영어로 번역하지 말 것을 강조한다. 
+            if (mode != TranslationMode.ToEnglish)
+            {
+                roleContent += $" You must translate it into {languageName}, not into English.";
+            }
+
+            return new ChatCompletionCreateRequest
+            {
+                Model = modelName,
+                Messages = new List<ChatMessage>
+                {
+                    ChatMessage.FromSystem(roleContent),
+                    ChatMessage.FromUser(input),
+                },
+            };
+        }
+
+        private static ChatCompletionCreateRequest CreateRequest(TranslationMode mode, string sourceKor, string sourceEng, string modelName)
+        {
+            var languageName = ToLanguageName(mode);
+            string roleContent;
+
+            // 원문에 컬러키가 있다면 누락하지 말 것을 명시한다.
+            if (sourceKor.Contains("<color=#"))
+            {
+                roleContent = $"You are a {languageName} translator who translate user input. Take two sentences with the same meaning in Korean and English and translate them into {languageName}, no further explanation. If there is a color tag in the format '<color=#ffffff>' in the original text, do not omit it and keep it as is as much as possible.";
+            }
+            else
+            {
+                roleContent = $"You are a {languageName} translator who translate user input. Take two sentences with the same meaning in Korean and English and translate them into {languageName}, no further explanation.";
+            }
+
+            var input = $"{sourceKor}\n{sourceEng}";
 
             // 영문 번역 이외의 경우, 영어로 번역하지 말 것을 강조한다. 
             if (mode != TranslationMode.ToEnglish)
