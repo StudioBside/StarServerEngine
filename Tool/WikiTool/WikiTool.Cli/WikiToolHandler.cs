@@ -25,15 +25,15 @@ public sealed class WikiToolHandler : ReplHandlerBase
     }
     
     [ReplCommand(Name = "spaces", Description = "Gets the list of spaces.")]
-    public string GetSpaces(string argument)
+    public Task<string> GetSpaces(string argument)
     {
         var sb = new StringBuilder();
         foreach (var space in this.tool.Spaces.OrderBy(e => e.Name))
         {
             sb.AppendLine($"id:{space.Id} key:{space.Key} name:{space.Name}");
         }
-        
-        return sb.ToString();
+
+        return Task.FromResult(sb.ToString());
     }
 
     [ReplCommand(Name = "set-space", Description = "Sets the space to the given key.")]

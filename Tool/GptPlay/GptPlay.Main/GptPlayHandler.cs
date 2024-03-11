@@ -16,6 +16,11 @@ internal sealed class GptPlayHandler(GptPlayConfig config) : ReplHandlerBase, ID
 
     public override Task<string> Evaluate(string input)
     {
+        if (string.IsNullOrEmpty(input))
+        {
+            return Task.FromResult(string.Empty);
+        }
+
         return this.client.Translate(TranslationMode.ToEnglish, input);
     }
 }

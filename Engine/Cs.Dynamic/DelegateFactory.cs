@@ -143,7 +143,15 @@
             }
 
             il.Emit(OpCodes.Call, methodInfo);
-            il.Emit(OpCodes.Castclass, ResultMethod.ReturnType);
+            if (methodInfo.ReturnType.BaseType != typeof(Task))
+            {
+                //il.Emit(OpCodes.Call, CompletedTaskCaller);
+            }
+            else
+            {
+                il.Emit(OpCodes.Castclass, ResultMethod.ReturnType);
+            }
+
             il.Emit(OpCodes.Ret);
 
             return dynamicMethod.CreateDelegate(typeof(TDelegate)) as TDelegate;
@@ -271,7 +279,7 @@
         {
             var targetParameters = target.GetParameters();
 
-            if (ResultMethod.ReturnType != target.ReturnType)
+            if (ResultMethod.ReturnType != target.ReturnType && ResultMethod.ReturnType.GenericTypeArguments[0] != target.ReturnType)
             {
                 return false;
             }

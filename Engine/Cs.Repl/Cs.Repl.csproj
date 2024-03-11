@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Cs.Dynamic\Cs.Dynamic.csproj" />
     <ProjectReference Include="..\Cs.Logging\Cs.Logging.csproj" />
   </ItemGroup>
 

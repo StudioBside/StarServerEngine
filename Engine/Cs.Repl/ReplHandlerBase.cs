@@ -31,7 +31,7 @@ public abstract class ReplHandlerBase
     }
 
     [ReplCommand(Name = "help", Description = "Displays help for the given command.")]
-    internal string DumpHelp(string argument)
+    internal Task<string> DumpHelp(string argument)
     {
         var sb = new StringBuilder();
         foreach (var command in this.Console.Commands.OrderBy(e => e.Name))
@@ -42,6 +42,6 @@ public abstract class ReplHandlerBase
             }
         }
         
-        return sb.ToString();
+        return Task.FromResult(sb.ToString());
     }
 }

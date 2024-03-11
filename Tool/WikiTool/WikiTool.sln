@@ -13,15 +13,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cs.Gpt", "..\..\Engine\Cs.G
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cs.Core", "..\..\Engine\Cs.Core\Cs.Core.csproj", "{D089D0F5-84BE-4DF7-8F97-AA8D873E8BCB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WikiTool.Core", "WikiTool.Core\WikiTool.Core.csproj", "{0D90980E-3765-4B99-B5AD-305AB1029B0E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiTool.Core", "WikiTool.Core\WikiTool.Core.csproj", "{0D90980E-3765-4B99-B5AD-305AB1029B0E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WikiTool.Cli", "WikiTool.Cli\WikiTool.Cli.csproj", "{32EC8F3F-653F-4754-AFB4-A35026F278D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiTool.Cli", "WikiTool.Cli\WikiTool.Cli.csproj", "{32EC8F3F-653F-4754-AFB4-A35026F278D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cs.Dynamic", "..\..\Engine\Cs.Dynamic\Cs.Dynamic.csproj", "{E3B999D2-B463-4869-8A7C-8865A2FD9839}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cs.Dynamic", "..\..\Engine\Cs.Dynamic\Cs.Dynamic.csproj", "{E3B999D2-B463-4869-8A7C-8865A2FD9839}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cs.HttpClient", "..\..\Engine\Cs.HttpClient\Cs.HttpClient.csproj", "{59D5EA64-92DE-445F-BDF9-D769A9B3CFC3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cs.HttpClient", "..\..\Engine\Cs.HttpClient\Cs.HttpClient.csproj", "{59D5EA64-92DE-445F-BDF9-D769A9B3CFC3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GptPlay.Main", "..\GptPlay\GptPlay.Main\GptPlay.Main.csproj", "{07528992-6E8F-432A-981E-280E7CD750A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GptPlay.Main", "..\GptPlay\GptPlay.Main\GptPlay.Main.csproj", "{07528992-6E8F-432A-981E-280E7CD750A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

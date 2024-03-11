@@ -3,21 +3,24 @@ namespace Cs.Repl.Detail;
 using System.Reflection;
 using System.Threading.Tasks;
 
-internal sealed class Command(string name, string description, MethodInfo method)
+internal sealed class Command
 {
-    private readonly MethodInfo method = method;
-    public string Name { get; } = name;
-    public string Description { get; } = description;
-    
-    public async Task<string> Invoke(object instance, string argument)
+    private readonly RawHandlerType rawHandler;
+
+    public Command(string name, string description, RawHandlerType rawHandler)
     {
-        var untyped = this.method.Invoke(instance, new[] { argument });
-        return untyped switch
-        {
-            Task<string> task => await task,
-            string str => str,
-            null => $"command return null object.",
-            _ => $"unsupported return type:{untyped.GetType().Name}",
-        };
+        this.Name = name;
+        this.Description = description;
+        this.rawHandler = rawHandler;
+    }
+
+    internal delegate Task<string> RawHandlerType(ReplHandlerBase handlerBase, string argument);
+    
+    public string Name { get; }
+    public string Description { get; }
+    
+    public async Task<string> Invoke(ReplHandlerBase handlerBase, string argument)
+    {
+        return await this.rawHandler.Invoke(handlerBase, argument);
     }
 }

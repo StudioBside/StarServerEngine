@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
+using Cs.Dynamic;
 using Cs.Logging;
 using Cs.Repl.Detail;
 
@@ -32,7 +33,8 @@ public sealed class ReplConsole
                 var attr = method.GetCustomAttribute<ReplCommandAttribute>();
                 if (attr is not null)
                 {
-                    var command = new Command(attr.Name, attr.Description, method);
+                    var rawHandler = DelegateFactory<Command.RawHandlerType>.CreateAwaitableMemberFunction(method);
+                    var command = new Command(attr.Name, attr.Description, rawHandler);
                     this.commands.Add(command.Name, command);
                 }
             }
