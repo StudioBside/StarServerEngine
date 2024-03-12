@@ -3,7 +3,7 @@
 public sealed record WikiToolConfig
 {
     public required ConfluenceConfig Confluence { get; init; }
-    public required string WikiJsBackupPath {get; init; }
+    public required string WikiJsBackupPath { get; init; }
 
     public sealed record ConfluenceConfig
     {
