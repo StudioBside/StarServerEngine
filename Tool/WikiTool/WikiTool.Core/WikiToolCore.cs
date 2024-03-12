@@ -10,12 +10,16 @@ public sealed class WikiToolCore
     private readonly WikiToolConfig config;
     private readonly RestApiClient client;
     private readonly List<CfSpaceBulk> spaces = new();
+    private readonly WikiJsController wikiJs;
 
     public WikiToolCore()
     {
         this.config = JsonUtil.Load<WikiToolConfig>("wikitool.config.json");
         this.client = new RestApiClient(this.config.Confluence.Url);
         this.client.SetBasicAutohrization(this.config.Confluence.Username, this.config.Confluence.Password);
+        
+        this.wikiJs = WikiJsController.Instance;
+        this.wikiJs.Initialize(this.config.WikiJsBackupPath);
         
         Log.Info($"wiki url:{this.config.Confluence.Url}");
     }
