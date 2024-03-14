@@ -3,15 +3,15 @@
 public sealed class WjPage
 {
     public int Id { get; init; }
-    public string Path { get; init; }
-    public string Title { get; init; }
-    public string Description { get; init; }
-    public string Content { get; init; }
-    public string Render { get; init; }
-    public string Toc { get; init; }
-    public string ContentType { get; init; }
+    public required string Path { get; init; }
+    public required string Title { get; init; }
+    public required string Description { get; init; }
+    public required string Content { get; init; }
+    public required string Render { get; init; }
+    public required string Toc { get; init; }
+    public required string ContentType { get; init; }
     public DateTime CreatedAt { get; init; }
     public DateTime UpdatedAt { get; init; }
-    public WjUser Author { get; init; }
-    public WjUser Creator { get; init; }
+    public required WjUser Author { get; init; }
+    public required WjUser Creator { get; init; }
 }
