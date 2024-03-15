@@ -11,6 +11,16 @@
             return (T)Enum.Parse(typeof(T), data, true);
         }
 
+        public static T ParseIfNotEmpty<T>(this string data) where T : struct, Enum
+        {
+            if (string.IsNullOrEmpty(data))
+            {
+                return default;
+            }
+
+            return data.Parse<T>();
+        }
+
         public static bool TryParse<T>(this string data, out T @enum) where T : struct, Enum
         {
             return Enum.TryParse(data, true, out @enum);

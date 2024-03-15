@@ -11,11 +11,12 @@
         private static volatile int lastRecentTicks = -1;
         private static DateTime lastRecentDateTime = DateTime.MinValue;
 
-        public static DateTime Now => DateTime.UtcNow + UtcOffset + DebugOffset;
+        public static DateTime Now => DateTime.UtcNow + UtcOffset + DebugOffset + AdjustOffset;
         public static DateTime UtcNow => DateTime.UtcNow + DebugOffset;
         public static DateTime Epoch => TimeHelper.UtcEpoch + UtcOffset;
         public static TimeSpan UtcOffset { get; private set; } = TimeZoneInfo.Local.GetUtcOffset(DateTime.Now);
         public static TimeSpan DebugOffset { get; private set; } = TimeSpan.Zero;
+        public static TimeSpan AdjustOffset { get; private set; } = TimeSpan.Zero; // 클라에서만 사용합니다. 서버utc와 클라utc 간의 차이를 조정하기 위한 값입니다.
         public static TimeZoneInfo TimezoneInfo { get; private set; } = TimeZoneInfo.Local;
         public static DateTime Recent => GetRecentTime();
         public static DateTime Forever { get; } = DateTime.Parse("9000-1-1");
@@ -44,11 +45,15 @@
             }
         }
 
-        public static void Initialize(TimeSpan utcOffSet)
+        public static void Initialize(DateTime serverUtc, TimeSpan utcOffSet, TimeSpan debugOffSet)
         {
             UtcOffset = utcOffSet;
+            DebugOffset = debugOffSet;
 
-            Log.Info($"[ServiceTime] initialized to {TimezoneInfo}. offset:{UtcOffset}");
+            // serverUtc와 DateTime.UtcNow의 차이를 계산하여 AdjustOffset을 설정합니다.
+            AdjustOffset = serverUtc - DateTime.UtcNow;
+
+            Log.Info($"[ServiceTime] initialized to {TimezoneInfo}. serverUtc:{serverUtc} utcOffSet:{UtcOffset} debugOffSet:{DebugOffset} AdjustOffSet:{AdjustOffset}");
         }
 
         public static void InitializeWithSummerTime(string timezoneId, DateTime currentUtc)
@@ -101,9 +106,37 @@
             lastRecentTicks = 0;
         }
 
+        public static void SetAdjustOffset(TimeSpan adjustOffset)
+        {
+            AdjustOffset = adjustOffset;
+            lastRecentTicks = 0;
+        }
+
         public static void ResetDebugOffset()
         {
             DebugOffset = TimeSpan.Zero;
+        }
+
+        public static void UpdateNowFromServer(DateTime serverUtc, TimeSpan utcOffSet, TimeSpan debugOffSet)
+        {
+            // 클라이언트에서 서버의 시간 값을 받아 업데이트하는 경우에 사용합니다.
+            if (utcOffSet.Ticks >= 0 && UtcOffset != utcOffSet)
+            {
+                UtcOffset = utcOffSet;
+                lastRecentTicks = 0;
+            }
+
+            if (debugOffSet.Ticks >= 0 && DebugOffset != debugOffSet)
+            {
+                debugOffSet = DebugOffset;
+                lastRecentTicks = 0;
+            }
+
+            if (serverUtc.Ticks >= 0)
+            {
+                AdjustOffset = serverUtc - DateTime.UtcNow;
+                lastRecentTicks = 0;
+            }
         }
 
         private static DateTime GetRecentTime()
