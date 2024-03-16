@@ -30,7 +30,7 @@ public abstract class ReplHandlerBase
         this.Console = console;
     }
 
-    [ReplCommand(Name = "help", Description = "Displays help for the given command.")]
+    [ReplCommand(Name = "help", Description = "사용 가능한 커맨드 목록을 출력합니다.")]
     internal Task<string> DumpHelp(string argument)
     {
         var sb = new StringBuilder();

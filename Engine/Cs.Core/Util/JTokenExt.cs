@@ -139,11 +139,11 @@
 
         public static int GetInt32(this JToken self, string key, int defValue)
         {
-            if (self[key] == null)
+            if (self[key] is null || string.IsNullOrEmpty(self[key].Value<string>()))
             {
                 return defValue;
             }
-
+            
             return self.Value<int>(key);
         }
 

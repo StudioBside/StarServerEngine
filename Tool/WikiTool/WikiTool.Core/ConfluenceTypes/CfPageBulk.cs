@@ -7,6 +7,7 @@ public sealed class CfPageBulk
 {
     public int Id { get; set; }
     public required string Title { get; set; }
+    public required int ParentId { get; set; }
     public required JToken? Body { get; set; }
     public required string Status { get; set; }
     public required PageVersion Version { get; set; }
@@ -18,6 +19,7 @@ public sealed class CfPageBulk
         {
             Id = obj.GetInt32("id"),
             Title = obj.GetString("title"),
+            ParentId = obj.GetInt32("parentId", 0),
             Body = obj["body"],
             Status = obj.GetString("status"),
             Version = obj["version"]!.ToObject<PageVersion>()!,

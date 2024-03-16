@@ -24,7 +24,7 @@ public sealed class WikiToolHandler : ReplHandlerBase
         return this.tool.CurrentSpace?.Name ?? "No space";
     }
     
-    [ReplCommand(Name = "spaces", Description = "Gets the list of spaces.")]
+    [ReplCommand(Name = "spaces", Description = "컨플루언스 스페이스 목록을 출력합니다.")]
     public Task<string> GetSpaces(string argument)
     {
         var sb = new StringBuilder();
@@ -36,7 +36,7 @@ public sealed class WikiToolHandler : ReplHandlerBase
         return Task.FromResult(sb.ToString());
     }
 
-    [ReplCommand(Name = "set-space", Description = "Sets the space to the given key.")]
+    [ReplCommand(Name = "set-space", Description = "입력받은 spaceId에 해당하는 스페이스를 선택합니다.")]
     public async Task<string> SetSpace(string argument)
     {
         if (int.TryParse(argument, out int spaceId) == false)
@@ -50,5 +50,17 @@ public sealed class WikiToolHandler : ReplHandlerBase
         }
         
         return string.Empty;
+    }
+
+    [ReplCommand(Name = "view-space", Description = "현재 선택된 스페이스의 페이지 목록을 출력합니다.")]
+    public async Task<string> ViewSpace(string argument)
+    {
+        if (this.tool.CurrentSpace is null)
+        {
+            return "선택된 space가 없습니다.";
+        }
+        
+        await Task.Delay(0);
+        return this.tool.CurrentSpace.ToString();
     }
 }

@@ -1,5 +1,6 @@
 ﻿namespace WikiTool.Core.ConfluenceTypes;
 
+using System.Text;
 using Cs.Core.Util;
 using Cs.HttpClient;
 using Cs.Logging;
@@ -8,7 +9,7 @@ using Newtonsoft.Json.Linq;
 public sealed class CfSpace
 {
     private readonly CfSpaceBulk bulk;
-    private readonly List<CfPageBulk> pages = new();
+    private Dictionary<int, CfPage> pages = null!;
 
     public CfSpace(CfSpaceBulk bulk)
     {
@@ -17,7 +18,7 @@ public sealed class CfSpace
     
     public int Id => this.bulk.Id;
     public string Name => this.bulk.Name;
-    public IReadOnlyList<CfPageBulk> Pages => this.pages;
+    public IEnumerable<CfPage> Pages => this.pages.Values;
 
     public static async Task<CfSpace?> CreateAsync(RestApiClient client, CfSpaceBulk bulk)
     {
@@ -29,41 +30,60 @@ public sealed class CfSpace
 
         return space;
     }
-    
-    //// -----------------------------------------------------------------------------------------
-    
-    private static List<CfPageBulk>? JsonToPages(JObject obj)
+
+    public override string ToString()
     {
-        List<CfPageBulk> pages = new();
-        if (obj.TryGetArray("results", in pages, CfPageBulk.LoadFromJson) == false)
+        var sb = new StringBuilder();
+        foreach (var page in this.pages.Values.Where(e => e.Parent is null))
         {
-            Log.Error($"Failed to get pages from: {obj}");
-            return null;
+            sb.AppendLine(page.ToString());
         }
         
-        return pages;
+        return sb.ToString();
     }
+
+    //// -----------------------------------------------------------------------------------------
 
     private async Task<bool> InitializeAsync(RestApiClient apiClient)
     {
         // cache pages
         var request = new HttpRequestMessage(HttpMethod.Get, $"wiki/api/v2/spaces/{this.Id}/pages");
         var response = await apiClient.SendAsync(request);
-        var pages = await response.GetContentAs(JsonToPages);
-        if (pages is null)
+        var bulkPages = await response.GetContentAs(JsonToPages);
+        if (bulkPages is null)
         {
             Log.Error($"Failed to get pages for space: {this.bulk.Key}");
             return false;
         }
 
-        Log.Info($"Got {pages.Count} pages for space: {this.bulk.Name}");
-        this.pages.AddRange(pages);
+        Log.Info($"Got {bulkPages.Count} pages for space: {this.bulk.Name}");
         
-        foreach (var page in this.pages.OrderBy(e => e.Title))
+        this.pages = bulkPages
+            .Select(e => new CfPage(e))
+            .ToDictionary(e => e.Id);
+
+        foreach (var page in this.pages.Values)
         {
-            Log.Info($" - id:{page.Id} title:{page.Title} (Ver:{page.VersionNumber})");
+            page.Join(this.pages);
+        }
+
+        foreach (var page in this.pages.Values)
+        {
+            Log.Info(page.ToString());
         }
         
         return true;
+
+        static List<CfPageBulk>? JsonToPages(JObject obj)
+        {
+            List<CfPageBulk> pages = new();
+            if (obj.TryGetArray("results", in pages, CfPageBulk.LoadFromJson) == false)
+            {
+                Log.Error($"Failed to get pages from: {obj}");
+                return null;
+            }
+            
+            return pages;
+        }
     }
 }
