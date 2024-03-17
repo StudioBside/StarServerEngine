@@ -78,4 +78,22 @@ public sealed class WikiToolCore
         Log.Info($"Set space:{prevName} -> {space.Name}");
         return true;
     }
+    
+    public async Task<string> ConvertPages(int convertCount)
+    {
+        if (this.CurrentSpace is null)
+        {
+            return "선택된 space가 없습니다.";
+        }
+        
+        foreach (var wjPage in this.wikiJs.Pages.Take(convertCount))
+        {
+            if (await this.CurrentSpace.CreatePage(wjPage) == false)
+            {
+                return "Failed to create page.";
+            }
+        }
+        
+        return "Success";
+    }
 }

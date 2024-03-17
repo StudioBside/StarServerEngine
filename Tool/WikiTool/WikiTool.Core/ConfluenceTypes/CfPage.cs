@@ -25,14 +25,7 @@ public sealed class CfPage
 
     public override string ToString()
     {
-        var sb = new StringBuilder();
-        sb.AppendLine(this.DumpToString(0));
-        foreach (var child in this.children)
-        {
-            sb.AppendLine(child.DumpToString(1));
-        }
-        
-        return sb.ToString();
+        return this.DumpToString(indent: 0);
     }
     
     public void Join(IReadOnlyDictionary<int, CfPage> pages)
@@ -57,6 +50,13 @@ public sealed class CfPage
     private string DumpToString(int indent)
     {
         var space = string.Empty.PadRight(indent * 2, ' ');
-        return $"{space} - id:{this.Id} title:{this.Title} (parentId:{this.bulk.ParentId})";
+        var sb = new StringBuilder();
+        sb.AppendLine($"{space} - id:{this.Id} title:{this.Title} (parentId:{this.bulk.ParentId})");
+        foreach (var child in this.children)
+        {
+            sb.AppendLine(child.DumpToString(indent + 1));
+        }
+        
+        return sb.ToString();
     }
 }

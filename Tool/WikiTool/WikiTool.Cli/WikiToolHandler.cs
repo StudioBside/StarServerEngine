@@ -63,4 +63,15 @@ public sealed class WikiToolHandler : ReplHandlerBase
         await Task.Delay(0);
         return this.tool.CurrentSpace.ToString();
     }
+
+    [ReplCommand(Name = "view-space", Description = "현재 선택된 스페이스의 페이지 목록을 출력합니다.")]
+    public Task<string> ConvertPages(string argument)
+    {
+        if (int.TryParse(argument, out int convertCount) == false)
+        {
+            return Task.FromResult($"변환할 페이지의 개수를 입력해야 합니다: {argument}");
+        }
+        
+        return this.tool.ConvertPages(convertCount);
+    }
 }
