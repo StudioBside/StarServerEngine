@@ -43,13 +43,13 @@ public sealed class CfSpace
         return sb.ToString();
     }
     
-    public async Task<bool> CreatePage(WjPage wjPage)
+    public async Task<bool> CreatePage(RestApiClient apiClient, WjPage wjPage)
     {
         // path에 해당하는 중간 페이지도 없다면 생성해 주어야 한다.
         var pathTokens = wjPage.Path.Split('/');
         for (int i = 0; i < pathTokens.Length - 1; i++)
         {
-            await Task.Delay(0);
+            await CfPage.CreateAsync(apiClient, this.Id, parent: null, wjPage.Title, wjPage.Content);
         }
         
         return true;

@@ -88,7 +88,7 @@ public sealed class WikiToolCore
         
         foreach (var wjPage in this.wikiJs.Pages.Take(convertCount))
         {
-            if (await this.CurrentSpace.CreatePage(wjPage) == false)
+            if (await this.CurrentSpace.CreatePage(this.client, wjPage) == false)
             {
                 return "Failed to create page.";
             }

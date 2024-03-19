@@ -1,7 +1,9 @@
 ﻿namespace WikiTool.Core.ConfluenceTypes;
 
 using System.Text;
+using Cs.HttpClient;
 using Cs.Logging;
+using Newtonsoft.Json;
 
 public sealed class CfPage
 {
@@ -21,6 +23,40 @@ public sealed class CfPage
     {
         child.Parent = parent;
         parent.children.Add(child);
+    }
+    
+    public static async Task<CfPage?> CreateAsync(
+        RestApiClient apiClient,
+        int spaceId,
+        CfPage? parent,
+        string title,
+        string body)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Post, $"wiki/api/v2/pages");
+        string bodyContent = JsonConvert.SerializeObject(new
+        {
+            spaceId = spaceId,
+            status = "current",
+            title = title,
+            parentId = parent?.Id,
+            body = new
+            {
+                representation = "storage",
+                value = body,
+            },
+        });
+
+        request.Content = new StringContent(bodyContent, Encoding.UTF8, "application/json");
+        
+        var response = await apiClient.SendAsync(request);
+        if (response.StatusCode != System.Net.HttpStatusCode.OK)
+        {
+            Log.Error($"Failed to create page: {title} statusCode:{response.StatusCode}");
+            return null;
+        }
+
+        Log.Debug(await response.GetRawContent());
+        return null;
     }
 
     public override string ToString()
