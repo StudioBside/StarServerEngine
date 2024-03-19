@@ -55,8 +55,14 @@ public sealed class CfPage
             return null;
         }
 
-        Log.Debug(await response.GetRawContent());
-        return null;
+        var bulkPage = await response.GetContentAs<CfPageBulk>();
+        if (bulkPage is null)
+        {
+            Log.Error($"Failed to create page: {title}");
+            return null;
+        }
+
+        return new CfPage(bulkPage!);
     }
 
     public override string ToString()

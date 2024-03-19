@@ -49,7 +49,12 @@ public sealed class CfSpace
         var pathTokens = wjPage.Path.Split('/');
         for (int i = 0; i < pathTokens.Length - 1; i++)
         {
-            await CfPage.CreateAsync(apiClient, this.Id, parent: null, wjPage.Title, wjPage.Content);
+            var newPage = await CfPage.CreateAsync(apiClient, this.Id, parent: null, wjPage.Title, wjPage.Path);
+            if (newPage is null)
+            {
+                Log.Error($"Failed to create page: {wjPage.Path}");
+                return false;
+            }
         }
         
         return true;
