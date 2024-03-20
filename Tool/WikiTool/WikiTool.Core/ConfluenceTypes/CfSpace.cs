@@ -1,5 +1,7 @@
 ﻿namespace WikiTool.Core.ConfluenceTypes;
 
+using System.Net;
+using System.Net.Http.Headers;
 using System.Text;
 using Cs.Core.Util;
 using Cs.HttpClient;
@@ -9,8 +11,8 @@ using Newtonsoft.Json.Linq;
 public sealed class CfSpace
 {
     private readonly CfSpaceBulk bulk;
-    private Dictionary<int, CfPage> pagesById = null!;
-    private List<CfPage> pagesByPath = new();
+    private readonly List<CfPage> pagesByPath = new();
+    private readonly Dictionary<int, CfPage> pagesById = new();
 
     public CfSpace(CfSpaceBulk bulk)
     {
@@ -46,6 +48,7 @@ public sealed class CfSpace
     public async Task<bool> CreatePage(RestApiClient apiClient, WjPage wjPage)
     {
         // path에 해당하는 중간 페이지도 없다면 생성해 주어야 한다.
+        CfPage? parent = null;
         var pathTokens = wjPage.Path.Split('/');
         for (int i = 0; i < pathTokens.Length - 1; i++)
         {
@@ -64,21 +67,29 @@ public sealed class CfSpace
 
     private async Task<bool> InitializeAsync(RestApiClient apiClient)
     {
-        // cache pages
-        var request = new HttpRequestMessage(HttpMethod.Get, $"wiki/api/v2/spaces/{this.Id}/pages");
-        var response = await apiClient.SendAsync(request);
-        var bulkPages = await response.GetContentAs(JsonToPages);
-        if (bulkPages is null)
-        {
-            Log.Error($"Failed to get pages for space: {this.bulk.Key}");
-            return false;
-        }
+        string? url = $"wiki/api/v2/spaces/{this.Id}/pages";
 
-        Log.Info($"Got {bulkPages.Count} pages for space: {this.bulk.Name}");
-        
-        this.pagesById = bulkPages
-            .Select(e => new CfPage(e))
-            .ToDictionary(e => e.Id);
+        while (string.IsNullOrEmpty(url) == false)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+            var response = await apiClient.SendAsync(request);
+            var bulkPages = await response.GetContentAs(JsonToPages);
+            if (bulkPages is null)
+            {
+                Log.Error($"Failed to get pages for space: {this.bulk.Key}");
+                return false;
+            }
+            
+            foreach (var bulkPage in bulkPages)
+            {
+                this.pagesById.Add(bulkPage.Id, new CfPage(bulkPage));
+            }
+
+            Log.Info($"Got {bulkPages.Count} pages for space: {this.bulk.Name} url:{url}");
+            
+            // 다음 페이지가 있는지 확인한다.
+            url = GetNextPageUrl(response.Headers);
+        }
 
         foreach (var page in this.pagesById.Values)
         {
@@ -104,6 +115,43 @@ public sealed class CfSpace
             }
             
             return pages;
+        }
+        
+        static string? GetNextPageUrl(HttpResponseHeaders headers)
+        {
+            if (headers.TryGetValues("Link", out var values) == false ||
+                !(values.FirstOrDefault() is { } linkValue))
+            {
+                return null;
+            }
+
+            /*
+            </wiki/api/v2/spaces/163856/pages?cursor=eyJpZCI6IjM5OTc2OTciLCJjb250ZW50T3JkZXIiOiJpZCIsImNvbnRlbnRPcmRlclZhbHVlIjozOTk3Njk3fQ==>; rel="next",
+             <https://starsavior.atlassian.net/wiki>; rel="base"
+            */
+            foreach (var token in linkValue.Split(','))
+            {
+                var tokens = token.Split(';');
+                if (tokens.Length != 2)
+                {
+                    Log.Error($"Invalid link header: {linkValue}");
+                    continue;
+                }
+
+                var relToken = tokens[1].Trim();
+                if (relToken != "rel=\"next\"")
+                {
+                    continue;
+                }
+
+                var urlToken = tokens[0].Trim();
+                if (urlToken[0] == '<' && urlToken[^1] == '>')
+                {
+                    return urlToken[1..^1];
+                }
+            }
+
+            return null;
         }
     }
 }
