@@ -11,8 +11,8 @@ using Newtonsoft.Json.Linq;
 public sealed class CfSpace
 {
     private readonly CfSpaceBulk bulk;
-    private readonly List<CfPage> pagesByPath = new();
     private readonly Dictionary<int, CfPage> pagesById = new();
+    private CfPage rootPage = null!;
 
     public CfSpace(CfSpaceBulk bulk)
     {
@@ -82,7 +82,19 @@ public sealed class CfSpace
             
             foreach (var bulkPage in bulkPages)
             {
-                this.pagesById.Add(bulkPage.Id, new CfPage(bulkPage));
+                var page = new CfPage(bulkPage);
+                this.pagesById.Add(page.Id, page);
+                if (bulkPage.ParentId == 0)
+                {
+                    if (this.rootPage is not null)
+                    {
+                        Log.Error($"Root page already exists: {this.rootPage.Title}");
+                    }
+                    else
+                    {
+                        this.rootPage = page;
+                    }
+                }
             }
 
             Log.Info($"Got {bulkPages.Count} pages for space: {this.bulk.Name} url:{url}");
@@ -95,12 +107,11 @@ public sealed class CfSpace
         {
             page.Join(this.pagesById);
         }
-
-        // 부모 페이지가 없는 root 페이지들만 참조를 유지한다.
-        foreach (var rootPage in this.pagesById.Values.Where(e => e.Parent is null))
+        
+        if (this.rootPage is null)
         {
-            this.pagesByPath.Add(rootPage);
-            Log.Info(rootPage.ToString());
+            Log.Error($"Root page not found for space: {this.bulk.Name}");
+            return false;
         }
         
         return true;
