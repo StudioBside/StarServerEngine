@@ -90,7 +90,8 @@ public sealed class WikiToolCore
         {
             if (await this.CurrentSpace.CreatePage(this.client, wjPage) == false)
             {
-                return "Failed to create page.";
+                Log.Error("Failed to create page. path:{wjPage.Path} title:{wjPage.Title}");
+                continue;
             }
         }
         

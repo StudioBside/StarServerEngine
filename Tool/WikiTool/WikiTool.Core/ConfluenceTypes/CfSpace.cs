@@ -1,6 +1,5 @@
 ﻿namespace WikiTool.Core.ConfluenceTypes;
 
-using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 using Cs.Core.Util;
@@ -48,16 +47,38 @@ public sealed class CfSpace
     public async Task<bool> CreatePage(RestApiClient apiClient, WjPage wjPage)
     {
         // path에 해당하는 중간 페이지도 없다면 생성해 주어야 한다.
-        CfPage? parent = null;
+        CfPage parent = this.rootPage;
         var pathTokens = wjPage.Path.Split('/');
         for (int i = 0; i < pathTokens.Length - 1; i++)
         {
-            var newPage = await CfPage.CreateAsync(apiClient, this.Id, parent: null, wjPage.Title, wjPage.Path);
-            if (newPage is null)
+            var pathToken = pathTokens[i];
+            if (parent.TryGetSubPage(pathToken, out var page) == false)
             {
-                Log.Error($"Failed to create page: {wjPage.Path}");
-                return false;
+                Log.Info($"Create page: {pathToken}");
+                page = await CfPage.CreateAsync(apiClient, this.Id, parent, pathToken, pathToken);
+                if (page is null)
+                {
+                    Log.Error($"Failed to create page: {pathToken}");
+                    return false;
+                }
+                
+                CfPage.SetRelation(parent, page);
             }
+            
+            parent = page;
+        }
+
+        if (parent.TryGetSubPage(pathTokens[^1], out _))
+        {
+            Log.Info($"Page already exists: {wjPage.Path}");
+            return false;
+        }
+
+        var newPage = await CfPage.CreateAsync(apiClient, this.Id, parent, wjPage.Title, wjPage.Path);
+        if (newPage is null)
+        {
+            Log.Error($"Failed to create page: {wjPage.Path}");
+            return false;
         }
         
         return true;

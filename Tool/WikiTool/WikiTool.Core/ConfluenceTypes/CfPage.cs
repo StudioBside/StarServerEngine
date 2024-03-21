@@ -1,5 +1,6 @@
 ﻿namespace WikiTool.Core.ConfluenceTypes;
 
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Cs.HttpClient;
 using Cs.Logging;
@@ -87,6 +88,12 @@ public sealed class CfPage
         SetRelation(parent, this);
     }
     
+    public bool TryGetSubPage(string title, [MaybeNullWhen(false)] out CfPage page)
+    {
+        page = this.children.FirstOrDefault(e => e.Title == title);
+        return page is not null;
+    }
+
     //// -------------------------------------------------------------------------------------
     
     private string DumpToString(int indent)
