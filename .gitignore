@@ -61,14 +61,13 @@ Tool/JsonMigrator/Steps/**
 !Tool/JsonSchemaValidator/**
 !Tool/SlackAssist/
 !Tool/SlackAssist/**
-Tool/SlackAssist/**/*.json
 !Tool/GptPlay/
 !Tool/GptPlay/**
-Tool/GptPlay/**/*.json
 !Tool/WikiTool/
 !Tool/WikiTool/**
-Tool/WikiTool/**/*.json
 
+# Tool/ 하위 json 파일들은 모두 비공개
+Tool/**/*.json
 
 
 !.editorconfig
@@ -677,7 +676,5 @@ FodyWeavers.xsd
 # Additional files built by Visual Studio
 
 # End of https://www.toptal.com/developers/gitignore/api/csharp,visualstudiocode,visualstudio
-
-
 
 

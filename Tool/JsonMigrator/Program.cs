@@ -1,9 +1,9 @@
 ﻿namespace JsonMigrator
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
-
     using Cs.Core.Util;
     using Cs.Logging;
     using Cs.Perforce;
@@ -27,14 +27,13 @@
             {
                 var config = JsonUtil.Load<ConfigHolder>(configFileName).Migration;
 
-                if (string.IsNullOrEmpty(config.StepScriptPath) || string.IsNullOrEmpty(config.TargetPath))
+                if (string.IsNullOrEmpty(config.StepScriptPath) || config.TargetPaths.Length <= 0)
                 {
                     Log.Error("invalid config");
                     return -2;
                 }
 
                 Log.Debug($"stepScriptPath:{config.StepScriptPath}");
-                Log.Debug($"TargetPath:{config.TargetPath}");
                 Console.WriteLine();
 
                 if (Directory.Exists(config.StepScriptPath) == false)
@@ -50,7 +49,13 @@
                     return -3;
                 }
 
-                var targetFullPath = Path.GetFullPath(config.TargetPath);
+                var targetFullPaths = new List<string>();
+                foreach (var targetPath in config.TargetPaths)
+                {
+                    var targetFullPath = Path.GetFullPath(targetPath);
+                    targetFullPaths.Add(targetFullPath);
+                }
+
                 var migrator = Migrator.Create(config);
                 if (migrator is null)
                 {
@@ -69,7 +74,11 @@
                     return -6;
                 }
 
-                p4Commander.RevertUnchnaged(targetFullPath, out _);
+                foreach (var targetFullPath in targetFullPaths)
+                {
+                    p4Commander.RevertUnchnaged(targetFullPath, out _);
+                }
+
                 Log.DebugBold($"migration End. elapsed:{stopwatch.Elapsed}");
             }
             catch (Exception e)

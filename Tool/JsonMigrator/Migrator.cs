@@ -13,8 +13,6 @@
     using JsonMigrator.Config;
 
     using Microsoft.ClearScript.V8;
-
-    using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
     public sealed class Migrator
@@ -51,12 +49,36 @@
 
             migrator.steps.AddRange(loadSteps.Values.OrderBy(x => x.Version));
 
-            foreach (var targetFile in Directory.EnumerateFiles(config.TargetPath, "*.*", SearchOption.AllDirectories)
-                .Where(e => e.Contains("json", StringComparison.InvariantCultureIgnoreCase) && e.Contains("meta") == false))
+            foreach (var targetPath in config.TargetPaths)
             {
-                var fullPath = Path.GetFullPath(targetFile);
+                var fileAttr = File.GetAttributes(targetPath);
+                if (fileAttr.HasFlag(FileAttributes.Directory))
+                {
+                    foreach (var targetFile in Directory.EnumerateFiles(targetPath, "*.*", SearchOption.AllDirectories)
+                        .Where(e => e.Contains("meta", StringComparison.InvariantCultureIgnoreCase) == false))
+                    {
+                        var fullPath = Path.GetFullPath(targetFile);
 
-                migrator.targets.Add(fullPath);
+                        migrator.targets.Add(fullPath);
+                    }
+                }
+                else
+                {
+                    if (Path.Exists(targetPath) == false)
+                    {
+                        ErrorContainer.Add($"target file not found. targetPath:{targetPath}");
+                        continue;
+                    }
+
+                    var extension = Path.GetExtension(targetPath);
+                    if (extension.Contains("meta", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        continue;
+                    }
+
+                    var fullPath = Path.GetFullPath(targetPath);
+                    migrator.targets.Add(fullPath);
+                }
             }
 
             ErrorContainer.Validate();
@@ -93,7 +115,6 @@
                 var version = json.GetInt64("_Version", defValue: 0);
                 if (this.steps.Any(e => e.Version > version) == false)
                 {
-                    Log.Info($"Migration Skip. version:{version} target:{debugTarget}");
                     return;
                 }
 
