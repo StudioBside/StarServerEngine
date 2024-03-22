@@ -1,8 +1,0 @@
-{
-    "Migration": {
-        "TargetPaths": [
-            "../../../StarClient/Assets/ASSET_BUNDLE/AB_BUILTIN/ABB_SCRIPT_TXT/CLIENT_EFFECT_NODE.txt"
-        ],
-        "StepScriptPath": "./Steps"
-    }
-}
