@@ -54,7 +54,6 @@ public sealed class CfSpace
             var pathToken = pathTokens[i];
             if (parent.TryGetSubPage(pathToken, out var page) == false)
             {
-                Log.Info($"Create page: {pathToken}");
                 page = await CfPage.CreateAsync(apiClient, this.Id, parent, pathToken, pathToken);
                 if (page is null)
                 {
@@ -62,6 +61,7 @@ public sealed class CfSpace
                     return false;
                 }
                 
+                Log.Info($"Create page: {pathToken}");
                 CfPage.SetRelation(parent, page);
             }
             
@@ -73,16 +73,14 @@ public sealed class CfSpace
         {
             if (prevPage.Body.Equals(wjPage.Content) == false)
             {
-                Log.Info($"Update page: {wjPage.Path}");
                 if (await prevPage.UpdateAsync(apiClient, wjPage.Content) == false)
                 {
-                    Log.Error($"Failed to update page: {wjPage.Path}");
+                    Log.Error($"Failed to update page. title:{title} contentType:{wjPage.ContentType}");
+                    Log.Debug($"content:{wjPage.Content}");
                     return false;
                 }
-            }
-            else
-            {
-                Log.Info($"Page already exists: {wjPage.Path}");
+
+                Log.Info($"Update page: {title}");
             }
 
             return true;
@@ -96,6 +94,7 @@ public sealed class CfSpace
         }
         
         Log.Debug($"Created page: {wjPage.Path}");
+        CfPage.SetRelation(parent, newPage);
         return true;
     }
 
@@ -103,7 +102,7 @@ public sealed class CfSpace
 
     private async Task<bool> InitializeAsync(RestApiClient apiClient)
     {
-        string? url = $"wiki/api/v2/spaces/{this.Id}/pages";
+        string? url = $"wiki/api/v2/spaces/{this.Id}/pages?body-format=storage&expand=body.storage";
 
         while (string.IsNullOrEmpty(url) == false)
         {

@@ -88,11 +88,7 @@ public sealed class WikiToolCore
         
         foreach (var wjPage in this.wikiJs.Pages.Take(convertCount))
         {
-            if (await this.CurrentSpace.GuaranteePage(this.client, wjPage) == false)
-            {
-                Log.Error("Failed to create page. path:{wjPage.Path} title:{wjPage.Title}");
-                continue;
-            }
+            await this.CurrentSpace.GuaranteePage(this.client, wjPage);
         }
         
         return "Success";

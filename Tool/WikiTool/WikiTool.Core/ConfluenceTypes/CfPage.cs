@@ -78,24 +78,26 @@ public sealed class CfPage
         var request = new HttpRequestMessage(HttpMethod.Put, $"wiki/api/v2/pages/{this.Id}");
         string bodyContent = JsonConvert.SerializeObject(new
         {
-            version = new
-            {
-                number = this.bulk.Version.Number + 1,
-            },
+            id = this.Id,
+            status = "current",
             title = this.Title,
             body = new
             {
                 representation = "storage",
                 value = body,
             },
+            version = new
+            {
+                number = this.bulk.Version.Number + 1,
+            },
         });
 
         request.Content = new StringContent(bodyContent, Encoding.UTF8, "application/json");
         
         var response = await apiClient.SendAsync(request);
-        if (response.StatusCode != System.Net.HttpStatusCode.OK)
+        if (response.IsSuccessStatusCode == false)
         {
-            Log.Error($"Failed to update page: {this.Title} statusCode:{response.StatusCode}");
+            // Log.Error($"{this.Title} statusCode:{response.StatusCode}");
             return false;
         }
 
@@ -105,6 +107,9 @@ public sealed class CfPage
             Log.Error($"Failed to update page: {this.Title}");
             return false;
         }
+        
+        bulkPage.Body.Representation = "storage";
+        bulkPage.Body.Value = body;
 
         this.bulk.Update(bulkPage);
         return true;
