@@ -8,7 +8,7 @@ public sealed class CfPageBulk
     public int Id { get; set; }
     public required string Title { get; set; }
     public required int ParentId { get; set; }
-    public required JToken? Body { get; set; }
+    public required PageBody Body { get; set; }
     public required string Status { get; set; }
     public required PageVersion Version { get; set; }
     public int VersionNumber => this.Version.Number;
@@ -20,10 +20,20 @@ public sealed class CfPageBulk
             Id = obj.GetInt32("id"),
             Title = obj.GetString("title"),
             ParentId = obj.GetInt32("parentId", 0),
-            Body = obj["body"],
+            Body = obj["body"]!.ToObject<PageBody>()!,
             Status = obj.GetString("status"),
             Version = obj["version"]!.ToObject<PageVersion>()!,
         };
+    }
+
+    internal void Update(CfPageBulk bulkPage)
+    {
+        // update members
+        this.Title = bulkPage.Title;
+        this.ParentId = bulkPage.ParentId;
+        this.Body = bulkPage.Body;
+        this.Status = bulkPage.Status;
+        this.Version = bulkPage.Version;
     }
 
     public sealed class PageVersion
@@ -33,6 +43,12 @@ public sealed class CfPageBulk
         public bool MinorEdit { get; set; }
         public string AuthorId { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
+    }
+    
+    public sealed class PageBody
+    {
+        public string Representation { get; set; } = string.Empty;
+        public string Value { get; set; } = string.Empty;
     }
 }
 

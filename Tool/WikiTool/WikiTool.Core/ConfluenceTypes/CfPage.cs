@@ -18,6 +18,7 @@ public sealed class CfPage
     
     public int Id => this.bulk.Id;
     public string Title => this.bulk.Title;
+    public string Body => this.bulk.Body.Value;
     public CfPage? Parent { get; private set; }
     
     public static void SetRelation(CfPage parent, CfPage child)
@@ -64,6 +65,49 @@ public sealed class CfPage
         }
 
         return new CfPage(bulkPage!);
+    }
+
+    public async Task<bool> UpdateAsync(RestApiClient apiClient, string body)
+    {
+        if (this.bulk.Body.Value.Equals(body))
+        {
+            Log.Info($"Page body is not changed: {this.Title}");
+            return true;
+        }
+        
+        var request = new HttpRequestMessage(HttpMethod.Put, $"wiki/api/v2/pages/{this.Id}");
+        string bodyContent = JsonConvert.SerializeObject(new
+        {
+            version = new
+            {
+                number = this.bulk.Version.Number + 1,
+            },
+            title = this.Title,
+            body = new
+            {
+                representation = "storage",
+                value = body,
+            },
+        });
+
+        request.Content = new StringContent(bodyContent, Encoding.UTF8, "application/json");
+        
+        var response = await apiClient.SendAsync(request);
+        if (response.StatusCode != System.Net.HttpStatusCode.OK)
+        {
+            Log.Error($"Failed to update page: {this.Title} statusCode:{response.StatusCode}");
+            return false;
+        }
+
+        var bulkPage = await response.GetContentAs<CfPageBulk>();
+        if (bulkPage is null)
+        {
+            Log.Error($"Failed to update page: {this.Title}");
+            return false;
+        }
+
+        this.bulk.Update(bulkPage);
+        return true;
     }
 
     public override string ToString()

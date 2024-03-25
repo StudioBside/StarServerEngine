@@ -44,7 +44,7 @@ public sealed class CfSpace
         return sb.ToString();
     }
     
-    public async Task<bool> CreatePage(RestApiClient apiClient, WjPage wjPage)
+    public async Task<bool> GuaranteePage(RestApiClient apiClient, WjPage wjPage)
     {
         // path에 해당하는 중간 페이지도 없다면 생성해 주어야 한다.
         CfPage parent = this.rootPage;
@@ -68,19 +68,34 @@ public sealed class CfSpace
             parent = page;
         }
 
-        if (parent.TryGetSubPage(pathTokens[^1], out _))
+        var title = $"{wjPage.Title} ({wjPage.Id})";
+        if (parent.TryGetSubPage(title, out var prevPage))
         {
-            Log.Info($"Page already exists: {wjPage.Path}");
-            return false;
+            if (prevPage.Body.Equals(wjPage.Content) == false)
+            {
+                Log.Info($"Update page: {wjPage.Path}");
+                if (await prevPage.UpdateAsync(apiClient, wjPage.Content) == false)
+                {
+                    Log.Error($"Failed to update page: {wjPage.Path}");
+                    return false;
+                }
+            }
+            else
+            {
+                Log.Info($"Page already exists: {wjPage.Path}");
+            }
+
+            return true;
         }
 
-        var newPage = await CfPage.CreateAsync(apiClient, this.Id, parent, wjPage.Title, wjPage.Path);
+        var newPage = await CfPage.CreateAsync(apiClient, this.Id, parent, title, wjPage.Path);
         if (newPage is null)
         {
             Log.Error($"Failed to create page: {wjPage.Path}");
             return false;
         }
         
+        Log.Debug($"Created page: {wjPage.Path}");
         return true;
     }
 
