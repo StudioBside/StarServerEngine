@@ -44,7 +44,16 @@ public sealed class ReplConsole
         return true;
     }
 
-    public async Task Run()
+    public async Task ExecuteBatch(IEnumerable<string> commands)
+    {
+        foreach (var command in commands)
+        {
+            Console.WriteLine($"{this.Handler.GetPrompt()}> {command}");
+            await this.ProcessSingleCommand(command);
+        }
+    }
+
+    public async Task StartLoop()
     {
         Console.OutputEncoding = System.Text.Encoding.UTF8;
         Console.WriteLine($"Type 'exit' to end.");
@@ -61,48 +70,55 @@ public sealed class ReplConsole
             {
                 break;
             }
-
-            if (string.IsNullOrEmpty(input))
-            {
-                continue;
-            }
             
-            // Split the input into command and argument
-            string command;
-            string argument;
-            int spaceIndex = input.IndexOf(' ');
-            if (spaceIndex == -1)
+            await this.ProcessSingleCommand(input);
+        }
+    }
+    
+    //// -----------------------------------------------------------------------------------------
+    
+    private async Task ProcessSingleCommand(string input)
+    {
+        if (string.IsNullOrEmpty(input))
+        {
+            return;
+        }
+        
+        // Split the input into command and argument
+        string command;
+        string argument;
+        int spaceIndex = input.IndexOf(' ');
+        if (spaceIndex == -1)
+        {
+            command = input;
+            argument = string.Empty;
+        }
+        else
+        {
+            command = input[..spaceIndex];
+            argument = input[(spaceIndex + 1)..];
+        }
+        
+        try
+        {
+            string result = string.Empty;
+            if (this.commands.TryGetValue(command, out var cmd))
             {
-                command = input;
-                argument = string.Empty;
+                result = await cmd.Invoke(this.Handler, argument);
             }
             else
             {
-                command = input[..spaceIndex];
-                argument = input[(spaceIndex + 1)..];
+                result = await this.Handler.Evaluate(input);
             }
-            
-            try
-            {
-                string result = string.Empty;
-                if (this.commands.TryGetValue(command, out var cmd))
-                {
-                    result = await cmd.Invoke(this.Handler, argument);
-                }
-                else
-                {
-                    result = await this.Handler.Evaluate(input);
-                }
 
-                Console.WriteLine();
-                Console.WriteLine(result);
-                Console.WriteLine();
-            }
-            catch (Exception ex)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"Error: {ex.Message}");
-            }
+            Console.WriteLine();
+            Console.WriteLine(result);
+            Console.WriteLine();
+        }
+        catch (Exception ex)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"Error: {ex.Message}");
         }
     }
 }

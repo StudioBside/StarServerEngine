@@ -24,6 +24,7 @@ public sealed class WikiToolCore
         Log.Info($"wiki url:{this.config.Confluence.Url}");
     }
     
+    public WikiToolConfig Config => this.config;
     public IReadOnlyList<CfSpaceBulk> Spaces => this.spaces;
     public CfSpace? CurrentSpace { get; private set; }
     

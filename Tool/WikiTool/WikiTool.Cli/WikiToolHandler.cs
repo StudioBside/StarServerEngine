@@ -14,6 +14,8 @@ public sealed class WikiToolHandler : ReplHandlerBase
         this.tool = new WikiToolCore();
     }
     
+    public WikiToolConfig Config => this.tool.Config;
+    
     public override Task<bool> InitializeAsync()
     {
         return this.tool.InitializeAsync();

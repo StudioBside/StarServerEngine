@@ -19,4 +19,4 @@ if (await console.InitializeAsync(new GptPlayHandler(config)) == false)
     return;
 }
 
-await console.Run();
+await console.StartLoop();
