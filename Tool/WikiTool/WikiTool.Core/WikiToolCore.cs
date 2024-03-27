@@ -3,6 +3,7 @@
 using Cs.Core.Util;
 using Cs.HttpClient;
 using Cs.Logging;
+using Microsoft.VisualBasic;
 using WikiTool.Core.ConfluenceTypes;
 
 public sealed class WikiToolCore
@@ -90,6 +91,27 @@ public sealed class WikiToolCore
         foreach (var wjPage in this.wikiJs.Pages.Take(convertCount))
         {
             await this.CurrentSpace.GuaranteePage(this.client, wjPage);
+        }
+        
+        return "Success";
+    }
+    
+    public async Task<string> CleanGarbages()
+    {
+        if (this.CurrentSpace is null)
+        {
+            return "선택된 space가 없습니다.";
+        }
+        
+        // 제목에 id를 붙이지 않고 만들어진 페이지들을 삭제한다.
+        foreach (var wjPage in this.wikiJs.Pages)
+        {
+            if (this.CurrentSpace.TryGetPage(wjPage.Title, out var cfPage) == false)
+            {
+                continue;
+            }
+
+            await this.CurrentSpace.DeletePage(this.client, cfPage);
         }
         
         return "Success";

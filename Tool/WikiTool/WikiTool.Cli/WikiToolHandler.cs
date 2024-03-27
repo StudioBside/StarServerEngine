@@ -76,4 +76,10 @@ public sealed class WikiToolHandler : ReplHandlerBase
         
         return this.tool.ConvertPages(convertCount);
     }
+
+    [ReplCommand(Name = "clean-garbages", Description = "제목에 id값 명시하지 않은 페이지가 있다면 일괄 삭제합니다.")]
+    public Task<string> CleanGarbages(string argument)
+    {
+        return this.tool.CleanGarbages();
+    }
 }

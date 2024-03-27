@@ -114,6 +114,19 @@ public sealed class CfPage
         this.bulk.Update(bulkPage);
         return true;
     }
+    
+    public async Task<bool> DeleteAsync(RestApiClient apiClient)
+    {
+        var request = new HttpRequestMessage(HttpMethod.Delete, $"wiki/api/v2/pages/{this.Id}");
+        var response = await apiClient.SendAsync(request);
+        if (response.IsSuccessStatusCode == false)
+        {
+            Log.Error($"Failed to delete page: {this.Title} statusCode:{response.StatusCode}");
+            return false;
+        }
+
+        return true;
+    }
 
     public override string ToString()
     {

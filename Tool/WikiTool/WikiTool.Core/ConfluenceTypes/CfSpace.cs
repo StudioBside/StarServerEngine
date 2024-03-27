@@ -1,5 +1,6 @@
 ﻿namespace WikiTool.Core.ConfluenceTypes;
 
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Headers;
 using System.Text;
 using Cs.Core.Util;
@@ -98,6 +99,32 @@ public sealed class CfSpace
         return true;
     }
 
+    public bool TryGetPage(string title, [MaybeNullWhen(false)] out CfPage page)
+    {
+        page = this.pagesById.Values.FirstOrDefault(e => e.Title == title);
+        return page is not null;
+    }
+    
+    public async Task<bool> DeletePage(RestApiClient apiClient, CfPage page)
+    {
+        if (page.Parent is null)
+        {
+            Log.Error($"Root page cannot be deleted: {page.Title}");
+            return false;
+        }
+
+        if (await page.DeleteAsync(apiClient) == false)
+        {
+            Log.Error($"Failed to delete page: {page.Title}");
+            return false;
+        }
+
+        int prevCount = this.pagesById.Count;
+        this.pagesById.Remove(page.Id);
+        Log.Info($"Deleted page: {page.Title} pageCount:{prevCount} -> {this.pagesById.Count}");
+        return true;
+    }
+    
     //// -----------------------------------------------------------------------------------------
 
     private async Task<bool> InitializeAsync(RestApiClient apiClient)
