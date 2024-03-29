@@ -72,9 +72,9 @@ public sealed class CfSpace
         var title = $"{wjPage.Title} ({wjPage.Id})";
         if (parent.TryGetSubPage(title, out var prevPage))
         {
-            if (prevPage.Body.Equals(wjPage.Content) == false)
+            if (prevPage.Body.Equals(wjPage.Render) == false)
             {
-                if (await prevPage.UpdateAsync(apiClient, wjPage.Content) == false)
+                if (await prevPage.UpdateAsync(apiClient, wjPage.Render) == false)
                 {
                     Log.Error($"Failed to update page. title:{title} contentType:{wjPage.ContentType}");
                     Log.Debug($"content:{wjPage.Content}");
@@ -87,7 +87,7 @@ public sealed class CfSpace
             return true;
         }
 
-        var newPage = await CfPage.CreateAsync(apiClient, this.Id, parent, title, wjPage.Path);
+        var newPage = await CfPage.CreateAsync(apiClient, this.Id, parent, title, wjPage.Render);
         if (newPage is null)
         {
             Log.Error($"Failed to create page: {wjPage.Path}");

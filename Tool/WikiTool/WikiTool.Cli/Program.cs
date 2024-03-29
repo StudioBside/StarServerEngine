@@ -10,7 +10,8 @@ if (await console.InitializeAsync(handler) == false)
     return;
 }
 
-if (handler.Config.BatchCommands.Count > 0)
+if (handler.Config.BatchCommands is not null && 
+    handler.Config.BatchCommands.Count > 0)
 {
     await console.ExecuteBatch(handler.Config.BatchCommands);
 }
