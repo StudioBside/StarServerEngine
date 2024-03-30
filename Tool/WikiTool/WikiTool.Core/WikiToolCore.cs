@@ -116,4 +116,35 @@ public sealed class WikiToolCore
         
         return "Success";
     }
+    
+    public async Task<string> GuaranteePage(string title, string content)
+    {
+        if (this.CurrentSpace is null)
+        {
+            return "선택된 space가 없습니다.";
+        }
+        
+        var wjPage = new WjPage
+        {
+            Id = 0,
+            Path = title,
+            Title = title,
+            Description = string.Empty,
+            Content = content,
+            Render = content,
+            Toc = string.Empty,
+            ContentType = "html",
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now,
+            Author = new WjUser { Id = 0, Name = "WikiTool", Email = string.Empty },
+            Creator = new WjUser { Id = 0, Name = "WikiTool", Email = string.Empty },
+        };
+        
+        if (await this.CurrentSpace.GuaranteePage(this.client, wjPage))
+        {
+            return "Success";
+        }
+
+        return "Failed";
+    }
 }

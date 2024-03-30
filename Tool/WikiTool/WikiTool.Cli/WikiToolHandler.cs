@@ -82,4 +82,12 @@ public sealed class WikiToolHandler : ReplHandlerBase
     {
         return this.tool.CleanGarbages();
     }
+
+    [ReplCommand(Name = "guarantee-page", Description = "제목과 내용을 입력받아 페이지를 생성합니다.")]
+    public Task<string> GuaranteePage(string argument)
+    {
+        var tokens = argument.Split(' ', 2);
+        var (title, content) = (tokens[0], tokens[1]);
+        return this.tool.GuaranteePage(title, content);
+    }
 }
