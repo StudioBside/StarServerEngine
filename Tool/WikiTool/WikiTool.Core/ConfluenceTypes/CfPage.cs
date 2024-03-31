@@ -32,6 +32,7 @@ public sealed class CfPage
         int spaceId,
         CfPage? parent,
         string title,
+        string representation,
         string body)
     {
         var request = new HttpRequestMessage(HttpMethod.Post, $"wiki/api/v2/pages");
@@ -43,7 +44,7 @@ public sealed class CfPage
             parentId = parent?.Id,
             body = new
             {
-                representation = "storage",
+                representation = representation,
                 value = body,
             },
         });
@@ -67,7 +68,7 @@ public sealed class CfPage
         return new CfPage(bulkPage!);
     }
 
-    public async Task<bool> UpdateAsync(RestApiClient apiClient, string body)
+    public async Task<bool> UpdateAsync(RestApiClient apiClient, string representation, string body)
     {
         if (this.bulk.Body.Value.Equals(body))
         {
@@ -83,7 +84,7 @@ public sealed class CfPage
             title = this.Title,
             body = new
             {
-                representation = "storage",
+                representation = representation,
                 value = body,
             },
             version = new

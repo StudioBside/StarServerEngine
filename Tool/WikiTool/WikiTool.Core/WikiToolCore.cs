@@ -89,12 +89,24 @@ public sealed class WikiToolCore
             return "선택된 space가 없습니다.";
         }
         
+        int success = 0;
+        int failed = 0;
         foreach (var wjPage in this.wikiJs.Pages.Take(convertCount))
         {
-            await this.CurrentSpace.GuaranteePage(this.client, wjPage);
+            var result = await this.CurrentSpace.GuaranteePage(this.client, wjPage);
+            if (result)
+            {
+                success++;
+            }
+            else
+            {
+                failed++;
+            }
+            
+            Log.Info($"success:{success} failed:{failed}");
         }
         
-        return "Success";
+        return "finished";
     }
     
     public Task<string> TestPage(int percent)
