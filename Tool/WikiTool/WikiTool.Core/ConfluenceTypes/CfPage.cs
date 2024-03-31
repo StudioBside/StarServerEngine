@@ -115,6 +115,32 @@ public sealed class CfPage
         return true;
     }
     
+    public async Task<string> ViewAsync(RestApiClient apiClient)
+    {
+        if (string.IsNullOrEmpty(this.Body) == false)
+        {
+            return this.Body;
+        }
+        
+        var request = new HttpRequestMessage(HttpMethod.Get, $"wiki/api/v2/pages/{this.Id}?body-format=storage");
+        var response = await apiClient.SendAsync(request);
+        if (response.IsSuccessStatusCode == false)
+        {
+            Log.Error($"Failed to get page: {this.Title} statusCode:{response.StatusCode}");
+            return string.Empty;
+        }
+
+        var bulkPage = await response.GetContentAs<CfPageBulk>();
+        if (bulkPage is null)
+        {
+            Log.Error($"Failed to get page: {this.Title}");
+            return string.Empty;
+        }
+
+        this.bulk.Update(bulkPage);
+        return this.Body;
+    }
+    
     public async Task<bool> DeleteAsync(RestApiClient apiClient)
     {
         var request = new HttpRequestMessage(HttpMethod.Delete, $"wiki/api/v2/pages/{this.Id}");

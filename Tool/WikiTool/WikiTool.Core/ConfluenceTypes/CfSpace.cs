@@ -125,6 +125,17 @@ public sealed class CfSpace
         return true;
     }
     
+    public Task<string> ViewPage(RestApiClient apiClient, string title)
+    {
+        if (this.TryGetPage(title, out var page) == false)
+        {
+            Log.Error($"Page not found: {title}");
+            return Task.FromResult(string.Empty);
+        }
+
+        return page.ViewAsync(apiClient);
+    }
+    
     //// -----------------------------------------------------------------------------------------
 
     private async Task<bool> InitializeAsync(RestApiClient apiClient)

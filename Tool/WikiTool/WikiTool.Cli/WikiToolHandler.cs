@@ -90,4 +90,21 @@ public sealed class WikiToolHandler : ReplHandlerBase
         var (title, content) = (tokens[0], tokens[1]);
         return this.tool.GuaranteePage(title, content);
     }
+
+    [ReplCommand(Name = "test-page", Description = "업데이트 실패중인 글을 입력받은 퍼센트만큼 잘라 업데이트합니다.")]
+    public Task<string> TestPage(string argument)
+    {
+        if (int.TryParse(argument, out int percent) == false)
+        {
+            return Task.FromResult($"퍼센트 값을 입력해야 합니다: {argument}");
+        }
+
+        return this.tool.TestPage(percent);
+    }
+
+    [ReplCommand(Name = "view-page", Description = "업데이트 실패중인 글을 입력받은 퍼센트만큼 잘라 업데이트합니다.")]
+    public Task<string> ViewPage(string argument)
+    {
+        return this.tool.ViewPage(argument);
+    }
 }

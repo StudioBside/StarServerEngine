@@ -1,5 +1,6 @@
 ﻿namespace WikiTool.Core;
 
+using System.Net;
 using Cs.Core.Util;
 using Cs.HttpClient;
 using Cs.Logging;
@@ -96,6 +97,35 @@ public sealed class WikiToolCore
         return "Success";
     }
     
+    public Task<string> TestPage(int percent)
+    {
+        if (this.CurrentSpace is null)
+        {
+            return Task.FromResult("선택된 space가 없습니다.");
+        }
+        
+        var wjPage = this.wikiJs.Pages[0];
+        int contentLength = wjPage.Render.Length * percent / 100;
+        Log.Info($"contentLength:{wjPage.Render.Length} -> {contentLength}");
+        var content = wjPage.Render[..contentLength];
+        return this.GuaranteePage(wjPage.Title, content);
+    }
+    
+    public Task<string> ViewPage(string title)
+    {
+        if (this.CurrentSpace is null)
+        {
+            return Task.FromResult("선택된 space가 없습니다.");
+        }
+        
+        if (this.CurrentSpace.TryGetPage(title, out var cfPage) == false)
+        {
+            return Task.FromResult($"Page not found: {title}");
+        }
+        
+        return cfPage.ViewAsync(this.client);
+    }
+    
     public async Task<string> CleanGarbages()
     {
         if (this.CurrentSpace is null)
@@ -131,7 +161,7 @@ public sealed class WikiToolCore
             Title = title,
             Description = string.Empty,
             Content = content,
-            Render = content,
+            Render = WebUtility.HtmlEncode(content),
             Toc = string.Empty,
             ContentType = "html",
             CreatedAt = DateTime.Now,
