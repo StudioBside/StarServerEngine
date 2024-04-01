@@ -15,12 +15,18 @@ public sealed class CfPageBulk
     
     public static CfPageBulk LoadFromJson(JToken obj, int index)
     {
+        PageBody pageBody = null!;
+        if (obj["body"] is { } body && body["storage"] is { } storage)
+        {
+            pageBody = storage.ToObject<PageBody>()!;
+        }
+
         return new CfPageBulk
         {
             Id = obj.GetInt32("id"),
             Title = obj.GetString("title"),
             ParentId = obj.GetInt32("parentId", 0),
-            Body = obj["body"]!.ToObject<PageBody>()!,
+            Body = pageBody,
             Status = obj.GetString("status"),
             Version = obj["version"]!.ToObject<PageVersion>()!,
         };

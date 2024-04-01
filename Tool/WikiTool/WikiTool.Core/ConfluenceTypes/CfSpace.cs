@@ -71,15 +71,15 @@ public sealed class CfSpace
 
         var title = $"{wjPage.Title} ({wjPage.Id})";
         var representation = wjPage.ContentType == "markdown" ? "wiki" : "storage";
-        var content = wjPage.ContentType == "markdown" ? wjPage.Content : $"<html>{wjPage.Render}</html>";
+        var content = wjPage.ContentType == "markdown" ? wjPage.Content : wjPage.Render;
         if (parent.TryGetSubPage(title, out var prevPage))
         {
-            if (prevPage.Body.Equals(wjPage.Render) == false)
+            if (prevPage.Body.Equals(content) == false)
             {
                 if (await prevPage.UpdateAsync(apiClient, representation, content) == false)
                 {
                     Log.Error($"Failed to update page. title:{title} contentType:{wjPage.ContentType}");
-                    Log.Debug($"content:{wjPage.Content}");
+                    Log.Debug($"content:{content}");
                     return false;
                 }
 
