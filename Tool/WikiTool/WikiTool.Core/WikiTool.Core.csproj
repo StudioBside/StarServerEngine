@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Html2Markdown" Version="6.2.0.3" />
         <PackageReference Include="stylecop.analyzers" Version="1.2.0-beta.507">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

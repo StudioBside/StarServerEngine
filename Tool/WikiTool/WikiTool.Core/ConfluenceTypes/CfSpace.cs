@@ -70,16 +70,15 @@ public sealed class CfSpace
         }
 
         var title = $"{wjPage.Title} ({wjPage.Id})";
-        var representation = wjPage.ContentType == "markdown" ? "wiki" : "storage";
-        var content = wjPage.ContentType == "markdown" ? wjPage.Content : wjPage.Render;
+        var content = wjPage.ConvertToConfluenceContent();
         if (parent.TryGetSubPage(title, out var prevPage))
         {
             if (prevPage.Body.Equals(content) == false)
             {
-                if (await prevPage.UpdateAsync(apiClient, representation, content) == false)
+                if (await prevPage.UpdateAsync(apiClient, "wiki", content) == false)
                 {
                     Log.Error($"Failed to update page. title:{title} contentType:{wjPage.ContentType}");
-                    Log.Debug($"content:{content}");
+                    // Log.Debug($"content:{content}");
                     return false;
                 }
 
@@ -89,7 +88,7 @@ public sealed class CfSpace
             return true;
         }
 
-        var newPage = await CfPage.CreateAsync(apiClient, this.Id, parent, title, representation, content); 
+        var newPage = await CfPage.CreateAsync(apiClient, this.Id, parent, title, "wiki", content); 
         if (newPage is null)
         {
             Log.Error($"Failed to create page: {wjPage.Path} conentType:{wjPage.ContentType}");
