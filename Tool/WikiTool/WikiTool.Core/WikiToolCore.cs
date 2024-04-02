@@ -109,6 +109,23 @@ public sealed class WikiToolCore
         return "finished";
     }
     
+    public async Task<string> ConvertById(int pageId)
+    {
+        if (this.CurrentSpace is null)
+        {
+            return "선택된 space가 없습니다.";
+        }
+        
+        var wjPage = this.wikiJs.Pages.FirstOrDefault(e => e.Id == pageId);
+        if (wjPage is null)
+        {
+            return $"Page not found: {pageId}";
+        }
+
+        var result = await this.CurrentSpace.GuaranteePage(this.client, wjPage);
+        return $"pageId:{pageId} title:{wjPage.Title} result:{result}";
+    }
+    
     public Task<string> TestPage(int percent)
     {
         if (this.CurrentSpace is null)

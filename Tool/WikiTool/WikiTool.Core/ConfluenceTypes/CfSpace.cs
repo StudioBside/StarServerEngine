@@ -78,7 +78,7 @@ public sealed class CfSpace
                 if (await prevPage.UpdateAsync(apiClient, "wiki", content) == false)
                 {
                     Log.Error($"Failed to update page. title:{title} contentType:{wjPage.ContentType}");
-                    // Log.Debug($"content:{content}");
+                    Log.Debug($"content:{content}");
                     return false;
                 }
 
