@@ -35,6 +35,12 @@
                 return false;
             }
 
+            if (source.Contains('\t') == false && translated.Contains('\t'))
+            {
+                Log.Warn($"번역 결과에 탭문자 존재. mode:{mode} translated:{translated}");
+                return false;
+            }
+
             if (source.All(e => e == '…') && translated.Any(e => e != '…'))
             {
                 return false;
