@@ -102,13 +102,25 @@ public sealed class WikiToolHandler : ReplHandlerBase
         return this.tool.TestPage(percent);
     }
 
-    [ReplCommand(Name = "view-page", Description = "업데이트 실패중인 글을 입력받은 퍼센트만큼 잘라 업데이트합니다.")]
-    public Task<string> ViewPage(string argument)
+    [ReplCommand(Name = "list-pages", Description = "현재 스페이스의 페이지 목록을 출력합니다.")]
+    public Task<string> ListPages(string argument)
     {
-        return this.tool.ViewPage(argument);
+        return this.tool.ListPages();
     }
 
-    [ReplCommand(Name = "convert-by-id", Description = "입력받은 id에 해당하는 페이지를 변환합니다.")]
+    [ReplCommand(Name = "search-page", Description = "검색어 키워드를 입력받아 페이지를 검색합니다.")]
+    public Task<string> SearchPages(string argument)
+    {
+        return this.tool.SearchPage(argument);
+    }
+
+    [ReplCommand(Name = "view-page", Description = "입력받은 (cfPage)id에 해당하는 페이지 내용을 api로 다시 받아옵니다.")]
+    public Task<string> ViewPage(string argument)
+    {
+        return this.tool.ViewPage(int.Parse(argument));
+    }
+
+    [ReplCommand(Name = "convert-by-id", Description = "입력받은 (wjPage)id에 해당하는 페이지를 변환합니다.")]
     public Task<string> ConvertById(string argument)
     {
         int pageId = int.Parse(argument);

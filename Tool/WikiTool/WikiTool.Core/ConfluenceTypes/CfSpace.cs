@@ -106,6 +106,11 @@ public sealed class CfSpace
         return page is not null;
     }
     
+    public bool TryGetPage(int id, [MaybeNullWhen(false)] out CfPage page)
+    {
+        return this.pagesById.TryGetValue(id, out page);
+    }
+    
     public async Task<bool> DeletePage(RestApiClient apiClient, CfPage page)
     {
         if (page.Parent is null)

@@ -1,6 +1,7 @@
 ﻿namespace WikiTool.Core;
 
 using System.Net;
+using System.Text;
 using Cs.Core.Util;
 using Cs.HttpClient;
 using Cs.Logging;
@@ -140,19 +141,51 @@ public sealed class WikiToolCore
         return this.GuaranteePage(wjPage.Title, content);
     }
     
-    public Task<string> ViewPage(string title)
+    public Task<string> ListPages()
     {
         if (this.CurrentSpace is null)
         {
             return Task.FromResult("선택된 space가 없습니다.");
         }
         
-        if (this.CurrentSpace.TryGetPage(title, out var cfPage) == false)
+        var sb = new StringBuilder();
+        foreach (var page in this.CurrentSpace.Pages)
         {
-            return Task.FromResult($"Page not found: {title}");
+            sb.AppendLine($"id:{page.Id} title:{page.Title}");
         }
         
-        return cfPage.ViewAsync(this.client);
+        return Task.FromResult(sb.ToString());
+    }
+    
+    public Task<string> ViewPage(int cfPageId)
+    {
+        if (this.CurrentSpace is null)
+        {
+            return Task.FromResult("선택된 space가 없습니다.");
+        }
+        
+        if (this.CurrentSpace.TryGetPage(cfPageId, out var page) == false)
+        {
+            return Task.FromResult($"Page not found: {cfPageId}");
+        }
+        
+        return page.ViewAsync(this.client);
+    }
+
+    public Task<string> SearchPage(string keyword)
+    {
+        if (this.CurrentSpace is null)
+        {
+            return Task.FromResult("선택된 space가 없습니다.");
+        }
+        
+        var sb = new StringBuilder();
+        foreach (var page in this.CurrentSpace.Pages.Where(e => e.Title.Contains(keyword)))
+        {
+            sb.AppendLine($"id:{page.Id} title:{page.Title}");
+        }
+        
+        return Task.FromResult(sb.ToString());
     }
     
     public async Task<string> CleanGarbages()
