@@ -141,11 +141,11 @@ public sealed class WikiToolCore
         return this.GuaranteePage(wjPage.Title, content);
     }
     
-    public Task<string> ListPages()
+    public string ListPages()
     {
         if (this.CurrentSpace is null)
         {
-            return Task.FromResult("선택된 space가 없습니다.");
+            return "선택된 space가 없습니다.";
         }
         
         var sb = new StringBuilder();
@@ -154,7 +154,7 @@ public sealed class WikiToolCore
             sb.AppendLine($"id:{page.Id} title:{page.Title}");
         }
         
-        return Task.FromResult(sb.ToString());
+        return sb.ToString();
     }
     
     public Task<string> ViewPage(int cfPageId)
@@ -172,11 +172,11 @@ public sealed class WikiToolCore
         return page.ViewAsync(this.client);
     }
 
-    public Task<string> SearchPage(string keyword)
+    public string SearchPage(string keyword)
     {
         if (this.CurrentSpace is null)
         {
-            return Task.FromResult("선택된 space가 없습니다.");
+            return "선택된 space가 없습니다.";
         }
         
         var sb = new StringBuilder();
@@ -185,7 +185,7 @@ public sealed class WikiToolCore
             sb.AppendLine($"id:{page.Id} title:{page.Title}");
         }
         
-        return Task.FromResult(sb.ToString());
+        return sb.ToString();
     }
     
     public async Task<string> CleanGarbages()

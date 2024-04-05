@@ -27,7 +27,7 @@ public sealed class WikiToolHandler : ReplHandlerBase
     }
     
     [ReplCommand(Name = "spaces", Description = "컨플루언스 스페이스 목록을 출력합니다.")]
-    public Task<string> GetSpaces(string argument)
+    public string GetSpaces(string argument)
     {
         var sb = new StringBuilder();
         foreach (var space in this.tool.Spaces.OrderBy(e => e.Name))
@@ -35,7 +35,7 @@ public sealed class WikiToolHandler : ReplHandlerBase
             sb.AppendLine($"id:{space.Id} key:{space.Key} name:{space.Name}");
         }
 
-        return Task.FromResult(sb.ToString());
+        return sb.ToString();
     }
 
     [ReplCommand(Name = "set-space", Description = "입력받은 spaceId에 해당하는 스페이스를 선택합니다.")]
@@ -55,18 +55,17 @@ public sealed class WikiToolHandler : ReplHandlerBase
     }
 
     [ReplCommand(Name = "view-space", Description = "현재 선택된 스페이스의 페이지 목록을 출력합니다.")]
-    public async Task<string> ViewSpace(string argument)
+    public string ViewSpace(string argument)
     {
         if (this.tool.CurrentSpace is null)
         {
             return "선택된 space가 없습니다.";
         }
         
-        await Task.Delay(0);
         return this.tool.CurrentSpace.ToString();
     }
 
-    [ReplCommand(Name = "convert-pages", Description = "현재 선택된 스페이스의 페이지 목록을 출력합니다.")]
+    [ReplCommand(Name = "convert-pages", Description = "입력받은 개수 만큼의 페이지 변환을 수행합니다.")]
     public Task<string> ConvertPages(string argument)
     {
         if (int.TryParse(argument, out int convertCount) == false)
@@ -103,13 +102,13 @@ public sealed class WikiToolHandler : ReplHandlerBase
     }
 
     [ReplCommand(Name = "list-pages", Description = "현재 스페이스의 페이지 목록을 출력합니다.")]
-    public Task<string> ListPages(string argument)
+    public string ListPages(string argument)
     {
         return this.tool.ListPages();
     }
 
     [ReplCommand(Name = "search-page", Description = "검색어 키워드를 입력받아 페이지를 검색합니다.")]
-    public Task<string> SearchPages(string argument)
+    public string SearchPages(string argument)
     {
         return this.tool.SearchPage(argument);
     }

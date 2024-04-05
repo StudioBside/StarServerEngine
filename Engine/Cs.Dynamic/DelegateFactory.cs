@@ -17,9 +17,20 @@
             ResultMethod = typeof(TDelegate).GetMethod("Invoke");
             ResultParameters = ResultMethod.GetParameters();
 
-            var propertyInfo = typeof(Task).GetProperty(
-                nameof(Task.CompletedTask), BindingFlags.Static | BindingFlags.Public);
-            CompletedTaskCaller = propertyInfo.GetGetMethod();
+            var taskType = typeof(Task);
+            if (taskType.IsAssignableFrom(ResultMethod.ReturnType))
+            {
+                if (ResultMethod.ReturnType == taskType)
+                {
+                    var propertyInfo = taskType.GetProperty(nameof(Task.CompletedTask), BindingFlags.Static | BindingFlags.Public);
+                    CompletedTaskCaller = propertyInfo.GetGetMethod();
+                }
+                else
+                {
+                    var methodInfo = taskType.GetMethod(nameof(Task.FromResult), BindingFlags.Static | BindingFlags.Public);
+                    CompletedTaskCaller = methodInfo.MakeGenericMethod(ResultMethod.ReturnType.GetGenericArguments());
+                }
+            }
         }
 
         public static TDelegate CreateAction(MethodInfo methodInfo)
@@ -120,8 +131,8 @@
 
         public static TDelegate CreateAwaitableMemberFunction(MethodInfo methodInfo)
         {
-            var returnType = ResultMethod.ReturnType;
-            if (returnType.IsGenericType == false || returnType.GetGenericTypeDefinition() != typeof(Task<>))
+            var returnType = methodInfo.ReturnType;
+            if (returnType == typeof(void))
             {
                 throw new ArgumentException($"CreateAwaitableMemberFunction delegate invalid return type:{ResultMethod.ReturnType}");
             }
@@ -143,13 +154,9 @@
             }
 
             il.Emit(OpCodes.Call, methodInfo);
-            if (methodInfo.ReturnType.BaseType != typeof(Task))
+            if (returnType.IsGenericType == false)
             {
-                //il.Emit(OpCodes.Call, CompletedTaskCaller);
-            }
-            else
-            {
-                il.Emit(OpCodes.Castclass, ResultMethod.ReturnType);
+                il.Emit(OpCodes.Call, CompletedTaskCaller);
             }
 
             il.Emit(OpCodes.Ret);
