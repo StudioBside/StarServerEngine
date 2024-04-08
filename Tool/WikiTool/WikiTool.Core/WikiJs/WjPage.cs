@@ -17,7 +17,7 @@ public sealed class WjPage
     
     public string ConvertToConfluenceContent()
     {
-        var converter = new Html2Markdown.Converter();
+        var converter = new Html2Markdown.Converter(new ConvertingScheme());
         var result = converter.Convert(this.Content);
         return result;
     }
