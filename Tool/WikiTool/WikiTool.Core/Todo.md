@@ -5,6 +5,7 @@
   * https://github.com/baynezy/Html2Markdown?tab=readme-ov-file 이거 이용해서 기본적인 markdown으로 변환하고, 미변환 태그를 몇 개 지워주면 되지 않을까.
 * space 선택하면서 만들어진 페이지 가져올 때 본문 제대로 가져오고 파싱하도록 개선 필요. 
   * 해두지 않으면 convert 다시 돌릴 떄 수정내역이 있는지 확인하는 로직이 제대로 돌지 않는다. 
+* https://confluence.atlassian.com/doc/confluence-wiki-markup-251003035.html
 
 ## backlog
 

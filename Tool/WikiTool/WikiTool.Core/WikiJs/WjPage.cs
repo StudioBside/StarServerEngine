@@ -1,5 +1,7 @@
 ﻿namespace WikiTool.Core;
 
+using WikiTool.Core.Transform;
+
 public sealed class WjPage
 {
     public int Id { get; init; }
