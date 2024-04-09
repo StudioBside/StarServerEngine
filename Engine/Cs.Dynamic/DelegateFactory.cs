@@ -286,6 +286,11 @@
         {
             var targetParameters = target.GetParameters();
 
+            if (CompletedTaskCaller is null)
+            {
+                return false;
+            }
+
             if (ResultMethod.ReturnType != target.ReturnType && ResultMethod.ReturnType.GenericTypeArguments[0] != target.ReturnType)
             {
                 return false;
