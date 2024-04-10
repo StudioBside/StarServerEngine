@@ -16,11 +16,4 @@ public sealed class WjPage
     public DateTime UpdatedAt { get; init; }
     public required WjUser Author { get; init; }
     public required WjUser Creator { get; init; }
-    
-    public string ConvertToConfluenceContent()
-    {
-        var converter = new Html2Markdown.Converter(new ConvertingScheme());
-        var result = converter.Convert(this.Content);
-        return result;
-    }
 }

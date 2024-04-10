@@ -7,11 +7,10 @@ using Cs.Core.Util;
 using Cs.HttpClient;
 using Cs.Logging;
 using Newtonsoft.Json.Linq;
+using WikiTool.Core.Transform;
 
 public sealed class CfSpace
 {
-    private const int pathPageVersion = 1;
-    private const int nodePageVersion = 1;
 
     private readonly CfSpaceBulk bulk;
     private readonly Dictionary<int, CfPage> pagesById = new();
@@ -47,18 +46,22 @@ public sealed class CfSpace
         
         return sb.ToString();
     }
-    
+
     public async Task<bool> UploadPage(RestApiClient apiClient, WjPage wjPage)
     {
+        var converter = ContentsConverter.Instance;
+
         // path에 해당하는 중간 페이지도 없다면 생성해 주어야 한다.
         CfPage parent = this.rootPage;
         var pathTokens = wjPage.Path.Split('/');
         for (int i = 0; i < pathTokens.Length - 1; i++)
         {
             var pathToken = pathTokens[i];
+            var contents = converter.GetPathPageContents(pathToken);
+
             if (parent.TryGetSubPage(pathToken, out var page) == false)
             {
-                page = await CfPage.CreateAsync(apiClient, this.Id, parent, pathToken, representation: "storage", pathToken);
+                page = await CfPage.CreateAsync(apiClient, this.Id, parent, pathToken, representation: "wiki", contents);
                 if (page is null)
                 {
                     Log.Error($"Failed to create page: {pathToken}");
@@ -68,15 +71,28 @@ public sealed class CfSpace
                 Log.Info($"Create page: {pathToken}");
                 CfPage.SetRelation(parent, page);
             }
+            else if (converter.IsLatestPathPage(page.Body) == false)
+            {
+                if (await page.UpdateAsync(apiClient, "wiki", contents) == false)
+                {
+                    Log.Error($"Failed to update page: {pathToken}");
+                }
+
+                Log.Info($"Update page: {pathToken}");
+            }
             
             parent = page;
         }
 
         var title = $"{wjPage.Title} ({wjPage.Id})";
-        var content = wjPage.ConvertToConfluenceContent();
+        var content = converter.GetNodePageContents(wjPage.Content);
         if (parent.TryGetSubPage(title, out var prevPage))
         {
-            if (prevPage.Body.Equals(content) == false)
+            if (converter.IsLatestNodePage(prevPage.Body) != false)
+            {
+                Log.Info($"up-to-date: {title}");
+            }
+            else
             {
                 if (await prevPage.UpdateAsync(apiClient, "wiki", content) == false)
                 {
@@ -179,7 +195,7 @@ public sealed class CfSpace
                 }
             }
 
-            Log.Info($"Got {bulkPages.Count} pages for space: {this.bulk.Name} url:{url}");
+            Log.Info($"Got {bulkPages.Count} pages for space: {this.bulk.Name}");
             
             // 다음 페이지가 있는지 확인한다.
             url = GetNextPageUrl(response.Headers);

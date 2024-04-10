@@ -70,12 +70,6 @@ public sealed class CfPage
 
     public async Task<bool> UpdateAsync(RestApiClient apiClient, string representation, string body)
     {
-        if (this.bulk.Body.Value.Equals(body))
-        {
-            Log.Info($"Page body is not changed: {this.Title}");
-            return true;
-        }
-        
         var request = new HttpRequestMessage(HttpMethod.Put, $"wiki/api/v2/pages/{this.Id}");
         string bodyContent = JsonConvert.SerializeObject(new
         {

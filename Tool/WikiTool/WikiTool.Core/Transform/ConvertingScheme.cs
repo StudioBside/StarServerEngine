@@ -9,7 +9,8 @@ public sealed class ConvertingScheme : Markdown
     public ConvertingScheme()
     {
         // AddReplacementGroup(this.ReplacerCollection, new ReplacementGroup());
-        this.ReplacerCollection.Add(new FigureTagReplacer());
+        this.ReplacerCollection.Add(new FigureTagRemover());
+        this.ReplacerCollection.Add(new MarkTagReplacer());
 
         var removeTargets = this.ReplacerCollection.OfType<HeadingTagReplacer>().ToArray();
         foreach (var target in removeTargets)

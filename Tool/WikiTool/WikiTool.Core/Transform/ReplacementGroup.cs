@@ -9,6 +9,6 @@ internal sealed class ReplacementGroup : IReplacementGroup
 {
     public IEnumerable<IReplacer> Replacers()
     {
-        yield return new FigureTagReplacer();
+        yield return new FigureTagRemover();
     }
 }
