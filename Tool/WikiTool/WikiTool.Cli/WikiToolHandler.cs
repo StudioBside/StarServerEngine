@@ -77,34 +77,9 @@ public sealed class WikiToolHandler : ReplHandlerBase
     }
 
     [ReplCommand(Name = "clean-garbages", Description = "제목에 id값 명시하지 않은 페이지가 있다면 일괄 삭제합니다.")]
-    public Task<string> CleanGarbages(string argument)
+    public Task<string> Deprecated_CleanGarbages(string argument)
     {
         return this.tool.CleanGarbages();
-    }
-
-    [ReplCommand(Name = "guarantee-page", Description = "제목과 내용을 입력받아 페이지를 생성합니다.")]
-    public Task<string> GuaranteePage(string argument)
-    {
-        var tokens = argument.Split(' ', 2);
-        var (title, content) = (tokens[0], tokens[1]);
-        return this.tool.GuaranteePage(title, content);
-    }
-
-    [ReplCommand(Name = "test-page", Description = "업데이트 실패중인 글을 입력받은 퍼센트만큼 잘라 업데이트합니다.")]
-    public Task<string> TestPage(string argument)
-    {
-        if (int.TryParse(argument, out int percent) == false)
-        {
-            return Task.FromResult($"퍼센트 값을 입력해야 합니다: {argument}");
-        }
-
-        return this.tool.TestPage(percent);
-    }
-
-    [ReplCommand(Name = "list-pages", Description = "현재 스페이스의 페이지 목록을 출력합니다.")]
-    public string ListPages(string argument)
-    {
-        return this.tool.ListPages();
     }
 
     [ReplCommand(Name = "search-page", Description = "검색어 키워드를 입력받아 페이지를 검색합니다.")]

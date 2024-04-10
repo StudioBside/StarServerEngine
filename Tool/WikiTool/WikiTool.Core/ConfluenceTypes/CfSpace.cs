@@ -10,6 +10,9 @@ using Newtonsoft.Json.Linq;
 
 public sealed class CfSpace
 {
+    private const int pathPageVersion = 1;
+    private const int nodePageVersion = 1;
+
     private readonly CfSpaceBulk bulk;
     private readonly Dictionary<int, CfPage> pagesById = new();
     private CfPage rootPage = null!;
@@ -45,7 +48,7 @@ public sealed class CfSpace
         return sb.ToString();
     }
     
-    public async Task<bool> GuaranteePage(RestApiClient apiClient, WjPage wjPage)
+    public async Task<bool> UploadPage(RestApiClient apiClient, WjPage wjPage)
     {
         // path에 해당하는 중간 페이지도 없다면 생성해 주어야 한다.
         CfPage parent = this.rootPage;

@@ -94,7 +94,7 @@ public sealed class WikiToolCore
         int failed = 0;
         foreach (var wjPage in this.wikiJs.Pages.Take(convertCount))
         {
-            var result = await this.CurrentSpace.GuaranteePage(this.client, wjPage);
+            var result = await this.CurrentSpace.UploadPage(this.client, wjPage);
             if (result)
             {
                 success++;
@@ -123,38 +123,8 @@ public sealed class WikiToolCore
             return $"Page not found: {pageId}";
         }
 
-        var result = await this.CurrentSpace.GuaranteePage(this.client, wjPage);
+        var result = await this.CurrentSpace.UploadPage(this.client, wjPage);
         return $"pageId:{pageId} title:{wjPage.Title} result:{result}";
-    }
-    
-    public Task<string> TestPage(int percent)
-    {
-        if (this.CurrentSpace is null)
-        {
-            return Task.FromResult("선택된 space가 없습니다.");
-        }
-        
-        var wjPage = this.wikiJs.Pages[0];
-        int contentLength = wjPage.Render.Length * percent / 100;
-        Log.Info($"contentLength:{wjPage.Render.Length} -> {contentLength}");
-        var content = wjPage.Render[..contentLength];
-        return this.GuaranteePage(wjPage.Title, content);
-    }
-    
-    public string ListPages()
-    {
-        if (this.CurrentSpace is null)
-        {
-            return "선택된 space가 없습니다.";
-        }
-        
-        var sb = new StringBuilder();
-        foreach (var page in this.CurrentSpace.Pages)
-        {
-            sb.AppendLine($"id:{page.Id} title:{page.Title}");
-        }
-        
-        return sb.ToString();
     }
     
     public Task<string> ViewPage(int cfPageId)
@@ -207,36 +177,5 @@ public sealed class WikiToolCore
         }
         
         return "Success";
-    }
-    
-    public async Task<string> GuaranteePage(string title, string content)
-    {
-        if (this.CurrentSpace is null)
-        {
-            return "선택된 space가 없습니다.";
-        }
-        
-        var wjPage = new WjPage
-        {
-            Id = 0,
-            Path = title,
-            Title = title,
-            Description = string.Empty,
-            Content = content,
-            Render = WebUtility.HtmlEncode(content),
-            Toc = string.Empty,
-            ContentType = "html",
-            CreatedAt = DateTime.Now,
-            UpdatedAt = DateTime.Now,
-            Author = new WjUser { Id = 0, Name = "WikiTool", Email = string.Empty },
-            Creator = new WjUser { Id = 0, Name = "WikiTool", Email = string.Empty },
-        };
-        
-        if (await this.CurrentSpace.GuaranteePage(this.client, wjPage))
-        {
-            return "Success";
-        }
-
-        return "Failed";
     }
 }
