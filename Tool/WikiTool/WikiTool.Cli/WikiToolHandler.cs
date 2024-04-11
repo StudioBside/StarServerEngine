@@ -89,7 +89,7 @@ public sealed class WikiToolHandler : ReplHandlerBase
     }
 
     [ReplCommand(Name = "view-page", Description = "입력받은 (cfPage)id에 해당하는 페이지 내용을 api로 다시 받아옵니다.")]
-    public Task<string> ViewPage(string argument)
+    public Task<string> Deprecated_ViewPage(string argument)
     {
         return this.tool.ViewPage(int.Parse(argument));
     }
@@ -101,5 +101,12 @@ public sealed class WikiToolHandler : ReplHandlerBase
         int pageId = int.Parse(tokens[0]);
         bool force = tokens.Length > 1; // --force
         return this.tool.ConvertById(pageId, force);
+    }
+
+    [ReplCommand(Name = "preview-by-id", Description = "입력받은 (wjPage)id에 해당하는 페이지 컨텐츠 원본과 변환결과를 화면에 출력합니다.")]
+    public string PreviewById(string argument)
+    {
+        int pageId = int.Parse(argument);
+        return this.tool.PreviewById(pageId);
     }
 }

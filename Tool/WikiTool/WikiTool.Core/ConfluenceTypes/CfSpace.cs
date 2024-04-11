@@ -84,7 +84,7 @@ public sealed class CfSpace
         }
 
         var title = $"{wjPage.Title} ({wjPage.Id})";
-        var content = converter.GetNodePageContents(wjPage.Content);
+        var content = converter.GetNodePageContents(wjPage.Render);
         if (parent.TryGetSubPage(title, out var prevPage))
         {
             if (force == false && converter.IsLatestNodePage(prevPage.Body) != false)

@@ -7,6 +7,7 @@ using Cs.HttpClient;
 using Cs.Logging;
 using Microsoft.VisualBasic;
 using WikiTool.Core.ConfluenceTypes;
+using WikiTool.Core.Transform;
 
 public sealed class WikiToolCore
 {
@@ -124,7 +125,33 @@ public sealed class WikiToolCore
         }
 
         var result = await this.CurrentSpace.UploadPage(this.client, wjPage, force);
-        return $"pageId:{pageId} title:{wjPage.Title} result:{result}";
+        return $"pageId:{pageId} title:{wjPage.Title}";
+    }
+    
+    public string PreviewById(int pageId)
+    {
+        if (this.CurrentSpace is null)
+        {
+            return "선택된 space가 없습니다.";
+        }
+        
+        var wjPage = this.wikiJs.Pages.FirstOrDefault(e => e.Id == pageId);
+        if (wjPage is null)
+        {
+            return $"Page not found: {pageId}";
+        }
+
+        var sb = new StringBuilder();
+        sb.AppendLine(wjPage.Render);
+        sb.AppendLine();
+        
+        sb.AppendLine(string.Empty.PadRight(70, '-'));
+        
+        sb.AppendLine();
+        var converter = ContentsConverter.Instance;
+        sb.AppendLine(converter.GetNodePageContents(wjPage.Render));
+        
+        return sb.ToString();
     }
     
     public Task<string> ViewPage(int cfPageId)
