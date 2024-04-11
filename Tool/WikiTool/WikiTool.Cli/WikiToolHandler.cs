@@ -97,7 +97,9 @@ public sealed class WikiToolHandler : ReplHandlerBase
     [ReplCommand(Name = "convert-by-id", Description = "입력받은 (wjPage)id에 해당하는 페이지를 변환합니다.")]
     public Task<string> ConvertById(string argument)
     {
-        int pageId = int.Parse(argument);
-        return this.tool.ConvertById(pageId);
+        var tokens = argument.Split(' ');
+        int pageId = int.Parse(tokens[0]);
+        bool force = tokens.Length > 1; // --force
+        return this.tool.ConvertById(pageId, force);
     }
 }

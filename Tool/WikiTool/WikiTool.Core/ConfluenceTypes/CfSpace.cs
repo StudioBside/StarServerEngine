@@ -11,7 +11,6 @@ using WikiTool.Core.Transform;
 
 public sealed class CfSpace
 {
-
     private readonly CfSpaceBulk bulk;
     private readonly Dictionary<int, CfPage> pagesById = new();
     private CfPage rootPage = null!;
@@ -47,7 +46,7 @@ public sealed class CfSpace
         return sb.ToString();
     }
 
-    public async Task<bool> UploadPage(RestApiClient apiClient, WjPage wjPage)
+    public async Task<bool> UploadPage(RestApiClient apiClient, WjPage wjPage, bool force)
     {
         var converter = ContentsConverter.Instance;
 
@@ -88,7 +87,7 @@ public sealed class CfSpace
         var content = converter.GetNodePageContents(wjPage.Content);
         if (parent.TryGetSubPage(title, out var prevPage))
         {
-            if (converter.IsLatestNodePage(prevPage.Body) != false)
+            if (force == false && converter.IsLatestNodePage(prevPage.Body) != false)
             {
                 Log.Info($"up-to-date: {title}");
             }

@@ -94,7 +94,7 @@ public sealed class WikiToolCore
         int failed = 0;
         foreach (var wjPage in this.wikiJs.Pages.Take(convertCount))
         {
-            var result = await this.CurrentSpace.UploadPage(this.client, wjPage);
+            var result = await this.CurrentSpace.UploadPage(this.client, wjPage, force: false);
             if (result)
             {
                 success++;
@@ -110,7 +110,7 @@ public sealed class WikiToolCore
         return "finished";
     }
     
-    public async Task<string> ConvertById(int pageId)
+    public async Task<string> ConvertById(int pageId, bool force)
     {
         if (this.CurrentSpace is null)
         {
@@ -123,7 +123,7 @@ public sealed class WikiToolCore
             return $"Page not found: {pageId}";
         }
 
-        var result = await this.CurrentSpace.UploadPage(this.client, wjPage);
+        var result = await this.CurrentSpace.UploadPage(this.client, wjPage, force);
         return $"pageId:{pageId} title:{wjPage.Title} result:{result}";
     }
     

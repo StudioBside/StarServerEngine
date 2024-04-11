@@ -11,6 +11,7 @@ public sealed class ConvertingScheme : Markdown
         // AddReplacementGroup(this.ReplacerCollection, new ReplacementGroup());
         this.ReplacerCollection.Add(new FigureTagRemover());
         this.ReplacerCollection.Add(new MarkTagReplacer());
+        this.ReplacerCollection.Add(new WikiHeadingReplacer());
 
         var removeTargets = this.ReplacerCollection.OfType<HeadingTagReplacer>().ToArray();
         foreach (var target in removeTargets)
