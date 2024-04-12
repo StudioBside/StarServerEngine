@@ -26,11 +26,6 @@ public sealed class PostPhaseRules : CompositeReplacer
             Replacement = "{color}",
         });
         
-        // [title](url) -> [title|url]
-        this.AddReplacer(new PatternReplacer
-        {
-            Pattern = @"\[(?<title>[^\]]+)\]\((?<url>[^\)]+)\)",
-            Replacement = @"[${title}|${url}]",
-        });
+        this.AddReplacer(new PageLinkReplacer());
     }
 }

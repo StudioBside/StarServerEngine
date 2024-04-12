@@ -83,7 +83,7 @@ public sealed class CfSpace
             parent = page;
         }
 
-        var title = $"{wjPage.Title} ({wjPage.Id})";
+        var title = wjPage.GetUniqueTitle();
         var content = converter.GetNodePageContents(wjPage.Render);
         if (parent.TryGetSubPage(title, out var prevPage))
         {

@@ -16,4 +16,6 @@ public sealed class WjPage
     public DateTime UpdatedAt { get; init; }
     public required WjUser Author { get; init; }
     public required WjUser Creator { get; init; }
+    
+    public string GetUniqueTitle() => $"{this.Title} ({this.Id})";
 }

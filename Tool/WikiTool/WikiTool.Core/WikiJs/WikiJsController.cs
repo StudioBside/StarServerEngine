@@ -39,5 +39,16 @@ public sealed class WikiJsController
         return true;
     }
 
+    public WjPage? GetByPath(string path)
+    {
+        // remove leading '/'
+        if (path.StartsWith('/'))
+        {
+            path = path[1..];
+        }
+        
+        return this.pages.FirstOrDefault(p => p.Path == path);
+    }
+
     //// --------------------------------------------------------------------------------
 }
