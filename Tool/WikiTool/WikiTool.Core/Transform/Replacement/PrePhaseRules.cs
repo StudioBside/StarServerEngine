@@ -2,9 +2,9 @@
 
 using Html2Markdown.Replacement;
 
-public sealed class MyPatternComposite : CompositeReplacer
+public sealed class PrePhaseRules : CompositeReplacer
 {
-    public MyPatternComposite()
+    public PrePhaseRules()
     {
         // remove '<a href="#개요" class="toc-anchor">¶</a>'
         this.AddReplacer(new PatternReplacer
