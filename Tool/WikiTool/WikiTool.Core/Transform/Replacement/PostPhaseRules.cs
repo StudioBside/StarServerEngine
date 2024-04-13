@@ -1,6 +1,7 @@
 ﻿namespace WikiTool.Core;
 
 using Html2Markdown.Replacement;
+using WikiTool.Core.Transform.CustomReplacer;
 
 public sealed class PostPhaseRules : CompositeReplacer
 {
@@ -17,13 +18,13 @@ public sealed class PostPhaseRules : CompositeReplacer
         this.AddReplacer(new PatternReplacer
         {
             Pattern = "<mark class=\"marker-yellow\">",
-            Replacement = "{color:yellow}",
+            Replacement = "<span style=\"color: rgb(255,255,0);\">",
         });
         
         this.AddReplacer(new PatternReplacer
         {
             Pattern = "</mark>",
-            Replacement = "{color}",
+            Replacement = "</span>",
         });
         
         this.AddReplacer(new PageLinkReplacer());

@@ -49,6 +49,7 @@ public sealed class CfSpace
     public async Task<bool> UploadPage(RestApiClient apiClient, WjPage wjPage, bool force)
     {
         var converter = ContentsConverter.Instance;
+        var bodyRepresentation = "storage";
 
         // path에 해당하는 중간 페이지도 없다면 생성해 주어야 한다.
         CfPage parent = this.rootPage;
@@ -60,7 +61,7 @@ public sealed class CfSpace
 
             if (parent.TryGetSubPage(pathToken, out var page) == false)
             {
-                page = await CfPage.CreateAsync(apiClient, this.Id, parent, pathToken, representation: "wiki", contents);
+                page = await CfPage.CreateAsync(apiClient, this.Id, parent, pathToken, bodyRepresentation, contents);
                 if (page is null)
                 {
                     Log.Error($"Failed to create page: {pathToken}");
@@ -72,7 +73,7 @@ public sealed class CfSpace
             }
             else if (converter.IsLatestPathPage(page.Body) == false)
             {
-                if (await page.UpdateAsync(apiClient, "wiki", contents) == false)
+                if (await page.UpdateAsync(apiClient, bodyRepresentation, contents) == false)
                 {
                     Log.Error($"Failed to update page: {pathToken}");
                 }
@@ -93,7 +94,7 @@ public sealed class CfSpace
             }
             else
             {
-                if (await prevPage.UpdateAsync(apiClient, "wiki", content) == false)
+                if (await prevPage.UpdateAsync(apiClient, bodyRepresentation, content) == false)
                 {
                     Log.Error($"Failed to update page. title:{title} contentType:{wjPage.ContentType}");
                     Log.Debug($"content:{content}");
@@ -106,7 +107,7 @@ public sealed class CfSpace
             return true;
         }
 
-        var newPage = await CfPage.CreateAsync(apiClient, this.Id, parent, title, "wiki", content); 
+        var newPage = await CfPage.CreateAsync(apiClient, this.Id, parent, title, bodyRepresentation, content); 
         if (newPage is null)
         {
             Log.Error($"Failed to create page: {wjPage.Path} conentType:{wjPage.ContentType}");

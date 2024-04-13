@@ -45,10 +45,16 @@ internal sealed class ContentsConverter
     {
         var sb = new StringBuilder();
         sb.AppendLine(this.markdownConverter.Convert(wikiJsContents));
+
         sb.AppendLine();
-        sb.AppendLine($"h2. convert metadata");
-        sb.AppendLine($"* pageType : node page");
-        sb.AppendLine($"* convertVersion : {NodePageVersion}");
+        sb.AppendLine("<ac:structured-macro ac:name=\"code\">\r\n <ac:plain-text-body>\r\n   <![CDATA[def authenticate():\r\n      confluence = Confluence(\r\n          url='https://confluence.custom.de',\r\n          username=os.environ['CONFLUENCE_USER'],\r\n          password=os.environ['CONFLUENCE_API_TOKEN'],\r\n          cloud=False\r\n      )\r\n      return confluence\r\n   ]]>\r\n  </ac:plain-text-body>\r\n</ac:structured-macro>");
+
+        sb.AppendLine();
+        sb.AppendLine($"<h2> convert metadata </h2>");
+        sb.AppendLine($"<ul>");
+        sb.AppendLine($"<li> pageType : node page </li>");
+        sb.AppendLine($"<li> convertVersion : {NodePageVersion} </li>");
+        sb.AppendLine($"</ul>");
 
         return sb.ToString();
     }

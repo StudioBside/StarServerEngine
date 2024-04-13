@@ -130,11 +130,6 @@ public sealed class WikiToolCore
     
     public string PreviewById(int pageId)
     {
-        if (this.CurrentSpace is null)
-        {
-            return "선택된 space가 없습니다.";
-        }
-        
         var wjPage = this.wikiJs.Pages.FirstOrDefault(e => e.Id == pageId);
         if (wjPage is null)
         {

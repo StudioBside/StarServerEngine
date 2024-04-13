@@ -1,15 +1,25 @@
 ## todo
 
-* 링크 처리 : 다른 페이지로 링크는 먼저 간단히 가능해 보인다. WikiJsController 싱글턴으로 변경하고 제목 정보 얻어와서 처리.
-* https://confluence.atlassian.com/doc/confluence-wiki-markup-251003035.html
+* 컨플루언스 위키 문법 문서 : https://confluence.atlassian.com/doc/confluence-wiki-markup-251003035.html
+* 컨플루언스 storage format 문서 : https://confluence.atlassian.com/doc/confluence-storage-format-790796544.html
 
 ## backlog
 
 * 이미지 첨부 처리
-* 다른 페이지 링크 연결해주기 - 링크는 path 기반으로 되어있고, 변환할 페이지는 title로 만들어짐.
+  * https://confluence.atlassian.com/confkb/using-the-confluence-rest-api-to-upload-an-attachment-to-one-or-more-pages-1014274390.html
+  * v2에서는 첨부 동작을 지원하지 않는 듯.
 * path 구성 호환을 위해 만들어진 페이지들은 본문에 하위 페이지 목록 추가하기.
 
 ## done
+
+### 240413
+
+success:82 failed:24
+
+### 240412
+
+* 링크 처리 : 다른 페이지로 링크는 먼저 간단히 가능해 보인다. WikiJsController 싱글턴으로 변경하고 제목 정보 얻어와서 처리.
+* 다른 페이지 링크 연결해주기 - 링크는 path 기반으로 되어있고, 변환할 페이지는 title로 만들어짐.
 
 ### 240410
 
