@@ -21,6 +21,7 @@ public sealed class ConvertingScheme : AbstractScheme
         this.ReplacerCollection.Add(new HeadingWithoutAttr());
         this.ReplacerCollection.Add(new PageLinkReplacer());
         this.ReplacerCollection.Add(new ListTagConverter());
+        this.ReplacerCollection.Add(new TableTagConverter());
 
         // figure tag를 삭제.
         this.ReplacerCollection.Add(new PatternReplacer
@@ -40,6 +41,18 @@ public sealed class ConvertingScheme : AbstractScheme
         {
             Pattern = "<mark class=\"pen-red\">",
             Replacement = "<span style=\"color: rgb(255,0,0);\">",
+        });
+
+        this.ReplacerCollection.Add(new PatternReplacer
+        {
+            Pattern = "<mark class=\"marker-green\">",
+            Replacement = "<span style=\"color: rgb(0,255,0);\">",
+        });
+
+        this.ReplacerCollection.Add(new PatternReplacer
+        {
+            Pattern = "<mark class=\"marker-pink\">",
+            Replacement = "<span style=\"color: rgb(255, 192, 203);\">",
         });
 
         this.ReplacerCollection.Add(new PatternReplacer
