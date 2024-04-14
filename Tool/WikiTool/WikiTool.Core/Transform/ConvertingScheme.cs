@@ -8,20 +8,62 @@ public sealed class ConvertingScheme : AbstractScheme
 {
     public ConvertingScheme()
     {
-        // 기본 규칙들보다 먼저 실행되어야 하는 것은 앞에서 추가.
-        this.ReplacerCollection.Add(new PrePhaseRules());
+        // remove '<a href="#개요" class="toc-anchor">¶</a>'
+        this.ReplacerCollection.Add(new PatternReplacer
+        {
+            Pattern = @"<a href=""#.*?"" class=""toc-anchor"">¶</a>",
+            Replacement = string.Empty,
+        });
 
-        //this.ReplacerCollection.Add(new ParagraphTagReplacer()); // <p> 태그 변환
-        //this.ReplacerCollection.Add(new ParagraphToBr()); // <p> 태그 변환
+        this.ReplacerCollection.Add(new ImgTagReplacer());
+        this.ReplacerCollection.Add(new CodeReplacer());
+        this.ReplacerCollection.Add(new PreTagReplacer());
+        this.ReplacerCollection.Add(new HeadingWithoutAttr());
+        this.ReplacerCollection.Add(new PageLinkReplacer());
+        this.ReplacerCollection.Add(new ListTagConverter());
 
-        //AddReplacementGroup(this.ReplacerCollection, new TextFormattingReplacementGroup());
-        //// AddReplacementGroup(this.ReplacerCollection, new HeadingReplacementGroup());
-        //AddReplacementGroup(this.ReplacerCollection, new NewHeadingReplacementGroup());
-        //AddReplacementGroup(this.ReplacerCollection, new IllegalHtmlReplacementGroup());
-        //AddReplacementGroup(this.ReplacerCollection, new LayoutReplacementGroup());
-        //AddReplacementGroup(this.ReplacerCollection, new EntitiesReplacementGroup());
+        // figure tag를 삭제.
+        this.ReplacerCollection.Add(new PatternReplacer
+        {
+            Pattern = "</?figure[^>]*>",
+            Replacement = string.Empty,
+        });
 
-        // 기본 규칙 적용 후 실행되어야 하는 것은 뒤에서 추가.
-        this.ReplacerCollection.Add(new PostPhaseRules());
+        // ‘<mark class="marker-yellow">Insert Assets</mark>’ -> ‘{color:yellow}Insert Assets{color}’
+        this.ReplacerCollection.Add(new PatternReplacer
+        {
+            Pattern = "<mark class=\"marker-yellow\">",
+            Replacement = "<span style=\"color: rgb(255,255,0);\">",
+        });
+
+        this.ReplacerCollection.Add(new PatternReplacer
+        {
+            Pattern = "<mark class=\"pen-red\">",
+            Replacement = "<span style=\"color: rgb(255,0,0);\">",
+        });
+
+        this.ReplacerCollection.Add(new PatternReplacer
+        {
+            Pattern = "</mark>",
+            Replacement = "</span>",
+        });
+
+        this.ReplacerCollection.Add(new PatternReplacer
+        {
+            Pattern = "<br>",
+            Replacement = "<br />",
+        });
+
+        this.ReplacerCollection.Add(new PatternReplacer
+        {
+            Pattern = "<hr>",
+            Replacement = "<hr />",
+        });
+
+        this.ReplacerCollection.Add(new PatternReplacer
+        {
+            Pattern = "&nbsp;",
+            Replacement = " ",
+        });
     }
 }

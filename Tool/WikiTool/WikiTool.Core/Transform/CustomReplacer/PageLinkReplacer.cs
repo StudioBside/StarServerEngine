@@ -3,11 +3,11 @@
 using System.Text.RegularExpressions;
 using Cs.Logging;
 using Html2Markdown.Replacement;
+using HtmlAgilityPack;
+using WikiTool.Core.Transform.Detail;
 
 public sealed class PageLinkReplacer : CustomReplacer
 {
-    // regex 추츨 내용을 중간에 한 번 변환해서 사용해야 하기 때문에
-    // PatternReplacer를 바로 사용할 순 없고 Custom으로 처리.
     public PageLinkReplacer()
     {
         this.CustomAction = this.Execute;
@@ -15,26 +15,42 @@ public sealed class PageLinkReplacer : CustomReplacer
 
     private string Execute(string html)
     {
-        // using regex to : [title](url) -> [title|url]
-        var regex = new Regex(@"\[(?<title>[^\]]+)\]\((?<url>[^\)]+)\)");
-        return regex.Replace(html, match =>
+        /*
+         <ac:link>
+         <ri:page ri:content-title="Page Title" />
+         <ac:plain-text-link-body>
+          <![CDATA[Link to another Confluence Page]]>
+         </ac:plain-text-link-body>
+         </ac:link> 
+        */
+        HtmlDocument htmlDocument = HtmlDocumentLoader.Load(html);
+        HtmlNodeCollection htmlNodeCollection = htmlDocument.DocumentNode.SelectNodes("//a");
+        if (htmlNodeCollection == null)
         {
-            var title = match.Groups["title"].Value;
-            var url = match.Groups["url"].Value;
+            return html;
+        }
 
+        foreach (var node in htmlNodeCollection)
+        {
+            var url = node.Attributes.GetAttributeOrEmpty("href");
             if (url.StartsWith("http"))
             {
-                return $"[{title}|{url}]"; // 외부 링크는 그대로 둔다.
+                node.RemoveClass();
+                continue;
             }
 
             var wjPage = WikiJsController.Instance.GetByPath(url);
             if (wjPage == null)
             {
                 Log.Warn($"Page not found: {url}");
-                return $"[{title}|{url}]";
+                continue;
             }
 
-            return $"[{title}|{wjPage.GetUniqueTitle()}]";
-        });
+            var title = node.InnerText;
+            var replace = $"<ac:link><ri:page ri:content-title=\"{wjPage.GetUniqueTitle()}\" /><ac:plain-text-link-body><![CDATA[{title}]]></ac:plain-text-link-body></ac:link>";
+            node.ReplaceNode(replace);
+        }
+
+        return htmlDocument.DocumentNode.OuterHtml;
     }
 }

@@ -1,20 +1,23 @@
 ﻿namespace WikiTool.Core.Transform.CustomReplacer;
 
+using System.Text.RegularExpressions;
+using Cs.Logging;
 using Html2Markdown.Replacement;
 using HtmlAgilityPack;
 using WikiTool.Core.Transform.Detail;
 
-public sealed class ParagraphToBr : CustomReplacer
+public sealed class ListTagConverter : CustomReplacer
 {
-    public ParagraphToBr()
+    public ListTagConverter()
     {
         this.CustomAction = this.Execute;
     }
 
     private string Execute(string html)
     {
+        // remove all attributes from heading tags
         HtmlDocument htmlDocument = HtmlDocumentLoader.Load(html);
-        HtmlNodeCollection htmlNodeCollection = htmlDocument.DocumentNode.SelectNodes("//p");
+        HtmlNodeCollection htmlNodeCollection = htmlDocument.DocumentNode.SelectNodes("//ol|//ul");
         if (htmlNodeCollection == null)
         {
             return html;
@@ -22,9 +25,7 @@ public sealed class ParagraphToBr : CustomReplacer
 
         foreach (var node in htmlNodeCollection)
         {
-            string innerHtml = node.InnerHtml;
-            string text = innerHtml.Replace(Environment.NewLine, " ");
-            node.ReplaceNode($"<br /><br /> {text} <br />");
+            node.Attributes.RemoveAll();
         }
 
         return htmlDocument.DocumentNode.OuterHtml;

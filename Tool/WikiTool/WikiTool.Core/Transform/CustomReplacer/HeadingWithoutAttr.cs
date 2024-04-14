@@ -1,24 +1,23 @@
 ﻿namespace WikiTool.Core.Transform.CustomReplacer;
 
+using System.Text.RegularExpressions;
+using Cs.Logging;
 using Html2Markdown.Replacement;
 using HtmlAgilityPack;
 using WikiTool.Core.Transform.Detail;
 
-public sealed class ImgTagReplacer : CustomReplacer
+public sealed class HeadingWithoutAttr : CustomReplacer
 {
-    public ImgTagReplacer()
+    public HeadingWithoutAttr()
     {
         this.CustomAction = this.Execute;
     }
 
     private string Execute(string html)
     {
-        //// <ac:image>
-        //// <ri:url ri:value="http://confluence.atlassian.com/images/logo/confluence_48_trans.png" />
-        //// </ac:image>
-
+        // remove all attributes from heading tags
         HtmlDocument htmlDocument = HtmlDocumentLoader.Load(html);
-        HtmlNodeCollection htmlNodeCollection = htmlDocument.DocumentNode.SelectNodes("//img");
+        HtmlNodeCollection htmlNodeCollection = htmlDocument.DocumentNode.SelectNodes("//h1|//h2|//h3|//h4|//h5|//h6");
         if (htmlNodeCollection == null)
         {
             return html;
@@ -26,9 +25,7 @@ public sealed class ImgTagReplacer : CustomReplacer
 
         foreach (var node in htmlNodeCollection)
         {
-            string srcValue = node.Attributes.GetAttributeOrEmpty("src");
-            var replace = $"<ac:image><ri:url ri:value=\"{srcValue}\" /></ac:image>";
-            node.ReplaceNode(replace);
+            node.Attributes.RemoveAll();
         }
 
         return htmlDocument.DocumentNode.OuterHtml;
