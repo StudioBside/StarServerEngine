@@ -12,6 +12,20 @@
 
 ## done
 
+### 240416
+
+success:173 failed:23
+경로용 페이지 이름이 겹치는 문제, Milestone이라든지, `컴포넌트`라던지...
+<mark class="marker-blue">UI 작업 완료</span>. - 157번 글.
+42번 글.
+<video controls="">
+
+    <source type="video/webm" src="http://fileserver.bside.com:8081/WebLink/Movies/Tech/Milestone/202206/exception_editor.mkv">
+
+    Sorry, your browser doesn't support embedded videos.
+</video>
+클라이언트 빌드 이슈 기록 (32) - 이건 그냥 본문이 너무 길어서 실패하는 게 아닐까 함. 
+
 ### 240414
 
 success:172 failed:24

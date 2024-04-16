@@ -51,6 +51,12 @@ public sealed class ConvertingScheme : AbstractScheme
 
         this.ReplacerCollection.Add(new PatternReplacer
         {
+            Pattern = "<mark class=\"marker-blue\">",
+            Replacement = "<span style=\"color: rgb(0,0,255);\">",
+        });
+
+        this.ReplacerCollection.Add(new PatternReplacer
+        {
             Pattern = "<mark class=\"marker-pink\">",
             Replacement = "<span style=\"color: rgb(255, 192, 203);\">",
         });

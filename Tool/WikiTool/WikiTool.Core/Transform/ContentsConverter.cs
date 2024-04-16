@@ -8,7 +8,7 @@ using Cs.Core;
 internal sealed class ContentsConverter
 {
     public const int PathPageVersion = 2;
-    public const int NodePageVersion = 2;
+    public const int NodePageVersion = 3;
     private readonly Html2Markdown.Converter markdownConverter = new(new ConvertingScheme());
 
     public static ContentsConverter Instance => Singleton<ContentsConverter>.Instance;
@@ -17,9 +17,11 @@ internal sealed class ContentsConverter
     {
         var sb = new StringBuilder();
         sb.AppendLine();
-        sb.AppendLine($"h2. convert metadata");
-        sb.AppendLine($"* pageType : path page");
-        sb.AppendLine($"* convertVersion : {PathPageVersion}");
+        sb.AppendLine($"<h2> convert metadata </h2>");
+        sb.AppendLine($"<ul>");
+        sb.AppendLine($"<li> pageType : path page </li>");
+        sb.AppendLine($"<li> convertVersion : {PathPageVersion} </li>");
+        sb.AppendLine($"</ul>");
 
         return sb.ToString();
     }
