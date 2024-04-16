@@ -124,7 +124,29 @@
         }
 
         public static string EncodeBase64(this string data) => Convert.ToBase64String(Encoding.UTF8.GetBytes(data));
+        public static string EncodeBase64(this byte[] data) => Convert.ToBase64String(data);
         public static string DecodeBase64(this string data) => Encoding.UTF8.GetString(Convert.FromBase64String(data));
+        public static byte[] DecodeBase64ToBytes(this string data) => Convert.FromBase64String(data);
+        
+        public static string CalcMd5Checksum(this string data)
+        {
+            if (string.IsNullOrEmpty(data))
+            {
+                return string.Empty;
+            }
+
+            using var md5 = System.Security.Cryptography.MD5.Create();
+            byte[] inputBytes = Encoding.UTF8.GetBytes(data);
+            byte[] hashBytes = md5.ComputeHash(inputBytes);
+
+            var sb = new StringBuilder();
+            for (int i = 0; i < hashBytes.Length; i++)
+            {
+                sb.Append(hashBytes[i].ToString("X2"));
+            }
+
+            return sb.ToString();
+        }
 
         public static string DisplayWithSuffix(this int num)
         {
