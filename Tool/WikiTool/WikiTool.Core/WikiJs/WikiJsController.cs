@@ -7,6 +7,7 @@ using Cs.Logging;
 public sealed class WikiJsController
 {
     private readonly List<WjPage> pages = new();
+    private readonly HashSet<string> pathSet = new();
     
     public static WikiJsController Instance => Singleton<WikiJsController>.Instance;
     public IReadOnlyList<WjPage> Pages => this.pages;
@@ -36,6 +37,12 @@ public sealed class WikiJsController
         }
 
         Log.Info($"{this.DebugName} Loaded {this.pages.Count} pages.");
+        
+        foreach (var page in this.pages)
+        {
+            page.BuildPath(this.pathSet);
+        }
+
         return true;
     }
 

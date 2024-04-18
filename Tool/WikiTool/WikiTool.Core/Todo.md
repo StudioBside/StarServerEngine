@@ -12,10 +12,12 @@
 
 ## done
 
+### 240418
+경로용 페이지 이름이 겹치는 문제, Milestone이라든지, `컴포넌트`라던지...
+
 ### 240416
 
 success:173 failed:23
-경로용 페이지 이름이 겹치는 문제, Milestone이라든지, `컴포넌트`라던지...
 <mark class="marker-blue">UI 작업 완료</span>. - 157번 글.
 42번 글.
 <video controls="">

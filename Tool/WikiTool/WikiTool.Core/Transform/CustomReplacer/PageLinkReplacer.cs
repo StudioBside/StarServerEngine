@@ -47,7 +47,7 @@ public sealed class PageLinkReplacer : CustomReplacer
             }
 
             var title = node.InnerText;
-            var replace = $"<ac:link><ri:page ri:content-title=\"{wjPage.GetUniqueTitle()}\" /><ac:plain-text-link-body><![CDATA[{title}]]></ac:plain-text-link-body></ac:link>";
+            var replace = $"<ac:link><ri:page ri:content-title=\"{wjPage.UniqueTitle}\" /><ac:plain-text-link-body><![CDATA[{title}]]></ac:plain-text-link-body></ac:link>";
             node.ReplaceNode(replace);
         }
 
