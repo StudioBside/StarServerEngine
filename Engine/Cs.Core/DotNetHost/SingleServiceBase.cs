@@ -10,6 +10,8 @@ using Microsoft.Extensions.Hosting;
 public abstract class SingleServiceBase(IConfiguration config, IHostApplicationLifetime appLifetime)
     : IHostedService
 {
+    protected IConfiguration Config => config;
+
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         await this.Execute();
