@@ -110,6 +110,14 @@
                     foreach (SchemaValidationException wrappedException in ex.WrappedExceptions)
                     {
                         Result result = ResultFactory.CreateResult(wrappedException.JToken, wrappedException.ErrorNumber, wrappedException.Args);
+                        foreach (var location in result.Locations)
+                        {
+                            location.PhysicalLocation.ArtifactLocation = new ArtifactLocation
+                            {
+                                Uri = new Uri(fileInfo.FullPath, UriKind.RelativeOrAbsolute),
+                            };
+                        }
+
                         ReportResult(result);
                     }
                 }

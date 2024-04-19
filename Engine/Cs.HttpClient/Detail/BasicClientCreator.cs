@@ -2,16 +2,16 @@
 {
     using System.Net.Http;
 
-    internal sealed class BasicFactoryHolder
+    internal sealed class BasicClientCreator
     {
         private readonly IHttpClientFactory clientFactory;
 
-        public BasicFactoryHolder(IHttpClientFactory clientFactory)
+        public BasicClientCreator(IHttpClientFactory clientFactory)
         {
             this.clientFactory = clientFactory;
         }
 
-        public HttpClient CreateClient()
+        public HttpClient Create()
         {
             return this.clientFactory.CreateClient();
         }

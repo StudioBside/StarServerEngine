@@ -24,7 +24,7 @@
             ServicePointManager.EnableDnsRoundRobin = true;
             ServicePointManager.ReusePort = true;
    
-            DotNetHost.Instance.Initialize();
+            HostKeeper.Instance.Initialize();
         }
 
         public RestApiClient(string uriString)
@@ -96,8 +96,8 @@
 
         private HttpClient CreateClient()
         {
-            var factoryHolder = DotNetHost.Instance.Host.Services.GetRequiredService<BasicFactoryHolder>();
-            var client = factoryHolder.CreateClient();
+            var basicCreator = HostKeeper.Instance.Host.Services.GetRequiredService<BasicClientCreator>();
+            var client = basicCreator.Create();
             client.BaseAddress = this.Uri;
             client.Timeout = DefaultTimeout;
             if (string.IsNullOrEmpty(this.authorization) == false)
