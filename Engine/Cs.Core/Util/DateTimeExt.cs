@@ -57,6 +57,7 @@
             // 첫 번째 일요일이 포함된 주부터 weekOfYear가 시작한다. 1월인 경우 예외처리가 필요하다.
             if (self.Year > 1 && self.Month == 1 && weekOfYear > 10)
             {
+                // 1월인데 10보다 큰 주 수는 나올 수 없으므로. 연도를 하나 줄인다.
                 return new WeeklyId(self.Year - 1, weekOfYear);
             }
 

@@ -1,28 +1,18 @@
 ﻿namespace Cs.Core.Util
 {
     using System;
-    using System.Runtime.InteropServices;
 
-    [StructLayout(LayoutKind.Explicit, Size = 8, Pack = 1, CharSet = CharSet.Ansi)]
     public readonly struct WeeklyId : IEquatable<WeeklyId>
     {
-        [FieldOffset(0)]
-        public readonly int Year;
-
-        [FieldOffset(4)]
-        public readonly int WeekOfYear;
-
-        [FieldOffset(0)]
-        public readonly long Value;
-
         public WeeklyId(int year, int weekOfYear)
         {
-            this.Value = 0;
-            this.Year = year;
-            this.WeekOfYear = weekOfYear;
+            this.Value = (year * 1000) + weekOfYear;
         }
 
         public static WeeklyId Invalid => new WeeklyId(year: 0, weekOfYear: 0);
+        public int Value { get; }
+        public int Year => this.Value / 1000;
+        public int WeekOfYear => this.Value % 1000;
 
         public static bool operator ==(WeeklyId left, WeeklyId right) => left.Equals(right);
         public static bool operator !=(WeeklyId left, WeeklyId right) => !(left == right);
