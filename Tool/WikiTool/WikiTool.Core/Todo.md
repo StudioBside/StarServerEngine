@@ -12,7 +12,59 @@
 
 ## done
 
+### 240423
+
+success:190 failed:6
+failed page summary
+32 : 클라이언트 빌드 이슈 기록. 본문이 너무 긴 듯.
+41 : video 태그 쓰였음
+42 : video 태그 쓰였음
+65 : video 태그 쓰였음
+93 : video 태그 쓰였음
+206 : todo 형식 list 양식이 쓰임.
+
+Failed to create page: 클라이언트 빌드 이슈 기록 (32) statusCode:BadRequest (CfPage.cs:57)
+Failed to create page: Tech/ClientBuildHistory conentType:html (CfSpace.cs:111)
+Page not found: /Project/MeetingLog/202206/20220610_%EB%8B%A8%EA%B8%B0%EC%9D%BC%EC%A0%95 (PageLinkReplacer.cs:45)
+Failed to create page: 2022. 06. 작업 기록 (41) statusCode:BadRequest (CfPage.cs:57)
+Failed to create page: Tech/Milestone/202206_record conentType:markdown (CfSpace.cs:111)
+Failed to create page: html 편집기 테스트 (42) statusCode:BadRequest (CfPage.cs:57)
+Failed to create page: WikiJs/htmlTest conentType:html (CfSpace.cs:111)
+Page not found:  (PageLinkReplacer.cs:45)
+Failed to create page: 2022. 08. 작업 기록 (65) statusCode:BadRequest (CfPage.cs:57)
+Failed to create page: Tech/Milestone/202208_record conentType:markdown (CfSpace.cs:111)
+Page not found: /ko/%EC%95%84%ED%8A%B8/%EC%95%A0%EB%8B%88%EB%A9%94%EC%9D%B4%EC%85%98/ani_work_flow (PageLinkReplacer.cs:45)
+Page not found: /e/ko/%EC%95%84%ED%8A%B8/%EC%95%A0%EB%8B%88%EB%A9%94%EC%9D%B4%EC%85%98/ani_max_work_rule (PageLinkReplacer.cs:45)
+Page not found: /ko/%EC%95%84%ED%8A%B8/%EC%95%A0%EB%8B%88%EB%A9%94%EC%9D%B4%EC%85%98/ani_unity_work_flow (PageLinkReplacer.cs:45)
+Page not found: /ko/%EC%95%84%ED%8A%B8/%EC%9D%B4%ED%8E%99%ED%8A%B8/%ED%85%8D%EC%8A%A4%EC%B3%90/%EC%9E%84%ED%8F%AC%ED%8A%B8 (PageLinkReplacer.cs:45)
+Failed to create page: 2022. 09. 작업 기록 (93) statusCode:BadRequest (CfPage.cs:57)
+Failed to create page: Tech/Milestone/202209_record conentType:markdown (CfSpace.cs:111)
+Page not found: mailto:studiobside01+11@gmail.com (PageLinkReplacer.cs:45)
+Page not found: mailto:studiobside01+6@gmail.com (PageLinkReplacer.cs:45)
+Page not found: mailto:studiobside01+66@gmail.com (PageLinkReplacer.cs:45)
+Page not found: mailto:studiobside01+16@gmail.com (PageLinkReplacer.cs:45)
+Page not found: mailto:studiobside01+17@gmail.com (PageLinkReplacer.cs:45)
+Page not found: mailto:studiobside01+36@gmail.com (PageLinkReplacer.cs:45)
+Page not found: mailto:studiobside01+28@gmail.com (PageLinkReplacer.cs:45)
+Page not found: mailto:studiobside01+4@gmail.com (PageLinkReplacer.cs:45)
+Page not found: /ko/Newbie/Manual/Unity (PageLinkReplacer.cs:45)
+Page not found: /ko/Newbie/Manual/P4 (PageLinkReplacer.cs:45)
+Page not found: /ko/Newbie/Manual/Unity (PageLinkReplacer.cs:45)
+Page not found: /ko/Newbie/Manual/P4 (PageLinkReplacer.cs:45)
+Page not found: /ko/Newbie/Manual/VSCODE (PageLinkReplacer.cs:45)
+Page not found: /ko/Newbie/Manual/p4error (PageLinkReplacer.cs:45)
+Page not found: /ko/Newbie/Manual/Unity (PageLinkReplacer.cs:45)
+Page not found: /ko/Newbie/Manual/P4 (PageLinkReplacer.cs:45)
+Page not found: /Tech/ProcessTurnCodeReview (PageLinkReplacer.cs:45)
+Page not found: www.google.com (PageLinkReplacer.cs:45)
+Page not found: /ko/%EC%95%84%ED%8A%B8/UI/%EC%BB%A8%ED%85%90%EC%B8%A0/%EC%9C%A0%EB%8B%9B%ED%8F%AC%ED%8A%B8%EB%A0%88%EC%9D%B4%ED%8A%B8 (PageLinkReplacer.cs:45)
+Page not found: /ko/%EC%95%84%ED%8A%B8/UI/%EC%BB%A8%ED%85%90%EC%B8%A0/%EC%8A%A4%ED%82%AC%EC%95%84%EC%9D%B4%EC%BD%98 (PageLinkReplacer.cs:45)
+Page not found: /%EC%95%84%ED%8A%B8/UI/%EC%BB%A8%ED%85%90%EC%B8%A0/%EC%95%84%EC%9D%B4%ED%85%9C%EC%95%84%EC%9D%B4%EC%BD%98 (PageLinkReplacer.cs:45)
+Failed to create page: Mask 텍스쳐 (206) statusCode:BadRequest (CfPage.cs:57)
+Failed to create page: 아트/이펙트/텍스쳐/Mask conentType:html (CfSpace.cs:111)
+
 ### 240418
+
 경로용 페이지 이름이 겹치는 문제, Milestone이라든지, `컴포넌트`라던지...
 
 ### 240416

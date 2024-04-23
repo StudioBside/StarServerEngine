@@ -53,10 +53,8 @@ public sealed class CfSpace
 
         // path에 해당하는 중간 페이지도 없다면 생성해 주어야 한다.
         CfPage parent = this.rootPage;
-        var pathTokens = wjPage.Path.Split('/');
-        for (int i = 0; i < pathTokens.Length - 1; i++)
+        foreach (var pathToken in wjPage.PathTokens)
         {
-            var pathToken = pathTokens[i];
             var contents = converter.GetPathPageContents(pathToken);
 
             if (parent.TryGetSubPage(pathToken, out var page) == false)
@@ -64,7 +62,7 @@ public sealed class CfSpace
                 page = await CfPage.CreateAsync(apiClient, this.Id, parent, pathToken, bodyRepresentation, contents);
                 if (page is null)
                 {
-                    Log.Error($"Failed to create page: {pathToken}");
+                    Log.Error($"Failed to create page: {wjPage.Path} wjPageId:{wjPage.Id}");
                     return false;
                 }
                 
@@ -75,7 +73,7 @@ public sealed class CfSpace
             {
                 if (await page.UpdateAsync(apiClient, bodyRepresentation, contents) == false)
                 {
-                    Log.Error($"Failed to update page: {pathToken}");
+                    Log.Error($"Failed to update page: {pathToken} wjPageId:{wjPage.Id}");
                 }
 
                 Log.Info($"Update page: {pathToken}");
@@ -90,14 +88,14 @@ public sealed class CfSpace
         {
             if (force == false && converter.IsLatestNodePage(prevPage.Body) != false)
             {
-                Log.Info($"up-to-date: {title}");
+                //Log.Info($"up-to-date: {title}");
             }
             else
             {
                 if (await prevPage.UpdateAsync(apiClient, bodyRepresentation, content) == false)
                 {
                     Log.Error($"Failed to update page. title:{title} contentType:{wjPage.ContentType}");
-                    Log.Debug($"content:{content}");
+                    Log.Debug($"content:{content.Substring(Math.Min(content.Length, 1024))}");
                     return false;
                 }
 

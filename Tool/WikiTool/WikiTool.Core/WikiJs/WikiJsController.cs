@@ -37,10 +37,11 @@ public sealed class WikiJsController
         }
 
         Log.Info($"{this.DebugName} Loaded {this.pages.Count} pages.");
-        
+
+        var builder = new UniquePathBuilder();
         foreach (var page in this.pages)
         {
-            page.BuildPath(this.pathSet);
+            page.PathTokens = builder.Calculate(page.Path);
         }
 
         return true;

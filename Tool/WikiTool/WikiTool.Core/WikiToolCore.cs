@@ -104,10 +104,9 @@ public sealed class WikiToolCore
             {
                 failed++;
             }
-            
-            Log.Info($"success:{success} failed:{failed}");
         }
         
+        Log.Info($"success:{success} failed:{failed}");
         return "finished";
     }
     

@@ -4,8 +4,6 @@ using Cs.Logging;
 
 public sealed class WjPage
 {
-    private readonly List<string> pathTokens = new();
-
     public int Id { get; init; }
     public required string Path { get; init; }
     public required string Title { get; init; }
@@ -20,29 +18,5 @@ public sealed class WjPage
     public required WjUser Creator { get; init; }
 
     public string UniqueTitle => $"{this.Title} ({this.Id})";
-    public IEnumerable<string> GetPathTokens => this.pathTokens;
-
-    public void BuildPath(HashSet<string> pathSet)
-    {
-        this.pathTokens.Clear();
-        var tokens = this.Path.Split('/');
-
-        // except last one
-        foreach (var token in tokens[..^1])
-        {
-            var candidate = token;
-            int retryCount = 0;
-            
-            while (pathSet.Add(candidate) == false)
-            {
-                candidate = $"{token} ({++retryCount})";
-            }
-
-            this.pathTokens.Add(token);
-            if (retryCount > 0)
-            {
-                Log.Warn($"Duplicated path: {token} -> {candidate}");
-            }
-        }
-    }
+    public IEnumerable<string> PathTokens { get; set; } = null!;
 }
