@@ -9,7 +9,7 @@ internal sealed class ContentsConverter
 {
     public const int PathPageVersion = 2;
     public const int NodePageVersion = 3;
-    private readonly Html2Markdown.Converter markdownConverter = new(new ConvertingScheme());
+    private readonly Html2Markdown.Converter htmlConverter = new(new ConvertingScheme());
 
     public static ContentsConverter Instance => Singleton<ContentsConverter>.Instance;
 
@@ -46,7 +46,7 @@ internal sealed class ContentsConverter
     public string GetNodePageContents(string wikiJsContents)
     {
         var sb = new StringBuilder();
-        sb.AppendLine(this.markdownConverter.Convert(wikiJsContents));
+        sb.AppendLine(this.htmlConverter.Convert(wikiJsContents));
 
         sb.AppendLine();
         sb.AppendLine($"<h2> convert metadata </h2>");
