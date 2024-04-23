@@ -22,6 +22,7 @@ public sealed class ConvertingScheme : AbstractScheme
         this.ReplacerCollection.Add(new PageLinkReplacer());
         this.ReplacerCollection.Add(new ListTagConverter());
         this.ReplacerCollection.Add(new TableTagConverter());
+        this.ReplacerCollection.Add(new VideoTagConverter());
 
         // figure tag를 삭제.
         this.ReplacerCollection.Add(new PatternReplacer
@@ -83,6 +84,19 @@ public sealed class ConvertingScheme : AbstractScheme
         {
             Pattern = "&nbsp;",
             Replacement = " ",
+        });
+
+        // <li><label class="todo-list__label"><input checked="checked" disabled="disabled" type="checkbox"><span class="todo-list__label__description"> sRGB 사용</span></label></li> -> <li> sRGB 사용</li>
+        this.ReplacerCollection.Add(new PatternReplacer
+        {
+            Pattern = "<li><label class=\"todo-list__label\"><input checked=\"checked\" disabled=\"disabled\" type=\"checkbox\"><span class=\"todo-list__label__description\">",
+            Replacement = "<li>",
+        });
+
+        this.ReplacerCollection.Add(new PatternReplacer
+        {
+            Pattern = "</span></label></li>",
+            Replacement = "</li>",
         });
     }
 }

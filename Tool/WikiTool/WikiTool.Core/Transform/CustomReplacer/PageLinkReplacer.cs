@@ -33,10 +33,20 @@ public sealed class PageLinkReplacer : CustomReplacer
         foreach (var node in htmlNodeCollection)
         {
             var url = node.Attributes.GetAttributeOrEmpty("href");
-            if (url.StartsWith("http"))
+            if (url.StartsWith("http") || url.StartsWith("www") || url.StartsWith("mailto") || string.IsNullOrEmpty(url))
             {
                 node.RemoveClass();
                 continue;
+            }
+
+            if (url.StartsWith("/ko"))
+            {
+                url = url[3..];
+            }
+
+            if (url.StartsWith("/e/ko"))
+            {
+                url = url[5..];
             }
 
             var wjPage = WikiJsController.Instance.GetByPath(url);

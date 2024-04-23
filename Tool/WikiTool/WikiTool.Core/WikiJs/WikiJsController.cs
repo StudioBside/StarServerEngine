@@ -55,7 +55,21 @@ public sealed class WikiJsController
             path = path[1..];
         }
         
-        return this.pages.FirstOrDefault(p => p.Path == path);
+        var result = this.pages.FirstOrDefault(p => p.Path == path);
+        if (result is not null)
+        {
+            return result;
+        }
+
+        // unescape path
+        var unescapedPath = Uri.UnescapeDataString(path);
+        result = this.pages.FirstOrDefault(p => p.Path == unescapedPath);
+        if (result is not null)
+        {
+            return result;
+        }
+
+        return null;
     }
 
     //// --------------------------------------------------------------------------------

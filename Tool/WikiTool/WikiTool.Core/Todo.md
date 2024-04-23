@@ -22,6 +22,14 @@ failed page summary
 65 : video 태그 쓰였음
 93 : video 태그 쓰였음
 206 : todo 형식 list 양식이 쓰임.
+<ul>
+  <li><label class="todo-list__label"><input checked="checked" disabled="disabled" type="checkbox"><span class="todo-list__label__description"> sRGB 사용</span></label></li>
+  <li><label class="todo-list__label"><input checked="checked" disabled="disabled" type="checkbox"><span class="todo-list__label__description"> Alpha Source - From Gray Scale</span></label></li>
+  <li><label class="todo-list__label"><input checked="checked" disabled="disabled" type="checkbox"><span class="todo-list__label__description"> Alpha Is Transparency 사용 안함</span></label></li>
+  <li><label class="todo-list__label"><input checked="checked" disabled="disabled" type="checkbox"><span class="todo-list__label__description"> Read / Write 사용 안함</span></label></li>
+  <li><label class="todo-list__label"><input checked="checked" disabled="disabled" type="checkbox"><span class="todo-list__label__description"> Generate Mipmaps 사용 안함</span></label></li>
+  <li><label class="todo-list__label"><input checked="checked" disabled="disabled" type="checkbox"><span class="todo-list__label__description"> Wrap Mode는 기본적으로는 Clamp, 사용성에 따라 Repeat 도 가능</span></label></li>
+</ul>
 
 Failed to create page: 클라이언트 빌드 이슈 기록 (32) statusCode:BadRequest (CfPage.cs:57)
 Failed to create page: Tech/ClientBuildHistory conentType:html (CfSpace.cs:111)
