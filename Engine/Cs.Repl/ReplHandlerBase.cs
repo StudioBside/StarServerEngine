@@ -31,17 +31,17 @@ public abstract class ReplHandlerBase
     }
 
     [ReplCommand(Name = "help", Description = "사용 가능한 커맨드 목록을 출력합니다.")]
-    internal Task<string> DumpHelp(string argument)
+    internal string DumpHelp(string argument)
     {
         var sb = new StringBuilder();
         foreach (var command in this.Console.Commands.OrderBy(e => e.Name))
         {
             if (string.IsNullOrEmpty(argument) || command.Name.Equals(argument, StringComparison.CurrentCultureIgnoreCase))
             {
-                sb.AppendLine($"{command.Name} - {command.Description}");
+                sb.AppendLine($"{command.Name} : {command.Description}");
             }
         }
         
-        return Task.FromResult(sb.ToString());
+        return sb.ToString();
     }
 }
