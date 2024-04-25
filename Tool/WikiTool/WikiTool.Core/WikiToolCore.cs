@@ -148,21 +148,6 @@ public sealed class WikiToolCore
         return sb.ToString();
     }
     
-    public Task<string> ViewPage(int cfPageId)
-    {
-        if (this.CurrentSpace is null)
-        {
-            return Task.FromResult("선택된 space가 없습니다.");
-        }
-        
-        if (this.CurrentSpace.TryGetPage(cfPageId, out var page) == false)
-        {
-            return Task.FromResult($"Page not found: {cfPageId}");
-        }
-        
-        return page.ViewAsync(this.client);
-    }
-
     public string SearchPage(string keyword)
     {
         if (this.CurrentSpace is null)
@@ -177,26 +162,5 @@ public sealed class WikiToolCore
         }
         
         return sb.ToString();
-    }
-    
-    public async Task<string> CleanGarbages()
-    {
-        if (this.CurrentSpace is null)
-        {
-            return "선택된 space가 없습니다.";
-        }
-        
-        // 제목에 id를 붙이지 않고 만들어진 페이지들을 삭제한다.
-        foreach (var wjPage in this.wikiJs.Pages)
-        {
-            if (this.CurrentSpace.TryGetPage(wjPage.Title, out var cfPage) == false)
-            {
-                continue;
-            }
-
-            await this.CurrentSpace.DeletePage(this.client, cfPage);
-        }
-        
-        return "Success";
     }
 }

@@ -76,22 +76,10 @@ public sealed class WikiToolHandler : ReplHandlerBase
         return this.tool.ConvertPages(convertCount);
     }
 
-    [ReplCommand(Name = "clean-garbages", Description = "제목에 id값 명시하지 않은 페이지가 있다면 일괄 삭제합니다.")]
-    public Task<string> Deprecated_CleanGarbages(string argument)
-    {
-        return this.tool.CleanGarbages();
-    }
-
     [ReplCommand(Name = "search-page", Description = "검색어 키워드를 입력받아 페이지를 검색합니다.")]
     public string SearchPages(string argument)
     {
         return this.tool.SearchPage(argument);
-    }
-
-    [ReplCommand(Name = "view-page", Description = "입력받은 (cfPage)id에 해당하는 페이지 내용을 api로 다시 받아옵니다.")]
-    public Task<string> Deprecated_ViewPage(string argument)
-    {
-        return this.tool.ViewPage(int.Parse(argument));
     }
 
     [ReplCommand(Name = "convert-by-id", Description = "입력받은 (wjPage)id에 해당하는 페이지를 변환합니다.")]
