@@ -1,11 +1,12 @@
 ﻿namespace WikiTool.Core;
 
-using System.Net;
+using System.Net.Http.Headers;
 using System.Text;
 using Cs.Core.Util;
 using Cs.HttpClient;
 using Cs.Logging;
-using Microsoft.VisualBasic;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using WikiTool.Core.ConfluenceTypes;
 using WikiTool.Core.Transform;
 
@@ -162,5 +163,79 @@ public sealed class WikiToolCore
         }
         
         return sb.ToString();
+    }
+    
+    public string UploadImage(int wjPageId)
+    {
+        var wjPage = this.wikiJs.Pages.FirstOrDefault(e => e.Id == wjPageId);
+        if (wjPage is null)
+        {
+            return $"Page not found: {wjPageId}";
+        }
+
+        return string.Empty;
+
+        /*
+        var converter = ContentsConverter.Instance;
+        var imagePaths = converter.GetImagePaths(wjPage.Render);
+        if (imagePaths.Count == 0)
+        {
+            return "No image found.";
+        }
+
+        var sb = new StringBuilder();
+        foreach (var imagePath in imagePaths)
+        {
+            var image = new FileInfo(imagePath);
+            if (image.Exists == false)
+            {
+                sb.AppendLine($"Image not found: {imagePath}");
+                continue;
+            }
+
+            var request = new HttpRequestMessage(HttpMethod.Post, "wiki/api/v2/contentbody/convert/image");
+            request.Content = new ByteArrayContent(File.ReadAllBytes(imagePath));
+            request.Content.Headers.ContentType = new MediaTypeHeaderValue("image/png");
+            var response = this.client.Send(request);
+            if (response.IsSuccessStatusCode == false)
+            {
+                sb.AppendLine($"Failed to upload image: {imagePath}");
+                continue;
+            }
+
+            var contentId = response.GetContentAs(obj => obj["id"]!.ToObject<int>());
+            if (contentId is null)
+            {
+                sb.AppendLine($"Failed to get contentId: {imagePath}");
+                continue;
+            }
+
+            var content = new JObject
+            {
+                ["id"] = contentId,
+                ["type"] = "image",
+                ["title"] = image.Name,
+                ["mediaType"] = "image/png",
+                ["metadata"] = new JObject
+                {
+                    ["comment"] = "uploaded by wikitool",
+                },
+            };
+            var contentJson = JsonConvert.SerializeObject(content);
+            var contentRequest = new HttpRequestMessage(HttpMethod.Post, $"wiki/api/v2/content/{wjPageId}/child/attachment");
+            contentRequest.Content = new StringContent(contentJson, Encoding.UTF8, "application/json");
+            contentRequest.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            var contentResponse = this.client.Send(contentRequest);
+            if (contentResponse.IsSuccessStatusCode == false)
+            {
+                sb.AppendLine($"Failed to upload image: {imagePath}");
+                continue;
+            }
+
+            sb.AppendLine($"Uploaded image: {imagePath}");
+        }
+
+        return sb.ToString();
+        */
     }
 }

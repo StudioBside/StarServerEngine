@@ -27,7 +27,8 @@ public sealed class ImgTagReplacer : CustomReplacer
         foreach (var node in htmlNodeCollection)
         {
             string srcValue = node.Attributes.GetAttributeOrEmpty("src");
-            var replace = $"<ac:image><ri:url ri:value=\"{srcValue}\" /></ac:image>";
+            // var replace = $"<ac:image><ri:url ri:value=\"{srcValue}\" /></ac:image>";
+            var replace = $"<ac:image><ri:attachment ri:filename=\"test.jpg\" /></ac:image>";
             node.ReplaceNode(replace);
         }
 
