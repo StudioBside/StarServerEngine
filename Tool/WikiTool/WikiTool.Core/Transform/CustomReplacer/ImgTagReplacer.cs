@@ -13,8 +13,21 @@ public sealed class ImgTagReplacer : CustomReplacer
 
     private string Execute(string html)
     {
+        // 외부 이미지
         //// <ac:image>
         //// <ri:url ri:value="http://confluence.atlassian.com/images/logo/confluence_48_trans.png" />
+        //// </ac:image>
+
+        // 내부 이미지
+        //// <ac:image>
+        //// <ri:attachment ri:filename=\"{srcValue}\" />
+        //// </ac:image>
+
+        // 다른 페이지에 있는 이미지
+        //// <ac:image>
+        //// <ri:attachment ri:filename=\"{srcValue}\" ri:version-at-save=\"1\">
+        //// <ri:page ri:content-title=\"MigrationTest2 Home\" ri:version-at-save=\"2\" />
+        //// </ri:attachment>
         //// </ac:image>
 
         HtmlDocument htmlDocument = HtmlDocumentLoader.Load(html);
@@ -27,8 +40,8 @@ public sealed class ImgTagReplacer : CustomReplacer
         foreach (var node in htmlNodeCollection)
         {
             string srcValue = node.Attributes.GetAttributeOrEmpty("src");
-            // var replace = $"<ac:image><ri:url ri:value=\"{srcValue}\" /></ac:image>";
-            var replace = $"<ac:image><ri:attachment ri:filename=\"test.jpg\" /></ac:image>";
+            var replace = $"<ac:image><ri:url ri:value=\"{srcValue}\" /></ac:image>";
+            //var replace = $"<ac:image><ri:attachment ri:filename=\"test.jpg\"><ri:page ri:content-title=\"MigrationTest2 Home\" /></ri:attachment></ac:image>";
             node.ReplaceNode(replace);
         }
 

@@ -4,6 +4,8 @@ using System;
 using System.Text;
 using System.Text.RegularExpressions;
 using Cs.Core;
+using HtmlAgilityPack;
+using WikiTool.Core.Transform.Detail;
 
 internal sealed class ContentsConverter
 {
@@ -56,6 +58,30 @@ internal sealed class ContentsConverter
         sb.AppendLine($"</ul>");
 
         return sb.ToString();
+    }
+
+    public List<string> GetAttachmentFileList(string wijiJsContents)
+    {
+        var result = new List<string>();
+        HtmlDocument htmlDocument = HtmlDocumentLoader.Load(wijiJsContents);
+        HtmlNodeCollection htmlNodeCollection = htmlDocument.DocumentNode.SelectNodes("//img");
+        if (htmlNodeCollection == null)
+        {
+            return result;
+        }
+
+        foreach (var node in htmlNodeCollection)
+        {
+            string srcValue = node.Attributes.GetAttributeOrEmpty("src");
+            if (srcValue.StartsWith("http"))
+            {
+                continue;
+            }
+
+            result.Add(srcValue);
+        }
+
+        return result;
     }
 
     public bool IsLatestNodePage(string contents)

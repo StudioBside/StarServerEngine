@@ -97,4 +97,11 @@ public sealed class WikiToolHandler : ReplHandlerBase
         int pageId = int.Parse(argument);
         return this.tool.PreviewById(pageId);
     }
+
+    [ReplCommand(Name = "upload-image", Description = "입력받은 (wjPage)id에 해당하는 페이지에 필요한 이미지 파일을 첨부합니다.")]
+    public Task<string> UploadImage(string argument)
+    {
+        int pageId = int.Parse(argument);
+        return this.tool.UploadImage(pageId);
+    }
 }

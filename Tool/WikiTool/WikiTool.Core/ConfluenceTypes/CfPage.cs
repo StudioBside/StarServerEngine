@@ -10,6 +10,7 @@ public sealed class CfPage
 {
     private readonly CfPageBulk bulk;
     private readonly List<CfPage> children = new();
+    private readonly List<CfAttachment> attachments = new();
     
     public CfPage(CfPageBulk bulk)
     {
@@ -20,6 +21,7 @@ public sealed class CfPage
     public string Title => this.bulk.Title;
     public string Body => this.bulk.Body.Value;
     public CfPage? Parent { get; private set; }
+    public IEnumerable<CfAttachment> Attachments => this.attachments;
     
     public static void SetRelation(CfPage parent, CfPage child)
     {
@@ -151,8 +153,42 @@ public sealed class CfPage
         return page is not null;
     }
 
+    internal async Task CacheAttachmentState(RestApiClient apiClient)
+    {
+        if (this.attachments.Count > 0)
+        {
+            return;
+        }
+
+        var request = new HttpRequestMessage(HttpMethod.Get, $"wiki/api/v2/pages/{this.Id}/attachments");
+        var response = await apiClient.SendAsync(request);
+        if (response.IsSuccessStatusCode == false)
+        {
+            Log.Error($"Failed to get attachments: {this.Title} statusCode:{response.StatusCode}");
+            return;
+        }
+
+        var attachments = await response.GetContentAs(obj => obj["results"]!.ToObject<List<CfAttachment>>());
+        if (attachments is null)
+        {
+            Log.Error($"Failed to get attachments: {this.Title}");
+            return;
+        }
+
+        this.attachments.Clear();
+        foreach (var attachment in attachments)
+        {
+            this.attachments.Add(attachment);
+        }
+
+        if (attachments.Count > 0)
+        {
+            Log.Info($"Loaded attachments: {this.Title} count:{attachments.Count}");
+        }
+    }
+
     //// -------------------------------------------------------------------------------------
-    
+
     private string DumpToString(int indent)
     {
         var space = string.Empty.PadRight(indent * 2, ' ');

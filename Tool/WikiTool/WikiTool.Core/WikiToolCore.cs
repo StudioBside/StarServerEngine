@@ -165,15 +165,41 @@ public sealed class WikiToolCore
         return sb.ToString();
     }
     
-    public string UploadImage(int wjPageId)
+    public async Task<string> UploadImage(int wjPageId)
     {
+        if (this.CurrentSpace is null)
+        {
+            return "선택된 space가 없습니다.";
+        }
+
         var wjPage = this.wikiJs.Pages.FirstOrDefault(e => e.Id == wjPageId);
         if (wjPage is null)
         {
             return $"Page not found: {wjPageId}";
         }
 
-        return string.Empty;
+        // 본문을 검색해 첨부해야 할 이미지가 있는지 확인한다.
+        var converter = ContentsConverter.Instance;
+        var files = converter.GetAttachmentFileList(wjPage.Render);
+        if (files.Count == 0)
+        {
+            return "No image found.";
+        }
+
+        // 대응하는 cfPage를 찾는다.
+        var cfPage = this.CurrentSpace.Pages.FirstOrDefault(e => e.Title == wjPage.UniqueTitle);
+        if (cfPage is null)
+        {
+            return $"cfPage not found: {wjPage.UniqueTitle}";
+        }
+
+        // cfPage의 현재 이미지 첨부 상황을 확인한다.
+        await cfPage.CacheAttachmentState(this.client);
+
+        // 업로드가 필요한 이미지를 선별한다.
+        var uploadFiles = files.Where(e => cfPage.Attachments.All(a => a.Title != e)).ToList();
+
+        return string.Join(Environment.NewLine, uploadFiles);
 
         /*
         var converter = ContentsConverter.Instance;
