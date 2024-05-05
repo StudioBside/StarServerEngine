@@ -104,4 +104,10 @@ public sealed class WikiToolHandler : ReplHandlerBase
         int pageId = int.Parse(argument);
         return this.tool.UploadImage(pageId);
     }
+
+    [ReplCommand(Name = "validate-asset", Description = "첨부파일의 존재 여부를 검증합니다.")]
+    public string ValidateAsset(string argument)
+    {
+        return this.tool.WikiJs.ValidateAsset();
+    }
 }

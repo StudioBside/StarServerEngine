@@ -32,7 +32,8 @@ public sealed class WikiToolCore
     public WikiToolConfig Config => this.config;
     public IReadOnlyList<CfSpaceBulk> Spaces => this.spaces;
     public CfSpace? CurrentSpace { get; private set; }
-    
+    public WikiJsController WikiJs => this.wikiJs;
+
     public async Task<bool> InitializeAsync()
     {
         // cache spaces
@@ -198,7 +199,6 @@ public sealed class WikiToolCore
 
         // 업로드가 필요한 이미지를 선별한다.
         var uploadFiles = files.Where(e => cfPage.Attachments.All(a => a.Title != e)).ToList();
-
         return string.Join(Environment.NewLine, uploadFiles);
 
         /*

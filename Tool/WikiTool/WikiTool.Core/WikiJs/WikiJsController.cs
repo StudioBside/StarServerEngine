@@ -3,12 +3,15 @@
 using Cs.Core;
 using Cs.Core.Util;
 using Cs.Logging;
+using System.Text;
+using WikiTool.Core.Transform;
+using WikiTool.Core.WikiJs;
 
 public sealed class WikiJsController
 {
     private readonly List<WjPage> pages = new();
-    private readonly HashSet<string> pathSet = new();
-    
+    private readonly AssetController assetController = new();
+
     public static WikiJsController Instance => Singleton<WikiJsController>.Instance;
     public IReadOnlyList<WjPage> Pages => this.pages;
     private string DebugName => $"[WikiJs]";
@@ -44,6 +47,9 @@ public sealed class WikiJsController
             page.PathTokens = builder.Calculate(page.Path);
         }
 
+        // load assets
+        this.assetController.Initialize(Path.Combine(backupPath, "assets"));
+
         return true;
     }
 
@@ -70,6 +76,39 @@ public sealed class WikiJsController
         }
 
         return null;
+    }
+
+    public string ValidateAsset()
+    {
+        var sb = new StringBuilder();
+
+        // 모든 페이지를 돌면서 첨부파일 여부를 확인하고, asset에 파일 존재 여부를 검증한다.
+        var converter = ContentsConverter.Instance;
+        bool successful = true;
+        foreach (var wjPage in this.pages)
+        {
+            var files = converter.GetAttachmentFileList(wjPage.Render);
+            if (files.Count == 0)
+            {
+                continue;
+            }
+
+            foreach (var file in files.Select(Uri.UnescapeDataString))
+            {
+                if (this.assetController.Contains(file, out _) == false)
+                {
+                    sb.AppendLine($"Asset not found: pageId:{wjPage.Id} missingFile:{file}");
+                    successful = false;
+                }
+            }
+        }
+
+        if (successful)
+        {
+            sb.AppendLine("All assets are valid.");
+        }
+
+        return sb.ToString();
     }
 
     //// --------------------------------------------------------------------------------
