@@ -199,7 +199,32 @@ public sealed class WikiToolCore
 
         // 업로드가 필요한 이미지를 선별한다.
         var uploadFiles = files.Where(e => cfPage.Attachments.All(a => a.Title != e)).ToList();
-        return string.Join(Environment.NewLine, uploadFiles);
+        if (uploadFiles.Count == 0)
+        {
+            return "No image to upload.";
+        }
+
+        // 존재하지 않는 파일이 있다면 제외한다.
+        var fullPaths = new List<string>();
+        foreach (var file in files)
+        {
+            if (!this.wikiJs.GetAssetPath(file, out var fullPath))
+            {
+                Log.Warn($"asset file not exist: {file}");
+                continue;
+            }
+
+            fullPaths.Add(fullPath);
+        }
+
+        Log.Debug($"allFiles:{files.Count} attached:{cfPage.Attachments.Count} uploadFiles:{uploadFiles.Count}");
+
+        if (await cfPage.UploadFiles(this.client, fullPaths) == false)
+        {
+            return $"Failed to upload files: {wjPage.UniqueTitle}";
+        }
+
+        return $"new file uploaded. files:{string.Join(Environment.NewLine, uploadFiles)}";
 
         /*
         var converter = ContentsConverter.Instance;

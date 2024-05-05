@@ -1,9 +1,10 @@
 ﻿namespace WikiTool.Core;
 
+using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using Cs.Core;
 using Cs.Core.Util;
 using Cs.Logging;
-using System.Text;
 using WikiTool.Core.Transform;
 using WikiTool.Core.WikiJs;
 
@@ -93,9 +94,9 @@ public sealed class WikiJsController
                 continue;
             }
 
-            foreach (var file in files.Select(Uri.UnescapeDataString))
+            foreach (var file in files)
             {
-                if (this.assetController.Contains(file, out _) == false)
+                if (this.GetAssetPath(file, out _) == false)
                 {
                     sb.AppendLine($"Asset not found: pageId:{wjPage.Id} missingFile:{file}");
                     successful = false;
@@ -109,6 +110,12 @@ public sealed class WikiJsController
         }
 
         return sb.ToString();
+    }
+
+    public bool GetAssetPath(string path, [MaybeNullWhen(false)] out string fullPath)
+    {
+        path = Uri.UnescapeDataString(path);
+        return this.assetController.Contains(path, out fullPath);
     }
 
     //// --------------------------------------------------------------------------------

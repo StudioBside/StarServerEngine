@@ -1,5 +1,6 @@
 ﻿namespace WikiTool.Core.ConfluenceTypes;
 
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Cs.HttpClient;
@@ -21,7 +22,7 @@ public sealed class CfPage
     public string Title => this.bulk.Title;
     public string Body => this.bulk.Body.Value;
     public CfPage? Parent { get; private set; }
-    public IEnumerable<CfAttachment> Attachments => this.attachments;
+    public IReadOnlyList<CfAttachment> Attachments => this.attachments;
     
     public static void SetRelation(CfPage parent, CfPage child)
     {
@@ -185,6 +186,30 @@ public sealed class CfPage
         {
             Log.Info($"Loaded attachments: {this.Title} count:{attachments.Count}");
         }
+    }
+
+    internal async Task<bool> UploadFiles(RestApiClient apiClient, List<string> fullPaths)
+    {
+        foreach (var filePath in fullPaths)
+        {
+            var fileName = Path.GetFileName(filePath);
+            var request = new HttpRequestMessage(HttpMethod.Post, $"wiki/rest/api/content/{this.Id}/child/attachment");
+            request.Headers.Add("Accept", "application/json");
+            request.Headers.Add("X-Atlassian-Token", "nocheck");
+            var content = new MultipartFormDataContent();
+            content.Add(new StreamContent(File.OpenRead(filePath)), "file", fileName);
+            content.Add(new StringContent("true"), "minorEdit");
+            request.Content = content;
+
+            var response = await apiClient.SendAsync(request);
+            if (response.IsSuccessStatusCode == false)
+            {
+                Log.Error($"Failed to upload attachment: {fileName} statusCode:{response.StatusCode}");
+                return false;
+            }
+        }
+
+        return true;
     }
 
     //// -------------------------------------------------------------------------------------

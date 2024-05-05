@@ -40,7 +40,13 @@ internal sealed class AssetController
             return false;
         }
 
+        if (path.StartsWith('/'))
+        {
+            path = path[1..];
+        }
+
         fullPath = Path.Combine(this.assetPath, path);
+        fullPath = Path.GetFullPath(fullPath);
         return true;
     }
 }
