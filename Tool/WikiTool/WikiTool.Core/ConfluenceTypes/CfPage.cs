@@ -182,10 +182,10 @@ public sealed class CfPage
             this.attachments.Add(attachment);
         }
 
-        if (attachments.Count > 0)
-        {
-            Log.Info($"Loaded attachments: {this.Title} count:{attachments.Count}");
-        }
+        ////if (attachments.Count > 0)
+        ////{
+        ////    Log.Info($"Loaded attachments: {this.Title} count:{attachments.Count}");
+        ////}
     }
 
     internal async Task<bool> UploadFiles(RestApiClient apiClient, List<string> fullPaths)

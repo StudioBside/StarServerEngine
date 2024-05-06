@@ -78,7 +78,7 @@ internal sealed class ContentsConverter
                 continue;
             }
 
-            result.Add(srcValue);
+            result.Add(Uri.UnescapeDataString(srcValue));
         }
 
         return result;

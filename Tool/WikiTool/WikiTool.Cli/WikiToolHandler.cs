@@ -98,12 +98,24 @@ public sealed class WikiToolHandler : ReplHandlerBase
         return this.tool.PreviewById(pageId);
     }
 
-    [ReplCommand(Name = "upload-image", Description = "입력받은 (wjPage)id에 해당하는 페이지에 필요한 이미지 파일을 첨부합니다.")]
-    public Task<string> UploadImage(string argument)
+    [ReplCommand(Name = "upload-by-id", Description = "입력받은 (wjPage)id에 해당하는 페이지에 필요한 이미지 파일을 첨부합니다.")]
+    public Task<string> UploadById(string argument)
     {
         int pageId = int.Parse(argument);
-        return this.tool.UploadImage(pageId);
+        return this.tool.UploadById(pageId);
     }
+
+    [ReplCommand(Name = "upload-files", Description = "입력받은 개수 만큼의 페이지에 첨부파일 업로드를 진행합니다.")]
+    public Task<string> UploadFiles(string argument)
+    {
+        if (int.TryParse(argument, out int uploadCount) == false)
+        {
+            return Task.FromResult($"업로드할 페이지의 개수를 입력해야 합니다: {argument}");
+        }
+
+        return this.tool.UploadFiles(uploadCount);
+    }
+
 
     [ReplCommand(Name = "validate-asset", Description = "첨부파일의 존재 여부를 검증합니다.")]
     public string ValidateAsset(string argument)

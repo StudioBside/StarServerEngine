@@ -114,7 +114,6 @@ public sealed class WikiJsController
 
     public bool GetAssetPath(string path, [MaybeNullWhen(false)] out string fullPath)
     {
-        path = Uri.UnescapeDataString(path);
         return this.assetController.Contains(path, out fullPath);
     }
 

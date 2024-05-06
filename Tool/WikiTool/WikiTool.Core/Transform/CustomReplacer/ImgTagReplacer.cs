@@ -41,6 +41,7 @@ public sealed class ImgTagReplacer : CustomReplacer
         {
             string srcValue = node.Attributes.GetAttributeOrEmpty("src");
             srcValue = Path.GetFileName(srcValue);
+            srcValue = Uri.UnescapeDataString(srcValue);
             var replace = $"<ac:image><ri:attachment ri:filename=\"{srcValue}\" /></ac:image>";
             //var replace = $"<ac:image><ri:attachment ri:filename=\"test.jpg\"><ri:page ri:content-title=\"MigrationTest2 Home\" /></ri:attachment></ac:image>";
             node.ReplaceNode(replace);

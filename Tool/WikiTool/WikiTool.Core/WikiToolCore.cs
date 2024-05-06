@@ -166,7 +166,7 @@ public sealed class WikiToolCore
         return sb.ToString();
     }
     
-    public async Task<string> UploadImage(int wjPageId)
+    public async Task<string> UploadById(int wjPageId)
     {
         if (this.CurrentSpace is null)
         {
@@ -179,38 +179,69 @@ public sealed class WikiToolCore
             return $"Page not found: {wjPageId}";
         }
 
+        return await this.UploadFiles(wjPage);
+    }
+
+    public async Task<string> UploadFiles(int pageCount)
+    {
+        if (this.CurrentSpace is null)
+        {
+            return "선택된 space가 없습니다.";
+        }
+
+        int success = 0;
+        int failed = 0;
+        foreach (var wjPage in this.wikiJs.Pages.Take(pageCount))
+        {
+            var result = await this.UploadFiles(wjPage);
+            Log.Info(result);
+        }
+
+        Log.Info($"success:{success} failed:{failed}");
+        return "finished";
+    }
+
+    //// -----------------------------------------------------------------------------------------------
+
+    public async Task<string> UploadFiles(WjPage wjPage)
+    {
+        if (this.CurrentSpace is null)
+        {
+            return "선택된 space가 없습니다.";
+        }
+        
         // 본문을 검색해 첨부해야 할 이미지가 있는지 확인한다.
         var converter = ContentsConverter.Instance;
         var files = converter.GetAttachmentFileList(wjPage.Render);
         if (files.Count == 0)
         {
-            return "No image found.";
+            return $"pageId:{wjPage.Id} No image found.";
         }
 
         // 대응하는 cfPage를 찾는다.
         var cfPage = this.CurrentSpace.Pages.FirstOrDefault(e => e.Title == wjPage.UniqueTitle);
         if (cfPage is null)
         {
-            return $"cfPage not found: {wjPage.UniqueTitle}";
+            return $"pageId:{wjPage.Id} cfPage not found: {wjPage.UniqueTitle}";
         }
 
         // cfPage의 현재 이미지 첨부 상황을 확인한다.
         await cfPage.CacheAttachmentState(this.client);
 
         // 업로드가 필요한 이미지를 선별한다.
-        var uploadFiles = files.Where(e => cfPage.Attachments.All(a => a.Title != e)).ToList();
+        var uploadFiles = files.Where(e => cfPage.Attachments.All(a => a.Title != Path.GetFileName(e))).ToList();
         if (uploadFiles.Count == 0)
         {
-            return "No image to upload.";
+            return $"pageId:{wjPage.Id} - 모든 파일이 이미 첨부됨. 파일 수:{files.Count}";
         }
 
         // 존재하지 않는 파일이 있다면 제외한다.
         var fullPaths = new List<string>();
-        foreach (var file in files)
+        foreach (var file in uploadFiles)
         {
             if (!this.wikiJs.GetAssetPath(file, out var fullPath))
             {
-                Log.Warn($"asset file not exist: {file}");
+                Log.Warn($"pageId:{wjPage.Id} asset file not exist: {file}");
                 continue;
             }
 
@@ -221,72 +252,12 @@ public sealed class WikiToolCore
 
         if (await cfPage.UploadFiles(this.client, fullPaths) == false)
         {
-            return $"Failed to upload files: {wjPage.UniqueTitle}";
+            return $"pageId:{wjPage.Id} Failed to upload files: {wjPage.UniqueTitle}";
         }
 
-        return $"new file uploaded. files:{string.Join(Environment.NewLine, uploadFiles)}";
+        Log.Debug($"pageId:{wjPage.Id} new file uploaded. files:{string.Join(Environment.NewLine, uploadFiles)}");
 
-        /*
-        var converter = ContentsConverter.Instance;
-        var imagePaths = converter.GetImagePaths(wjPage.Render);
-        if (imagePaths.Count == 0)
-        {
-            return "No image found.";
-        }
-
-        var sb = new StringBuilder();
-        foreach (var imagePath in imagePaths)
-        {
-            var image = new FileInfo(imagePath);
-            if (image.Exists == false)
-            {
-                sb.AppendLine($"Image not found: {imagePath}");
-                continue;
-            }
-
-            var request = new HttpRequestMessage(HttpMethod.Post, "wiki/api/v2/contentbody/convert/image");
-            request.Content = new ByteArrayContent(File.ReadAllBytes(imagePath));
-            request.Content.Headers.ContentType = new MediaTypeHeaderValue("image/png");
-            var response = this.client.Send(request);
-            if (response.IsSuccessStatusCode == false)
-            {
-                sb.AppendLine($"Failed to upload image: {imagePath}");
-                continue;
-            }
-
-            var contentId = response.GetContentAs(obj => obj["id"]!.ToObject<int>());
-            if (contentId is null)
-            {
-                sb.AppendLine($"Failed to get contentId: {imagePath}");
-                continue;
-            }
-
-            var content = new JObject
-            {
-                ["id"] = contentId,
-                ["type"] = "image",
-                ["title"] = image.Name,
-                ["mediaType"] = "image/png",
-                ["metadata"] = new JObject
-                {
-                    ["comment"] = "uploaded by wikitool",
-                },
-            };
-            var contentJson = JsonConvert.SerializeObject(content);
-            var contentRequest = new HttpRequestMessage(HttpMethod.Post, $"wiki/api/v2/content/{wjPageId}/child/attachment");
-            contentRequest.Content = new StringContent(contentJson, Encoding.UTF8, "application/json");
-            contentRequest.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-            var contentResponse = this.client.Send(contentRequest);
-            if (contentResponse.IsSuccessStatusCode == false)
-            {
-                sb.AppendLine($"Failed to upload image: {imagePath}");
-                continue;
-            }
-
-            sb.AppendLine($"Uploaded image: {imagePath}");
-        }
-
-        return sb.ToString();
-        */
+        // 새로 파일이 올라간 페이지는 자동 본문 새로고침
+        return await this.ConvertById(wjPage.Id, force: true);
     }
 }
