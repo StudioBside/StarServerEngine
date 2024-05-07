@@ -1,16 +1,31 @@
 ## todo
 
+code tag 구분 변환하기
+
+<p>경로 : <code>환경설정 &gt; 프로젝트 설정 &gt; 일반 설정 &gt; 일반 &gt; 이메일</code></p>
+<pre v-pre="true" class="prismjs line-numbers"><code class="language-">host : outbound.daouoffice.com
+port : 25
+secure connection : starttls // 주의 - 요것 그냥 ssl로만 해두면 동작하지 않습니다
+username : reporter@studiobside.com
+password : bside5008!
+</code></pre>
+
+## reference
+
 * 컨플루언스 위키 문법 문서 : https://confluence.atlassian.com/doc/confluence-wiki-markup-251003035.html
 * 컨플루언스 storage format 문서 : https://confluence.atlassian.com/doc/confluence-storage-format-790796544.html
 
 ## backlog
 
-* 이미지 첨부 처리
-  * https://confluence.atlassian.com/confkb/using-the-confluence-rest-api-to-upload-an-attachment-to-one-or-more-pages-1014274390.html
-  * v2에서는 첨부 동작을 지원하지 않는 듯.
 * path 구성 호환을 위해 만들어진 페이지들은 본문에 하위 페이지 목록 추가하기.
 
 ## done
+
+### 240504
+
+* 이미지 첨부 처리
+  * https://confluence.atlassian.com/confkb/using-the-confluence-rest-api-to-upload-an-attachment-to-one-or-more-pages-1014274390.html
+  * v2에서는 첨부 동작을 지원하지 않는 듯.
 
 ### 240426
 
