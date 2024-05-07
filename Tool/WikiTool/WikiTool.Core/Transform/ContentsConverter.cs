@@ -1,6 +1,7 @@
 ﻿namespace WikiTool.Core.Transform;
 
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 using Cs.Core;
@@ -60,14 +61,14 @@ internal sealed class ContentsConverter
         return sb.ToString();
     }
 
-    public List<string> GetAttachmentFileList(string wijiJsContents)
+    public IReadOnlyList<string> GetAttachmentFileList(string wijiJsContents)
     {
-        var result = new List<string>();
+        var result = new HashSet<string>();
         HtmlDocument htmlDocument = HtmlDocumentLoader.Load(wijiJsContents);
         HtmlNodeCollection htmlNodeCollection = htmlDocument.DocumentNode.SelectNodes("//img");
         if (htmlNodeCollection == null)
         {
-            return result;
+            return Array.Empty<string>();
         }
 
         foreach (var node in htmlNodeCollection)
@@ -81,7 +82,7 @@ internal sealed class ContentsConverter
             result.Add(Uri.UnescapeDataString(srcValue));
         }
 
-        return result;
+        return result.ToList();
     }
 
     public bool IsLatestNodePage(string contents)

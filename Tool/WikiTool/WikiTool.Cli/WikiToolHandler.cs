@@ -116,7 +116,6 @@ public sealed class WikiToolHandler : ReplHandlerBase
         return this.tool.UploadFiles(uploadCount);
     }
 
-
     [ReplCommand(Name = "validate-asset", Description = "첨부파일의 존재 여부를 검증합니다.")]
     public string ValidateAsset(string argument)
     {

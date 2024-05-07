@@ -6,7 +6,7 @@ using Cs.Logging;
 
 internal sealed class AssetController
 {
-    private readonly HashSet<string> files = new();
+    private readonly HashSet<string> files = new(StringComparer.CurrentCultureIgnoreCase);
     private string assetPath = string.Empty;
 
     public void Initialize(string assetPath)
