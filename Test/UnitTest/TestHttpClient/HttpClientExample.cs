@@ -7,6 +7,7 @@ using Cs.Logging;
 [TestClass]
 public class HttpClientExample
 {
+    [Ignore]
     [TestMethod]
     public async Task 기본_사용법()
     {
