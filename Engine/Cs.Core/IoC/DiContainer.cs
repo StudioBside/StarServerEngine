@@ -28,6 +28,24 @@ namespace Cs.Core.IoC
             return this;
         }
 
+        public DiContainer UpdateSingleton<T>(T instance) where T : class
+        {
+            //// note: thread un-safe.
+
+            var type = typeof(T);
+            for (int i = 0; i < this.instances.Count; ++i)
+            {
+                if (this.instances[i].Type == type)
+                {
+                    this.instances[i] = new SingletonHolder<T>(instance);
+                    return this;
+                }
+            }
+
+            this.instances.Add(new SingletonHolder<T>(instance));
+            return this;
+        }
+
         public DiContainer AddTransient<T>(Func<object?, T> factory) where T : class
         {
             //// note: thread un-safe.
