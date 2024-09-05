@@ -10,8 +10,6 @@
     using System.Threading.Tasks;
     using Cs.Core.Util;
     using Cs.Logging;
-    using Sentry;
-    using Sentry.Protocol;
 
     public interface ISlackSender
     {
@@ -50,33 +48,6 @@
             ignoreUnobservedTypes = types;
         }
 
-        public static void InitSentry(string dsn)
-        {
-            var buildInfo = DevOps.BuildInformation;
-
-            if (buildInfo.Revision == 0)
-            {
-                return; // revision이 지정되지 않은 빌드는 sentry 알림 비활성.
-            }
-
-            sentryResource = SentrySdk.Init(option =>
-            {
-                option.Dsn = dsn;
-                option.AttachStacktrace = true;
-                option.Debug = true;
-                option.Release = buildInfo.Revision.ToString();
-                option.Environment = buildInfo.StreamName;
-            });
-
-            SentrySdk.ConfigureScope(scope =>
-            {
-                scope.SetTag("buildTime", buildInfo.BuildTime.ToString("yyyy-MM-dd HH:mm:ss.fff"));
-                scope.SetTag("hostName", Hostname);
-            });
-
-            Log.Info($"Sentry Initialized. dsn:{dsn}");
-        }
-
         public static bool Crash(Exception e)
         {
             if (crashConfig == null)
@@ -107,7 +78,6 @@
 
 #if !DEBUG
                 SendCrashSlack(e);
-                SendSentryEvent(e);
 #endif
             }
             catch (Exception localException)
@@ -194,19 +164,6 @@
             slackSender.SendSnippet($"{crashTarget} Crash", BuildMessage(ex, includeSummary: true));
         }
 
-        private static void SendSentryEvent(Exception ex)
-        {
-            if (sentryResource == null)
-            {
-                return; // sentry 초기화가 실행되지 않았다.
-            }
-
-            var sentryEvent = new SentryEvent(ex);
-            sentryEvent.Message = BuildMessage(ex, includeSummary: true);
-            SentryId result = SentrySdk.CaptureEvent(sentryEvent);
-            Log.Info($"exception captured to sentry. id:{result.ToString()}");
-        }
-
         private static void HandleException(Exception e)
         {
             if (GuardExceptionHandling() == false)
@@ -237,7 +194,6 @@
 
 #if !DEBUG
                 SendCrashSlack(e);
-                SendSentryEvent(e);
 #endif
             }
             catch (Exception localException)

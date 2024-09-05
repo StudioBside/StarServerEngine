@@ -13,7 +13,7 @@
 
         public static DateTime Now => DateTime.UtcNow + UtcOffset + DebugOffset + AdjustOffset;
         public static DateTime UtcNow => DateTime.UtcNow + DebugOffset;
-        public static DateTime Epoch => TimeHelper.UtcEpoch + UtcOffset;
+        public static DateTime Epoch => TimeHelper.UtcEpoch;
         public static TimeSpan UtcOffset { get; private set; } = TimeZoneInfo.Local.GetUtcOffset(DateTime.Now);
         public static TimeSpan DebugOffset { get; private set; } = TimeSpan.Zero;
         public static TimeSpan AdjustOffset { get; private set; } = TimeSpan.Zero; // 클라에서만 사용합니다. 서버utc와 클라utc 간의 차이를 조정하기 위한 값입니다.

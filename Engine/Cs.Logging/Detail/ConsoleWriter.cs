@@ -29,7 +29,11 @@
 
                     case LogLevel.Error:
                         Console.ForegroundColor = ConsoleColor.Red;
-                        break;
+
+                        // note: OutProcess에서 에러 출력을 redirect해야하기 때문에 StandardError 스트림에 에러를 출력합니다.
+                        Console.Error.WriteLine(message);
+                        Console.ResetColor();
+                        return;
                 }
             }
 

@@ -1,5 +1,6 @@
 ﻿namespace Cs.Core.Core
 {
+    using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
@@ -9,6 +10,7 @@
     {
         private readonly LinkedList<(TKey Key, TElement Value)> timeline = new LinkedList<(TKey, TElement)>();
         private readonly Dictionary<TKey, LinkedListNode<(TKey Key, TElement Value)>> index;
+        private Action<TElement>? onElementRemoved;
 
         public LruCache(int maxCount)
         {
@@ -25,6 +27,11 @@
         public int Count => this.timeline.Count;
         public IEnumerable<TElement> Values => this.timeline.Select(e => e.Value);
         public int MaxCount { get; }
+
+        public void SetElementRemovedCallback(Action<TElement> callback)
+        {
+            this.onElementRemoved = callback;
+        }
 
         public bool TryGetValue(TKey key, out TElement result)
         {
@@ -57,6 +64,8 @@
                     node = this.timeline.Last!; // 캐시 크기가 넘치면, 기존의 node를 재활용한다.
                     this.timeline.RemoveLast();
                     this.index.Remove(node.Value.Key);
+
+                    this.onElementRemoved?.Invoke(node.Value.Value);
                 }
 
                 if (node != null)
@@ -91,6 +100,9 @@
                     node = this.timeline.Last!; // 캐시 크기가 넘치면, 기존의 node를 재활용한다.
                     this.timeline.RemoveLast();
                     this.index.Remove(node.Value.Key);
+
+                    // 콜백 호출
+                    this.onElementRemoved?.Invoke(node.Value.Value);
                 }
 
                 insert = true;
@@ -98,6 +110,11 @@
             else //// 기존에 값이 존재했다면 timeline을 최신화 해준다.
             {
                 this.timeline.Remove(node);
+                if (ReferenceEquals(node.Value.Value, element) == false)
+                {
+                    // key가 같지만 다른 instance가 이미 등록되어 있던 경우. 이전 값 제거 콜백 호출.
+                    this.onElementRemoved?.Invoke(node.Value.Value);
+                }
             }
 
             if (node != null)
@@ -123,6 +140,21 @@
 
             this.timeline.Remove(node);
             this.index.Remove(key);
+
+            // 콜백 호출
+            this.onElementRemoved?.Invoke(node.Value.Value);
+        }
+
+        public void Clear()
+        {
+            foreach (var node in this.timeline)
+            {
+                // 콜백 호출
+                this.onElementRemoved?.Invoke(node.Value);
+            }
+
+            this.timeline.Clear();
+            this.index.Clear();
         }
     }
 }

@@ -31,16 +31,9 @@ public sealed class CodeReplacer : CustomReplacer
 
         foreach (var node in htmlNodeCollection)
         {
-            if (node.ParentNode.Name == "pre")
-            {
-                string innerHtml = node.InnerHtml;
-                var replace = $"<ac:structured-macro ac:name=\"code\">\n<ac:plain-text-body>\n<![CDATA[{innerHtml}]]>\n</ac:plain-text-body>\n</ac:structured-macro>";
-                node.ReplaceNode(replace);
-            }
-            else
-            {
-                continue;
-            }
+            string innerHtml = node.InnerHtml;
+            var replace = $"<ac:structured-macro ac:name=\"code\">\n<ac:plain-text-body>\n<![CDATA[{innerHtml}]]>\n</ac:plain-text-body>\n</ac:structured-macro>";
+            node.ReplaceNode(replace);
         }
 
         return htmlDocument.DocumentNode.OuterHtml;

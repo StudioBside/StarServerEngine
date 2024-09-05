@@ -2,7 +2,12 @@
 {
     using System.Collections.Generic;
 
-    public sealed class CircularBuffer<T>
+    public interface ICircularBuffer
+    {
+        int ToSafeIndex(long index);
+    }
+
+    public sealed class CircularBuffer<T> : ICircularBuffer
     {
         private readonly long kMask = 0;
         private T[] buffer;

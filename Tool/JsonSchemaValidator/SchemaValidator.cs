@@ -72,7 +72,7 @@
 
         public void ReportSummery()
         {
-            Log.Error($"스키마 파일:{this.Key} #Error:{this.errorCount}");
+            Log.Debug($"스키마 파일:{this.Key} #Error:{this.errorCount}");
         }
 
         internal void Validate(string jsonText, PathInfo jsonPath, SarifLogger logger)

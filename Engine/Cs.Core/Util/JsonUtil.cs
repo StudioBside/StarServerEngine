@@ -108,6 +108,11 @@
             throw new JsonSerializationException(key);
         }
 
+        public static T? ToObject<T>(string json) where T : class
+        {
+            return JsonConvert.DeserializeObject<T>(json);
+        }
+
         //// --------------------------------------------------------------
 
         private sealed class LowercaseContractResolver : DefaultContractResolver

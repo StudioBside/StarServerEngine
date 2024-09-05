@@ -27,7 +27,7 @@
     <PackageReference Include="Microsoft.ClearScript.V8" Version="7.4.4" />
     <PackageReference Include="Microsoft.ClearScript.V8.ICUData" Version="7.4.4" />
     <PackageReference Include="Microsoft.ClearScript.V8.Native.win-x64" Version="7.4.4" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.507">
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

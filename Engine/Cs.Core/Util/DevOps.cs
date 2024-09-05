@@ -126,6 +126,10 @@
                 {
                     streamType = P4StreamType.Dev;
                 }
+                else if (streamName.StartsWith("alpha"))
+                {
+                    streamType = P4StreamType.Alpha;
+                }
                 else
                 {
                     Log.Error($"not registered stream name:{streamName}");

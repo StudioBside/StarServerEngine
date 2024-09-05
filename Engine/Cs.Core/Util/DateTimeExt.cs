@@ -69,5 +69,10 @@
             var timeSpan = TimeSpan.FromDays(7 * weekDelta);
             return (self + timeSpan).GetWeeklyId();
         }
+
+        public static int GetDateId(this DateTime self)
+        {
+            return (self.Year * 10000) + (self.Month * 100) + self.Day;
+        }
     }
 }

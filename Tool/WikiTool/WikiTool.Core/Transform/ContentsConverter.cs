@@ -11,7 +11,7 @@ using WikiTool.Core.Transform.Detail;
 internal sealed class ContentsConverter
 {
     public const int PathPageVersion = 2;
-    public const int NodePageVersion = 1;
+    public const int NodePageVersion = 3;
     private readonly Html2Markdown.Converter htmlConverter = new(new ConvertingScheme());
 
     public static ContentsConverter Instance => Singleton<ContentsConverter>.Instance;

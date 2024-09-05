@@ -79,7 +79,8 @@
                 return false;
             }
 
-            return true;
+            // note: 에러로그가 없는 프로세스의 정상 종료 여부를 확인하도록 합니다.
+            return this.process.ExitCode == 0;
         }
     }
 }

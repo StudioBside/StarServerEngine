@@ -16,6 +16,10 @@
 
         public static bool operator ==(WeeklyId left, WeeklyId right) => left.Equals(right);
         public static bool operator !=(WeeklyId left, WeeklyId right) => !(left == right);
+        public static bool operator <(WeeklyId left, WeeklyId right) => left.Value < right.Value;
+        public static bool operator >(WeeklyId left, WeeklyId right) => left.Value > right.Value;
+        public static bool operator <=(WeeklyId left, WeeklyId right) => left.Value <= right.Value;
+        public static bool operator >=(WeeklyId left, WeeklyId right) => left.Value >= right.Value;
 
         public override bool Equals(object? other)
         {

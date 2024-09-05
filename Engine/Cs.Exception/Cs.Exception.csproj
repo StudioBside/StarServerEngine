@@ -13,8 +13,7 @@
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="sentry" Version="3.41.0" />
-    <PackageReference Include="stylecop.analyzers" Version="1.2.0-beta.507">
+    <PackageReference Include="stylecop.analyzers" Version="1.2.0-beta.556">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
