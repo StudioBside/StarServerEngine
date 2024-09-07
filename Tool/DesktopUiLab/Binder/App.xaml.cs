@@ -20,7 +20,9 @@ public partial class App : Application
     {
         var services = new ServiceCollection();
 
-        services.AddTransient(typeof(MainViewModel));
+        services.AddTransient(typeof(VmMain));
+        services.AddTransient(typeof(VmHome));
+        services.AddTransient(typeof(VmCustomer));
 
         return services.BuildServiceProvider();
     }

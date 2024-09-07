@@ -1,7 +1,6 @@
-﻿namespace Binder;
+﻿namespace Binder.Views;
 
 using System.ComponentModel;
-using System.Text;
 using System.Windows;
 using Binder.ViewModels;
 
@@ -11,7 +10,7 @@ public partial class MainWindow : Window
     {
         this.InitializeComponent();
         this.LoadWindowState();
-        this.DataContext = App.Current.Services.GetService(typeof(MainViewModel));
+        this.DataContext = App.Current.Services.GetService(typeof(VmMain));
     }
 
     protected override void OnClosing(CancelEventArgs e)

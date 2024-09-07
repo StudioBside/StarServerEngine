@@ -7,9 +7,11 @@
 
 * wpfui : https://wpfui.lepo.co/
 * CommunityToolkit.Mvvm : https://learn.microsoft.com/ko-kr/dotnet/communitytoolkit/mvvm/
-  *	ObservableObject, RelayCommand, IMessenger, IoC, ...
+  * ObservableObject, RelayCommand, IMessenger, IoC, ...
 * Microsoft.Extensions.DependencyInjection : https://docs.microsoft.com/ko-kr/dotnet/core/extensions/dependency-injection
   * ServiceCollection
+* XamlBehaviorsWpf : https://github.com/Microsoft/XamlBehaviorsWpf
+  * 
 
 ## 기타 레퍼런스
 
