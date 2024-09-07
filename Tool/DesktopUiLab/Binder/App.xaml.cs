@@ -1,13 +1,27 @@
-﻿namespace Binder
-{
-    using System.Configuration;
-    using System.Data;
-    using System.Windows;
+﻿namespace Binder;
 
-    /// <summary>
-    /// Interaction logic for App.xaml.
-    /// </summary>
-    public partial class App : Application
+using System.Configuration;
+using System.Windows;
+using Binder.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
+
+public partial class App : Application
+{
+    public App()
     {
+        this.Services = ConfigureServices();
+        this.InitializeComponent();
+    }
+
+    public static new App Current => (App)Application.Current;
+    public IServiceProvider Services { get; }
+
+    private static IServiceProvider ConfigureServices()
+    {
+        var services = new ServiceCollection();
+
+        services.AddTransient(typeof(MainViewModel));
+
+        return services.BuildServiceProvider();
     }
 }
