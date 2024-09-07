@@ -67,6 +67,8 @@ Tool/JsonMigrator/Steps/**
 !Tool/WikiTool/**
 !Tool/RedmineChromeExtension/
 !Tool/RedmineChromeExtension/**
+!Tool/DesktopUiLab/
+!Tool/DesktopUiLab/**
 
 # Tool/ 하위 json 파일들은 모두 비공개
 Tool/**/*.json
