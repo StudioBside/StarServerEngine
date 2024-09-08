@@ -1,4 +1,4 @@
-﻿namespace Binder.Interfaces;
+﻿namespace Du.Core.Interfaces;
 
 using System.Windows.Navigation;
 

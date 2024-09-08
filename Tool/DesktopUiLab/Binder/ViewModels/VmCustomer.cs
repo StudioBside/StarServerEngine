@@ -2,12 +2,12 @@
 
 using System.Windows.Input;
 using System.Windows.Navigation;
-using Binder.Bases;
-using Binder.Models;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Du.Core.Bases;
+using Du.Core.Models;
 
-public sealed class VmCustomer : ViewModelBase
+public sealed class VmCustomer : VmPagelBase
 {
     private string message = string.Empty;
 

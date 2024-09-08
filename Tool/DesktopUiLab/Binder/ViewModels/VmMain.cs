@@ -1,12 +1,12 @@
 ﻿namespace Binder.ViewModels;
 
 using System.Windows.Input;
-using Binder.Bases;
-using Binder.Models;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Du.Core.Bases;
+using Du.Core.Models;
 
-public sealed class VmMain : ViewModelBase
+public sealed class VmMain : VmPagelBase
 {
     private string? navigationSource = string.Empty;
 

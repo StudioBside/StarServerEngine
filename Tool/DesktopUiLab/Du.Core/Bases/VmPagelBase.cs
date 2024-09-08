@@ -1,10 +1,10 @@
-﻿namespace Binder.Bases;
+﻿namespace Du.Core.Bases;
 
 using System.Windows.Navigation;
-using Binder.Interfaces;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Du.Core.Interfaces;
 
-public abstract class ViewModelBase : ObservableObject, INavigationAware
+public abstract class VmPagelBase : ObservableObject, INavigationAware
 {
     private string title = string.Empty;
 

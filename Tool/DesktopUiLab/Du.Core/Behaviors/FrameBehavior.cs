@@ -1,10 +1,10 @@
-﻿namespace Binder.Behaviors;
+﻿namespace Du.Core.Behaviors;
 
 using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
-using Binder.Interfaces;
+using Du.Core.Interfaces;
 using Microsoft.Xaml.Behaviors;
 
 public sealed class FrameBehavior : Behavior<Frame>

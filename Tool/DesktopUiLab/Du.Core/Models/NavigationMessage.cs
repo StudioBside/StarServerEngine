@@ -1,4 +1,4 @@
-﻿namespace Binder.Models;
+﻿namespace Du.Core.Models;
 
 using CommunityToolkit.Mvvm.Messaging.Messages;
 

@@ -16,11 +16,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
-    <PackageReference Include="Cs.Core" Version="0.0.4" />
-    <PackageReference Include="Cs.Logging" Version="0.0.23" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.122" />
     <PackageReference Include="WPF-UI" Version="3.0.5" />
     <PackageReference Include="stylecop.analyzers" Version="1.2.0-beta.556">
       <PrivateAssets>all</PrivateAssets>
@@ -32,6 +27,10 @@
     <AssemblyAttribute Include="Cs.Core.Util.BuildDateAttribute">
       <_Parameter1>$([System.DateTime]::Now.ToString("yyyyMMddHHmmss"))</_Parameter1>
     </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Du.Core\Du.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -47,6 +46,11 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Behaviors\" />
+    <Folder Include="Models\" />
   </ItemGroup>
 
 </Project>

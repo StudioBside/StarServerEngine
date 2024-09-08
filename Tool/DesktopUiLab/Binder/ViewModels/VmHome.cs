@@ -1,9 +1,9 @@
 ﻿namespace Binder.ViewModels;
 
 using System.Windows.Navigation;
-using Binder.Bases;
+using Du.Core.Bases;
 
-public sealed class VmHome : ViewModelBase
+public sealed class VmHome : VmPagelBase
 {
     private string message = string.Empty;
 
