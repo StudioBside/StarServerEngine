@@ -1,27 +1,18 @@
 ﻿namespace Binder.ViewModels;
 
-using System.Windows.Navigation;
+using System.Collections.ObjectModel;
+using Binder.Models;
 using Du.Core.Bases;
 
 public sealed class VmHome : VmPagelBase
 {
-    private string message = string.Empty;
+    private readonly ObservableCollection<BindFile> bindFiles = new();
 
     public VmHome()
     {
-        this.Title = "Home";
+        this.Title = "바인딩 파일 목록";
+        this.bindFiles.Add(new BindFile("hello world"));
     }
 
-    public static int Count { get; set; }
-    public string Message
-    {
-        get => this.message;
-        set => this.SetProperty(ref this.message, value);
-    }
-
-    public override void OnNavigated(object sender, NavigationEventArgs navigatedEventArgs)
-    {
-        Count++;
-        this.Message = $"{Count} Navigated";
-    }
+    public IList<BindFile> BindFiles => this.bindFiles;
 }

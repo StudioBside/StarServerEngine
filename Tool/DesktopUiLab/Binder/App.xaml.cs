@@ -1,8 +1,12 @@
 ﻿namespace Binder;
 
-using System.Configuration;
+using System.IO;
 using System.Windows;
+using Binder.Services;
 using Binder.ViewModels;
+using Cs.Logging;
+using Cs.Logging.Providers;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 public partial class App : Application
@@ -10,6 +14,7 @@ public partial class App : Application
     public App()
     {
         this.Services = ConfigureServices();
+        this.Initialize();
         this.InitializeComponent();
     }
 
@@ -20,10 +25,27 @@ public partial class App : Application
     {
         var services = new ServiceCollection();
 
+        var workingDirectory = System.IO.Directory.GetCurrentDirectory();
+        var config = new ConfigurationBuilder()
+            .AddJsonFile(Path.Combine(workingDirectory, "appsettings.json"), optional: false)
+            //.AddJsonFile("appsettings.local.json", optional: true)
+            .Build();
+
+        services.AddTransient<IConfiguration>(_ => config);
+
         services.AddTransient(typeof(VmMain));
-        services.AddTransient(typeof(VmHome));
+        services.AddSingleton(typeof(VmHome));
         services.AddTransient(typeof(VmCustomer));
+        services.AddTransient(typeof(FileLoader));
 
         return services.BuildServiceProvider();
+    }
+
+    private void Initialize()
+    {
+        Log.Initialize(new SimpleFileLogProvider("log.txt"), LogLevelConfig.All);
+
+        var loader = this.Services.GetRequiredService<FileLoader>();
+        loader.Load();
     }
 }

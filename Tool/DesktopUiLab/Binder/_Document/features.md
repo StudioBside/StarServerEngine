@@ -11,7 +11,16 @@
 * Microsoft.Extensions.DependencyInjection : https://docs.microsoft.com/ko-kr/dotnet/core/extensions/dependency-injection
   * ServiceCollection
 * XamlBehaviorsWpf : https://github.com/Microsoft/XamlBehaviorsWpf
-  * 
+  * Behavior<T>
+
+## wpf와 무관한 외부 패키지
+
+* Microsoft.Extensions.Configuration : https://docs.microsoft.com/ko-kr/dotnet/core/extensions/configuration
+  Microsoft.Extensions.Configuration.Json : https://www.nuget.org/packages/Microsoft.Extensions.Configuration.Json/
+  Microsoft.Extensions.Configuration.Binder : https://www.nuget.org/packages/Microsoft.Extensions.Configuration.Binder/
+
+.Json이 있어야 appsettings.json을 읽을 수 있다.
+.Binder가 있어야 GetValue<T>를 사용할 수 있다.
 
 ## 기타 레퍼런스
 
