@@ -23,7 +23,6 @@ public sealed class BindFile
     public string Name { get; }
     public DateTime LastWriteTime { get; }
     public IList<Extract> Extracts => this.extracts;
-
     public override string ToString()
     {
         var sb = new StringBuilder();
