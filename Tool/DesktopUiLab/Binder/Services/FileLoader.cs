@@ -1,7 +1,6 @@
 ﻿namespace Binder.Services;
 
 using System;
-using System.Diagnostics;
 using System.IO;
 using Binder.Models;
 using Binder.ViewModels;
@@ -41,8 +40,5 @@ internal sealed class FileLoader(VmHome vmHome, IConfiguration config)
                 Log.Error($"Failed to load file:{file} exception:{ex.Message}");
             }
         }
-
-        // 리스트업이 끝난 후 filter 설정을 위해 한번 호출
-        this.vmHome.SearchKeyword = string.Empty;
     }
 }
