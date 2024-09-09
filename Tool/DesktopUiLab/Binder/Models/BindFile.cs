@@ -1,15 +1,13 @@
 ﻿namespace Binder.Models;
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 public sealed class BindFile
 {
     private readonly string filePath;
+    private readonly List<Extract> extracts = new();
+
     public BindFile(string filePath)
     {
         this.filePath = filePath;
@@ -19,4 +17,5 @@ public sealed class BindFile
 
     public string Name { get; }
     public DateTime LastWriteTime { get; }
+    public IList<Extract> Extracts => this.extracts;
 }
