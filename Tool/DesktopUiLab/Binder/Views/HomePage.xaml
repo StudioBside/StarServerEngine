@@ -8,10 +8,17 @@
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:ext="clr-namespace:Du.Core.Extensions;assembly=Du.Core"
     xmlns:behaviors="clr-namespace:Du.Core.Behaviors;assembly=Du.Core"
-    Title="HomePage"
+    xmlns:converters="clr-namespace:Du.Core.Converters;assembly=Du.Core"
+    xmlns:viewmodels="clr-namespace:Binder.ViewModels"
+    d:DataContext="{d:DesignInstance Type=viewmodels:VmHome}"
+  Title="HomePage"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
+
+    <Page.Resources>
+        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+    </Page.Resources>
 
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
@@ -65,8 +72,18 @@
         </Grid>
 
         <!--우측 영역-->
-        <Grid Grid.Column="1" Margin="10">
-            <TextBlock TextWrapping="Wrap" Text="{Binding Selected}"/>
+        <Grid Grid.Column="1" Margin="10"
+              Visibility="{Binding Selected, Converter={StaticResource NullToVisibilityConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" TextWrapping="Wrap" Text="{Binding Selected}"/>
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="추가" Command="{Binding AddCommand}" Margin="0,0,10,0"/>
+                <Button Content="수정" Command="{Binding EditCommand}" Margin="0,0,10,0"/>
+                <Button Content="삭제" Command="{Binding DeleteCommand}" Margin="0,0,10,0"/>
+            </StackPanel>
         </Grid>
         
     </Grid>
