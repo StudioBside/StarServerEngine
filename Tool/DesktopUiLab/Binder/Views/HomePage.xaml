@@ -84,7 +84,8 @@
                     <StackPanel Margin="10">
                         <TextBlock Text="Extract:"/>
 
-                        <ui:ListView ItemsSource="{Binding Selected.Extracts}">
+                        <ui:ListView ItemsSource="{Binding Selected.Extracts}"
+                                     SelectionMode="Single">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Margin="8,4" Text="{Binding}" />
@@ -105,7 +106,8 @@
                     <StackPanel Margin="10">
                         <TextBlock Text="Extract Enum:"/>
 
-                        <ui:ListView ItemsSource="{Binding Selected.Extracts}">
+                        <ui:ListView ItemsSource="{Binding Selected.Extracts}"
+                                     SelectionMode="Single">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Margin="8,4" Text="{Binding}" />
@@ -126,7 +128,8 @@
                     <StackPanel Margin="10">
                         <TextBlock Text="Extract String:"/>
 
-                        <ui:ListView ItemsSource="{Binding Selected.Extracts}">
+                        <ui:ListView ItemsSource="{Binding Selected.Extracts}"
+                                     SelectionMode="Single">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Margin="8,4" Text="{Binding}" />
