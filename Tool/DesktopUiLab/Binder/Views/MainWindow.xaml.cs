@@ -3,6 +3,7 @@
 using System.ComponentModel;
 using System.Windows;
 using Binder.ViewModels;
+using Du.Core.Util;
 
 public partial class MainWindow : Window
 {
@@ -10,7 +11,7 @@ public partial class MainWindow : Window
     {
         this.InitializeComponent();
         this.LoadWindowState();
-        this.DataContext = App.Current.Services.GetService(typeof(VmMain));
+        this.DataContext = App.Current.Services.GetService<VmMain>();
     }
 
     protected override void OnClosing(CancelEventArgs e)

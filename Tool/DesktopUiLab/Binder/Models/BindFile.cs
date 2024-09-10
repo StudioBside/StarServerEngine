@@ -29,12 +29,6 @@ public sealed class BindFile
         var sb = new StringBuilder();
         sb.AppendLine($"파일 이름: {this.Name}");
         sb.AppendLine($"수정 시각: {this.LastWriteTime}");
-        sb.AppendLine();
-        sb.AppendLine("Extracts:");
-        foreach (var extract in this.Extracts)
-        {
-            sb.AppendLine($" - 출력:{extract.OutputFile}");
-        }
 
         return sb.ToString();
     }
