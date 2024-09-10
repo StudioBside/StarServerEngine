@@ -120,7 +120,7 @@ public static class JsonElementExt
 
         foreach (var element in arrayElement.EnumerateArray())
         {
-            var value = element.GetString(string.Empty);
+            var value = element.GetString() ?? string.Empty;
             result.Add(value);
         }
 

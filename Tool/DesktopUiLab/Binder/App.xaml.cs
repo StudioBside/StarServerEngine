@@ -35,7 +35,7 @@ public partial class App : Application
 
         services.AddTransient(typeof(VmMain));
         services.AddSingleton(typeof(VmHome));
-        services.AddTransient(typeof(VmCustomer));
+        services.AddTransient(typeof(VmSingleBind));
         services.AddTransient(typeof(FileLoader));
 
         return services.BuildServiceProvider();

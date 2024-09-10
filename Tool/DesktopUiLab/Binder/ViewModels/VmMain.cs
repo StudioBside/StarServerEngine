@@ -25,7 +25,9 @@ public sealed class VmMain : VmPagelBase
         set => this.SetProperty(ref this.navigationSource, value);
     }
 
-    public ICommand NavigateCommand { get; set; }
+    public ICommand NavigateCommand { get; }
+
+    //// --------------------------------------------------------------------------------------------
 
     private void OnNavigate(string? pageUri)
     {

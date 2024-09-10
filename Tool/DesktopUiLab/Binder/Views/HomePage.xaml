@@ -8,17 +8,22 @@
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:ext="clr-namespace:Du.Core.Extensions;assembly=Du.Core"
     xmlns:behaviors="clr-namespace:Du.Core.Behaviors;assembly=Du.Core"
+    xmlns:converters="clr-namespace:Du.Core.Converters;assembly=Du.Core"
     Title="HomePage"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
 
+    <Page.Resources>
+        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+    </Page.Resources>
+
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="2*" />
         </Grid.ColumnDefinitions>
-        
+
         <!--좌측 영역-->
         <Grid Grid.Column="0">
             <Grid.RowDefinitions>
@@ -26,48 +31,140 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            
+
             <!--좌상단 타이틀 영역-->
             <TextBlock Grid.Row="0" Margin="0,0,0,10" FontSize="20" Text="{Binding Title}" />
-            
+
             <!--좌중단 검색 필터 영역-->
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                
+
                 <ui:SymbolIcon Symbol="Search12"
                                Margin="10,0,10,0" />
-                
+
                 <ui:TextBox Grid.Column="1"
                     Margin="0,0,10,0"
                     PlaceholderText="검색어 입력.."
                     Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}"
+                    Icon="Search12"
                     ext:FocusExtension.IsFocused="True"/>
             </Grid>
-            
+
             <!--좌하단 파일 리스트 영역-->
-            <ListBox
+            <ui:ListView
                 Grid.Row="2"
                 ItemsSource="{Binding FilteredFiles}"
                 Margin="0,10,0,0"
                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                SelectedItem="{Binding Selected}">
-                <ListBox.ItemTemplate>
+                SelectedItem="{Binding Selected}"
+                SelectionMode="Single">
+                <ListView.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel>
-                            <TextBlock Text="{Binding Name}" />
-                        </StackPanel>
+                        <TextBlock  Margin="8,4" FontSize="15" Text="{Binding Name}"/>
                     </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                </ListView.ItemTemplate>
+            </ui:ListView>
         </Grid>
 
         <!--우측 영역-->
-        <Grid Grid.Column="1" Margin="10">
-            <TextBlock TextWrapping="Wrap" Text="{Binding Selected}"/>
-        </Grid>
-        
+        <ScrollViewer Grid.Column="1"
+                      Margin="10"
+                      VerticalScrollBarVisibility="Auto">
+            <StackPanel Orientation="Vertical"
+                        Visibility="{Binding Selected, Converter={StaticResource NullToVisibilityConverter}}">
+                
+                <!--파일 이름 및 부가 정보 텍스트-->
+                <TextBlock TextWrapping="Wrap" Text="{Binding Selected}"/>
+
+                <!--Extract 목록 영역-->
+                <Border BorderThickness="1" BorderBrush="LightGray" CornerRadius="8" Margin="0,0,0,5">
+                    <StackPanel Margin="10">
+                        <TextBlock Text="Extract:"/>
+
+                        <ui:ListView ItemsSource="{Binding Selected.Extracts}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Margin="8,4" Text="{Binding}" />
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ui:ListView>
+
+                        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Content="추가" Command="{Binding AddCommand}" Margin="0,0,10,0"/>
+                            <Button Content="수정" Command="{Binding EditCommand}" Margin="0,0,10,0"/>
+                            <Button Content="삭제" Command="{Binding DeleteCommand}" Margin="0,0,10,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!--Extract Enum 목록 영역-->
+                <Border BorderThickness="1" BorderBrush="LightGray" CornerRadius="8" Margin="0,0,0,5">
+                    <StackPanel Margin="10">
+                        <TextBlock Text="Extract Enum:"/>
+
+                        <ui:ListView ItemsSource="{Binding Selected.Extracts}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Margin="8,4" Text="{Binding}" />
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ui:ListView>
+
+                        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Content="추가" Command="{Binding AddCommand}" Margin="0,0,10,0"/>
+                            <Button Content="수정" Command="{Binding EditCommand}" Margin="0,0,10,0"/>
+                            <Button Content="삭제" Command="{Binding DeleteCommand}" Margin="0,0,10,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+                
+                <!--Extract String 목록 영역-->
+                <Border BorderThickness="1" BorderBrush="LightGray" CornerRadius="8" Margin="0,0,0,5">
+                    <StackPanel Margin="10">
+                        <TextBlock Text="Extract String:"/>
+
+                        <ui:ListView ItemsSource="{Binding Selected.Extracts}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Margin="8,4" Text="{Binding}" />
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ui:ListView>
+
+                        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Content="추가" Command="{Binding AddCommand}" Margin="0,0,10,0"/>
+                            <Button Content="수정" Command="{Binding EditCommand}" Margin="0,0,10,0"/>
+                            <Button Content="삭제" Command="{Binding DeleteCommand}" Margin="0,0,10,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+                
+                <!--Extract Hotswap 목록 영역-->
+                <Border BorderThickness="1" BorderBrush="LightGray" CornerRadius="8" Margin="0,0,0,5">
+                    <StackPanel Margin="10">
+                        <TextBlock Text="Extract Hotswap:"/>
+
+                        <ui:ListView ItemsSource="{Binding Selected.Extracts}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Margin="8,4" Text="{Binding}" />
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ui:ListView>
+
+                        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Content="추가" Command="{Binding AddCommand}" Margin="0,0,10,0"/>
+                            <Button Content="수정" Command="{Binding EditCommand}" Margin="0,0,10,0"/>
+                            <Button Content="삭제" Command="{Binding DeleteCommand}" Margin="0,0,10,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+
+        </ScrollViewer>
     </Grid>
 </Page>
