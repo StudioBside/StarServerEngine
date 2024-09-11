@@ -3,12 +3,14 @@
 using System;
 using System.IO;
 using System.Text;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Du.Core.Util;
 
-public sealed class BindFile
+public sealed class BindFile : ObservableObject
 {
     private readonly string filePath;
     private readonly List<Extract> extracts = new();
+    private readonly List<ExtractEnum> extractEnums = new();
 
     public BindFile(string filePath)
     {

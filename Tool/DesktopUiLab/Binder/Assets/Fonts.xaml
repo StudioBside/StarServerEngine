@@ -6,10 +6,12 @@
 
     <Style TargetType="TextBlock">
         <Setter Property="FontFamily" Value="{StaticResource CustomFont}" />
+        <Setter Property="FontSize" Value="14" />
     </Style>
 
     <Style TargetType="Label">
         <Setter Property="FontFamily" Value="{StaticResource CustomFont}" />
+        <Setter Property="FontSize" Value="14" />
     </Style>
 
     <!-- 다른 컨트롤에 대한 스타일도 추가 가능 -->
