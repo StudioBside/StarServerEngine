@@ -2,10 +2,11 @@
 
 using System.Collections.Generic;
 using System.Text.Json;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Du.Core.Util;
 using static Binder.Models.Enums;
 
-public sealed class Extract
+public sealed class Extract : ObservableObject
 {
     private readonly List<Source> sources = new();
     private readonly List<Uniqueness> uniquenesses = new();

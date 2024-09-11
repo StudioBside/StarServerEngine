@@ -4,11 +4,11 @@ using System.Windows.Controls;
 using Binder.ViewModels;
 using Du.Core.Util;
 
-public partial class SingleBind : Page
+public partial class PgHome : Page
 {
-    public SingleBind()
+    public PgHome()
     {
         this.InitializeComponent();
-        this.DataContext = App.Current.Services.GetService<VmSingleBind>();
+        this.DataContext = App.Current.Services.GetService<VmHome>();
     }
 }

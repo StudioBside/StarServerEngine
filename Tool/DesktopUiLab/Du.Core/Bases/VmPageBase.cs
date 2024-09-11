@@ -4,7 +4,7 @@ using System.Windows.Navigation;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Du.Core.Interfaces;
 
-public abstract class VmPagelBase : ObservableObject, INavigationAware
+public abstract class VmPageBase : ObservableObject, INavigationAware
 {
     private string title = string.Empty;
 

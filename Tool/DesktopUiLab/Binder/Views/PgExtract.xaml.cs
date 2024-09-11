@@ -4,11 +4,11 @@ using System.Windows.Controls;
 using Binder.ViewModels;
 using Du.Core.Util;
 
-public partial class HomePage : Page
+public partial class PgExtract : Page
 {
-    public HomePage()
+    public PgExtract()
     {
         this.InitializeComponent();
-        this.DataContext = App.Current.Services.GetService<VmHome>();
+        this.DataContext = App.Current.Services.GetService<VmSingleBind>();
     }
 }

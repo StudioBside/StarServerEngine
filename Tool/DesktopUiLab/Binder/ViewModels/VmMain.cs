@@ -6,14 +6,14 @@ using CommunityToolkit.Mvvm.Messaging;
 using Du.Core.Bases;
 using Du.Core.Models;
 
-public sealed class VmMain : VmPagelBase
+public sealed class VmMain : VmPageBase
 {
     private string? navigationSource = string.Empty;
 
     public VmMain()
     {
         this.Title = "Main View";
-        this.NavigationSource = "Views/HomePage.xaml";
+        this.NavigationSource = "Views/PgHome.xaml";
         this.NavigateCommand = new RelayCommand<string?>(this.OnNavigate);
     
         WeakReferenceMessenger.Default.Register<NavigationMessage>(this, this.OnNavigationMessage);

@@ -3,12 +3,14 @@
 using System;
 using System.IO;
 using System.Text;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Du.Core.Util;
 
-public sealed class BindFile
+public sealed class BindFile : ObservableObject
 {
     private readonly string filePath;
     private readonly List<Extract> extracts = new();
+    private readonly List<ExtractEnum> extractEnums = new();
 
     public BindFile(string filePath)
     {
@@ -23,6 +25,7 @@ public sealed class BindFile
     public string Name { get; }
     public DateTime LastWriteTime { get; }
     public IList<Extract> Extracts => this.extracts;
+    public IList<ExtractEnum> ExtractEnums => this.extractEnums;
 
     public override string ToString()
     {

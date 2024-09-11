@@ -8,7 +8,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using Du.Core.Bases;
 using Du.Core.Models;
 
-public sealed class VmSingleBind : VmPagelBase
+public sealed class VmSingleBind : VmPageBase
 {
     private string message = string.Empty;
     private BindFile bindFile = null!;
