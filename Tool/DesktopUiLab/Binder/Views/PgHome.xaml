@@ -108,7 +108,7 @@
                     <StackPanel Margin="10">
                         <TextBlock Text="Extract Enum:"/>
 
-                        <ui:ListView ItemsSource="{Binding Selected.Extracts}"
+                        <ui:ListView ItemsSource="{Binding SelectedBindFile.ExtractEnums}"
                                      SelectionMode="Single"
                                      SelectedItem="{Binding SelectedExtractEnum}">
                             <ListView.ItemTemplate>
@@ -131,8 +131,9 @@
                     <StackPanel Margin="10">
                         <TextBlock Text="Extract String:"/>
 
-                        <ui:ListView ItemsSource="{Binding Selected.Extracts}"
-                                     SelectionMode="Single">
+                        <ui:ListView ItemsSource="{Binding SelectedBindFile.ExtractStrings}"
+                                     SelectionMode="Single"
+                                     SelectedItem="{Binding SelectedExtractString}">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Margin="8,4" Text="{Binding}" />
@@ -141,9 +142,9 @@
                         </ui:ListView>
 
                         <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                            <Button Content="추가" Command="{Binding AddCommand}" Margin="0,0,10,0"/>
-                            <Button Content="수정" Command="{Binding EditCommand}" Margin="0,0,10,0"/>
-                            <Button Content="삭제" Command="{Binding DeleteCommand}" Margin="0,0,10,0"/>
+                            <Button Content="추가" Command="{Binding ExtractStringAddCommand}" Margin="0,0,10,0"/>
+                            <Button Content="수정" Command="{Binding ExtractStringEditCommand}" Margin="0,0,10,0"/>
+                            <Button Content="삭제" Command="{Binding ExtractStringDeleteCommand}" Margin="0,0,10,0"/>
                         </StackPanel>
                     </StackPanel>
                 </Border>

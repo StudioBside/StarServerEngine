@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.Text.Json;
+using Binder.Models.Detail;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Du.Core.Util;
 using static Binder.Models.Enums;
@@ -45,47 +46,10 @@ public sealed class Extract : ObservableObject
 
     public override string ToString()
     {
-        return $"output:{this.outputFile}";
+        return $"{this.outputFile}";
     }
 
     //// --------------------------------------------------------------------------------------------
-
-    public sealed class Source
-    {
-        private string excelFile = string.Empty;
-        private string sheetName = string.Empty;
-        private string beginCell = "A1";
-
-        public Source()
-        {
-        }
-
-        public Source(JsonElement element)
-        {
-            this.excelFile = element.GetString("excelFile");
-            this.sheetName = element.GetString("sheetName");
-            this.beginCell = element.GetString("beginCell");
-        }
-
-        public string ExcelFile { get => this.excelFile; set => this.excelFile = value; }
-        public string SheetName { get => this.sheetName; set => this.sheetName = value; }
-        public string BeginCell { get => this.beginCell; set => this.beginCell = value; }
-    }
-
-    public sealed class Uniqueness
-    {
-        private readonly string name = string.Empty;
-        private readonly List<string> columnNames = new();
-
-        public Uniqueness(JsonElement element)
-        {
-            this.name = element.GetString("name");
-            element.GetArray("columnNames", this.columnNames);
-        }
-
-        public string Name => this.name;
-        public IList<string> ColumnNames => this.columnNames;
-    }
 
     // 패처씬이 사용하는 스트링이 별도의 위치로 export한다.
     public sealed class CustomOutputPath

@@ -7,19 +7,21 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Du.Core.Util;
 using static Binder.Models.Enums;
 
-public sealed class ExtractEnum : ObservableObject
+public sealed class ExtractString : ObservableObject
 {
     private readonly List<Source> sources = new();
     private string outputFile = string.Empty;
     private OutputDirection fileOutDirection = OutputDirection.All;
-    private string codeNamespace = string.Empty;
+    private string idColumnName = string.Empty;
+    private string valueColumnName = string.Empty;
 
-    public ExtractEnum(JsonElement element)
+    public ExtractString(JsonElement element)
     {
         this.outputFile = element.GetString("outputFile");
         element.GetArray("sources", this.sources, element => new Source(element));
         this.fileOutDirection = element.GetEnum<OutputDirection>("fileOutDirection");
-        this.codeNamespace = element.GetString("namespace");
+        this.idColumnName = element.GetString("IdColumnName");
+        this.valueColumnName = element.GetString("ValueColumnName");
     }
 
     public override string ToString()

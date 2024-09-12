@@ -25,9 +25,13 @@ public sealed partial class VmHome : VmPageBase
         this.ExtractEditCommand = new RelayCommand(this.OnExtractEdit, () => this.selectedExtract is not null);
         this.ExtractDeleteCommand = new RelayCommand(this.OnExtractDelete, () => this.selectedExtract is not null);
 
-        this.ExtractEnumAddCommand = new RelayCommand(() => { });
-        this.ExtractEnumEditCommand = new RelayCommand(() => { }, () => this.selectedExtractEnum is not null);
-        this.ExtractEnumDeleteCommand = new RelayCommand(() => { }, () => this.selectedExtractEnum is not null);
+        this.ExtractEnumAddCommand = new RelayCommand(this.OnExtractEnumAdd);
+        this.ExtractEnumEditCommand = new RelayCommand(this.OnExtractEnumEdit, () => this.selectedExtractEnum is not null);
+        this.ExtractEnumDeleteCommand = new RelayCommand(this.OnExtractEnumDelete, () => this.selectedExtractEnum is not null);
+
+        this.ExtractStringAddCommand = new RelayCommand(this.OnExtractStringAdd);
+        this.ExtractStringEditCommand = new RelayCommand(this.OnExtractStringEdit, () => this.selectedExtractString is not null);
+        this.ExtractStringDeleteCommand = new RelayCommand(this.OnExtractStringDelete, () => this.selectedExtractString is not null);
     }
 
     public ICollectionView FilteredFiles => this.filteredFilesView;
@@ -36,14 +40,6 @@ public sealed partial class VmHome : VmPageBase
         get => this.searchKeyword;
         set => this.SetProperty(ref this.searchKeyword, value);
     }
-
-    public IRelayCommand ExtractAddCommand { get; }
-    public IRelayCommand ExtractEditCommand { get; }
-    public IRelayCommand ExtractDeleteCommand { get; }
-
-    public IRelayCommand ExtractEnumAddCommand { get; }
-    public IRelayCommand ExtractEnumEditCommand { get; }
-    public IRelayCommand ExtractEnumDeleteCommand { get; }
 
     public void AddFile(BindFile bindFile)
     {
@@ -71,7 +67,21 @@ public sealed partial class VmHome : VmPageBase
                 this.ExtractEditCommand.NotifyCanExecuteChanged();
                 this.ExtractDeleteCommand.NotifyCanExecuteChanged();
                 break;
+
+            case nameof(this.SelectedExtractEnum):
+                this.ExtractEnumEditCommand.NotifyCanExecuteChanged();
+                this.ExtractEnumDeleteCommand.NotifyCanExecuteChanged();
+                break;
+
+            case nameof(this.SelectedExtractString):
+                this.ExtractStringEditCommand.NotifyCanExecuteChanged();
+                this.ExtractStringDeleteCommand.NotifyCanExecuteChanged();
+                break;
         }
+    }
+
+    private void OnBindFilePropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
     }
 
     private void FilterFiles()
@@ -113,7 +123,27 @@ public sealed partial class VmHome : VmPageBase
     {
     }
 
-    private void OnBindFilePropertyChanged(object? sender, PropertyChangedEventArgs e)
+    private void OnExtractEnumAdd()
+    {
+    }
+
+    private void OnExtractEnumEdit()
+    {
+    }
+
+    private void OnExtractEnumDelete()
+    {
+    }
+
+    private void OnExtractStringAdd()
+    {
+    }
+
+    private void OnExtractStringEdit()
+    {
+    }
+
+    private void OnExtractStringDelete()
     {
     }
 }

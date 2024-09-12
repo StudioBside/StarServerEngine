@@ -11,6 +11,7 @@ public sealed class BindFile : ObservableObject
     private readonly string filePath;
     private readonly List<Extract> extracts = new();
     private readonly List<ExtractEnum> extractEnums = new();
+    private readonly List<ExtractString> extractStrings = new();
 
     public BindFile(string filePath)
     {
@@ -19,12 +20,18 @@ public sealed class BindFile : ObservableObject
         this.LastWriteTime = File.GetLastWriteTime(filePath);
 
         using var document = JsonHelper.LoadJsonc(filePath);
-        document.RootElement.GetArray("extracts", this.extracts, element => new Extract(element));
+        var root = document.RootElement;
+        root.GetArray("extracts", this.extracts, element => new Extract(element));
+        root.TryGetArray("extractEnums", this.extractEnums, element => new ExtractEnum(element));
+        root.TryGetArray("extractStrings", this.extractStrings, element => new ExtractString(element));
     }
 
     public string Name { get; }
     public DateTime LastWriteTime { get; }
     public IList<Extract> Extracts => this.extracts;
+    public IList<ExtractEnum> ExtractEnums => this.extractEnums;
+    public IList<ExtractString> ExtractStrings => this.extractStrings;
+
     public override string ToString()
     {
         var sb = new StringBuilder();
