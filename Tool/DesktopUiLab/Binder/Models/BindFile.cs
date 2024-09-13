@@ -12,6 +12,7 @@ public sealed class BindFile : ObservableObject
     private readonly List<Extract> extracts = new();
     private readonly List<ExtractEnum> extractEnums = new();
     private readonly List<ExtractString> extractStrings = new();
+    private readonly List<ExtractHotswap> extractHotswaps = new();
 
     public BindFile(string filePath)
     {
@@ -24,6 +25,7 @@ public sealed class BindFile : ObservableObject
         root.GetArray("extracts", this.extracts, element => new Extract(element));
         root.TryGetArray("extractEnums", this.extractEnums, element => new ExtractEnum(element));
         root.TryGetArray("extractStrings", this.extractStrings, element => new ExtractString(element));
+        root.TryGetArray("extractHotswap", this.extractHotswaps, element => new ExtractHotswap(element));
     }
 
     public string Name { get; }
@@ -31,6 +33,7 @@ public sealed class BindFile : ObservableObject
     public IList<Extract> Extracts => this.extracts;
     public IList<ExtractEnum> ExtractEnums => this.extractEnums;
     public IList<ExtractString> ExtractStrings => this.extractStrings;
+    public IList<ExtractHotswap> ExtractHotswaps => this.extractHotswaps;
 
     public override string ToString()
     {

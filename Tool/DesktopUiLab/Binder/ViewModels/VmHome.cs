@@ -32,6 +32,10 @@ public sealed partial class VmHome : VmPageBase
         this.ExtractStringAddCommand = new RelayCommand(this.OnExtractStringAdd);
         this.ExtractStringEditCommand = new RelayCommand(this.OnExtractStringEdit, () => this.selectedExtractString is not null);
         this.ExtractStringDeleteCommand = new RelayCommand(this.OnExtractStringDelete, () => this.selectedExtractString is not null);
+
+        this.ExtractHotswapAddCommand = new RelayCommand(this.OnExtractHotswapAdd);
+        this.ExtractHotswapEditCommand = new RelayCommand(this.OnExtractHotswapEdit, () => this.selectedExtractHotswap is not null);
+        this.ExtractHotswapDeleteCommand = new RelayCommand(this.OnExtractHotswapDelete, () => this.selectedExtractHotswap is not null);
     }
 
     public ICollectionView FilteredFiles => this.filteredFilesView;
@@ -76,6 +80,11 @@ public sealed partial class VmHome : VmPageBase
             case nameof(this.SelectedExtractString):
                 this.ExtractStringEditCommand.NotifyCanExecuteChanged();
                 this.ExtractStringDeleteCommand.NotifyCanExecuteChanged();
+                break;
+
+            case nameof(this.SelectedExtractHotswap):
+                this.ExtractHotswapEditCommand.NotifyCanExecuteChanged();
+                this.ExtractHotswapDeleteCommand.NotifyCanExecuteChanged();
                 break;
         }
     }
@@ -144,6 +153,18 @@ public sealed partial class VmHome : VmPageBase
     }
 
     private void OnExtractStringDelete()
+    {
+    }
+
+    private void OnExtractHotswapAdd()
+    {
+    }
+
+    private void OnExtractHotswapEdit()
+    {
+    }
+
+    private void OnExtractHotswapDelete()
     {
     }
 }

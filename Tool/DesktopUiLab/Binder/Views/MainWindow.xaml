@@ -15,22 +15,6 @@
     Height="450"
     Width="800">
     <DockPanel>
-        <Menu DockPanel.Dock="Top">
-            <MenuItem Header="_File">
-                <MenuItem Header="_New" />
-                <MenuItem Header="_Open" />
-                <MenuItem Header="_Save" />
-                <Separator />
-                <MenuItem Header="_Exit" />
-            </MenuItem>
-            <MenuItem Header="_Master">
-                <MenuItem Header="_Code Management" />
-                <MenuItem
-                    Command="{Binding NavigateCommand}"
-                    CommandParameter="Views/CustomerPage.xaml"
-                    Header="C_ustomer Management" />
-            </MenuItem>
-        </Menu>
         <Frame NavigationUIVisibility="Hidden">
             <b:Interaction.Behaviors>
                 <behaviors:FrameBehavior NavigationSource="{Binding NavigationSource, Mode=TwoWay}" />
