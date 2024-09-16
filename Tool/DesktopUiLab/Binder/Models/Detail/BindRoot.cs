@@ -8,7 +8,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Du.Core.Util;
 
-internal sealed class BindRoot
+public sealed class BindRoot
 {
     private readonly List<Column> columns = new();
     private readonly List<Group> groups = new();
@@ -24,4 +24,8 @@ internal sealed class BindRoot
         element.TryGetArray("groups", this.groups, element => new Group(element));
         element.TryGetArray("numberingGroups", this.numberingGroups, element => new NumberingGroup(element));
     }
+
+    public IList<Column> Columns => this.columns;
+    public IList<Group> Groups => this.groups;
+    public IList<NumberingGroup> NumberingGroups => this.numberingGroups;
 }

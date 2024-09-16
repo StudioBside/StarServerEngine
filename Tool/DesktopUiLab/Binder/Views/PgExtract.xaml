@@ -4,7 +4,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:Binder.Views"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodels="clr-namespace:Binder.ViewModels"
+    d:DataContext="{d:DesignInstance Type=viewmodels:VmExtract}"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
@@ -12,20 +15,102 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal">
-            <Button
+        
+        <!--첫 번째 row : outputFile, fileOutDirection, ...-->
+        <StackPanel Orientation="Horizontal"
+                    Margin="10">
+
+            <TextBlock Text="출력 파일" VerticalAlignment="Center" />
+            <TextBox Margin="10,0,0,0"
+                     Text="{Binding Extract.OutputFile}"/>
+
+            <TextBlock Text="파일 출력 방향" Margin="10,0,0,0" VerticalAlignment="Center"/>
+            <ComboBox ItemsSource="{Binding Source={StaticResource OutputDirectionEnums}}"
+                      SelectedItem="{Binding Extract.FileOutDirection, Mode=TwoWay}"
+                      IsEditable="False"/>
+
+            <TextBlock Text="파일 출력 그룹" Margin="10,0,0,0" VerticalAlignment="Center"/>
+            <ComboBox ItemsSource="{Binding Extract.BindRoot.Columns}"
+                      SelectedItem="{Binding Extract.OutputGroupBy}"
+                      IsEditable="False">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
+            <!--<Button
                 Width="50"
                 Command="{Binding BackCommand}"
-                Content="Back" />
+                Content="Back" />-->
         </StackPanel>
+        
+        <!--두 번째 row : sources-->
         <StackPanel
-            Grid.Row="1"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center">
-            <TextBlock FontSize="20" Text="{Binding Title}" />
-            <TextBlock Text="{Binding Message}" />
+            Grid.Row="1" Margin="10">
+            <TextBlock Text="입력 소스"/>
+            <ui:ListView
+                ItemsSource="{Binding Extract.Sources}"
+                BorderThickness="0">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="파일" DisplayMemberBinding="{Binding ExcelFile}" Width="Auto" />
+                        <GridViewColumn Header="시트" DisplayMemberBinding="{Binding SheetName}" Width="Auto" />
+                        <GridViewColumn Header="시작점" DisplayMemberBinding="{Binding BeginCell}" Width="70" />
+                    </GridView>
+                </ListView.View>
+                <!--<ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Margin="10">
+                            <TextBlock Text="{Binding ExcelFile}" />
+                            <TextBlock Margin="10,0,0,0" Text="{Binding SheetName}" />
+                            <TextBlock Margin="10,0,0,0" Text="{Binding BeginCell}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>-->
+            </ui:ListView>
+
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+                <Button Content="추가"/>
+                <Button Content="수정"/>
+                <Button Content="삭제"/>
+            </StackPanel>
         </StackPanel>
+
+
+        <!--세 번째 row : 바인딩-->
+        <StackPanel
+            Grid.Row="2" Margin="10">
+            <TextBlock Text="바인딩"/>
+            <ui:ListView
+                ItemsSource="{Binding Extract.BindRoot.Columns}"
+                BorderThickness="0">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="이름" DisplayMemberBinding="{Binding Name}" Width="Auto" />
+                        <GridViewColumn Header="타입" DisplayMemberBinding="{Binding DataType}" Width="Auto" />
+                        <GridViewColumn Header="Nullable" DisplayMemberBinding="{Binding Nullable}" Width="70" />
+                        <GridViewColumn Header="Repeated" DisplayMemberBinding="{Binding Repeated}" Width="70" />
+                        <GridViewColumn Header="출력방향" DisplayMemberBinding="{Binding ColumnOutDirection}" Width="70" />
+                        <GridViewColumn Header="최소" DisplayMemberBinding="{Binding Min}" Width="70" />
+                        <GridViewColumn Header="최대" DisplayMemberBinding="{Binding Max}" Width="70" />
+                    </GridView>
+                </ListView.View>
+            </ui:ListView>
+
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+                <Button Content="추가"/>
+                <Button Content="수정"/>
+                <Button Content="삭제"/>
+            </StackPanel>
+        </StackPanel>
+
     </Grid>
 </Page>

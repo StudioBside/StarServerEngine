@@ -9,6 +9,6 @@ public partial class PgExtract : Page
     public PgExtract()
     {
         this.InitializeComponent();
-        this.DataContext = App.Current.Services.GetService<VmSingleBind>();
+        this.DataContext = App.Current.Services.GetService<VmExtract>();
     }
 }

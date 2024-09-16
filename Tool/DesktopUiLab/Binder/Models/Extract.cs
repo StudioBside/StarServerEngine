@@ -1,6 +1,7 @@
 ﻿namespace Binder.Models;
 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text.Json;
 using Binder.Models.Detail;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -9,8 +10,8 @@ using static Binder.Models.Enums;
 
 public sealed class Extract : ObservableObject
 {
-    private readonly List<Source> sources = new();
-    private readonly List<Uniqueness> uniquenesses = new();
+    private readonly ObservableCollection<Source> sources = new();
+    private readonly ObservableCollection<Uniqueness> uniquenesses = new();
     private string outputFile = string.Empty;
     private string outputGroupBy = string.Empty;
     private string outputFilePrefix = string.Empty;
@@ -43,7 +44,40 @@ public sealed class Extract : ObservableObject
     }
 
     public IList<Source> Sources => this.sources;
-    public string OutputFile { get => this.outputFile; set => this.outputFile = value; }
+    public IList<Uniqueness> Uniquenesses => this.uniquenesses;
+    public BindRoot BindRoot => this.bindRoot;
+    public string OutputFile
+    {
+        get => this.outputFile;
+        set => this.SetProperty(ref this.outputFile, value);
+    }
+
+    public string OutputGroupBy
+    {
+        get => this.outputGroupBy;
+        set => this.SetProperty(ref this.outputGroupBy, value);
+    }
+
+    public string OutputFilePrefix
+    {
+        get => this.outputFilePrefix;
+        set => this.SetProperty(ref this.outputFilePrefix, value);
+    }
+
+    public OutputDirection FileOutDirection
+    {
+        get => this.fileOutDirection;
+        set => this.SetProperty(ref this.fileOutDirection, value);
+    }
+
+    public bool ExcludeToolOutput
+    {
+        get => this.excludeToolOutput;
+        set => this.SetProperty(ref this.excludeToolOutput, value);
+    }
+
+    public CustomOutputPath? CustomOutputPath => this.customOutputPath;
+    public DuplicationCleaner? DuplicationCleaner => this.duplicationCleaner;
 
     public override string ToString()
     {
@@ -51,41 +85,4 @@ public sealed class Extract : ObservableObject
     }
 
     //// --------------------------------------------------------------------------------------------
-
-    // 패처씬이 사용하는 스트링이 별도의 위치로 export한다.
-    public sealed class CustomOutputPath
-    {
-        private string serverTextOutput = string.Empty;
-        private string serverBinOutput = string.Empty;
-        private string clientTextOutput = string.Empty;
-        private string clientBinOutput = string.Empty;
-
-        public CustomOutputPath(JsonElement element)
-        {
-            this.serverTextOutput = element.GetString("serverTextOutput", string.Empty);
-            this.serverBinOutput = element.GetString("serverBinOutput", string.Empty);
-            this.clientTextOutput = element.GetString("clientTextOutput", string.Empty);
-            this.clientBinOutput = element.GetString("clientBinOutput", string.Empty);
-        }
-
-        public string ServerTextOutput => this.serverTextOutput;
-        public string ServerBinOutput => this.serverBinOutput;
-        public string ClientTextOutput => this.clientTextOutput;
-        public string ClientBinOutput => this.clientBinOutput;
-    }
-
-    public sealed class DuplicationCleaner
-    {
-        private readonly OutputDirection fileOutDirection = OutputDirection.Client;
-        private readonly List<string> columnNames = new();
-
-        public DuplicationCleaner(JsonElement element)
-        {
-            this.fileOutDirection = element.GetEnum<OutputDirection>("fileOutDirection");
-            element.GetArray("columnNames", this.columnNames);
-        }
-
-        internal OutputDirection FileOutDirection => this.fileOutDirection;
-        internal IList<string> ColumnNames => this.columnNames;
-    }
 }

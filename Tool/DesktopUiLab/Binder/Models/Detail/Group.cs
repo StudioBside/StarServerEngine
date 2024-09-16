@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using Du.Core.Util;
 
-internal class Group
+public sealed class Group
 {
     private readonly List<Column> columns = new();
     private readonly List<Group> groups = new();

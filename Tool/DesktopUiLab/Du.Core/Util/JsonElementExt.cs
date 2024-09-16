@@ -100,7 +100,7 @@ public static class JsonElementExt
         return true;
     }
 
-    public static bool GetArray(this JsonElement self, string propertyName, in List<string> result, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+    public static bool GetArray(this JsonElement self, string propertyName, in IList<string> result, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
     {
         if (TryGetArray(self, propertyName, result) == false)
         {
@@ -111,7 +111,7 @@ public static class JsonElementExt
         return true;
     }
 
-    public static bool TryGetArray(this JsonElement self, string propertyName, in List<string> result, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+    public static bool TryGetArray(this JsonElement self, string propertyName, in IList<string> result, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
     {
         if (self.TryGetProperty(propertyName, out var arrayElement) == false)
         {
@@ -127,7 +127,7 @@ public static class JsonElementExt
         return true;
     }
 
-    public static bool GetArray<T>(this JsonElement self, string propertyName, in List<T> result, Func<JsonElement, T> converter, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+    public static bool GetArray<T>(this JsonElement self, string propertyName, in IList<T> result, Func<JsonElement, T> converter, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
     {
         if (TryGetArray(self, propertyName, result, converter) == false)
         {
@@ -138,7 +138,7 @@ public static class JsonElementExt
         return true;
     }
 
-    public static bool TryGetArray<T>(this JsonElement self, string propertyName, in List<T> result, Func<JsonElement, T> converter, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+    public static bool TryGetArray<T>(this JsonElement self, string propertyName, in IList<T> result, Func<JsonElement, T> converter, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
     {
         if (self.TryGetProperty(propertyName, out var arrayElement) == false)
         {

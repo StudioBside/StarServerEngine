@@ -6,7 +6,7 @@ using System.Text.Json;
 using Du.Core.Util;
 using static Binder.Models.Enums;
 
-internal class NumberingGroup
+public sealed class NumberingGroup
 {
     // tableName
     private readonly List<Column> columns = new();

@@ -2,6 +2,8 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:Binder"
+             xmlns:models="clr-namespace:Binder.Models"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              StartupUri="Views/MainWindow.xaml">
     <Application.Resources>
@@ -11,6 +13,12 @@
                 <ui:ControlsDictionary />
                 <ResourceDictionary Source="Assets/Fonts.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <!-- Enum Values as StaticResource -->
+            <ObjectDataProvider x:Key="OutputDirectionEnums" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="models:Enums+OutputDirection"/>
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
         </ResourceDictionary>
     </Application.Resources>
 </Application>
