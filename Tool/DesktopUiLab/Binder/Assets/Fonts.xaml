@@ -1,8 +1,10 @@
 ﻿<!-- Fonts.xaml -->
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    
-    <FontFamily x:Key="CustomFont">pack://application:,,,/Binder;component/Assets/NanumGothic.ttf#나눔고딕</FontFamily>
+
+    <!--<FontFamily x:Key="CustomFont">pack://application:,,,/Binder;component/Assets/NanumGothic.ttf#나눔고딕</FontFamily>-->
+    <FontFamily x:Key="CustomFont">pack://application:,,,/Binder;component/Assets/NotoSansKR-Regular.ttf#Noto Sans KR</FontFamily>
+    <!--<FontFamily x:Key="CustomFont">Consolas</FontFamily>-->
 
     <Style TargetType="TextBlock">
         <Setter Property="FontFamily" Value="{StaticResource CustomFont}" />

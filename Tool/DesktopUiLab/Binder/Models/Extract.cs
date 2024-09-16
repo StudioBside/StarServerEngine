@@ -17,7 +17,7 @@ public sealed class Extract : ObservableObject
     private OutputDirection fileOutDirection = OutputDirection.All;
     private bool excludeToolOutput;
     ////// clientOutputType
-    ////// bindRoot
+    private BindRoot bindRoot;
     private CustomOutputPath? customOutputPath;
     private DuplicationCleaner? duplicationCleaner;
 
@@ -30,6 +30,7 @@ public sealed class Extract : ObservableObject
         this.outputFilePrefix = element.GetString("outputFilePrefix", string.Empty);
         this.fileOutDirection = element.GetEnum<OutputDirection>("fileOutDirection");
         this.excludeToolOutput = element.GetBoolean("excludeToolOutput", false);
+        this.bindRoot = new BindRoot(element.GetProperty("bindRoot"));
         if (element.TryGetProperty("customOutputPath", out var subElement))
         {
             this.customOutputPath = new CustomOutputPath(subElement);
