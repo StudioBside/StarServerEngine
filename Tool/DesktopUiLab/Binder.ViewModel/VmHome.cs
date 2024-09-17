@@ -7,19 +7,24 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Cs.Logging;
 using Du.Core.Bases;
+using Du.Core.Interfaces;
 using Du.Core.Models;
 
 public sealed partial class VmHome : VmPageBase
 {
+    private readonly IUserInputProvider<string> stringProvider;
+    private readonly IUserErrorNotifier errorNotifier;
     private readonly List<BindFile> bindFiles = new();
     private ObservableCollection<BindFile> filteredFiles = new();
     private string searchKeyword = string.Empty;
 
-    public VmHome()
+    public VmHome(IUserInputProvider<string> stringProvider, IUserErrorNotifier errorNotifier)
     {
         this.Title = "바인딩 파일 목록";
+        this.stringProvider = stringProvider;
+        this.errorNotifier = errorNotifier;
 
-        this.ExtractAddCommand = new RelayCommand(this.OnExtractAdd);
+        this.ExtractAddCommand = new AsyncRelayCommand(this.OnExtractAdd);
         this.ExtractEditCommand = new RelayCommand<Extract>(this.OnExtractEdit, _ => this.selectedExtract is not null);
         this.ExtractDeleteCommand = new RelayCommand(this.OnExtractDelete, () => this.selectedExtract is not null);
 
@@ -70,6 +75,9 @@ public sealed partial class VmHome : VmPageBase
 
             case nameof(this.SelectedBindFile):
                 this.SelectedExtract = null;
+                this.SelectedExtractEnum = null;
+                this.SelectedExtractString = null;
+                this.SelectedExtractHotswap = null;
                 break;
 
             case nameof(this.SelectedExtract):
@@ -110,8 +118,20 @@ public sealed partial class VmHome : VmPageBase
         }
     }
 
-    private void OnExtractAdd()
+    private async Task OnExtractAdd()
     {
+        var extractName = await this.stringProvider.PromptAsync("신규 Extract 규칙의 이름을 입력하세요", "XXX_TEMPLET");
+        if (string.IsNullOrEmpty(extractName))
+        {
+            return;
+        }
+
+        var duplicated = this.bindFiles.FirstOrDefault(x => x.HasExtract(extractName));
+        if (duplicated is not null)
+        {
+            this.errorNotifier.NotifyError($"{extractName}은 {duplicated.Name}에 이미 존재하는 Extract 이름입니다");
+            return;
+        }
     }
 
     private void OnExtractEdit(Extract? extract)

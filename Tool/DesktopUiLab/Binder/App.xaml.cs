@@ -1,13 +1,17 @@
 ﻿namespace Binder;
 
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using Binder.Services;
 using Binder.ViewModel;
 using Cs.Logging;
 using Cs.Logging.Providers;
+using Du.Core.Interfaces;
+using Du.WpfLib;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Wpf.Ui;
 
 public partial class App : Application
 {
@@ -25,7 +29,7 @@ public partial class App : Application
     {
         var services = new ServiceCollection();
 
-        var workingDirectory = System.IO.Directory.GetCurrentDirectory();
+        var workingDirectory = Directory.GetCurrentDirectory();
         var config = new ConfigurationBuilder()
             .AddJsonFile(Path.Combine(workingDirectory, "appsettings.json"), optional: false)
             //.AddJsonFile("appsettings.local.json", optional: true)
@@ -33,11 +37,16 @@ public partial class App : Application
 
         services.AddTransient<IConfiguration>(_ => config);
 
-        services.AddTransient(typeof(VmMain));
-        services.AddSingleton(typeof(VmHome));
-        services.AddTransient(typeof(VmSingleBind));
-        services.AddTransient(typeof(VmExtract));
-        services.AddTransient(typeof(FileLoader));
+        services.AddTransient<VmMain>();
+        services.AddSingleton<VmHome>();
+        services.AddTransient<VmSingleBind>();
+        services.AddTransient<VmExtract>();
+        services.AddTransient<FileLoader>();
+
+        services.AddTransient<IUserInputProvider<string>, StringInputProvider>();
+        services.AddSingleton<IContentDialogService, ContentDialogService>();
+        services.AddSingleton<ISnackbarService, SnackbarService>();
+        services.AddTransient<IUserErrorNotifier, ErrorNotifierDialog>();
 
         return services.BuildServiceProvider();
     }

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Windows;
 using Binder.ViewModel;
 using Du.Core.Util;
+using Wpf.Ui;
 
 public partial class MainWindow : Window
 {
@@ -11,7 +12,12 @@ public partial class MainWindow : Window
     {
         this.InitializeComponent();
         this.LoadWindowState();
-        this.DataContext = App.Current.Services.GetService<VmMain>();
+
+        var services = App.Current.Services;
+        this.DataContext = services.GetService<VmMain>();
+
+        var dialogservice = services.GetService<IContentDialogService>();
+        dialogservice.SetDialogHost(this.RootContentDialog);
     }
 
     protected override void OnClosing(CancelEventArgs e)

@@ -46,6 +46,11 @@ public sealed class BindFile : ObservableObject, ISearchable
         return sb.ToString();
     }
 
+    public bool HasExtract(string outputFileName)
+    {
+        return this.extracts.Any(e => e.OutputFile.Equals(outputFileName, StringComparison.CurrentCultureIgnoreCase));
+    }
+
     public bool IsTarget(string keyword)
     {
         if (this.Name.Contains(keyword, StringComparison.CurrentCultureIgnoreCase))

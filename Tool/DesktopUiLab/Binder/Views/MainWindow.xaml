@@ -14,11 +14,12 @@
     Title="{Binding Title}"
     Height="450"
     Width="800">
-    <DockPanel>
+    <Grid>
         <Frame NavigationUIVisibility="Hidden">
             <b:Interaction.Behaviors>
                 <behaviors:FrameBehavior NavigationSource="{Binding NavigationSource, Mode=TwoWay}" />
             </b:Interaction.Behaviors>
         </Frame>
-    </DockPanel>
+        <ContentPresenter x:Name="RootContentDialog"/>
+    </Grid>
 </Window>
