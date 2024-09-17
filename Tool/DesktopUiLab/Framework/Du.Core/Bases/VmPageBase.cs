@@ -1,8 +1,7 @@
-﻿namespace Du.Presentation.Bases;
+﻿namespace Du.Core.Bases;
 
-using System.Windows.Navigation;
 using CommunityToolkit.Mvvm.ComponentModel;
-using Du.Presentation.Interfaces;
+using Du.Core.Interfaces;
 
 public abstract class VmPageBase : ObservableObject, INavigationAware
 {
@@ -14,11 +13,11 @@ public abstract class VmPageBase : ObservableObject, INavigationAware
         set => this.SetProperty(ref this.title, value);
     }
 
-    public virtual void OnNavigating(object sender, NavigatingCancelEventArgs navigationEventArgs)
+    public virtual void OnNavigating(object sender, Uri uri)
     {
     }
 
-    public virtual void OnNavigated(object sender, NavigationEventArgs navigatedEventArgs)
+    public virtual void OnNavigated(object sender, Uri uri)
     {
     }
 }

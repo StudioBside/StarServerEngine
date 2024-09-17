@@ -1,12 +1,11 @@
 ﻿namespace Binder.ViewModel;
 
 using System.Windows.Input;
-using System.Windows.Navigation;
 using Binder.Model;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Du.Core.Bases;
 using Du.Core.Models;
-using Du.Presentation.Bases;
 
 public sealed class VmSingleBind : VmPageBase
 {
@@ -30,11 +29,6 @@ public sealed class VmSingleBind : VmPageBase
     {
         get => this.bindFile;
         set => this.SetProperty(ref this.bindFile, value);
-    }
-
-    public override void OnNavigated(object sender, NavigationEventArgs navigatedEventArgs)
-    {
-        this.Message = "Navigated";
     }
 
     private void OnBack()

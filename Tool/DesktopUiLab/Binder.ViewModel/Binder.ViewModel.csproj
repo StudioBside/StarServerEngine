@@ -27,7 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Binder.Model\Binder.Model.csproj" />
-    <ProjectReference Include="..\Framework\Du.Presentation\Du.Presentation.csproj" />
+    <ProjectReference Include="..\Framework\Du.Core\Du.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>

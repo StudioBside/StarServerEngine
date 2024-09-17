@@ -4,7 +4,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
-using Du.Presentation.Interfaces;
+using Du.Core.Interfaces;
 using Microsoft.Xaml.Behaviors;
 
 public sealed class FrameBehavior : Behavior<Frame>
@@ -64,7 +64,7 @@ public sealed class FrameBehavior : Behavior<Frame>
         if (this.AssociatedObject.Content is Page pageContent &&
             pageContent.DataContext is INavigationAware navigationAware)
         {
-            navigationAware?.OnNavigating(sender, e);
+            navigationAware?.OnNavigating(sender, e.Uri);
         }
     }
 
@@ -78,7 +78,7 @@ public sealed class FrameBehavior : Behavior<Frame>
         if (this.AssociatedObject.Content is Page pageContent &&
             pageContent.DataContext is INavigationAware navigationAware)
         {
-            navigationAware.OnNavigated(sender, e);
+            navigationAware.OnNavigated(sender, e.Uri);
         }
     }
 

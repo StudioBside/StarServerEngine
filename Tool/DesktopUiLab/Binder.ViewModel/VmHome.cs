@@ -1,24 +1,23 @@
 ﻿namespace Binder.ViewModel;
 
+using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Windows.Data;
 using Binder.Model;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Cs.Logging;
+using Du.Core.Bases;
 using Du.Core.Models;
-using Du.Presentation.Bases;
 
 public sealed partial class VmHome : VmPageBase
 {
     private readonly List<BindFile> bindFiles = new();
-    private readonly ListCollectionView filteredFilesView;
+    private ObservableCollection<BindFile> filteredFiles = new();
     private string searchKeyword = string.Empty;
 
     public VmHome()
     {
         this.Title = "바인딩 파일 목록";
-        this.filteredFilesView = new ListCollectionView(this.bindFiles);
 
         this.ExtractAddCommand = new RelayCommand(this.OnExtractAdd);
         this.ExtractEditCommand = new RelayCommand<Extract>(this.OnExtractEdit, _ => this.selectedExtract is not null);
@@ -37,7 +36,12 @@ public sealed partial class VmHome : VmPageBase
         this.ExtractHotswapDeleteCommand = new RelayCommand(this.OnExtractHotswapDelete, () => this.selectedExtractHotswap is not null);
     }
 
-    public ICollectionView FilteredFiles => this.filteredFilesView;
+    public ObservableCollection<BindFile> FilteredFiles
+    {
+        get => this.filteredFiles;
+        set => this.SetProperty(ref this.filteredFiles, value);
+    }
+
     public string SearchKeyword
     {
         get => this.searchKeyword;
@@ -48,6 +52,8 @@ public sealed partial class VmHome : VmPageBase
     {
         bindFile.PropertyChanged += this.OnBindFilePropertyChanged;
         this.bindFiles.Add(bindFile);
+
+        this.FilterFiles();
     }
 
     //// --------------------------------------------------------------------------------------------
@@ -96,19 +102,12 @@ public sealed partial class VmHome : VmPageBase
     {
         if (string.IsNullOrEmpty(this.searchKeyword))
         {
-            this.filteredFilesView.Filter = null;
-            return;
+            this.FilteredFiles = new(this.bindFiles);
         }
-
-        this.FilteredFiles.Filter = (obj) =>
+        else
         {
-            if (obj is not BindFile bindFile)
-            {
-                return false;
-            }
-
-            return bindFile.Name.Contains(this.searchKeyword, StringComparison.CurrentCultureIgnoreCase);
-        };
+            this.FilteredFiles = new(this.bindFiles.Where(x => x.IsTarget(this.searchKeyword)));
+        }
     }
 
     private void OnExtractAdd()
