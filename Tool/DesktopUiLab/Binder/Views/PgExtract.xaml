@@ -17,23 +17,22 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition />
-            <RowDefinition />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         
         <!--첫 번째 row : outputFile, fileOutDirection, ...-->
-        <StackPanel Orientation="Horizontal"
+        <WrapPanel Orientation="Horizontal"
                     Margin="10">
 
-            <TextBlock Text="출력 파일" VerticalAlignment="Center" />
-            <TextBox Margin="10,0,0,0"
-                     Text="{Binding Extract.OutputFile}"/>
+            <TextBlock Text="출력 파일" VerticalAlignment="Center" Margin="10,0"/>
+            <TextBox Text="{Binding Extract.OutputFile}"/>
 
-            <TextBlock Text="파일 출력 방향" Margin="10,0,0,0" VerticalAlignment="Center"/>
+            <TextBlock Text="파일 출력 방향" Margin="10,0" VerticalAlignment="Center"/>
             <ComboBox ItemsSource="{Binding Source={StaticResource OutputDirectionEnums}}"
                       SelectedItem="{Binding Extract.FileOutDirection, Mode=TwoWay}"
                       IsEditable="False"/>
 
-            <TextBlock Text="파일 출력 그룹" Margin="10,0,0,0" VerticalAlignment="Center"/>
+            <TextBlock Text="파일 출력 그룹" Margin="10,0" VerticalAlignment="Center"/>
             <ComboBox ItemsSource="{Binding Extract.BindRoot.Columns}"
                       SelectedItem="{Binding Extract.OutputGroupBy}"
                       IsEditable="False">
@@ -44,11 +43,19 @@
                 </ComboBox.ItemTemplate>
             </ComboBox>
 
+            <TextBlock Text="출력 파일 Prefix" VerticalAlignment="Center" Margin="10,0"/>
+            <TextBox Text="{Binding Extract.OutputFilePrefix}"/>
+
+            <TextBlock Text="Tool 경로 출력 제외" VerticalAlignment="Center" Margin="10,0"/>
+            <CheckBox IsChecked="{Binding Extract.ExcludeToolOutput}"/>
+
+            <TextBlock Text="출력 경로 변경" VerticalAlignment="Center" Margin="10,0"/>
+            <TextBlock Text="중복 데이터 제거" VerticalAlignment="Center" Margin="10,0"/>
             <!--<Button
                 Width="50"
                 Command="{Binding BackCommand}"
                 Content="Back" />-->
-        </StackPanel>
+        </WrapPanel>
         
         <!--두 번째 row : sources-->
         <StackPanel
@@ -91,6 +98,20 @@
             <ui:ListView
                 ItemsSource="{Binding Extract.BindRoot.Columns}"
                 BorderThickness="0">
+                <!--<DataGrid.Columns>
+                    <DataGridTextColumn Header="이름" Binding="{Binding Name}" Width="Auto"/>
+                    <DataGridComboBoxColumn Header="타입"
+                                            ItemsSource="{Binding Source={StaticResource DataTypeEnums}}"
+                                            SelectedItemBinding="{Binding DataType}" Width="Auto"/>
+                    <DataGridCheckBoxColumn Header="Nullable" Binding="{Binding Nullable}" Width="70"/>
+                    <DataGridCheckBoxColumn Header="Repeated" Binding="{Binding Repeated}" Width="70"/>
+                    <DataGridComboBoxColumn Header="출력방향"
+                                            ItemsSource="{Binding Source={StaticResource OutputDirectionEnums}}"
+                                            SelectedItemBinding="{Binding ColumnOutDirection}" Width="Auto"/>
+                    <DataGridTextColumn Header="최소" Binding="{Binding Min}" Width="70"/>
+                    <DataGridTextColumn Header="최대" Binding="{Binding Max}" Width="70"/>
+
+                </DataGrid.Columns>-->
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="이름" DisplayMemberBinding="{Binding Name}" Width="Auto" />
@@ -100,6 +121,29 @@
                         <GridViewColumn Header="출력방향" DisplayMemberBinding="{Binding ColumnOutDirection}" Width="70" />
                         <GridViewColumn Header="최소" DisplayMemberBinding="{Binding Min}" Width="70" />
                         <GridViewColumn Header="최대" DisplayMemberBinding="{Binding Max}" Width="70" />
+                    </GridView>
+                </ListView.View>
+            </ui:ListView>
+
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+                <Button Content="추가"/>
+                <Button Content="수정"/>
+                <Button Content="삭제"/>
+            </StackPanel>
+        </StackPanel>
+        
+        <!--네 번째 row : uniqueness-->
+        <StackPanel
+            Grid.Row="3" Margin="10">
+            <TextBlock Text="Uniqueness"/>
+            <ui:ListView
+                ItemsSource="{Binding Extract.Uniquenesses}"
+                BorderThickness="0">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="이름" DisplayMemberBinding="{Binding Name}" Width="Auto" />
+                        <GridViewColumn Header="최대" DisplayMemberBinding="{Binding ColumnNames}" Width="300" />
                     </GridView>
                 </ListView.View>
             </ui:ListView>

@@ -7,17 +7,12 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:ext="clr-namespace:Du.Core.Extensions;assembly=Du.Core"
-    xmlns:behaviors="clr-namespace:Du.Core.Behaviors;assembly=Du.Core"
     xmlns:converters="clr-namespace:Du.Core.Converters;assembly=Du.Core"
     xmlns:viewmodels="clr-namespace:Binder.ViewModels"
     d:DataContext="{d:DesignInstance Type=viewmodels:VmHome}"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
-
-    <Page.Resources>
-        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
-    </Page.Resources>
 
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
@@ -75,7 +70,7 @@
                       Margin="10"
                       VerticalScrollBarVisibility="Auto">
             <StackPanel Orientation="Vertical"
-                        Visibility="{Binding SelectedBindFile, Converter={StaticResource NullToVisibilityConverter}}">
+                        Visibility="{Binding SelectedBindFile, Converter={converters:NullToVisibilityConverter}}">
                 
                 <!--파일 이름 및 부가 정보 텍스트-->
                 <TextBlock TextWrapping="Wrap" Text="{Binding SelectedBindFile}"/>
