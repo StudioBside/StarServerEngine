@@ -1,4 +1,4 @@
-﻿namespace Du.Core.Interfaces;
+﻿namespace Du.Presentation.Interfaces;
 
 using System.Windows.Navigation;
 

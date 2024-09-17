@@ -5,8 +5,8 @@ using System.Windows.Navigation;
 using Binder.Model;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using Du.Core.Bases;
 using Du.Core.Models;
+using Du.Presentation.Bases;
 
 public sealed class VmSingleBind : VmPageBase
 {

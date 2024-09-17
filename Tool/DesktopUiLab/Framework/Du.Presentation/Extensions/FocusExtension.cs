@@ -1,4 +1,4 @@
-namespace Du.Core.Extensions;
+namespace Du.Presentation.Extensions;
 
 using System.Windows;
 using System.Windows.Controls;

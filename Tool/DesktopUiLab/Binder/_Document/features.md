@@ -12,6 +12,8 @@
   * ServiceCollection
 * XamlBehaviorsWpf : https://github.com/Microsoft/XamlBehaviorsWpf
   * Behavior<T>
+  * EventTrigger
+  * InvokeCommandAction
 * MVVMLight : https://www.mvvmlight.net/
   * EventToCommand
 

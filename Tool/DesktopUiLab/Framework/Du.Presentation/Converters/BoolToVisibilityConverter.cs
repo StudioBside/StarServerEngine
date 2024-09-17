@@ -1,4 +1,4 @@
-﻿namespace Du.Core.Converters;
+﻿namespace Du.Presentation.Converters;
 
 using System;
 using System.Globalization;

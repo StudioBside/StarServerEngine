@@ -1,8 +1,8 @@
-﻿namespace Du.Core.Bases;
+﻿namespace Du.Presentation.Bases;
 
 using System.Windows.Navigation;
 using CommunityToolkit.Mvvm.ComponentModel;
-using Du.Core.Interfaces;
+using Du.Presentation.Interfaces;
 
 public abstract class VmPageBase : ObservableObject, INavigationAware
 {

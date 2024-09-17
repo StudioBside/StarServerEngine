@@ -1,10 +1,10 @@
-﻿namespace Du.Core.Behaviors;
+﻿namespace Du.Presentation.Behaviors;
 
 using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
-using Du.Core.Interfaces;
+using Du.Presentation.Interfaces;
 using Microsoft.Xaml.Behaviors;
 
 public sealed class FrameBehavior : Behavior<Frame>

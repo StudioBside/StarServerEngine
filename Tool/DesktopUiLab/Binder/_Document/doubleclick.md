@@ -10,10 +10,18 @@
 Install-Package System.Windows.Interactivity.WPF
 ```
 
+note : `System.Windows.Interactivity`는 deprecated 되었으며, `Microsoft.Xaml.Behaviors.Wpf`로 대체되었다. 
+
 ### 2. XAML에 네임스페이스 추가
 
 ```xml
 xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+```
+
+note: `Microsoft.Xaml.Behaviors.Wpf`를 사용할 경우 다음과 같이 네임스페이스를 추가한다.
+
+```xml
+xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
 ```
 
 ### 3. ListView에 InvokeCommandAction 추가

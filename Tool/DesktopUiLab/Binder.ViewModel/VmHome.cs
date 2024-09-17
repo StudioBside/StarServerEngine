@@ -6,15 +6,14 @@ using Binder.Model;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Cs.Logging;
-using Du.Core.Bases;
 using Du.Core.Models;
-using Du.Core.Util;
+using Du.Presentation.Bases;
 
 public sealed partial class VmHome : VmPageBase
 {
     private readonly List<BindFile> bindFiles = new();
+    private readonly ListCollectionView filteredFilesView;
     private string searchKeyword = string.Empty;
-    private ListCollectionView filteredFilesView;
 
     public VmHome()
     {
@@ -22,7 +21,7 @@ public sealed partial class VmHome : VmPageBase
         this.filteredFilesView = new ListCollectionView(this.bindFiles);
 
         this.ExtractAddCommand = new RelayCommand(this.OnExtractAdd);
-        this.ExtractEditCommand = new RelayCommand(this.OnExtractEdit, () => this.selectedExtract is not null);
+        this.ExtractEditCommand = new RelayCommand<Extract>(this.OnExtractEdit, _ => this.selectedExtract is not null);
         this.ExtractDeleteCommand = new RelayCommand(this.OnExtractDelete, () => this.selectedExtract is not null);
 
         this.ExtractEnumAddCommand = new RelayCommand(this.OnExtractEnumAdd);
@@ -116,7 +115,7 @@ public sealed partial class VmHome : VmPageBase
     {
     }
 
-    private void OnExtractEdit()
+    private void OnExtractEdit(Extract? extract)
     {
         if (this.selectedExtract is null)
         {
@@ -129,6 +128,15 @@ public sealed partial class VmHome : VmPageBase
 
     private void OnExtractDelete()
     {
+        if (this.selectedExtract is null || this.selectedBindFile is null)
+        {
+            Log.Error("Selected file or extract is null");
+            return;
+        }
+
+        var bindFile = this.selectedBindFile;
+        bindFile.Extracts.Remove(this.selectedExtract);
+        this.SelectedExtract = null;
     }
 
     private void OnExtractEnumAdd()

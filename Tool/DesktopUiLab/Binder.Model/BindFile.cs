@@ -1,6 +1,7 @@
 ﻿namespace Binder.Model;
 
 using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -9,7 +10,7 @@ using Du.Core.Util;
 public sealed class BindFile : ObservableObject
 {
     private readonly string filePath;
-    private readonly List<Extract> extracts = new();
+    private readonly ObservableCollection<Extract> extracts = new();
     private readonly List<ExtractEnum> extractEnums = new();
     private readonly List<ExtractString> extractStrings = new();
     private readonly List<ExtractHotswap> extractHotswaps = new();

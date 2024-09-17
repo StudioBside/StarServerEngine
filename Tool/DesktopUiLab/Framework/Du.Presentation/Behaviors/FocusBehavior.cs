@@ -1,4 +1,4 @@
-namespace YourNamespace;
+namespace Du.Presentation.Behaviors;
 
 using System.Windows;
 using System.Windows.Controls;
