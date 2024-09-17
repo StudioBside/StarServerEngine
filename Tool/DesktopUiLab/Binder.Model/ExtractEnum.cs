@@ -1,25 +1,25 @@
-﻿namespace Binder.Models;
+﻿namespace Binder.Model;
 
 using System.Collections.Generic;
 using System.Text.Json;
-using Binder.Models.Detail;
+using Binder.Model.Detail;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Du.Core.Util;
+using static Binder.Model.Enums;
 
-public sealed class ExtractHotswap : ObservableObject
+public sealed class ExtractEnum : ObservableObject
 {
     private readonly List<Source> sources = new();
-    private readonly List<Uniqueness> uniquenesses = new();
     private string outputFile = string.Empty;
-    private string keyColumn = string.Empty;
-    //// columns
+    private OutputDirection fileOutDirection = OutputDirection.All;
+    private string codeNamespace = string.Empty;
 
-    public ExtractHotswap(JsonElement element)
+    public ExtractEnum(JsonElement element)
     {
         this.outputFile = element.GetString("outputFile");
         element.GetArray("sources", this.sources, element => new Source(element));
-        element.GetArray("uniquenesses", this.uniquenesses, element => new Uniqueness(element));
-        this.keyColumn = element.GetString("keyColumn");
+        this.fileOutDirection = element.GetEnum<OutputDirection>("fileOutDirection");
+        this.codeNamespace = element.GetString("namespace");
     }
 
     public override string ToString()

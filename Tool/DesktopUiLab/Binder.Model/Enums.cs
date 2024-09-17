@@ -1,4 +1,4 @@
-﻿namespace Binder.Models;
+﻿namespace Binder.Model;
 
 public static class Enums
 {

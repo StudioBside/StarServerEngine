@@ -3,7 +3,7 @@
 using System.IO;
 using System.Windows;
 using Binder.Services;
-using Binder.ViewModels;
+using Binder.ViewModel;
 using Cs.Logging;
 using Cs.Logging.Providers;
 using Microsoft.Extensions.Configuration;

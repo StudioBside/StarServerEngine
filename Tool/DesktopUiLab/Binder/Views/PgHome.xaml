@@ -8,7 +8,7 @@
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:ext="clr-namespace:Du.Core.Extensions;assembly=Du.Core"
     xmlns:converters="clr-namespace:Du.Core.Converters;assembly=Du.Core"
-    xmlns:viewmodels="clr-namespace:Binder.ViewModels"
+    xmlns:viewmodels="clr-namespace:Binder.ViewModel;assembly=Binder.ViewModel"
     d:DataContext="{d:DesignInstance Type=viewmodels:VmHome}"
     d:DesignHeight="450"
     d:DesignWidth="800"

@@ -1,11 +1,11 @@
-﻿namespace Binder.Models.Detail;
+﻿namespace Binder.Model.Detail;
 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text.Json;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Du.Core.Util;
-using static Binder.Models.Enums;
+using static Binder.Model.Enums;
 
 public sealed class CustomOutputPath
 {

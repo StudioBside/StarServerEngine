@@ -1,8 +1,8 @@
-﻿namespace Binder.ViewModels;
+﻿namespace Binder.ViewModel;
 
 using System.ComponentModel;
 using System.Windows.Data;
-using Binder.Models;
+using Binder.Model;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Cs.Logging;
@@ -118,13 +118,12 @@ public sealed partial class VmHome : VmPageBase
 
     private void OnExtractEdit()
     {
-        if (this.selectedBindFile is null)
+        if (this.selectedExtract is null)
         {
             Log.Error("Selected file is null");
             return;
         }
 
-        App.Current.Services.GetService<VmSingleBind>().BindFile = this.selectedBindFile;
         WeakReferenceMessenger.Default.Send(new NavigationMessage("Views/PgExtract.xaml"));
     }
 

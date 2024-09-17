@@ -2,7 +2,7 @@
 
 using System.ComponentModel;
 using System.Windows;
-using Binder.ViewModels;
+using Binder.ViewModel;
 using Du.Core.Util;
 
 public partial class MainWindow : Window

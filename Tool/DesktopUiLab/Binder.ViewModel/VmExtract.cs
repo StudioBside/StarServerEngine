@@ -1,8 +1,8 @@
-﻿namespace Binder.ViewModels;
+﻿namespace Binder.ViewModel;
 
 using System.Windows.Input;
 using System.Windows.Navigation;
-using Binder.Models;
+using Binder.Model;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Du.Core.Bases;

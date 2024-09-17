@@ -2,8 +2,8 @@
 
 using System;
 using System.IO;
-using Binder.Models;
-using Binder.ViewModels;
+using Binder.Model;
+using Binder.ViewModel;
 using Cs.Logging;
 using Microsoft.Extensions.Configuration;
 

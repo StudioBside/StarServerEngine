@@ -1,12 +1,12 @@
-﻿namespace Binder.Models;
+﻿namespace Binder.Model;
 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text.Json;
-using Binder.Models.Detail;
+using Binder.Model.Detail;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Du.Core.Util;
-using static Binder.Models.Enums;
+using static Binder.Model.Enums;
 
 public sealed class Extract : ObservableObject
 {

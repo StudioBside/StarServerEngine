@@ -35,6 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Binder.ViewModel\Binder.ViewModel.csproj" />
     <ProjectReference Include="..\Du.Core\Du.Core.csproj" />
   </ItemGroup>
 
@@ -43,11 +44,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
-    <Compile Update="ViewModels\VmHomeGen.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>VmHomeGen.tt</DependentUpon>
     </Compile>
   </ItemGroup>
 
@@ -58,22 +54,6 @@
     <None Update="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <None Update="ViewModels\VmHomeGen.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>VmHomeGen.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Behaviors\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="ViewModels\VmHomeGen.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>VmHomeGen.tt</DependentUpon>
     </None>
   </ItemGroup>
 

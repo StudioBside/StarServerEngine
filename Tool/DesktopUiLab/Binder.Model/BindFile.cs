@@ -1,4 +1,4 @@
-﻿namespace Binder.Models;
+﻿namespace Binder.Model;
 
 using System;
 using System.IO;

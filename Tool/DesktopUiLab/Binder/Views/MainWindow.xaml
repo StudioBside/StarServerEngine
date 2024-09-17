@@ -8,7 +8,7 @@
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml" 
     xmlns:local="clr-namespace:Binder"
     xmlns:behaviors="clr-namespace:Du.Core.Behaviors;assembly=Du.Core"
-    xmlns:viewmodels="clr-namespace:Binder.ViewModels"
+    xmlns:viewmodels="clr-namespace:Binder.ViewModel;assembly=Binder.ViewModel"
     d:DataContext="{d:DesignInstance Type=viewmodels:VmMain}"
     mc:Ignorable="d"
     Title="{Binding Title}"
