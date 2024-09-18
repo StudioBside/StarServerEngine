@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Du.Presentation", "Framewor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Du.WpfLib", "Framework\Du.WpfLib\Du.WpfLib.csproj", "{1673169B-1B35-4DBB-8305-7BB98CB7EFB2}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Du.Excel", "Framework\Du.Excel\Du.Excel.csproj", "{BA1E749C-D485-4892-AC2E-CEFA670AF6AC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{1673169B-1B35-4DBB-8305-7BB98CB7EFB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1673169B-1B35-4DBB-8305-7BB98CB7EFB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1673169B-1B35-4DBB-8305-7BB98CB7EFB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA1E749C-D485-4892-AC2E-CEFA670AF6AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA1E749C-D485-4892-AC2E-CEFA670AF6AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA1E749C-D485-4892-AC2E-CEFA670AF6AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA1E749C-D485-4892-AC2E-CEFA670AF6AC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -55,6 +61,7 @@ Global
 		{E3C903FB-459E-4368-B067-719C70D3DE1D} = {9A98F4CB-7468-401F-A07C-1BAB84CD7D3C}
 		{7855111D-7BC9-4BFC-85B7-F72225FC649D} = {9A98F4CB-7468-401F-A07C-1BAB84CD7D3C}
 		{1673169B-1B35-4DBB-8305-7BB98CB7EFB2} = {9A98F4CB-7468-401F-A07C-1BAB84CD7D3C}
+		{BA1E749C-D485-4892-AC2E-CEFA670AF6AC} = {9A98F4CB-7468-401F-A07C-1BAB84CD7D3C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A8403C17-C9EC-44BC-A621-AC23FBB083EB}

@@ -12,13 +12,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
-    <PackageReference Include="Cs.Core" Version="0.0.4" />
-    <PackageReference Include="Cs.Logging" Version="0.0.23" />
+    <PackageReference Include="NPOI" Version="2.7.1" />
     <PackageReference Include="stylecop.analyzers" Version="1.2.0-beta.556">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Du.Core\Du.Core.csproj" />
   </ItemGroup>
 
 </Project>

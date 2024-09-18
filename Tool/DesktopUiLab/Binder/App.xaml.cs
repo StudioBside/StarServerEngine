@@ -1,13 +1,13 @@
 ﻿namespace Binder;
 
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Windows;
 using Binder.Services;
 using Binder.ViewModel;
 using Cs.Logging;
 using Cs.Logging.Providers;
 using Du.Core.Interfaces;
+using Du.Excel;
 using Du.WpfLib;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -47,6 +47,7 @@ public partial class App : Application
         services.AddSingleton<IContentDialogService, ContentDialogService>();
         services.AddSingleton<ISnackbarService, SnackbarService>();
         services.AddTransient<IUserErrorNotifier, ErrorNotifierDialog>();
+        services.AddTransient<ICollectionEditor, CollectionEditor>();
 
         return services.BuildServiceProvider();
     }
