@@ -97,7 +97,7 @@
             <TextBlock Text="바인딩"/>
             <ui:ListView
                 ItemsSource="{Binding Extract.BindRoot.Columns}"
-                BorderThickness="0">
+                BorderThickness="0" SelectionMode="Extended">
                 <!--<DataGrid.Columns>
                     <DataGridTextColumn Header="이름" Binding="{Binding Name}" Width="Auto"/>
                     <DataGridComboBoxColumn Header="타입"
@@ -127,9 +127,7 @@
 
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right">
-                <Button Content="추가"/>
-                <Button Content="수정" Command="{Binding EditColumnsCommand}"/>
-                <Button Content="삭제"/>
+                <Button Content="엑셀에서 편집..." Command="{Binding EditColumnsCommand}"/>
             </StackPanel>
         </StackPanel>
         

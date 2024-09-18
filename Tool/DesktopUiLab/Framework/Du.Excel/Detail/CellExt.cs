@@ -1,11 +1,14 @@
 ﻿namespace Du.Excel.Detail;
 
 using System;
+using System.Drawing;
+using System.Linq;
 using System.Reflection;
 using Cs.Logging;
 using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 
-internal static class TypeConverter
+internal static class CellExt
 {
     public static void Write(this ICell cell, object instance, PropertyInfo property)
     {
@@ -89,5 +92,24 @@ internal static class TypeConverter
 
         Log.Error($"Unsupported type {type.Name}");
         return false;
+    }
+
+    public static void AttachComment(this ICell cell, string message)
+    {
+        var lineCount = message.Split(new[] { Environment.NewLine }, StringSplitOptions.None).Length;
+
+        IDrawing drawing = cell.Sheet.CreateDrawingPatriarch();
+
+        var address = cell.Address;
+        var rectStart = new Point(address.Column + 1, address.Row + 1);
+        var rectEnd = new Point(rectStart.X + 2, rectStart.Y + lineCount);
+        IClientAnchor anchor = drawing.CreateAnchor(0, 0, 0, 0, rectStart.X, rectStart.Y, rectEnd.X, rectEnd.Y);
+
+        IComment comment = drawing.CreateCellComment(anchor);
+        comment.String = new XSSFRichTextString(message);
+        comment.Author = "Du.Excel";
+
+        // Assign the comment to the cell
+        cell.CellComment = comment;
     }
 }

@@ -48,6 +48,7 @@ public partial class App : Application
         services.AddSingleton<ISnackbarService, SnackbarService>();
         services.AddTransient<IUserErrorNotifier, ErrorNotifierDialog>();
         services.AddTransient<ICollectionEditor, CollectionEditor>();
+        services.AddTransient<IUserWaitingNotifier, WaitingNotifierDialog>();
 
         return services.BuildServiceProvider();
     }

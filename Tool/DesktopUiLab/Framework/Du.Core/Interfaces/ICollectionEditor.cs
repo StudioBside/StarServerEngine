@@ -6,5 +6,5 @@ using System.Linq;
 
 public interface ICollectionEditor
 {
-    bool Edit<T>(IList<T> collection) where T : new();
+    Task<bool> Edit<T>(IList<T> collection) where T : new();
 }

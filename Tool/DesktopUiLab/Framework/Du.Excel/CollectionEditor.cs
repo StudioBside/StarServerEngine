@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using Cs.Core.Util;
 using Cs.Logging;
 using Du.Core.Interfaces;
 using Du.Excel.Detail;
@@ -11,7 +12,7 @@ using NPOI.XSSF.UserModel;
 
 public sealed class CollectionEditor : ICollectionEditor
 {
-    public bool Edit<T>(IList<T> collection) where T : new()
+    public async Task<bool> Edit<T>(IList<T> collection) where T : new()
     {
         // create temp file
         var tempFile = $"{Path.GetTempFileName()}.xlsx";
@@ -29,18 +30,29 @@ public sealed class CollectionEditor : ICollectionEditor
             IRow row = excelSheet.CreateRow(0);
             int columnIndex = 0;
 
+            // 헤더(컬럼 이름)에는 별도의 스타일을 적용
             var style = workbook.CreateCellStyle();
             style.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.Grey25Percent.Index;
             style.FillPattern = FillPattern.SolidForeground;
 
+            // 헤더 생성
             foreach (var propertyInfo in properties)
             {
                 var cell = row.CreateCell(columnIndex);
                 cell.CellStyle = style;
                 cell.SetCellValue(propertyInfo.Name);
+
+                if (propertyInfo.PropertyType.IsEnum)
+                {
+                    var delimiter = Environment.NewLine;
+                    var comment = $"value: {delimiter}{string.Join(delimiter, Enum.GetNames(propertyInfo.PropertyType))}";
+                    cell.AttachComment(comment);
+                }
+
                 columnIndex++;
             }
 
+            // 데이터 생성
             int rowIndex = 1;
             foreach (var data in collection)
             {
@@ -82,12 +94,12 @@ public sealed class CollectionEditor : ICollectionEditor
             return false;
         }
 
-        process.WaitForExit();
+        await process.WaitForExitAsync();
         Log.Debug("Edit completed");
 
         // read excel file
         var newCollection = new List<T>();
-        using (var stream = new FileStream(tempFile, FileMode.Open, FileAccess.Read))
+        using (var stream = new FileStream(tempFile, FileMode.Open, FileAccess.Read, FileShare.Read))
         {
             IWorkbook workbook = new XSSFWorkbook(stream);
             ISheet excelSheet = workbook.GetSheetAt(0);
