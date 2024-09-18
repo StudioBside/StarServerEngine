@@ -13,6 +13,10 @@
     mc:Ignorable="d">
 
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -21,49 +25,60 @@
         </Grid.RowDefinitions>
         
         <!--첫 번째 row : outputFile, fileOutDirection, ...-->
-        <WrapPanel Orientation="Horizontal"
-                    Margin="10">
+        <StackPanel Grid.ColumnSpan="2" Margin="10">
 
-            <TextBlock Text="출력 파일" VerticalAlignment="Center" Margin="10,0"/>
+            <TextBlock Text="출력 파일" VerticalAlignment="Center"/>
             <TextBox Text="{Binding Extract.OutputFile}"/>
 
-            <TextBlock Text="파일 출력 방향" Margin="10,0" VerticalAlignment="Center"/>
-            <ComboBox ItemsSource="{Binding Source={StaticResource OutputDirectionEnums}}"
-                      SelectedItem="{Binding Extract.FileOutDirection, Mode=TwoWay}"
-                      IsEditable="False"/>
-
-            <TextBlock Text="파일 출력 그룹" Margin="10,0" VerticalAlignment="Center"/>
-            <ComboBox ItemsSource="{Binding Extract.BindRoot.Columns}"
-                      SelectedItem="{Binding Extract.OutputGroupBy}"
-                      IsEditable="False">
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Name}" />
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
-            </ComboBox>
-
-            <TextBlock Text="출력 파일 Prefix" VerticalAlignment="Center" Margin="10,0"/>
-            <TextBox Text="{Binding Extract.OutputFilePrefix}"/>
-
-            <TextBlock Text="Tool 경로 출력 제외" VerticalAlignment="Center" Margin="10,0"/>
-            <CheckBox IsChecked="{Binding Extract.ExcludeToolOutput}"/>
-
-            <TextBlock Text="출력 경로 변경" VerticalAlignment="Center" Margin="10,0"/>
-            <TextBlock Text="중복 데이터 제거" VerticalAlignment="Center" Margin="10,0"/>
             <!--<Button
                 Width="50"
                 Command="{Binding BackCommand}"
                 Content="Back" />-->
-        </WrapPanel>
+        </StackPanel>
+        
+        <!--세로 패널 : 자잘한 설정들 배치-->
+        <Border Grid.Row="1" Grid.Column="1" Grid.RowSpan="3"
+                CornerRadius="8"
+                BorderThickness="1"
+                BorderBrush="LightGray"
+                Margin="10">
+            <StackPanel Margin="10">
+
+                <TextBlock Text="파일 출력 방향" Margin="10" VerticalAlignment="Center"/>
+                <ComboBox ItemsSource="{Binding Source={StaticResource OutputDirectionEnums}}"
+                      SelectedItem="{Binding Extract.FileOutDirection, Mode=TwoWay}"
+                      IsEditable="False"/>
+
+                <TextBlock Text="파일 출력 그룹" Margin="10" VerticalAlignment="Center"/>
+                <ComboBox ItemsSource="{Binding Extract.BindRoot.Columns}"
+                      SelectedItem="{Binding Extract.OutputGroupBy}"
+                      IsEditable="False">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+
+                <TextBlock Text="출력 파일 Prefix" VerticalAlignment="Center" Margin="10"/>
+                <TextBox Text="{Binding Extract.OutputFilePrefix}"/>
+
+                <TextBlock Text="Tool 경로 출력 제외" VerticalAlignment="Center" Margin="10"/>
+                <CheckBox IsChecked="{Binding Extract.ExcludeToolOutput}"
+                          Content="TOOL* 파일 출력 생략 (컷신 데이터 전용)"/>
+
+                <TextBlock Text="출력 경로 변경" VerticalAlignment="Center" Margin="10"/>
+                <TextBlock Text="중복 데이터 제거" VerticalAlignment="Center" Margin="10"/>
+            </StackPanel>
+        </Border>
         
         <!--두 번째 row : sources-->
-        <StackPanel
-            Grid.Row="1" Margin="10">
+        <StackPanel Grid.Row="1" Grid.Column="0" Margin="10">
             <TextBlock Text="입력 소스"/>
             <ui:ListView
                 ItemsSource="{Binding Extract.Sources}"
-                BorderThickness="0">
+                BorderThickness="1"
+                BorderBrush="LightGray">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="파일" DisplayMemberBinding="{Binding ExcelFile}" Width="Auto" />
@@ -92,12 +107,17 @@
 
 
         <!--세 번째 row : 바인딩-->
-        <StackPanel
-            Grid.Row="2" Margin="10">
-            <TextBlock Text="바인딩"/>
+        <DockPanel Grid.Row="2" Grid.Column="0" Margin="10">
+            <TextBlock DockPanel.Dock="Top" Text="바인딩"/>
+            <StackPanel DockPanel.Dock="Bottom"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+                <Button Content="엑셀에서 편집..." Command="{Binding EditColumnsCommand}"/>
+            </StackPanel>
+            
             <ui:ListView
                 ItemsSource="{Binding Extract.BindRoot.Columns}"
-                BorderThickness="0" SelectionMode="Extended">
+                BorderThickness="1" BorderBrush="LightGray">
                 <!--<DataGrid.Columns>
                     <DataGridTextColumn Header="이름" Binding="{Binding Name}" Width="Auto"/>
                     <DataGridComboBoxColumn Header="타입"
@@ -125,19 +145,15 @@
                 </ListView.View>
             </ui:ListView>
 
-            <StackPanel Orientation="Horizontal"
-                        HorizontalAlignment="Right">
-                <Button Content="엑셀에서 편집..." Command="{Binding EditColumnsCommand}"/>
-            </StackPanel>
-        </StackPanel>
+        </DockPanel>
         
         <!--네 번째 row : uniqueness-->
-        <StackPanel
-            Grid.Row="3" Margin="10">
+        <StackPanel Grid.Row="3" Grid.Column="0" Margin="10">
             <TextBlock Text="Uniqueness"/>
             <ui:ListView
                 ItemsSource="{Binding Extract.Uniquenesses}"
-                BorderThickness="0">
+                BorderThickness="1"
+                BorderBrush="LightGray">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="이름" DisplayMemberBinding="{Binding Name}" Width="Auto" />
