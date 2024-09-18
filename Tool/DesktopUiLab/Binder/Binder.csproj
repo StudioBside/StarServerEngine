@@ -9,6 +9,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <CodeAnalysisRuleSet>..\..\..\BaseEnvironment\CodingStyle.ruleset</CodeAnalysisRuleSet>
+	<!-- 240918. 게시할 때 단일 파일 생성 옵션을 주었더니 오류와 함께 아래 설정을 추가하라는 메시지가 나와서 추가함-->
+    <InterceptorsPreviewNamespaces>$(InterceptorsPreviewNamespaces);Microsoft.Extensions.Configuration.Binder.SourceGeneration</InterceptorsPreviewNamespaces>
   </PropertyGroup>
   <PropertyGroup>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -59,5 +61,4 @@
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
-
 </Project>
