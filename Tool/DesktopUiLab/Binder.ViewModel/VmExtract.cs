@@ -36,6 +36,9 @@ public sealed class VmExtract : VmPageBase
 
     private void OnEditColumns()
     {
-        this.collectionEditor.Edit(this.extract.BindRoot.Columns);
+        if (this.collectionEditor.Edit(this.extract.BindRoot.Columns) == false)
+        {
+            return;
+        }
     }
 }

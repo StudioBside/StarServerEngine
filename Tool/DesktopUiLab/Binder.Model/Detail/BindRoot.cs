@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -10,7 +11,7 @@ using Du.Core.Util;
 
 public sealed class BindRoot
 {
-    private readonly List<Column> columns = new();
+    private readonly ObservableCollection<Column> columns = new();
     private readonly List<Group> groups = new();
     private readonly List<NumberingGroup> numberingGroups = new();
 

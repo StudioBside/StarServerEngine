@@ -1,51 +1,68 @@
 ﻿namespace Du.Excel;
 
-using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Diagnostics;
+using System.Reflection;
 using Cs.Logging;
 using Du.Core.Interfaces;
+using Du.Excel.Detail;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 
 public sealed class CollectionEditor : ICollectionEditor
 {
-    public void Edit<T>(IList<T> collection)
+    public bool Edit<T>(IList<T> collection) where T : new()
     {
         // create temp file
         var tempFile = $"{Path.GetTempFileName()}.xlsx";
         Log.Debug($"tempFile: {tempFile}");
 
+        var typeName = typeof(T).Name;
+        var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
         // create excel file
         using (var stream = new FileStream(tempFile, FileMode.Create, FileAccess.Write))
         {
             IWorkbook workbook = new XSSFWorkbook();
-            ISheet excelSheet = workbook.CreateSheet("Sheet1");
+            ISheet excelSheet = workbook.CreateSheet(typeName);
 
-            var columns = new List<string>();
             IRow row = excelSheet.CreateRow(0);
             int columnIndex = 0;
 
-            foreach (var columnName in new[] { "Hello", "World" })
+            var style = workbook.CreateCellStyle();
+            style.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.Grey25Percent.Index;
+            style.FillPattern = FillPattern.SolidForeground;
+
+            foreach (var propertyInfo in properties)
             {
-                columns.Add(columnName);
-                row.CreateCell(columnIndex).SetCellValue(columnName);
+                var cell = row.CreateCell(columnIndex);
+                cell.CellStyle = style;
+                cell.SetCellValue(propertyInfo.Name);
                 columnIndex++;
             }
 
             int rowIndex = 1;
             foreach (var data in collection)
             {
+                if (data is null)
+                {
+                    continue;
+                }
+
                 row = excelSheet.CreateRow(rowIndex);
                 int cellIndex = 0;
-                foreach (String col in columns)
+                foreach (var propertyInfo in properties)
                 {
-                    row.CreateCell(cellIndex).SetCellValue("values");
+                    row.CreateCell(cellIndex).Write(data, propertyInfo);
                     cellIndex++;
                 }
 
                 rowIndex++;
+            }
+
+            for (columnIndex = 0; columnIndex < properties.Length; columnIndex++)
+            {
+                excelSheet.AutoSizeColumn(columnIndex);
             }
 
             workbook.Write(stream);
@@ -62,13 +79,14 @@ public sealed class CollectionEditor : ICollectionEditor
         if (process is null)
         {
             Log.Error($"Failed to start excel.exe with {tempFile}");
-            return;
+            return false;
         }
 
         process.WaitForExit();
         Log.Debug("Edit completed");
 
         // read excel file
+        var newCollection = new List<T>();
         using (var stream = new FileStream(tempFile, FileMode.Open, FileAccess.Read))
         {
             IWorkbook workbook = new XSSFWorkbook(stream);
@@ -82,17 +100,33 @@ public sealed class CollectionEditor : ICollectionEditor
                     continue;
                 }
 
+                var instance = new T();
+                newCollection.Add(instance);
                 for (int cellIndex = 0; cellIndex < row.LastCellNum; cellIndex++)
                 {
+                    var propertyInfo = properties[cellIndex];
                     ICell cell = row.GetCell(cellIndex);
                     if (cell == null)
                     {
                         continue;
                     }
 
-                    Log.Debug($"rowIndex: {rowIndex}, cellIndex: {cellIndex}, value: {cell.StringCellValue}");
+                    if (cell.Read(instance, propertyInfo) == false)
+                    {
+                        Log.Error($"[CollectionEditor] Failed to read cell. rowIndex:{rowIndex} cellIndex:{cellIndex} value:{cell.ToString()}");
+                        return false;
+                    }
                 }
             }
         }
+
+        // update collection
+        collection.Clear();
+        foreach (var item in newCollection)
+        {
+            collection.Add(item);
+        }
+
+        return true;
     }
 }
