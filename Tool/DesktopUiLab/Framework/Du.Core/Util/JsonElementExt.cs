@@ -4,7 +4,6 @@ using System;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using Cs.Logging;
-using Newtonsoft.Json.Linq;
 
 public static class JsonElementExt
 {
@@ -26,6 +25,38 @@ public static class JsonElementExt
     public static int GetInt32(this JsonElement self, string propertyName, int defaultValue)
     {
         return self.TryGetProperty(propertyName, out var property) ? property.GetInt32() : defaultValue;
+    }
+
+    public static float GetFloat(this JsonElement self, string propertyName)
+    {
+        return self.GetProperty(propertyName).GetSingle();
+    }
+
+    public static float GetFloat(this JsonElement self, string propertyName, float defaultValue)
+    {
+        return self.TryGetProperty(propertyName, out var property) ? property.GetSingle() : defaultValue;
+    }
+
+    public static double GetDouble(this JsonElement self, string propertyName)
+    {
+        return self.GetProperty(propertyName).GetDouble();
+    }
+
+    public static double GetDouble(this JsonElement self, string propertyName, double defaultValue)
+    {
+        return self.TryGetProperty(propertyName, out var property) ? property.GetDouble() : defaultValue;
+    }
+
+    public static bool TryGetDouble(this JsonElement self, string propertyName, out double result)
+    {
+        if (self.TryGetProperty(propertyName, out var property) == false)
+        {
+            result = 0;
+            return false;
+        }
+
+        result = property.GetDouble();
+        return true;
     }
 
     public static string GetString(this JsonElement self, string propertyName)

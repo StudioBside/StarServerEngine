@@ -1,6 +1,5 @@
 ﻿namespace Binder.Model.Detail
 {
-    using System.ComponentModel;
     using System.Text;
     using System.Text.Json;
     using CommunityToolkit.Mvvm.ComponentModel;
@@ -14,8 +13,8 @@
         private bool nullable;
         private bool repeated;
         private OutputDirection columnOutDirection;
-        private string min = string.Empty;
-        private string max = string.Empty;
+        private double? min;
+        private double? max;
 
         public Column()
         {
@@ -28,8 +27,15 @@
             this.nullable = element.GetBoolean("nullable", false);
             this.repeated = element.GetBoolean("repeated", false);
             this.columnOutDirection = element.GetEnum("columnOutDirection", OutputDirection.All);
-            this.min = element.GetString("min", string.Empty);
-            this.max = element.GetString("max", string.Empty);
+            if (element.TryGetDouble("min", out var value))
+            {
+                this.min = value;
+            }
+
+            if (element.TryGetDouble("max", out value))
+            {
+                this.max = value;
+            }
         }
 
         public string Name
@@ -62,13 +68,13 @@
             set => this.SetProperty(ref this.columnOutDirection, value);
         }
 
-        public string Min
+        public double? Min
         {
             get => this.min;
             set => this.SetProperty(ref this.min, value);
         }
 
-        public string Max
+        public double? Max
         {
             get => this.max;
             set => this.SetProperty(ref this.max, value);

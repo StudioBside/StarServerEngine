@@ -1,10 +1,7 @@
 ﻿namespace Binder.Model.Detail;
 
-using System.Collections.Generic;
 using System.Text.Json;
-using CommunityToolkit.Mvvm.ComponentModel;
 using Du.Core.Util;
-using static Binder.Model.Enums;
 
 public sealed class Source
 {
