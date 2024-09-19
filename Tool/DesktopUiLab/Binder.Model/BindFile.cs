@@ -24,7 +24,7 @@ public sealed class BindFile : ObservableObject, ISearchable
 
         using var document = JsonHelper.LoadJsonc(filePath);
         var root = document.RootElement;
-        root.GetArray("extracts", this.extracts, element => new Extract(element));
+        root.TryGetArray("extracts", this.extracts, element => new Extract(element));
         root.TryGetArray("extractEnums", this.extractEnums, element => new ExtractEnum(element));
         root.TryGetArray("extractStrings", this.extractStrings, element => new ExtractString(element));
         root.TryGetArray("extractHotswap", this.extractHotswaps, element => new ExtractHotswap(element));

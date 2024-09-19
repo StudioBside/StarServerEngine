@@ -9,7 +9,7 @@ using static Binder.Model.Enums;
 
 public sealed class ExtractEnum : ObservableObject
 {
-    private readonly List<Source> sources = new();
+    private readonly Source source;
     private string outputFile = string.Empty;
     private OutputDirection fileOutDirection = OutputDirection.All;
     private string codeNamespace = string.Empty;
@@ -17,7 +17,7 @@ public sealed class ExtractEnum : ObservableObject
     public ExtractEnum(JsonElement element)
     {
         this.outputFile = element.GetString("outputFile");
-        element.GetArray("sources", this.sources, element => new Source(element));
+        this.source = new Source(element.GetProperty("source"));
         this.fileOutDirection = element.GetEnum<OutputDirection>("fileOutDirection");
         this.codeNamespace = element.GetString("namespace");
     }

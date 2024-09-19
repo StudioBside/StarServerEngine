@@ -6,7 +6,9 @@
     xmlns:local="clr-namespace:Binder.Views"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models="clr-namespace:Binder.Model;assembly=Binder.Model"
     xmlns:viewmodels="clr-namespace:Binder.ViewModel;assembly=Binder.ViewModel"
+    xmlns:extensions="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
     d:DataContext="{d:DesignInstance Type=viewmodels:VmExtract}"
     d:DesignHeight="450"
     d:DesignWidth="800"
@@ -45,7 +47,7 @@
             <StackPanel Margin="10">
 
                 <TextBlock Text="파일 출력 방향" Margin="10" VerticalAlignment="Center"/>
-                <ComboBox ItemsSource="{Binding Source={StaticResource OutputDirectionEnums}}"
+                <ComboBox ItemsSource="{Binding Source={extensions:EnumValues {x:Type models:Enums+OutputDirection}}}"
                       SelectedItem="{Binding Extract.FileOutDirection, Mode=TwoWay}"
                       IsEditable="False"/>
 
@@ -121,12 +123,12 @@
                 <!--<DataGrid.Columns>
                     <DataGridTextColumn Header="이름" Binding="{Binding Name}" Width="Auto"/>
                     <DataGridComboBoxColumn Header="타입"
-                                            ItemsSource="{Binding Source={StaticResource DataTypeEnums}}"
+                                            ItemsSource="{Binding Source={extensions:EnumValues {x:Type models:Enums+DataType}}}"
                                             SelectedItemBinding="{Binding DataType}" Width="Auto"/>
                     <DataGridCheckBoxColumn Header="Nullable" Binding="{Binding Nullable}" Width="70"/>
                     <DataGridCheckBoxColumn Header="Repeated" Binding="{Binding Repeated}" Width="70"/>
                     <DataGridComboBoxColumn Header="출력방향"
-                                            ItemsSource="{Binding Source={StaticResource OutputDirectionEnums}}"
+                                            ItemsSource="{Binding Source={extensions:EnumValues {x:Type models:Enums+OutputDirection}}}"
                                             SelectedItemBinding="{Binding ColumnOutDirection}" Width="Auto"/>
                     <DataGridTextColumn Header="최소" Binding="{Binding Min}" Width="70"/>
                     <DataGridTextColumn Header="최대" Binding="{Binding Max}" Width="70"/>

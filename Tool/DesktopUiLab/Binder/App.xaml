@@ -13,17 +13,6 @@
                 <ui:ControlsDictionary />
                 <ResourceDictionary Source="Assets/Fonts.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <!-- Enum Values as StaticResource -->
-            <ObjectDataProvider x:Key="OutputDirectionEnums" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
-                <ObjectDataProvider.MethodParameters>
-                    <x:Type TypeName="models:Enums+OutputDirection"/>
-                </ObjectDataProvider.MethodParameters>
-            </ObjectDataProvider>
-            <ObjectDataProvider x:Key="DataTypeEnums" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
-                <ObjectDataProvider.MethodParameters>
-                    <x:Type TypeName="models:Enums+DataType"/>
-                </ObjectDataProvider.MethodParameters>
-            </ObjectDataProvider>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

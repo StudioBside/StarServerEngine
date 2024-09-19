@@ -1,6 +1,5 @@
 ﻿namespace Binder.Model.Detail;
 
-using System;
 using System.Collections.Generic;
 using System.Text.Json;
 using Du.Core.Util;
