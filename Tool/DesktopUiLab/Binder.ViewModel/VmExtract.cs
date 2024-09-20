@@ -11,6 +11,8 @@ using Du.Core.Models;
 
 public sealed class VmExtract : VmPageBase
 {
+    private static Extract lastExtractHistory = null!;
+
     private readonly Extract extract;
     private readonly ICollectionEditor collectionEditor;
     private readonly IUserWaitingNotifier waitingNotifier;
@@ -19,11 +21,12 @@ public sealed class VmExtract : VmPageBase
     {
         this.collectionEditor = collectionEditor;
         this.waitingNotifier = waitingNotifier;
-        this.Title = "Customer";
         this.BackCommand = new RelayCommand(this.OnBack);
         this.EditColumnsCommand = new AsyncRelayCommand(this.OnEditColumns);
-        this.extract = vmHome.SelectedExtract 
-            ?? throw new ArgumentNullException(nameof(vmHome.SelectedExtract));
+        this.extract = vmHome.SelectedExtract ?? lastExtractHistory;
+        this.Title = this.extract.OutputFile;
+
+        lastExtractHistory = this.extract;
     }
 
     public Extract Extract => this.extract;

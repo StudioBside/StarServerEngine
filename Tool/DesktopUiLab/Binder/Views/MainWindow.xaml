@@ -11,11 +11,12 @@
     xmlns:viewmodels="clr-namespace:Binder.ViewModel;assembly=Binder.ViewModel"
     d:DataContext="{d:DesignInstance Type=viewmodels:VmMain}"
     mc:Ignorable="d"
-    Title="{Binding Title}"
+    Title="{Binding ElementName=MyFrame, Path=Content.DataContext.Title}"
     Height="450"
     Width="800">
     <Grid>
-        <Frame NavigationUIVisibility="Hidden">
+        <Frame NavigationUIVisibility="Hidden"
+               x:Name="MyFrame">
             <b:Interaction.Behaviors>
                 <behaviors:FrameBehavior NavigationSource="{Binding NavigationSource, Mode=TwoWay}" />
             </b:Interaction.Behaviors>
