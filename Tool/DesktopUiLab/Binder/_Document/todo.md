@@ -2,10 +2,10 @@
 
 - perforce : open for edit, submit, add, delete, revert, sync 등등 연동
 - stringInputDialog, errorNotifyDialog를 미적으로 예쁘게 재구성한다.
+- numbering group 처리.
 
 ## error
 
-- 로그 파일에 파일 로딩 오류 있음. 확인 필요.
 
 ## done
 
@@ -17,3 +17,4 @@
 - Page의 타이틀을 main window의 title과 연동한다.
 - 마우스 버튼 이용해 navigation history 뒤로 왔다가 앞으로 갈 때, selected extract가 없으면 예외 발생
   - frame에서 예외처리하기가 수월해 보이지 않음. 어차피 practice 정도 레벨인데, 마지막 히스토리를 기억했다가 재선택하도록 방어.
+- 로그 파일에 파일 로딩 오류 있음. 확인 필요.
