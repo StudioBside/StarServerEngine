@@ -20,6 +20,7 @@
             Next,
             Sandbox,
             Alpha,
+            Cinematic,
 
             Stage = 10,
             Review,
