@@ -2,6 +2,7 @@
 
 - perforce : open for edit, submit, add, delete, revert, sync 등등 연동
 - numbering group 처리.
+- system.json 지원사항을 cs.core로 이동. cs.core 버전 업 배포.
 
 ## error
 
