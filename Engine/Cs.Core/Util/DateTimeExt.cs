@@ -45,16 +45,18 @@
             return self.ToString("yyyy.MM.dd-HH.mm.ss.fff");
         }
 
-        public static int GetWeekOfYear(this DateTime self)
-        {
-            return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(self, CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday);
-        }
-
+        /// <summary>
+        /// 해당 연도의 첫 번째 월요일이 포함된 주부터 yyyy01로 표현되는 아이디.
+        /// 월요일 자정이 넘어갈 때마다 값이 바뀝니다.
+        /// </summary>
         public static WeeklyId GetWeeklyId(this DateTime self)
         {
-            int weekOfYear = self.GetWeekOfYear();
+            int weekOfYear = CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(
+                self,
+                CalendarWeekRule.FirstFullWeek,
+                DayOfWeek.Monday);
 
-            // 첫 번째 일요일이 포함된 주부터 weekOfYear가 시작한다. 1월인 경우 예외처리가 필요하다.
+            // 첫 번째 월요일이 포함된 주부터 weekOfYear가 시작한다. 1월인 경우 예외처리가 필요하다.
             if (self.Year > 1 && self.Month == 1 && weekOfYear > 10)
             {
                 // 1월인데 10보다 큰 주 수는 나올 수 없으므로. 연도를 하나 줄인다.

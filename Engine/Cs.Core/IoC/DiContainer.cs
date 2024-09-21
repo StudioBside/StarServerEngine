@@ -10,7 +10,7 @@ namespace Cs.Core.IoC
 
     public sealed class DiContainer
     {
-        private readonly List<ITypeFactory> instances = new List<ITypeFactory>();
+        private readonly List<ITypeFactory> instances = new();
 
         public static DiContainer Instance => Singleton<DiContainer>.Instance;
 

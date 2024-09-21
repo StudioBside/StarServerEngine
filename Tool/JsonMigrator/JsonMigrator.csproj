@@ -35,7 +35,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Engine\Cs.Core\Cs.Core.csproj" />
-    <ProjectReference Include="..\..\Engine\Cs.Perforce\Cs.Perforce.csproj" />
   </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>

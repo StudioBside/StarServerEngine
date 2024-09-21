@@ -1,4 +1,4 @@
-﻿namespace Cs.Perforce;
+﻿namespace Cs.Core.Perforce;
 
 using System;
 using System.Collections.Generic;
