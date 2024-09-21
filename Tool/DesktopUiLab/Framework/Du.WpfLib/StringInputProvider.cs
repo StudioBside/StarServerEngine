@@ -3,35 +3,20 @@
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using Du.Core.Interfaces;
+using Wpf.Ui;
 
-public sealed class StringInputProvider : IUserInputProvider<string>
+public sealed class StringInputProvider(IContentDialogService contentDialogService) : IUserInputProvider<string>
 {
-    public StringInputProvider()
-    {
-    }
-
     public Task<string?> PromptAsync(string message)
     {
         return this.PromptAsync(message, string.Empty);
     }
 
-    public Task<string?> PromptAsync(string message, string defaultValue)
+    public async Task<string?> PromptAsync(string message, string defaultValue)
     {
-        var tcs = new TaskCompletionSource<string?>();
-        var dialog = new StringInputDialog(message, defaultValue);
+        var dialog = new StringInputDialog(contentDialogService.GetDialogHost(), message, defaultValue);
 
-        Dispatcher.CurrentDispatcher.Invoke(() =>
-        {
-            if (dialog.ShowDialog() == true)
-            {
-                tcs.SetResult(dialog.UserInput);
-            }
-            else
-            {
-                tcs.SetResult(null);
-            }
-        });
-
-        return tcs.Task;
+        _ = await dialog.ShowAsync();
+        return dialog.UserInput;
     }
 }

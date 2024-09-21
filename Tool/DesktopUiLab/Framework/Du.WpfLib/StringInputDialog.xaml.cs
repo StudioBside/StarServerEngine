@@ -1,17 +1,16 @@
 ﻿namespace Du.WpfLib;
 
-using System;
-using System.Windows;
-using System.Windows.Input;
+using System.Windows.Controls;
+using Wpf.Ui.Controls;
 
-public partial class StringInputDialog : Window
+public partial class StringInputDialog : ContentDialog
 {
-    public StringInputDialog(string message, string defaultValue)
+    public StringInputDialog(ContentPresenter? contentPresenter, string message, string defaultValue)
+        : base(contentPresenter)
     {
         this.Message = message;
         this.UserInput = defaultValue;
 
-        this.Owner = Application.Current.MainWindow;
         this.DataContext = this;
         this.InitializeComponent();
     }
@@ -19,28 +18,13 @@ public partial class StringInputDialog : Window
     public string Message { get; }
     public string UserInput { get; set; } = string.Empty;
 
-    private void OkButton_Click(object sender, RoutedEventArgs e)
+    protected override void OnClosed(ContentDialogResult result)
     {
-        this.DialogResult = true; // 창을 닫으면서 결과 반환
-        this.Close();
-    }
-
-    private void CancelButton_Click(object sender, RoutedEventArgs e)
-    {
-        this.DialogResult = false;
-        this.Close();
-    }
-
-    private void Window_KeyDown(object sender, KeyEventArgs e)
-    {
-        if (e.Key == Key.Escape)
+        if (result != ContentDialogResult.Primary)
         {
-            this.CancelButton_Click(sender, e); // ESC 키가 눌렸을 때 창을 닫음
+            this.UserInput = string.Empty;
         }
 
-        if (e.Key == Key.Enter)
-        {
-            this.OkButton_Click(sender, e); // Enter 키가 눌렸을 때 OK 버튼 클릭
-        }
+        base.OnClosed(result);
     }
 }
