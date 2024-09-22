@@ -36,11 +36,6 @@
                                 BorderThickness="0"/>
                 </DockPanel>
 
-                <!--<Button
-                Width="50"
-                Command="{Binding BackCommand}"
-                Content="Back" />-->
-
                 <!--입력 소스-->
                 <TextBlock Text="입력 소스" Margin="10"/>
                 <ui:ListView ItemsSource="{Binding Extract.Sources}"
@@ -105,25 +100,76 @@
                             <DataTemplate>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
                                         <RowDefinition/>
                                         <RowDefinition/>
+                                        <RowDefinition/>
                                     </Grid.RowDefinitions>
-                                    
-                                    <Label Content="TableName"/>
-                                    <TextBox Grid.Row="1" Text="{Binding TableName}"/>
 
-                                    <Label Grid.Column="1" Content="NumberingCount"/>
+                                    <Label Content="테이블 명 :" VerticalAlignment="Center"/>
+                                    <ui:TextBox Grid.Column="1"
+                                                Text="{Binding TableName}"
+                                                BorderThickness="0"/>
+
+                                    <Label Grid.Row="1" Content="반복 횟수 :" VerticalContentAlignment="Center"/>
                                     <ui:TextBox Grid.Column="1" 
                                                 Grid.Row="1"
                                                 Text="{Binding NumberingCount}"
                                                 BorderThickness="0"/>
 
-                                    <Label Grid.Column="2" Content="HideWith"/>
+                                    <Label Grid.Column="2" Content="숨김 기준 :" VerticalAlignment="Center"/>
+                                    <ComboBox Grid.Column="3"
+                                              Grid.Row="0"
+                                              ItemsSource="{Binding Columns}"
+                                              SelectedItem="{Binding HideWith}"
+                                              IsEditable="False">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Name}" />
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+
+                                    <Label Grid.Column="2" Grid.Row="1" Content="출력 방향 :" VerticalAlignment="Center"/>
+                                    <ComboBox Grid.Column="3"
+                                              Grid.Row="1"
+                                              ItemsSource="{Binding Source={extensions:EnumValues {x:Type models:Enums+OutputDirection}}}"
+                                              SelectedItem="{Binding ColumnOutDirection}"
+                                              IsEditable="False">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding .}" />
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+
+                                    <StackPanel
+                                        Grid.Row="2"
+                                        Grid.ColumnSpan="4">
+                                        <ui:ListView
+                                        ItemsSource="{Binding Columns}"
+                                        BorderBrush="LightGray">
+                                            <ListView.View>
+                                                <GridView>
+                                                    <GridViewColumn Header="이름" DisplayMemberBinding="{Binding Name}" Width="Auto" />
+                                                    <GridViewColumn Header="타입" DisplayMemberBinding="{Binding DataType}" Width="Auto" />
+                                                    <GridViewColumn Header="Nullable" DisplayMemberBinding="{Binding Nullable}" Width="70" />
+                                                    <GridViewColumn Header="Repeated" DisplayMemberBinding="{Binding Repeated}" Width="70" />
+                                                    <GridViewColumn Header="출력방향" DisplayMemberBinding="{Binding ColumnOutDirection}" Width="70" />
+                                                    <GridViewColumn Header="최소" DisplayMemberBinding="{Binding Min}" Width="70" />
+                                                    <GridViewColumn Header="최대" DisplayMemberBinding="{Binding Max}" Width="70" />
+                                                </GridView>
+                                            </ListView.View>
+                                        </ui:ListView>
+                                        <Button 
+                                            HorizontalAlignment="Right"
+                                            Content="엑셀에서 편집..."/>
+                                    </StackPanel>
 
                                 </Grid>
                             </DataTemplate>
@@ -175,14 +221,16 @@
             <StackPanel Margin="10">
 
                 <TextBlock Text="파일 출력 방향" Margin="10" VerticalAlignment="Center"/>
-                <ComboBox ItemsSource="{Binding Source={extensions:EnumValues {x:Type models:Enums+OutputDirection}}}"
-                      SelectedItem="{Binding Extract.FileOutDirection, Mode=TwoWay}"
-                      IsEditable="False"/>
+                <ComboBox
+                    ItemsSource="{Binding Source={extensions:EnumValues {x:Type models:Enums+OutputDirection}}}"
+                    SelectedItem="{Binding Extract.FileOutDirection, Mode=TwoWay}"
+                    IsEditable="False"/>
 
                 <TextBlock Text="파일 출력 그룹" Margin="10" VerticalAlignment="Center"/>
-                <ComboBox ItemsSource="{Binding Extract.BindRoot.Columns}"
-                      SelectedItem="{Binding Extract.OutputGroupBy}"
-                      IsEditable="False">
+                <ComboBox
+                    ItemsSource="{Binding Extract.BindRoot.Columns}"
+                    SelectedItem="{Binding Extract.OutputGroupBy}"
+                    IsEditable="False">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Name}" />
@@ -208,8 +256,11 @@
                     HorizontalAlignment="Right"
                     Margin="10"
                     Orientation="Horizontal">
-            <Button Content="추출" Margin="10"/>
-            <Button Content="뒤로가기" Margin="10"/>
+            <Button Content="추출"
+                    Margin="10"/>
+            <Button Content="뒤로가기"
+                    Command="{Binding BackCommand}"
+                    Margin="10"/>
         </StackPanel>
     </Grid>
 </Page>

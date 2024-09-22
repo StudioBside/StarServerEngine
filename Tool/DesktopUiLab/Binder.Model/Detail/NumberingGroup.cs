@@ -50,4 +50,6 @@ public sealed class NumberingGroup : ObservableObject
         get => this.columnOutDirection;
         set => this.SetProperty(ref this.columnOutDirection, value);
     }
+
+    public IList<Column> Columns => this.columns;
 }
