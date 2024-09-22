@@ -10,7 +10,7 @@
     xmlns:viewmodels="clr-namespace:Binder.ViewModel;assembly=Binder.ViewModel"
     xmlns:extensions="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
     d:DataContext="{d:DesignInstance Type=viewmodels:VmExtract}"
-    d:DesignHeight="450"
+    d:DesignHeight="850"
     d:DesignWidth="800"
     mc:Ignorable="d">
 
@@ -19,27 +19,155 @@
             <ColumnDefinition Width="2*" />
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
+
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition />
-            <RowDefinition Height="Auto" />
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        
-        <!--첫 번째 row : outputFile, fileOutDirection, ...-->
-        <StackPanel Grid.ColumnSpan="2" Margin="10">
 
-            <TextBlock Text="출력 파일" VerticalAlignment="Center"/>
-            <TextBox Text="{Binding Extract.OutputFile}"/>
+        <!-- 좌측 -->
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="10">
 
-            <!--<Button
+                <!--출력 파일-->
+                <DockPanel LastChildFill="True">
+                    <TextBlock Text="출력 파일 :" Margin="10" VerticalAlignment="Center"/>
+                    <ui:TextBox Text="{Binding Extract.OutputFile}"
+                                BorderThickness="0"/>
+                </DockPanel>
+
+                <!--<Button
                 Width="50"
                 Command="{Binding BackCommand}"
                 Content="Back" />-->
-        </StackPanel>
-        
-        <!--세로 패널 : 자잘한 설정들 배치-->
-        <Border Grid.Row="1" Grid.Column="1" Grid.RowSpan="3"
+
+                <!--입력 소스-->
+                <TextBlock Text="입력 소스" Margin="10"/>
+                <ui:ListView ItemsSource="{Binding Extract.Sources}"
+                             BorderThickness="1"
+                             BorderBrush="LightGray">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="파일" DisplayMemberBinding="{Binding ExcelFile}" Width="Auto" />
+                            <GridViewColumn Header="시트" DisplayMemberBinding="{Binding SheetName}" Width="Auto" />
+                            <GridViewColumn Header="시작점" DisplayMemberBinding="{Binding BeginCell}" Width="70" />
+                        </GridView>
+                    </ListView.View>
+                    <!--<ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Margin="10">
+                            <TextBlock Text="{Binding ExcelFile}" />
+                            <TextBlock Margin="10,0,0,0" Text="{Binding SheetName}" />
+                            <TextBlock Margin="10,0,0,0" Text="{Binding BeginCell}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>-->
+                </ui:ListView>
+
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Right">
+                    <Button Content="추가"/>
+                    <Button Content="수정"/>
+                    <Button Content="삭제"/>
+                </StackPanel>
+
+                <!--컬럼 목록-->
+                <DockPanel LastChildFill="True" Margin="10">
+                    <Button DockPanel.Dock="Right"
+                            Content="엑셀에서 편집..." 
+                            Command="{Binding EditColumnsCommand}"/>
+                    <TextBlock DockPanel.Dock="Left"
+                               VerticalAlignment="Center"
+                               Text="Columns"/>
+                </DockPanel>
+
+                <ui:ListView ItemsSource="{Binding Extract.BindRoot.Columns}"
+                             BorderThickness="1" BorderBrush="LightGray"
+                             MaxHeight="300">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="이름" DisplayMemberBinding="{Binding Name}" Width="Auto" />
+                            <GridViewColumn Header="타입" DisplayMemberBinding="{Binding DataType}" Width="Auto" />
+                            <GridViewColumn Header="Nullable" DisplayMemberBinding="{Binding Nullable}" Width="70" />
+                            <GridViewColumn Header="Repeated" DisplayMemberBinding="{Binding Repeated}" Width="70" />
+                            <GridViewColumn Header="출력방향" DisplayMemberBinding="{Binding ColumnOutDirection}" Width="70" />
+                            <GridViewColumn Header="최소" DisplayMemberBinding="{Binding Min}" Width="70" />
+                            <GridViewColumn Header="최대" DisplayMemberBinding="{Binding Max}" Width="70" />
+                        </GridView>
+                    </ListView.View>
+                </ui:ListView>
+
+                <!--넘버링 그룹 목록-->
+                <ui:CardExpander Header="Numbering Groups" IsExpanded="True" Margin="0,10">
+                    <ui:ListView ItemsSource="{Binding Extract.BindRoot.NumberingGroups}"
+                                 BorderThickness="0">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    
+                                    <Label Content="TableName"/>
+                                    <TextBox Grid.Row="1" Text="{Binding TableName}"/>
+
+                                    <Label Grid.Column="1" Content="NumberingCount"/>
+                                    <ui:TextBox Grid.Column="1" 
+                                                Grid.Row="1"
+                                                Text="{Binding NumberingCount}"
+                                                BorderThickness="0"/>
+
+                                    <Label Grid.Column="2" Content="HideWith"/>
+
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ui:ListView>
+                </ui:CardExpander>
+
+                <!--그룹 목록-->
+                <ui:CardExpander Header="Groups" IsExpanded="False" Margin="0,10">
+                    <ui:ListView ItemsSource="{Binding Extract.BindRoot.NumberingGroups}"
+                             BorderThickness="0">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding TableName}"/>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ui:ListView>
+                </ui:CardExpander>
+
+                <!--Uniqueness-->
+                <TextBlock Text="Uniqueness" Margin="10"/>
+                <ui:ListView ItemsSource="{Binding Extract.Uniquenesses}"
+                             BorderThickness="1"
+                             BorderBrush="LightGray">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="이름" DisplayMemberBinding="{Binding Name}" Width="Auto" />
+                            <GridViewColumn Header="컬럼 조합" DisplayMemberBinding="{Binding ColumnNames}" Width="300" />
+                        </GridView>
+                    </ListView.View>
+                </ui:ListView>
+
+                <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+                    <Button Content="추가"/>
+                    <Button Content="수정"/>
+                    <Button Content="삭제"/>
+                </StackPanel>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!--우측 패널 : 자잘한 설정들 배치-->
+        <Border Grid.Row="0" Grid.Column="1"
                 CornerRadius="8"
                 BorderThickness="1"
                 BorderBrush="LightGray"
@@ -73,104 +201,15 @@
                 <TextBlock Text="중복 데이터 제거" VerticalAlignment="Center" Margin="10"/>
             </StackPanel>
         </Border>
-        
-        <!--두 번째 row : sources-->
-        <StackPanel Grid.Row="1" Grid.Column="0" Margin="10">
-            <TextBlock Text="입력 소스"/>
-            <ui:ListView
-                ItemsSource="{Binding Extract.Sources}"
-                BorderThickness="1"
-                BorderBrush="LightGray">
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="파일" DisplayMemberBinding="{Binding ExcelFile}" Width="Auto" />
-                        <GridViewColumn Header="시트" DisplayMemberBinding="{Binding SheetName}" Width="Auto" />
-                        <GridViewColumn Header="시작점" DisplayMemberBinding="{Binding BeginCell}" Width="70" />
-                    </GridView>
-                </ListView.View>
-                <!--<ListView.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal" Margin="10">
-                            <TextBlock Text="{Binding ExcelFile}" />
-                            <TextBlock Margin="10,0,0,0" Text="{Binding SheetName}" />
-                            <TextBlock Margin="10,0,0,0" Text="{Binding BeginCell}" />
-                        </StackPanel>
-                    </DataTemplate>
-                </ListView.ItemTemplate>-->
-            </ui:ListView>
 
-            <StackPanel Orientation="Horizontal"
-                        HorizontalAlignment="Right">
-                <Button Content="추가"/>
-                <Button Content="수정"/>
-                <Button Content="삭제"/>
-            </StackPanel>
+        <!--하단부 버튼 영역-->
+        <StackPanel Grid.Row="1" 
+                    Grid.Column="1"
+                    HorizontalAlignment="Right"
+                    Margin="10"
+                    Orientation="Horizontal">
+            <Button Content="추출" Margin="10"/>
+            <Button Content="뒤로가기" Margin="10"/>
         </StackPanel>
-
-
-        <!--세 번째 row : 바인딩-->
-        <DockPanel Grid.Row="2" Grid.Column="0" Margin="10">
-            <TextBlock DockPanel.Dock="Top" Text="바인딩"/>
-            <StackPanel DockPanel.Dock="Bottom"
-                        Orientation="Horizontal"
-                        HorizontalAlignment="Right">
-                <Button Content="엑셀에서 편집..." Command="{Binding EditColumnsCommand}"/>
-            </StackPanel>
-            
-            <ui:ListView
-                ItemsSource="{Binding Extract.BindRoot.Columns}"
-                BorderThickness="1" BorderBrush="LightGray">
-                <!--<DataGrid.Columns>
-                    <DataGridTextColumn Header="이름" Binding="{Binding Name}" Width="Auto"/>
-                    <DataGridComboBoxColumn Header="타입"
-                                            ItemsSource="{Binding Source={extensions:EnumValues {x:Type models:Enums+DataType}}}"
-                                            SelectedItemBinding="{Binding DataType}" Width="Auto"/>
-                    <DataGridCheckBoxColumn Header="Nullable" Binding="{Binding Nullable}" Width="70"/>
-                    <DataGridCheckBoxColumn Header="Repeated" Binding="{Binding Repeated}" Width="70"/>
-                    <DataGridComboBoxColumn Header="출력방향"
-                                            ItemsSource="{Binding Source={extensions:EnumValues {x:Type models:Enums+OutputDirection}}}"
-                                            SelectedItemBinding="{Binding ColumnOutDirection}" Width="Auto"/>
-                    <DataGridTextColumn Header="최소" Binding="{Binding Min}" Width="70"/>
-                    <DataGridTextColumn Header="최대" Binding="{Binding Max}" Width="70"/>
-
-                </DataGrid.Columns>-->
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="이름" DisplayMemberBinding="{Binding Name}" Width="Auto" />
-                        <GridViewColumn Header="타입" DisplayMemberBinding="{Binding DataType}" Width="Auto" />
-                        <GridViewColumn Header="Nullable" DisplayMemberBinding="{Binding Nullable}" Width="70" />
-                        <GridViewColumn Header="Repeated" DisplayMemberBinding="{Binding Repeated}" Width="70" />
-                        <GridViewColumn Header="출력방향" DisplayMemberBinding="{Binding ColumnOutDirection}" Width="70" />
-                        <GridViewColumn Header="최소" DisplayMemberBinding="{Binding Min}" Width="70" />
-                        <GridViewColumn Header="최대" DisplayMemberBinding="{Binding Max}" Width="70" />
-                    </GridView>
-                </ListView.View>
-            </ui:ListView>
-
-        </DockPanel>
-        
-        <!--네 번째 row : uniqueness-->
-        <StackPanel Grid.Row="3" Grid.Column="0" Margin="10">
-            <TextBlock Text="Uniqueness"/>
-            <ui:ListView
-                ItemsSource="{Binding Extract.Uniquenesses}"
-                BorderThickness="1"
-                BorderBrush="LightGray">
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="이름" DisplayMemberBinding="{Binding Name}" Width="Auto" />
-                        <GridViewColumn Header="최대" DisplayMemberBinding="{Binding ColumnNames}" Width="300" />
-                    </GridView>
-                </ListView.View>
-            </ui:ListView>
-
-            <StackPanel Orientation="Horizontal"
-                        HorizontalAlignment="Right">
-                <Button Content="추가"/>
-                <Button Content="수정"/>
-                <Button Content="삭제"/>
-            </StackPanel>
-        </StackPanel>
-
     </Grid>
 </Page>
