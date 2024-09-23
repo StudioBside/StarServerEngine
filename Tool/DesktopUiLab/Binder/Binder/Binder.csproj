@@ -8,7 +8,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <CodeAnalysisRuleSet>..\..\..\BaseEnvironment\CodingStyle.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\..\..\..\BaseEnvironment\CodingStyle.ruleset</CodeAnalysisRuleSet>
 	<!-- 240918. 게시할 때 단일 파일 생성 옵션을 주었더니 오류와 함께 아래 설정을 추가하라는 메시지가 나와서 추가함-->
     <InterceptorsPreviewNamespaces>$(InterceptorsPreviewNamespaces);Microsoft.Extensions.Configuration.Binder.SourceGeneration</InterceptorsPreviewNamespaces>
   </PropertyGroup>
@@ -35,9 +35,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Binder.ViewModel\Binder.ViewModel.csproj" />
-    <ProjectReference Include="..\Framework\Du.Excel\Du.Excel.csproj" />
-    <ProjectReference Include="..\Framework\Du.Presentation\Du.Presentation.csproj" />
-    <ProjectReference Include="..\Framework\Du.WpfLib\Du.WpfLib.csproj" />
+    <ProjectReference Include="..\..\Framework\Du.Excel\Du.Excel.csproj" />
+    <ProjectReference Include="..\..\Framework\Du.Presentation\Du.Presentation.csproj" />
+    <ProjectReference Include="..\..\Framework\Du.WpfLib\Du.WpfLib.csproj" />
   </ItemGroup>
 
   <ItemGroup>

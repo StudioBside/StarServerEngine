@@ -3,13 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35222.181
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Binder", "Binder\Binder.csproj", "{3605B15A-7F3E-40F8-86AD-902D8871DC6E}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Du.Core", "Framework\Du.Core\Du.Core.csproj", "{E3C903FB-459E-4368-B067-719C70D3DE1D}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Binder.ViewModel", "Binder.ViewModel\Binder.ViewModel.csproj", "{D8401A60-B916-4906-A389-AD1BC3EA5E5A}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Binder.Model", "Binder.Model\Binder.Model.csproj", "{7A8A05EA-BDAE-40DF-AFDC-14E4E37BDB79}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Framework", "Framework", "{9A98F4CB-7468-401F-A07C-1BAB84CD7D3C}"
 EndProject
@@ -25,7 +19,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CutEditor.Model", "CutEdito
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CutEditor.ViewModel", "CutEditor\CutEditor.ViewModel\CutEditor.ViewModel.csproj", "{A5E3ED04-74F3-4945-A0CF-3C6DA139E9C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CutEditor", "CutEditor\CutEditor\CutEditor.csproj", "{BDF04800-3359-4577-8781-5E01D9B64186}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CutEditor", "CutEditor\CutEditor\CutEditor.csproj", "{BDF04800-3359-4577-8781-5E01D9B64186}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Binder", "Binder", "{C06D4D06-2489-4E0C-B335-B194B187AE69}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Binder.ViewModel", "Binder\Binder.ViewModel\Binder.ViewModel.csproj", "{8227E970-66D5-4C32-B28D-2F63DC86C067}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Binder.Model", "Binder\Binder.Model\Binder.Model.csproj", "{26314572-763A-4C0D-A8BE-87671A284784}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Binder", "Binder\Binder\Binder.csproj", "{41C7ABDF-647D-4A72-888F-7865F5D04F9B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,22 +35,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3605B15A-7F3E-40F8-86AD-902D8871DC6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3605B15A-7F3E-40F8-86AD-902D8871DC6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3605B15A-7F3E-40F8-86AD-902D8871DC6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3605B15A-7F3E-40F8-86AD-902D8871DC6E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E3C903FB-459E-4368-B067-719C70D3DE1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E3C903FB-459E-4368-B067-719C70D3DE1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E3C903FB-459E-4368-B067-719C70D3DE1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E3C903FB-459E-4368-B067-719C70D3DE1D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D8401A60-B916-4906-A389-AD1BC3EA5E5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D8401A60-B916-4906-A389-AD1BC3EA5E5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D8401A60-B916-4906-A389-AD1BC3EA5E5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D8401A60-B916-4906-A389-AD1BC3EA5E5A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7A8A05EA-BDAE-40DF-AFDC-14E4E37BDB79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7A8A05EA-BDAE-40DF-AFDC-14E4E37BDB79}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7A8A05EA-BDAE-40DF-AFDC-14E4E37BDB79}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7A8A05EA-BDAE-40DF-AFDC-14E4E37BDB79}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7855111D-7BC9-4BFC-85B7-F72225FC649D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7855111D-7BC9-4BFC-85B7-F72225FC649D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7855111D-7BC9-4BFC-85B7-F72225FC649D}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -73,6 +63,18 @@ Global
 		{BDF04800-3359-4577-8781-5E01D9B64186}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BDF04800-3359-4577-8781-5E01D9B64186}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BDF04800-3359-4577-8781-5E01D9B64186}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8227E970-66D5-4C32-B28D-2F63DC86C067}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8227E970-66D5-4C32-B28D-2F63DC86C067}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8227E970-66D5-4C32-B28D-2F63DC86C067}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8227E970-66D5-4C32-B28D-2F63DC86C067}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26314572-763A-4C0D-A8BE-87671A284784}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26314572-763A-4C0D-A8BE-87671A284784}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26314572-763A-4C0D-A8BE-87671A284784}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26314572-763A-4C0D-A8BE-87671A284784}.Release|Any CPU.Build.0 = Release|Any CPU
+		{41C7ABDF-647D-4A72-888F-7865F5D04F9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41C7ABDF-647D-4A72-888F-7865F5D04F9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41C7ABDF-647D-4A72-888F-7865F5D04F9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41C7ABDF-647D-4A72-888F-7865F5D04F9B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -85,6 +87,9 @@ Global
 		{163609DB-422F-4042-B228-AD38171C36C2} = {B714CE6B-4099-44F0-BDE8-3DB6A8D00AE1}
 		{A5E3ED04-74F3-4945-A0CF-3C6DA139E9C1} = {B714CE6B-4099-44F0-BDE8-3DB6A8D00AE1}
 		{BDF04800-3359-4577-8781-5E01D9B64186} = {B714CE6B-4099-44F0-BDE8-3DB6A8D00AE1}
+		{8227E970-66D5-4C32-B28D-2F63DC86C067} = {C06D4D06-2489-4E0C-B335-B194B187AE69}
+		{26314572-763A-4C0D-A8BE-87671A284784} = {C06D4D06-2489-4E0C-B335-B194B187AE69}
+		{41C7ABDF-647D-4A72-888F-7865F5D04F9B} = {C06D4D06-2489-4E0C-B335-B194B187AE69}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A8403C17-C9EC-44BC-A621-AC23FBB083EB}
