@@ -4,6 +4,7 @@ using System.IO;
 using System.Windows;
 using Cs.Logging;
 using Cs.Logging.Providers;
+using CutEditor.Services;
 using CutEditor.ViewModel;
 using Du.Core.Interfaces;
 using Du.Excel;
@@ -37,10 +38,11 @@ public partial class App : Application
         services.AddTransient<IConfiguration>(_ => config);
 
         services.AddTransient<VmMain>();
+        services.AddSingleton<VmHome>();
+        services.AddTransient<FileLoader>();
 
         services.AddTransient<IUserInputProvider<string>, StringInputProvider>();
         services.AddSingleton<IContentDialogService, ContentDialogService>();
-        services.AddSingleton<ISnackbarService, SnackbarService>();
         services.AddTransient<IUserErrorNotifier, ErrorNotifierDialog>();
         services.AddTransient<ICollectionEditor, CollectionEditor>();
         services.AddTransient<IUserWaitingNotifier, WaitingNotifierDialog>();
@@ -52,7 +54,7 @@ public partial class App : Application
     {
         Log.Initialize(new SimpleFileLogProvider("log.txt"), LogLevelConfig.All);
 
-        //var loader = this.Services.GetRequiredService<FileLoader>();
-        //loader.Load();
+        var loader = this.Services.GetRequiredService<FileLoader>();
+        loader.Load();
     }
 }
