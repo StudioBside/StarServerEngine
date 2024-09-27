@@ -3,11 +3,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Cs.Core.Util;
 using Cs.Logging;
 using CutEditor.Model;
 using CutEditor.ViewModel;
 using Du.Core.Util;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Linq;
 
 internal sealed class FileLoader(VmHome vmHome, IConfiguration config)
 {
@@ -21,9 +23,10 @@ internal sealed class FileLoader(VmHome vmHome, IConfiguration config)
 
         Log.Debug($"Loading files from {path}");
 
-        IList<CutScene> list = new List<CutScene>();
-        using var document = JsonHelper.LoadJsonc(path);
-        document.RootElement.GetArray("Data", in list, e => new CutScene(e));
+        var list = new List<CutScene>();
+        string text = File.ReadAllText(path);
+        var json = JToken.Parse(text);
+        json.GetArray("Data", list, (e, i) => new CutScene(e));
 
         vmHome.AddCutScenes(list);
 

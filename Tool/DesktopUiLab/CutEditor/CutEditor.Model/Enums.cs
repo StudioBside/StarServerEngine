@@ -6,7 +6,17 @@ public static class Enums
 {
     public enum CutsceneType
     {
+        NCT_MAIN,
+        NCT_JOURNEY,
+        NCT_UNIT,
+        NCT_ARCANA,
+        NCT_REST,
+        NCT_ETC,
         NCT_TEST,
+        NCT_REQUEST,
+        NCT_TRAINING,
+        NCT_PERSONAL,
+        NCT_EVENT,
     }
 
     public enum L10nType

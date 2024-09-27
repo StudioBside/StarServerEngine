@@ -2,6 +2,9 @@
 
 using System.ComponentModel;
 using System.Windows;
+using CutEditor.ViewModel;
+using Du.Core.Util;
+using Wpf.Ui;
 
 public partial class MainWindow : Window
 {
@@ -9,6 +12,12 @@ public partial class MainWindow : Window
     {
         this.InitializeComponent();
         this.LoadWindowState();
+
+        var services = App.Current.Services;
+        this.DataContext = services.GetService<VmMain>();
+
+        var dialogservice = services.GetService<IContentDialogService>();
+        dialogservice.SetDialogHost(this.RootContentDialog);
     }
 
     protected override void OnClosing(CancelEventArgs e)

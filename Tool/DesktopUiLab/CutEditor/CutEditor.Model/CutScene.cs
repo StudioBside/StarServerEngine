@@ -1,8 +1,9 @@
 ﻿namespace CutEditor.Model;
 
-using System.Text.Json;
 using CommunityToolkit.Mvvm.ComponentModel;
+using Cs.Core.Util;
 using Du.Core.Util;
+using Newtonsoft.Json.Linq;
 using static CutEditor.Model.Enums;
 
 public sealed class CutScene : ObservableObject
@@ -20,19 +21,19 @@ public sealed class CutScene : ObservableObject
     private float subTitleTalkTime;
     private string shortenBgFileName = string.Empty;
 
-    public CutScene(JsonElement element)
+    public CutScene(JToken token)
     {
-        this.cutsceneId = element.GetInt32("CutsceneId");
-        this.fileName = element.GetString("CutsceneFile");
-        this.cutsceneType = element.GetEnum<CutsceneType>("CutsceneType");
-        this.cutsceneFilter = element.GetString("CutsceneFilter");
-        this.slideTitleIcon = element.GetString("SlideTitleIcon");
-        this.titleFadeout = element.GetBoolean("TitleFadeout");
-        this.titleFadeOutTime = element.GetFloat("TitleFadeOutTime");
-        this.title.Load(element, "Title");
-        this.titleTalkTime = element.GetFloat("TitleTalkTime");
-        this.subTitleTalkTime = element.GetFloat("SubTitleTalkTime");
-        this.shortenBgFileName = element.GetString("ShortenBgFileName");
-        this.shortenTalk.Load(element, "ShortenTalk");
+        this.cutsceneId = token.GetInt32("CutsceneId");
+        this.fileName = token.GetString("CutsceneFile");
+        this.cutsceneType = token.GetEnum<CutsceneType>("CutsceneType");
+        this.cutsceneFilter = token.GetString("CutsceneFilter");
+        this.slideTitleIcon = token.GetString("SlideTitleIcon");
+        this.titleFadeout = token.GetBool("TitleFadeout");
+        this.titleFadeOutTime = token.GetFloat("TitleFadeOutTime");
+        this.title.Load(token, "Title");
+        this.titleTalkTime = token.GetFloat("TitleTalkTime");
+        this.subTitleTalkTime = token.GetFloat("SubTitleTalkTime");
+        this.shortenBgFileName = token.GetString("ShortenBgFileName");
+        this.shortenTalk.Load(token, "ShortenTalk");
     }
 }
