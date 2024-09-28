@@ -3,7 +3,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!--<FontFamily x:Key="CustomFont">pack://application:,,,/Binder;component/Assets/NanumGothic.ttf#나눔고딕</FontFamily>-->
-    <FontFamily x:Key="CustomFont">pack://application:,,,/Binder;component/Assets/NotoSansKR-Regular.ttf#Noto Sans KR</FontFamily>
+    <FontFamily x:Key="CustomFont">pack://application:,,,/Du.WpfLib;component/Assets/NotoSansKR-Regular.ttf#Noto Sans KR</FontFamily>
     <!--<FontFamily x:Key="CustomFont">Consolas</FontFamily>-->
 
     <Style TargetType="TextBlock">
