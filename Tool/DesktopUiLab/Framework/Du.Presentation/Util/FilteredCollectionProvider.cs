@@ -1,8 +1,6 @@
 ﻿namespace Du.Presentation.Util;
 
-using System;
 using System.Collections;
-using System.ComponentModel;
 using System.Windows.Data;
 using Du.Core.Interfaces;
 
@@ -13,15 +11,10 @@ public sealed class FilteredCollectionProvider : IFilteredCollectionProvider
         return new FilteredCollection<T>(collection);
     }
 
-    private sealed class FilteredCollection<T> : IFilteredCollection
+    private sealed class FilteredCollection<T>(IList<T> collection) : IFilteredCollection
         where T : ISearchable
     {
-        private readonly ListCollectionView view;
-
-        public FilteredCollection(IList<T> collection)
-        {
-            this.view = new ListCollectionView(collection as IList);
-        }
+        private readonly ListCollectionView view = new(collection as IList);
 
         public IEnumerable List => this.view;
 

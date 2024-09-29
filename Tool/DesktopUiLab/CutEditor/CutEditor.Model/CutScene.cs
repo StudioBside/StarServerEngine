@@ -9,9 +9,9 @@ using static CutEditor.Model.Enums;
 
 public sealed class CutScene : ObservableObject, ISearchable
 {
+    private readonly int cutsceneId;
     private readonly L10nText title = new();
     private readonly L10nText shortenTalk = new();
-    private int cutsceneId;
     private string fileName = string.Empty;
     private CutsceneType cutsceneType;
     private string cutsceneFilter = string.Empty;
@@ -44,6 +44,57 @@ public sealed class CutScene : ObservableObject, ISearchable
         set => this.SetProperty(ref this.fileName, value);
     }
 
+    public L10nText Title => this.title;
+    public L10nText ShortenTalk => this.shortenTalk;
+
+    public CutsceneType CutsceneType
+    {
+        get => this.cutsceneType;
+        set => this.SetProperty(ref this.cutsceneType, value);
+    }
+
+    public string CutsceneFilter
+    {
+        get => this.cutsceneFilter;
+        set => this.SetProperty(ref this.cutsceneFilter, value);
+    }
+
+    public string SlideTitleIcon
+    {
+        get => this.slideTitleIcon;
+        set => this.SetProperty(ref this.slideTitleIcon, value);
+    }
+
+    public bool TitleFadeout
+    {
+        get => this.titleFadeout;
+        set => this.SetProperty(ref this.titleFadeout, value);
+    }
+
+    public float TitleFadeOutTime
+    {
+        get => this.titleFadeOutTime;
+        set => this.SetProperty(ref this.titleFadeOutTime, value);
+    }
+
+    public float TitleTalkTime
+    {
+        get => this.titleTalkTime;
+        set => this.SetProperty(ref this.titleTalkTime, value);
+    }
+
+    public float SubTitleTalkTime
+    {
+        get => this.subTitleTalkTime;
+        set => this.SetProperty(ref this.subTitleTalkTime, value);
+    }
+
+    public string ShortenBgFileName
+    {
+        get => this.shortenBgFileName;
+        set => this.SetProperty(ref this.shortenBgFileName, value);
+    }
+
     public bool IsTarget(string keyword)
     {
         return (int.TryParse(keyword, out int id) && this.cutsceneId == id) ||
@@ -51,4 +102,6 @@ public sealed class CutScene : ObservableObject, ISearchable
             this.title.IsTarget(keyword) ||
             this.shortenTalk.IsTarget(keyword);
     }
+
+    public override string ToString() => this.title.Korean;
 }

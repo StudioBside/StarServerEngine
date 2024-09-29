@@ -10,6 +10,7 @@
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:ext="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
     xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
+    xmlns:models="clr-namespace:CutEditor.Model;assembly=CutEditor.Model"
     xmlns:viewmodels="clr-namespace:CutEditor.ViewModel;assembly=CutEditor.ViewModel"
     d:DataContext="{d:DesignInstance Type=viewmodels:VmHome}"
     d:DesignHeight="450"
@@ -25,9 +26,9 @@
         <!--좌측 영역-->
         <Grid Grid.Column="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" /> <!--타이틀-->
+                <RowDefinition Height="Auto" /> <!--검색어 입력-->
+                <RowDefinition Height="*" /> <!--컷신 리스트-->
             </Grid.RowDefinitions>
 
             <!--좌상단 타이틀 영역-->
@@ -72,67 +73,126 @@
         <!--우측 영역-->
         <ScrollViewer Grid.Column="1"
                       Margin="10"
-                      VerticalScrollBarVisibility="Auto">
+                      VerticalScrollBarVisibility="Auto"
+                      DataContext="{Binding SelectedCutScene}">
+            
             <StackPanel Orientation="Vertical"
-                        Visibility="{Binding SelectedCutScene, Converter={converters:NullToVisibilityConverter}}">
+                        Visibility="{Binding ., Converter={converters:NullToVisibilityConverter}}">
                 
                 <!--파일 이름 및 부가 정보 텍스트-->
-                <TextBlock TextWrapping="Wrap" Text="{Binding SelectedCutScene}"/>
+                <TextBlock Text="{Binding FileName}" Margin="0,10" />
 
-                <!--Extract 목록 영역-->
+                <!--타이틀 관련 설정-->
                 <Border BorderThickness="1" BorderBrush="LightGray" CornerRadius="8" Margin="0,0,0,5">
-                    <StackPanel Margin="10">
-                        <TextBlock Text="Extract:"/>
+                    <Grid Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                        <ui:ListView ItemsSource="{Binding SelectedBindFile.Extracts}"
-                                     SelectionMode="Single"
-                                     SelectedItem="{Binding SelectedExtract}">
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Margin="8,4" Text="{Binding}" />
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                            <b:Interaction.Triggers>
-                                <b:EventTrigger EventName="MouseDoubleClick">
-                                    <b:InvokeCommandAction 
-                                        Command="{Binding ExtractEditCommand}"
-                                        CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=ListView}}"/>
-                                </b:EventTrigger>
-                            </b:Interaction.Triggers>
-                        </ui:ListView>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
 
-                        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                            <Button Content="추가" Command="{Binding ExtractAddCommand}" Margin="0,0,10,0"/>
-                            <Button Content="수정" Command="{Binding ExtractEditCommand}" Margin="0,0,10,0"/>
-                            <Button Content="삭제" Command="{Binding ExtractDeleteCommand}" Margin="0,0,10,0"/>
-                        </StackPanel>
-                    </StackPanel>
+                        <Label Grid.Column="0" Grid.Row="0"
+                               VerticalAlignment="Bottom"
+                               Content="타이틀:"/>
+                        <ui:TextBox Grid.Column="1" Grid.Row="0" 
+                                    Text="{Binding Title.Korean}"
+                                    PlaceholderText="Title.Korean"
+                                    BorderThickness="0"/>
+
+                        <Label Grid.Column="0" Grid.Row="1"
+                               VerticalAlignment="Bottom"
+                               Content="출력시간(초):"/>
+                        <ui:NumberBox Grid.Column="1" Grid.Row="1" 
+                                      Icon="NumberSymbolSquare24"
+                                      Text="{Binding TitleTalkTime}"
+                                      PlaceholderText="TitleFadeOutTime"
+                                      SpinButtonPlacementMode="Hidden"
+                                      BorderThickness="0"/>
+
+                        <CheckBox Grid.Column="0" Grid.Row="2"
+                                  Content="페이드아웃" IsChecked="{Binding TitleFadeout}" />
+
+                        <DockPanel Grid.Column="1" Grid.Row="2"
+                                   LastChildFill="True">
+
+                            <Label Content="시간(초):"
+                                   VerticalAlignment="Bottom"
+                                   Visibility="{Binding TitleFadeout, Converter={converters:BoolToVisibilityConverter}}"/>
+
+                            <ui:NumberBox Icon="NumberSymbolSquare24"
+                                          Text="{Binding TitleFadeOutTime}"
+                                          Visibility="{Binding TitleFadeout, Converter={converters:BoolToVisibilityConverter}}"
+                                          PlaceholderText="TitleFadeout"
+                                          SpinButtonPlacementMode="Hidden"
+                                          BorderThickness="0"/>
+                        </DockPanel>
+
+                    </Grid>
                 </Border>
 
-                <!--Extract Enum 목록 영역-->
+                <!--기타 설정-->
                 <Border BorderThickness="1" BorderBrush="LightGray" CornerRadius="8" Margin="0,0,0,5">
-                    <StackPanel Margin="10">
-                        <TextBlock Text="Extract Enum:"/>
+                    <Grid Margin="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                        <ui:ListView ItemsSource="{Binding SelectedBindFile.ExtractEnums}"
-                                     SelectionMode="Single"
-                                     SelectedItem="{Binding SelectedExtractEnum}">
-                            <ListView.ItemTemplate>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Label Grid.Column="0" Grid.Row="0"
+                               VerticalAlignment="Bottom"
+                               Content="파일명:"/>
+                        <ui:TextBox Grid.Column="1" Grid.Row="0" 
+                                    Text="{Binding FileName}"
+                                    PlaceholderText="FileName"
+                                    BorderThickness="0"/>
+
+                        <Label Grid.Column="0" Grid.Row="1"
+                               VerticalAlignment="Center"
+                               Content="컷신 타입:"/>
+                        <ComboBox Grid.Column="1" Grid.Row="1"
+                                  ItemsSource="{Binding Source={ext:EnumValues {x:Type models:Enums+CutsceneType}}}"
+                                  SelectedItem="{Binding CutsceneType}"
+                                  IsEditable="False">
+                            <ComboBox.ItemTemplate>
                                 <DataTemplate>
-                                    <TextBlock Margin="8,4" Text="{Binding}" />
+                                    <TextBlock Text="{Binding .}"/>
                                 </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ui:ListView>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
 
-                        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                            <Button Content="추가" Command="{Binding ExtractEnumAddCommand}" Margin="0,0,10,0"/>
-                            <Button Content="수정" Command="{Binding ExtractEnumEditCommand}" Margin="0,0,10,0"/>
-                            <Button Content="삭제" Command="{Binding ExtractEnumDeleteCommand}" Margin="0,0,10,0"/>
-                        </StackPanel>
-                    </StackPanel>
+                        <Label Grid.Column="0" Grid.Row="2"
+                               VerticalAlignment="Bottom"
+                               Content="컷신 필터:"/>
+                        <ui:TextBox Grid.Column="1" Grid.Row="2" 
+                                    Text="{Binding CutsceneFilter}"
+                                    PlaceholderText="CutsceneFilter"
+                                    BorderThickness="0"/>
+
+                        <Label Grid.Column="0" Grid.Row="3"
+                               VerticalAlignment="Bottom"
+                               Content="단축 지문:"/>
+                        <ui:TextBox Grid.Column="1" Grid.Row="3" 
+                                    Text="{Binding ShortenTalk.Korean}"
+                                    PlaceholderText="ShortenTalk.Korean"
+                                    BorderThickness="0"/>
+
+                    </Grid>
                 </Border>
                 
-                <!--Extract String 목록 영역-->
+                <!--단축 지문 영역-->
                 <Border BorderThickness="1" BorderBrush="LightGray" CornerRadius="8" Margin="0,0,0,5">
                     <StackPanel Margin="10">
                         <TextBlock Text="Extract String:"/>
@@ -155,29 +215,6 @@
                     </StackPanel>
                 </Border>
                 
-                <!--Extract Hotswap 목록 영역-->
-                <Border BorderThickness="1" BorderBrush="LightGray" CornerRadius="8" Margin="0,0,0,5">
-                    <StackPanel Margin="10">
-                        <TextBlock Text="Extract Hotswap:"/>
-
-                        <ui:ListView ItemsSource="{Binding SelectedBindFile.ExtractHotswaps}"
-                                     SelectionMode="Single"
-                                     SelectedItem="{Binding SelectedExtractHotswap}">
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Margin="8,4" Text="{Binding}" />
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ui:ListView>
-
-                        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                            <Button Content="추가" Command="{Binding ExtractHotswapAddCommand}" Margin="0,0,10,0"/>
-                            <Button Content="수정" Command="{Binding ExtractHotswapEditCommand}" Margin="0,0,10,0"/>
-                            <Button Content="삭제" Command="{Binding ExtractHotswapDeleteCommand}" Margin="0,0,10,0"/>
-                        </StackPanel>
-                    </StackPanel>
-                </Border>
-
             </StackPanel>
 
         </ScrollViewer>

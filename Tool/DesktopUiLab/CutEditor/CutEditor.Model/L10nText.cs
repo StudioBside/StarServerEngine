@@ -7,9 +7,39 @@ using Du.Core.Util;
 using Newtonsoft.Json.Linq;
 using static CutEditor.Model.Enums;
 
-internal sealed class L10nText : ObservableObject, ISearchable
+public sealed class L10nText : ObservableObject, ISearchable
 {
     private readonly string[] values = new string[EnumUtil<L10nType>.Count];
+
+    public string Korean
+    {
+        get => this.values[(int)L10nType.Korean];
+        set => this.values[(int)L10nType.Korean] = value;
+    }
+
+    public string English
+    {
+        get => this.values[(int)L10nType.English];
+        set => this.values[(int)L10nType.English] = value;
+    }
+
+    public string Japanese
+    {
+        get => this.values[(int)L10nType.Japanese];
+        set => this.values[(int)L10nType.Japanese] = value;
+    }
+
+    public string ChineseSimplified
+    {
+        get => this.values[(int)L10nType.ChineseSimplified];
+        set => this.values[(int)L10nType.ChineseSimplified] = value;
+    }
+
+    public string ChineseTraditional
+    {
+        get => this.values[(int)L10nType.ChineseTraditional];
+        set => this.values[(int)L10nType.ChineseTraditional] = value;
+    }
 
     public bool IsTarget(string keyword)
     {
@@ -23,6 +53,8 @@ internal sealed class L10nText : ObservableObject, ISearchable
 
         return false;
     }
+
+    public override string ToString() => this.values[(int)L10nType.Korean];
 
     internal void Load(JToken token, string prefix)
     {

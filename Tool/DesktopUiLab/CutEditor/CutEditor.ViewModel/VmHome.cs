@@ -9,8 +9,8 @@ using Du.Core.Interfaces;
 public sealed class VmHome : VmPageBase
 {
     private readonly List<CutScene> cutScenes = new();
+    private readonly IFilteredCollection filteredList;
     private CutScene? selectedCutScene;
-    private IFilteredCollection filteredList;
     private string searchKeyword = string.Empty;
 
     public VmHome(IFilteredCollectionProvider collectionViewProvider)
