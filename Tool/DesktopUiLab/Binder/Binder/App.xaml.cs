@@ -8,6 +8,7 @@ using Cs.Logging;
 using Cs.Logging.Providers;
 using Du.Core.Interfaces;
 using Du.Excel;
+using Du.Presentation.Util;
 using Du.WpfLib;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -47,6 +48,7 @@ public partial class App : Application
         services.AddSingleton<IContentDialogService, ContentDialogService>();
         services.AddTransient<IUserErrorNotifier, ErrorNotifierDialog>();
         services.AddTransient<ICollectionEditor, CollectionEditor>();
+        services.AddTransient<IFilteredCollectionProvider, FilteredCollectionProvider>();
         services.AddTransient<IUserWaitingNotifier, WaitingNotifierDialog>();
 
         return services.BuildServiceProvider();

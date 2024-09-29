@@ -2,11 +2,12 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using Cs.Core.Util;
+using Du.Core.Interfaces;
 using Du.Core.Util;
 using Newtonsoft.Json.Linq;
 using static CutEditor.Model.Enums;
 
-public sealed class CutScene : ObservableObject
+public sealed class CutScene : ObservableObject, ISearchable
 {
     private readonly L10nText title = new();
     private readonly L10nText shortenTalk = new();
@@ -35,5 +36,17 @@ public sealed class CutScene : ObservableObject
         this.subTitleTalkTime = token.GetFloat("SubTitleTalkTime");
         this.shortenBgFileName = token.GetString("ShortenBgFileName");
         this.shortenTalk.Load(token, "ShortenTalk");
+    }
+
+    public bool IsTarget(string keyword)
+    {
+        if (int.TryParse(keyword, out int id))
+        {
+            return this.cutsceneId == id;
+        }
+
+        return this.fileName.Contains(keyword, StringComparison.CurrentCultureIgnoreCase) ||
+            this.title.IsTarget(keyword) ||
+            this.shortenTalk.IsTarget(keyword);
     }
 }

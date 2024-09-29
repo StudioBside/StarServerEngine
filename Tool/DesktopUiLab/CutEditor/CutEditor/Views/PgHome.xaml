@@ -43,12 +43,14 @@
                 <ui:SymbolIcon Symbol="Search12"
                                Margin="10,0,10,0" />
 
-                <ui:TextBox Grid.Column="1"
+                <ui:TextBox
+                    Grid.Column="1"
                     Margin="0,0,10,0"
                     PlaceholderText="검색어 입력.."
                     Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}"
                     Icon="Search12"
-                    ext:FocusExtension.IsFocused="True"/>
+                    ext:FocusExtension.IsFocused="True"
+                    BorderThickness="0"/>
             </Grid>
 
             <!--좌하단 파일 리스트 영역-->

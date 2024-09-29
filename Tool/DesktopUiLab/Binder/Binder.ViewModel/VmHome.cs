@@ -1,6 +1,6 @@
 ﻿namespace Binder.ViewModel;
 
-using System.Collections.ObjectModel;
+using System.Collections;
 using System.ComponentModel;
 using Binder.Model;
 using CommunityToolkit.Mvvm.Input;
@@ -14,15 +14,20 @@ public sealed partial class VmHome : VmPageBase
 {
     private readonly IUserInputProvider<string> stringProvider;
     private readonly IUserErrorNotifier errorNotifier;
+    private readonly IFilteredCollectionProvider filteredCollectionProvider;
     private readonly List<BindFile> bindFiles = new();
-    private ObservableCollection<BindFile> filteredFiles = new();
+    private IEnumerable filteredFiles = null!;
     private string searchKeyword = string.Empty;
 
-    public VmHome(IUserInputProvider<string> stringProvider, IUserErrorNotifier errorNotifier)
+    public VmHome(
+        IUserInputProvider<string> stringProvider,
+        IUserErrorNotifier errorNotifier,
+        IFilteredCollectionProvider collectionViewProvider)
     {
         this.Title = "바인딩 파일 목록";
         this.stringProvider = stringProvider;
         this.errorNotifier = errorNotifier;
+        this.filteredCollectionProvider = collectionViewProvider;
 
         this.ExtractAddCommand = new AsyncRelayCommand(this.OnExtractAdd);
         this.ExtractEditCommand = new RelayCommand<Extract>(this.OnExtractEdit, _ => this.selectedExtract is not null);
@@ -41,7 +46,7 @@ public sealed partial class VmHome : VmPageBase
         this.ExtractHotswapDeleteCommand = new RelayCommand(this.OnExtractHotswapDelete, () => this.selectedExtractHotswap is not null);
     }
 
-    public ObservableCollection<BindFile> FilteredFiles
+    public IEnumerable FilteredFiles
     {
         get => this.filteredFiles;
         set => this.SetProperty(ref this.filteredFiles, value);
@@ -110,11 +115,13 @@ public sealed partial class VmHome : VmPageBase
     {
         if (string.IsNullOrEmpty(this.searchKeyword))
         {
-            this.FilteredFiles = new(this.bindFiles);
+            this.FilteredFiles = this.bindFiles;
         }
         else
         {
-            this.FilteredFiles = new(this.bindFiles.Where(x => x.IsTarget(this.searchKeyword)));
+            this.FilteredFiles = this.filteredCollectionProvider.Build(
+                this.bindFiles,
+                e => e.IsTarget(this.searchKeyword));
         }
     }
 
