@@ -6,12 +6,18 @@ using CutEditor.Model;
 using Du.Core.Bases;
 using Du.Core.Interfaces;
 
-public sealed class VmHome(IFilteredCollectionProvider collectionViewProvider) : VmPageBase
+public sealed class VmHome : VmPageBase
 {
     private readonly List<CutScene> cutScenes = new();
     private CutScene? selectedCutScene;
-    private IEnumerable filteredList = null!;
+    private IFilteredCollection filteredList;
     private string searchKeyword = string.Empty;
+
+    public VmHome(IFilteredCollectionProvider collectionViewProvider)
+    {
+        this.Title = "컷신 목록";
+        this.filteredList = collectionViewProvider.Build(this.cutScenes);
+    }
 
     public IList<CutScene> CutScenes => this.cutScenes;
     public CutScene? SelectedCutScene
@@ -20,11 +26,7 @@ public sealed class VmHome(IFilteredCollectionProvider collectionViewProvider) :
         set => this.SetProperty(ref this.selectedCutScene, value);
     }
 
-    public IEnumerable FilteredList
-    {
-        get => this.filteredList;
-        set => this.SetProperty(ref this.filteredList, value);
-    }
+    public IEnumerable FilteredFiles => this.filteredList.List;
 
     public string SearchKeyword
     {
@@ -47,22 +49,8 @@ public sealed class VmHome(IFilteredCollectionProvider collectionViewProvider) :
         switch (e.PropertyName)
         {
             case nameof(this.SearchKeyword):
-                this.FilterFiles();
+                this.filteredList.Refresh(this.searchKeyword);
                 break;
-        }
-    }
-
-    private void FilterFiles()
-    {
-        if (string.IsNullOrEmpty(this.searchKeyword))
-        {
-            this.filteredList = this.cutScenes;
-        }
-        else
-        {
-            this.filteredList = collectionViewProvider.Build(
-                this.cutScenes,
-                e => e.IsTarget(this.searchKeyword));
         }
     }
 }

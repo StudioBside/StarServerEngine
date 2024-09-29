@@ -38,14 +38,16 @@ public sealed class CutScene : ObservableObject, ISearchable
         this.shortenTalk.Load(token, "ShortenTalk");
     }
 
+    public string FileName
+    {
+        get => this.fileName;
+        set => this.SetProperty(ref this.fileName, value);
+    }
+
     public bool IsTarget(string keyword)
     {
-        if (int.TryParse(keyword, out int id))
-        {
-            return this.cutsceneId == id;
-        }
-
-        return this.fileName.Contains(keyword, StringComparison.CurrentCultureIgnoreCase) ||
+        return (int.TryParse(keyword, out int id) && this.cutsceneId == id) ||
+            this.fileName.Contains(keyword, StringComparison.CurrentCultureIgnoreCase) ||
             this.title.IsTarget(keyword) ||
             this.shortenTalk.IsTarget(keyword);
     }

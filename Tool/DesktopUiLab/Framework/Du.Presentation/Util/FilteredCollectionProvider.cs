@@ -2,24 +2,46 @@
 
 using System;
 using System.Collections;
+using System.ComponentModel;
 using System.Windows.Data;
 using Du.Core.Interfaces;
 
 public sealed class FilteredCollectionProvider : IFilteredCollectionProvider
 {
-    IEnumerable IFilteredCollectionProvider.Build<T>(IList<T> collection, Predicate<T> filter)
+    IFilteredCollection IFilteredCollectionProvider.Build<T>(IList<T> collection)
     {
-        var sourceView = new CollectionViewSource { Source = collection }.View;
-        sourceView.Filter = e =>
+        return new FilteredCollection<T>(collection);
+    }
+
+    private sealed class FilteredCollection<T> : IFilteredCollection
+        where T : ISearchable
+    {
+        private readonly ListCollectionView view;
+
+        public FilteredCollection(IList<T> collection)
         {
-            if (e is not T item)
+            this.view = new ListCollectionView(collection as IList);
+        }
+
+        public IEnumerable List => this.view;
+
+        public void Refresh(string searchKeyword)
+        {
+            if (string.IsNullOrEmpty(searchKeyword))
             {
-                return false;
+                this.view.Filter = null;
+                return;
             }
 
-            return filter(item);
-        };
+            this.view.Filter = e =>
+            {
+                if (e is not T item)
+                {
+                    return false;
+                }
 
-        return sourceView;
+                return item.IsTarget(searchKeyword);
+            };
+        }
     }
 }

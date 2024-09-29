@@ -56,14 +56,14 @@
             <!--좌하단 파일 리스트 영역-->
             <ui:ListView
                 Grid.Row="2"
-                ItemsSource="{Binding CutScenes}"
+                ItemsSource="{Binding FilteredFiles}"
                 Margin="0,10,0,0"
                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                 SelectedItem="{Binding SelectedCutScene}"
                 SelectionMode="Single">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock  Margin="8,4" FontSize="16" Text="{Binding Name}" />
+                        <TextBlock  Margin="8,4" FontSize="16" Text="{Binding FileName}" />
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ui:ListView>

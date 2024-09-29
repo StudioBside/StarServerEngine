@@ -14,9 +14,8 @@ public sealed partial class VmHome : VmPageBase
 {
     private readonly IUserInputProvider<string> stringProvider;
     private readonly IUserErrorNotifier errorNotifier;
-    private readonly IFilteredCollectionProvider filteredCollectionProvider;
     private readonly List<BindFile> bindFiles = new();
-    private IEnumerable filteredFiles = null!;
+    private IFilteredCollection filteredFiles = null!;
     private string searchKeyword = string.Empty;
 
     public VmHome(
@@ -27,7 +26,7 @@ public sealed partial class VmHome : VmPageBase
         this.Title = "바인딩 파일 목록";
         this.stringProvider = stringProvider;
         this.errorNotifier = errorNotifier;
-        this.filteredCollectionProvider = collectionViewProvider;
+        this.filteredFiles = collectionViewProvider.Build(this.bindFiles);
 
         this.ExtractAddCommand = new AsyncRelayCommand(this.OnExtractAdd);
         this.ExtractEditCommand = new RelayCommand<Extract>(this.OnExtractEdit, _ => this.selectedExtract is not null);
@@ -46,11 +45,7 @@ public sealed partial class VmHome : VmPageBase
         this.ExtractHotswapDeleteCommand = new RelayCommand(this.OnExtractHotswapDelete, () => this.selectedExtractHotswap is not null);
     }
 
-    public IEnumerable FilteredFiles
-    {
-        get => this.filteredFiles;
-        set => this.SetProperty(ref this.filteredFiles, value);
-    }
+    public IEnumerable FilteredFiles => this.filteredFiles.List;
 
     public string SearchKeyword
     {
@@ -63,7 +58,7 @@ public sealed partial class VmHome : VmPageBase
         bindFile.PropertyChanged += this.OnBindFilePropertyChanged;
         this.bindFiles.Add(bindFile);
 
-        this.FilterFiles();
+        this.RefreshFilteredList();
     }
 
     //// --------------------------------------------------------------------------------------------
@@ -75,7 +70,7 @@ public sealed partial class VmHome : VmPageBase
         switch (e.PropertyName)
         {
             case nameof(this.SearchKeyword):
-                this.FilterFiles();
+                this.RefreshFilteredList();
                 break;
 
             case nameof(this.SelectedBindFile):
@@ -111,18 +106,9 @@ public sealed partial class VmHome : VmPageBase
     {
     }
 
-    private void FilterFiles()
+    private void RefreshFilteredList()
     {
-        if (string.IsNullOrEmpty(this.searchKeyword))
-        {
-            this.FilteredFiles = this.bindFiles;
-        }
-        else
-        {
-            this.FilteredFiles = this.filteredCollectionProvider.Build(
-                this.bindFiles,
-                e => e.IsTarget(this.searchKeyword));
-        }
+        this.filteredFiles.Refresh(this.searchKeyword);
     }
 
     private async Task OnExtractAdd()
