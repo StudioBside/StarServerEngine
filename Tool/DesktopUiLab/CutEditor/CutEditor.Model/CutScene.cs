@@ -38,6 +38,7 @@ public sealed class CutScene : ObservableObject, ISearchable
         this.shortenTalk.Load(token, "ShortenTalk");
     }
 
+    public int Id => this.cutsceneId;
     public string FileName
     {
         get => this.fileName;

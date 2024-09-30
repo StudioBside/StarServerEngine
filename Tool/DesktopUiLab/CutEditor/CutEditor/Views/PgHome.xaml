@@ -19,8 +19,9 @@
 
     <Grid Margin="10">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*" />
-            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
         <!--좌측 영역-->
@@ -62,16 +63,38 @@
                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                 SelectedItem="{Binding SelectedCutScene}"
                 SelectionMode="Single">
-                <ListView.ItemTemplate>
+                <!--<ListView.ItemTemplate>
                     <DataTemplate>
                         <TextBlock  Margin="8,4" FontSize="16" Text="{Binding FileName}" />
                     </DataTemplate>
-                </ListView.ItemTemplate>
+                </ListView.ItemTemplate>-->
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn 
+                            Header="Id"
+                            Width="Auto"
+                            DisplayMemberBinding="{Binding Id}"/>
+                        <GridViewColumn 
+                            Header="타이틀"
+                            Width="Auto"
+                            DisplayMemberBinding="{Binding Title}"/>
+                        <GridViewColumn 
+                            Header="파일"
+                            Width="Auto"
+                            DisplayMemberBinding="{Binding FileName}"/>
+                        <GridViewColumn 
+                            Header="타입"
+                            Width="Auto"
+                            DisplayMemberBinding="{Binding CutsceneType}"/>
+                    </GridView>
+                </ListView.View>
             </ui:ListView>
         </Grid>
 
+        <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch"/>
+
         <!--우측 영역-->
-        <ScrollViewer Grid.Column="1"
+        <ScrollViewer Grid.Column="2"
                       Margin="10"
                       VerticalScrollBarVisibility="Auto"
                       DataContext="{Binding SelectedCutScene}">
@@ -191,30 +214,16 @@
 
                     </Grid>
                 </Border>
-                
-                <!--단축 지문 영역-->
-                <Border BorderThickness="1" BorderBrush="LightGray" CornerRadius="8" Margin="0,0,0,5">
-                    <StackPanel Margin="10">
-                        <TextBlock Text="Extract String:"/>
 
-                        <ui:ListView ItemsSource="{Binding SelectedBindFile.ExtractStrings}"
-                                     SelectionMode="Single"
-                                     SelectedItem="{Binding SelectedExtractString}">
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Margin="8,4" Text="{Binding}" />
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ui:ListView>
-
-                        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                            <Button Content="추가" Command="{Binding ExtractStringAddCommand}" Margin="0,0,10,0"/>
-                            <Button Content="수정" Command="{Binding ExtractStringEditCommand}" Margin="0,0,10,0"/>
-                            <Button Content="삭제" Command="{Binding ExtractStringDeleteCommand}" Margin="0,0,10,0"/>
-                        </StackPanel>
-                    </StackPanel>
-                </Border>
-                
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Left">
+                    <Button Margin="0,0,10,0"
+                            Content="저장" Command="{Binding SaveCutSceneCommand}"/>
+                    <Button Margin="0,0,10,0"
+                            Content="삭제" Command="{Binding SaveCutSceneCommand}"/>
+                    <Button Margin="0,0,10,0"
+                            Content="컷 편집" Command="{Binding SaveCutSceneCommand}"/>
+                </StackPanel>
             </StackPanel>
 
         </ScrollViewer>
