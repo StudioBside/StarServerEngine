@@ -1,6 +1,7 @@
-﻿namespace Du.Core.Util;
+﻿namespace Cs.Core.Util;
 
 using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using Cs.Logging;
@@ -115,7 +116,7 @@ public static class JsonElementExt
         return Enum.TryParse<T>(strValue, ignoreCase: true, out result);
     }
     
-    public static bool TryGetArray(this JsonElement self, string propertyName, in List<int> result, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+    public static bool TryGetArray(this JsonElement self, string propertyName, in IList<int> result, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
     {
         if (self.TryGetProperty(propertyName, out var arrayElement) == false)
         {

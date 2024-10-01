@@ -272,7 +272,7 @@
             return Enum.TryParse<T>(strValue, ignoreCase: true, out result);
         }
 
-        public static bool GetArray<T>(this JToken self, string key, in List<T> result, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+        public static bool GetArray<T>(this JToken self, string key, in IList<T> result, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
         {
             if (TryGetArray<T>(self, key, result, file, line) == false)
             {
@@ -283,7 +283,7 @@
             return true;
         }
 
-        public static bool GetArray<T>(this JToken self, string key, in List<T> result, Func<JToken, int, T?> factory, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+        public static bool GetArray<T>(this JToken self, string key, in IList<T> result, Func<JToken, int, T?> factory, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
         {
             if (TryGetArray<T>(self, key, result, factory) == false)
             {
@@ -294,7 +294,7 @@
             return true;
         }
 
-        public static bool TryGetArray<T>(this JToken self, string key, in List<T> result, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
+        public static bool TryGetArray<T>(this JToken self, string key, in IList<T> result, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
         {
             var array = self[key] as JArray;
             if (array == null)
@@ -331,7 +331,7 @@
             return true;
         }
 
-        public static bool TryGetArray<T>(this JToken self, string key, in List<T> result, Func<JToken, int, T?> factory)
+        public static bool TryGetArray<T>(this JToken self, string key, in IList<T> result, Func<JToken, int, T?> factory)
         {
             var array = self[key] as JArray;
             if (array == null)
