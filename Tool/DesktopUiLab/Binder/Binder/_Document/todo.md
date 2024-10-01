@@ -1,14 +1,14 @@
 ﻿## todo
 
 - perforce : open for edit, submit, add, delete, revert, sync 등등 연동
-- numbering group 처리.
-- system.json 지원사항을 cs.core로 이동. cs.core 버전 업 배포.
 
 ## error
 
 
 ## done
 
+- numbering group 처리.
+- system.json 지원사항을 cs.core로 이동. cs.core 버전 업 배포.
 - listview doubleclick 핸들러 적용 방법 정리
 - viewModel에서 presentation 계층을 제거.
 - popup에서 string 받아오는 처리 확인.

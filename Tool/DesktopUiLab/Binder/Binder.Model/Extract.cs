@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 using System.Text.Json;
 using Binder.Model.Detail;
 using CommunityToolkit.Mvvm.ComponentModel;
-using Du.Core.Util;
+using Cs.Core.Util;
 using static Binder.Model.Enums;
 
 public sealed class Extract : ObservableObject

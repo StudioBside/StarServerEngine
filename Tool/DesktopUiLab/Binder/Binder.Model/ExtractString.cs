@@ -4,8 +4,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using Binder.Model.Detail;
 using CommunityToolkit.Mvvm.ComponentModel;
-using Du.Core.Util;
-using static Binder.Model.Enums;
+using Cs.Core.Util;
 
 public sealed class ExtractString : ObservableObject
 {

@@ -3,7 +3,7 @@
     using System.Text;
     using System.Text.Json;
     using CommunityToolkit.Mvvm.ComponentModel;
-    using Du.Core.Util;
+    using Cs.Core.Util;
     using static Binder.Model.Enums;
 
     public sealed class Column : ObservableObject

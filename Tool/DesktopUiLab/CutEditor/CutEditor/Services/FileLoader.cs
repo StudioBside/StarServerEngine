@@ -7,9 +7,7 @@ using Cs.Core.Util;
 using Cs.Logging;
 using CutEditor.Model;
 using CutEditor.ViewModel;
-using Du.Core.Util;
 using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json.Linq;
 
 internal sealed class FileLoader(VmHome vmHome, IConfiguration config)
 {
@@ -24,8 +22,7 @@ internal sealed class FileLoader(VmHome vmHome, IConfiguration config)
         Log.Debug($"Loading files from {path}");
 
         var list = new List<CutScene>();
-        string text = File.ReadAllText(path);
-        var json = JToken.Parse(text);
+        var json = JsonUtil.Load(path);
         json.GetArray("Data", list, (e, i) => new CutScene(e));
 
         vmHome.AddCutScenes(list);

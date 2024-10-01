@@ -1,7 +1,7 @@
 ﻿namespace Binder.Model.Detail;
 
 using System.Text.Json;
-using Du.Core.Util;
+using Cs.Core.Util;
 
 public sealed class CustomOutputPath
 {
