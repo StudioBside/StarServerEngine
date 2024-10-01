@@ -10,7 +10,8 @@
     xmlns:viewmodels="clr-namespace:CutEditor.ViewModel;assembly=CutEditor.ViewModel"
     d:DataContext="{d:DesignInstance Type=viewmodels:VmMain}"
     mc:Ignorable="d"
-    Title="컷신 에디터" Height="450" Width="800">
+    Title="{Binding ElementName=MyFrame, Path=Content.DataContext.Title}"
+    Height="450" Width="800">
     <Grid>
         <Frame 
             NavigationUIVisibility="Hidden"

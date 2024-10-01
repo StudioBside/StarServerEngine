@@ -75,6 +75,6 @@ public sealed class VmHome : VmPageBase
             return;
         }
    
-        WeakReferenceMessenger.Default.Send(new NavigationMessage("Views/PgExtract.xaml"));
+        WeakReferenceMessenger.Default.Send(new NavigationMessage("Views/PgCuts.xaml"));
     }
 }
