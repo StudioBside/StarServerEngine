@@ -25,6 +25,12 @@
             return JsonConvert.DeserializeObject<T>(body) ?? throw new Exception($"deserialize failed. fileName:{fileName}");
         }
 
+        public static JToken Load(string fileName)
+        {
+            var body = File.ReadAllText(fileName);
+            return JToken.Parse(body);
+        }
+
         public static bool WriteToFile<T>(string fileName, T data)
         {
             var settings = new JsonSerializerSettings

@@ -9,12 +9,18 @@ namespace Cs.Slack
     {
         private readonly SlackMessageBuilder slackBuilder;
 
+        public SlackWriter(string icon)
+            : this(icon, title: null)
+        {
+        }
+
         public SlackWriter(string icon, string title)
         {
             this.slackBuilder = new SlackMessageBuilder(SlackGlobalSetting.Endpoints);
             this.slackBuilder.UserName = SlackGlobalSetting.UserName;
             this.slackBuilder.IconEmoji = icon;
 
+            // note: title은 section을 추가하면 무시됩니다. section까지 안쓰고 싶은 간소한 버전일 때 사용합니다.
             if (string.IsNullOrEmpty(title) == false)
             {
                 this.WriteBoldLine(title);

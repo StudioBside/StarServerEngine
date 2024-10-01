@@ -12,14 +12,12 @@
     {
         private const string Separator = "@@";
         private static readonly Lazy<BuildInfo> BuildInfoValue = new Lazy<BuildInfo>(BuildInfo.Create);
-        private static string? streamNameHint; // admintool에서 임시처리 용도로 사용중
 
         public enum P4StreamType
         {
             Dev = 1,
-            Next,
-            Sandbox,
             Alpha,
+            Sandbox,
             Cinematic,
 
             Stage = 10,
@@ -31,18 +29,8 @@
 
         public static BuildInfo BuildInformation => BuildInfoValue.Value;
 
-        public static void UseHint(string streamName)
-        {
-            streamNameHint = streamName;
-        }
-
         public static StreamInfo? GetStreamInfo()
         {
-            if (string.IsNullOrEmpty(streamNameHint) == false)
-            {
-                return new StreamInfo(0, streamNameHint);
-            }
-
             var host = Dns.GetHostName();
             if (string.IsNullOrEmpty(host))
             {
@@ -154,7 +142,7 @@
             return true;
         }
 
-        public static bool IsNextStream()
+        public static bool IsDevStream()
         {
             var streamInfo = GetStreamInfo();
             if (streamInfo == null)
@@ -162,7 +150,7 @@
                 return false;
             }
 
-            return streamInfo.Value.Id == (int)P4StreamType.Next;
+            return streamInfo.Value.Id == (int)P4StreamType.Dev;
         }
 
         public readonly struct StreamInfo
