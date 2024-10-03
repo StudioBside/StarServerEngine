@@ -96,16 +96,20 @@
 
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="60"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
 
                                 <ui:Button Grid.Column="0" Grid.Row="0" Margin="0,0,0,5"
-                                    Content="UnitStrId"/>
+                                           Content="UnitStrId"
+                                           Command="{Binding PickUnitCommand}"/>
                                 <ui:Button Grid.Column="0" Grid.Row="1" Margin="0,0,10,0"
                                     Content="UnitNameString"/>
 
+                                <ui:Image Grid.Column="1" Grid.Row="0" 
+                                          Grid.RowSpan="2"/>
 
-                                <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
+                                <StackPanel Grid.Column="2" Grid.Row="0" Orientation="Horizontal">
                                     <TextBlock Text="유닛위치: " VerticalAlignment="Center"/>
                                     <RadioButton GroupName="Position" MinWidth="20"/>
                                     <RadioButton GroupName="Position" MinWidth="20"/>
@@ -117,7 +121,7 @@
                                     <RadioButton GroupName="Position" MinWidth="20"/>
                                 </StackPanel>
 
-                                <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal">
+                                <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Horizontal">
                                     <ui:Button Content="UnitMotion" Margin="0,0,10,0"/>
                                     <ui:Button Content="EmotionEffect" Margin="0,0,10,0"/>
                                 </StackPanel>
@@ -157,7 +161,7 @@
                                             Orientation="Horizontal"
                                             Margin="0,0,10,0">
                                     <!--WrapWithOverflow : 단어의 잘림을 허용하는 설정-->
-                                    <ui:TextBox Text="{Binding UnitTalk.Korean}"
+                                    <ui:TextBox Text="{Binding Cut.UnitTalk.Korean}"
                                                 MinLines="2" Width="500"
                                                 TextWrapping="WrapWithOverflow"
                                                 AcceptsReturn="True"/>

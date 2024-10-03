@@ -14,7 +14,7 @@ public sealed class UnitContainer
     {
         var rootPath = config["TempletDataRoot"] ?? throw new Exception("TempletDataRoot is not set in the configuration file.");
         // get filenames array 
-        var filenames = config.GetSection("UnitDataFiles").GetChildren();
+        var filenames = config.GetSection("UnitTempletNames").GetChildren();
         foreach (var filename in filenames)
         {
             var path = Path.Combine(rootPath, filename.Value ?? string.Empty);
@@ -36,6 +36,8 @@ public sealed class UnitContainer
                 this.units.Add(unit.Id, unit);
             }
         }
+
+        Log.Debug($"unit templet loading finished. {this.units.Count} units loaded.");
     }
 
     public IEnumerable<Unit> Units => this.units.Values;

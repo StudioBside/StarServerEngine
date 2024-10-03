@@ -4,6 +4,9 @@ using System.IO;
 using System.Windows;
 using Cs.Logging;
 using Cs.Logging.Providers;
+using CutEditor.Dialogs;
+using CutEditor.Model;
+using CutEditor.Model.Interfaces;
 using CutEditor.Services;
 using CutEditor.ViewModel;
 using Du.Core.Interfaces;
@@ -42,6 +45,10 @@ public partial class App : Application
         services.AddSingleton<VmHome>();
         services.AddTransient<VmCuts>();
         services.AddTransient<FileLoader>();
+        services.AddSingleton<UnitContainer>();
+        services.AddTransient<VmUnitPicker>();
+        services.AddTransient<UnitPickerDialog>();
+        services.AddTransient<IUnitPicker, UnitPicker>();
 
         services.AddTransient<IUserInputProvider<string>, StringInputProvider>();
         services.AddSingleton<IContentDialogService, ContentDialogService>();

@@ -1,14 +1,21 @@
 ﻿namespace CutEditor.Services;
 
 using System.Threading.Tasks;
+using CutEditor.Dialogs;
 using CutEditor.Model;
 using CutEditor.Model.Interfaces;
+using Du.WpfLib;
+using Wpf.Ui;
 
-internal sealed class UnitPicker(UnitContainer container) : IUnitPicker
+internal sealed class UnitPicker(
+    UnitPickerDialog dialog,
+    IContentDialogService contentDialogService)
+    : IUnitPicker
 {
     public async Task<Unit?> PickUnit()
     {
-        await Task.Delay(1000);
-        return container.Units.First();
+        dialog.DialogHost = contentDialogService.GetDialogHost();
+        _ = await dialog.ShowAsync();
+        return dialog.SelectedUnit;
     }
 }
