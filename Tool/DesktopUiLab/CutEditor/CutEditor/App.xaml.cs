@@ -40,7 +40,7 @@ public partial class App : Application
 
         services.AddTransient<VmMain>();
         services.AddSingleton<VmHome>();
-        services.AddSingleton<VmCuts>();
+        services.AddTransient<VmCuts>();
         services.AddTransient<FileLoader>();
 
         services.AddTransient<IUserInputProvider<string>, StringInputProvider>();

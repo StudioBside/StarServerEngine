@@ -5,6 +5,7 @@ using System.ComponentModel;
 using Cs.Core.Util;
 using Cs.Logging;
 using CutEditor.Model;
+using CutEditor.ViewModel.Detail;
 using Du.Core.Bases;
 using Microsoft.Extensions.Configuration;
 
@@ -15,6 +16,7 @@ public sealed class VmCuts : VmPageBase
     private readonly CutScene cutscene;
     private readonly ObservableCollection<Cut> cuts = new();
     private readonly string fullFilePath;
+    private readonly TempUidGenerator uidGenerator = new();
 
     public VmCuts(VmHome vmHome, IConfiguration config)
     {
@@ -33,10 +35,12 @@ public sealed class VmCuts : VmPageBase
         }
 
         var json = JsonUtil.Load(this.fullFilePath);
-        json.GetArray("Data", this.cuts, (e, i) => new Cut(e));
+        json.GetArray("Data", this.cuts, (e, i) => new Cut(e, this.uidGenerator.Generate()));
 
         Log.Info($"cutscene loading finished. {this.cuts.Count} cuts loaded.");
     }
+
+    public IList<Cut> Cuts => this.cuts;
 
     //// --------------------------------------------------------------------------------------------
 

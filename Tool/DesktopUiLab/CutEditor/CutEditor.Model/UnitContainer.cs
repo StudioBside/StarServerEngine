@@ -37,4 +37,6 @@ public sealed class UnitContainer
             }
         }
     }
+
+    public IEnumerable<Unit> Units => this.units.Values;
 }
