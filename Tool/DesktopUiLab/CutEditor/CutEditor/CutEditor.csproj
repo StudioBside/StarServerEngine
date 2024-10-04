@@ -32,6 +32,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Shared\Shared.Templet\Shared.Templet.csproj" />
     <ProjectReference Include="..\CutEditor.ViewModel\CutEditor.ViewModel.csproj" />
     <ProjectReference Include="..\..\Framework\Du.Excel\Du.Excel.csproj" />
     <ProjectReference Include="..\..\Framework\Du.Presentation\Du.Presentation.csproj" />

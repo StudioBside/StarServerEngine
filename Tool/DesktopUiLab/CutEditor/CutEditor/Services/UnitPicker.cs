@@ -2,14 +2,11 @@
 
 using System.Threading.Tasks;
 using CutEditor.Dialogs;
-using CutEditor.Model;
 using CutEditor.Model.Interfaces;
-using Du.WpfLib;
+using Shared.Templet.TempletTypes;
 using Wpf.Ui;
 
-internal sealed class UnitPicker(
-    UnitPickerDialog dialog,
-    IContentDialogService contentDialogService)
+internal sealed class UnitPicker(UnitPickerDialog dialog, IContentDialogService contentDialogService)
     : IUnitPicker
 {
     public async Task<Unit?> PickUnit()

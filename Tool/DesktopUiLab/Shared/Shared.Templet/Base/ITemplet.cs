@@ -1,4 +1,4 @@
-﻿namespace Shared.Templet;
+﻿namespace Shared.Templet.Base;
 
 using System;
 using System.Collections.Generic;

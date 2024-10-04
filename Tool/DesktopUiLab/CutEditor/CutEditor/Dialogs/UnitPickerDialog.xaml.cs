@@ -3,21 +3,20 @@
 using System;
 using System.Windows;
 using CutEditor.Model;
+using Shared.Templet.Base;
+using Shared.Templet.TempletTypes;
 using Wpf.Ui.Controls;
 
 public partial class UnitPickerDialog : ContentDialog
 {
-    private readonly UnitContainer unitContainer;
-
-    public UnitPickerDialog(UnitContainer unitContainer)
+    public UnitPickerDialog()
     {
-        this.unitContainer = unitContainer;
         this.DataContext = this;
 
         this.InitializeComponent();
     }
 
-    public IEnumerable<Unit> Units => this.unitContainer.Units;
+    public IEnumerable<Unit> Units => TempletContainer<Unit>.Values;
     public Unit? SelectedUnit { get; set; }
 
     //// --------------------------------------------------------------------------------------------

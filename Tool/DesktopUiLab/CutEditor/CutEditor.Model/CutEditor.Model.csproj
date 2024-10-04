@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Framework\Du.Core\Du.Core.csproj" />
+    <ProjectReference Include="..\..\Shared\Shared.Templet\Shared.Templet.csproj" />
   </ItemGroup>
 
   <ItemGroup>

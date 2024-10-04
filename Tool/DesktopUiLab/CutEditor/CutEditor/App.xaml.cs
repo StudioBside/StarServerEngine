@@ -15,6 +15,7 @@ using Du.Presentation.Util;
 using Du.WpfLib;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Shared.Templet;
 using Wpf.Ui;
 
 public partial class App : Application
@@ -45,7 +46,6 @@ public partial class App : Application
         services.AddSingleton<VmHome>();
         services.AddTransient<VmCuts>();
         services.AddTransient<FileLoader>();
-        services.AddSingleton<UnitContainer>();
         services.AddTransient<UnitPickerDialog>();
         services.AddTransient<IUnitPicker, UnitPicker>();
 
@@ -62,6 +62,8 @@ public partial class App : Application
     private void Initialize()
     {
         Log.Initialize(new SimpleFileLogProvider("log.txt"), LogLevelConfig.All);
+
+        TempletLoad.Execute(this.Services.GetRequiredService<IConfiguration>());
 
         var loader = this.Services.GetRequiredService<FileLoader>();
         loader.Load();
