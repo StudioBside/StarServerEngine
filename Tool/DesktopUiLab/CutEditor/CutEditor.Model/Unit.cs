@@ -10,14 +10,17 @@ using Newtonsoft.Json.Linq;
 
 public sealed class Unit
 {
-    public Unit(JToken token)
+    public Unit(JToken token, string imageRoot)
     {
         this.Id = token.GetInt32("m_UnitID");
         this.Comment = token.GetString("Comment");
         this.ImageFileName = token.GetString("m_UnitFaceSmall");
+        this.ImageFullPath = Path.Combine(imageRoot, this.ImageFileName);
+        this.ImageFullPath = Path.GetFullPath(this.ImageFullPath);
     }
 
     public int Id { get; }
     public string Comment { get; }
     public string ImageFileName { get; }
+    public string ImageFullPath { get; }
 }

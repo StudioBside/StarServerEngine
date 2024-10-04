@@ -46,7 +46,6 @@ public partial class App : Application
         services.AddTransient<VmCuts>();
         services.AddTransient<FileLoader>();
         services.AddSingleton<UnitContainer>();
-        services.AddTransient<VmUnitPicker>();
         services.AddTransient<UnitPickerDialog>();
         services.AddTransient<IUnitPicker, UnitPicker>();
 

@@ -12,12 +12,13 @@ public sealed class UnitContainer
 
     public UnitContainer(IConfiguration config)
     {
-        var rootPath = config["TempletDataRoot"] ?? throw new Exception("TempletDataRoot is not set in the configuration file.");
+        var templetRoot = config["TempletDataRoot"] ?? throw new Exception("TempletDataRoot is not set in the configuration file.");
+        var unitImageRoot = config["UnitImageRoot"] ?? throw new Exception("UnitImageRoot is not set in the configuration file.");
         // get filenames array 
         var filenames = config.GetSection("UnitTempletNames").GetChildren();
         foreach (var filename in filenames)
         {
-            var path = Path.Combine(rootPath, filename.Value ?? string.Empty);
+            var path = Path.Combine(templetRoot, filename.Value ?? string.Empty);
             Log.Debug($"unit templet file: {path}");
 
             if (!File.Exists(path))
@@ -27,7 +28,7 @@ public sealed class UnitContainer
 
             var json = JsonUtil.Load(path);
             var units = new List<Unit>();
-            json.GetArray("Data", units, (e, i) => new Unit(e));
+            json.GetArray("Data", units, (e, i) => new Unit(e, unitImageRoot));
 
             Log.Info($"unit loading finished. {this.units.Count} units loaded.");
 
