@@ -32,8 +32,11 @@ public sealed class Unit : ITemplet
             Log.ErrorAndExit("Unit.ImageRootPath is not set.");
         }
 
-        this.ImageFullPath = Path.Combine(ImageRootPath, this.ImageFileName);
-        this.ImageFullPath = Path.GetFullPath(this.ImageFullPath);
+        if (string.IsNullOrEmpty(this.ImageFileName) == false)
+        {
+            this.ImageFullPath = Path.Combine(ImageRootPath, this.ImageFileName);
+            this.ImageFullPath = Path.GetFullPath(this.ImageFullPath);
+        }
     }
 
     public void Validate()

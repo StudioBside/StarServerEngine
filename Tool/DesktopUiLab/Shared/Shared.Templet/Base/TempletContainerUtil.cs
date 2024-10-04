@@ -32,10 +32,7 @@ internal static class TempletContainerUtil
         foreach (var containerType in ContainerTypes)
         {
             var methodInfo = containerType.GetMethod("Join", BindingFlags.Static | BindingFlags.NonPublic);
-            if (methodInfo != null)
-            {
-                methodInfo.Invoke(obj: null, parameters: null);
-            }
+            methodInfo?.Invoke(obj: null, parameters: null);
         }
     }
 
@@ -43,11 +40,8 @@ internal static class TempletContainerUtil
     {
         foreach (var containerType in ContainerTypes)
         {
-            var methodInfo = containerType.GetMethod("Validate");
-            if (methodInfo != null)
-            {
-                methodInfo.Invoke(obj: null, parameters: null);
-            }
+            var methodInfo = containerType.GetMethod("Validate", BindingFlags.Static | BindingFlags.NonPublic);
+            methodInfo?.Invoke(obj: null, parameters: null);
         }
     }
 }

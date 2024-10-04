@@ -85,7 +85,7 @@
                         <!--컨트롤이 많으니까 3덩어리 정도로 나눠서 별도의 Grid로 묶어줍니다.-->
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Grid.Row="0" Grid.Column="0"
-                                       Text="{Binding Uid}" Margin="5"/>
+                                       Text="{Binding Cut.Uid}" Margin="5"/>
 
                             <!-- Grid 1 : 좌측 버튼 배치 영역-->
                             <Grid Margin="5">
@@ -96,29 +96,33 @@
 
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="60"/>
+                                    <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
 
-                                <ui:Button Grid.Column="0" Grid.Row="0" Margin="0,0,0,5"
-                                           Content="UnitStrId"
-                                           Command="{Binding PickUnitCommand}"/>
+                                <ui:Button Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Margin="0,0,10,0"
+                                           Command="{Binding PickUnitCommand}" Padding="0" CornerRadius="8">
+                                    <ui:Image
+                                          Grid.RowSpan="2"
+                                          Width="80"
+                                          CornerRadius="8"
+                                          BorderThickness="1"
+                                          BorderBrush="Black"
+                                          Source="{Binding Cut.Unit.ImageFullPath}"/>
+                                </ui:Button>
                                 <ui:Button Grid.Column="0" Grid.Row="1" Margin="0,0,10,0"
                                     Content="UnitNameString"/>
 
-                                <ui:Image Grid.Column="1" Grid.Row="0" 
-                                          Grid.RowSpan="2"/>
-
                                 <StackPanel Grid.Column="2" Grid.Row="0" Orientation="Horizontal">
-                                    <TextBlock Text="유닛위치: " VerticalAlignment="Center"/>
-                                    <RadioButton GroupName="Position" MinWidth="20"/>
-                                    <RadioButton GroupName="Position" MinWidth="20"/>
-                                    <RadioButton GroupName="Position" MinWidth="20"/>
-                                    <RadioButton GroupName="Position" MinWidth="20"/>
-                                    <RadioButton GroupName="Position" MinWidth="20"/>
-                                    <RadioButton GroupName="Position" MinWidth="20"/>
-                                    <RadioButton GroupName="Position" MinWidth="20"/>
-                                    <RadioButton GroupName="Position" MinWidth="20"/>
+                                    <RadioButton GroupName="Position" MinWidth="20" VerticalAlignment="Bottom"/>
+                                    <RadioButton GroupName="Position" MinWidth="20" VerticalAlignment="Top"/>
+                                    <RadioButton GroupName="Position" MinWidth="20" VerticalAlignment="Bottom"/>
+                                    <RadioButton GroupName="Position" MinWidth="20" VerticalAlignment="Top"/>
+                                    <RadioButton GroupName="Position" MinWidth="20" VerticalAlignment="Bottom"/>
+                                    <RadioButton GroupName="Position" MinWidth="20" VerticalAlignment="Top"/>
+                                    <RadioButton GroupName="Position" MinWidth="20" VerticalAlignment="Bottom"/>
+                                    <RadioButton GroupName="Position" MinWidth="20" VerticalAlignment="Top"/>
+                                    <RadioButton GroupName="Position" MinWidth="20" VerticalAlignment="Bottom"/>
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Horizontal">

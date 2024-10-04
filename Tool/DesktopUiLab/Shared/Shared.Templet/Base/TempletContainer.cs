@@ -16,11 +16,11 @@ public sealed class TempletContainer<T> where T : ITemplet
 
     public static IEnumerable<T> Values => Instance.data.Values;
 
-    public bool TryGet(int key, [MaybeNullWhen(false)] out T value) => Instance.data.TryGetValue(key, out value);
-    public bool TryGet(string key, [MaybeNullWhen(false)] out T value) => Instance.strData.TryGetValue(key, out value);
+    public static bool TryGet(int key, [MaybeNullWhen(false)] out T value) => Instance.data.TryGetValue(key, out value);
+    public static bool TryGet(string key, [MaybeNullWhen(false)] out T value) => Instance.strData.TryGetValue(key, out value);
 
-    public T? Find(int key) => Instance.data.TryGetValue(key, out var value) ? value : default;
-    public T? Find(string key) => Instance.strData.TryGetValue(key, out var value) ? value : default;
+    public static T? Find(int key) => Instance.data.TryGetValue(key, out var value) ? value : default;
+    public static T? Find(string key) => Instance.strData.TryGetValue(key, out var value) ? value : default;
 
     //// --------------------------------------------------------------------
 
