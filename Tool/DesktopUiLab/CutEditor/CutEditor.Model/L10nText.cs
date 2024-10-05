@@ -2,9 +2,8 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using Cs.Core.Util;
-using Du.Core.Interfaces;
-using Du.Core.Util;
 using Newtonsoft.Json.Linq;
+using Shared.Interfaces;
 using static CutEditor.Model.Enums;
 
 public sealed class L10nText : ObservableObject, ISearchable

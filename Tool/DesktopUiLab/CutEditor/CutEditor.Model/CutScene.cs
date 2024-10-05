@@ -2,9 +2,8 @@
 
 using CommunityToolkit.Mvvm.ComponentModel;
 using Cs.Core.Util;
-using Du.Core.Interfaces;
-using Du.Core.Util;
 using Newtonsoft.Json.Linq;
+using Shared.Interfaces;
 using static CutEditor.Model.Enums;
 
 public sealed class CutScene : ObservableObject, ISearchable
@@ -96,7 +95,7 @@ public sealed class CutScene : ObservableObject, ISearchable
         set => this.SetProperty(ref this.shortenBgFileName, value);
     }
 
-    public bool IsTarget(string keyword)
+    bool ISearchable.IsTarget(string keyword)
     {
         return (int.TryParse(keyword, out int id) && this.cutsceneId == id) ||
             this.fileName.Contains(keyword, StringComparison.CurrentCultureIgnoreCase) ||

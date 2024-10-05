@@ -6,7 +6,7 @@ using System.IO;
 using System.Text;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Cs.Core.Util;
-using Du.Core.Interfaces;
+using Shared.Interfaces;
 
 public sealed class BindFile : ObservableObject, ISearchable
 {

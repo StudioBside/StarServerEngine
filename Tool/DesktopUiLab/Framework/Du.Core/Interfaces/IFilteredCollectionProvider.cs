@@ -1,6 +1,6 @@
 ﻿namespace Du.Core.Interfaces;
 
-using System;
+using Shared.Interfaces;
 
 /// <summary>
 /// ICollectionView를 생성하는 기능을 제공합니다.

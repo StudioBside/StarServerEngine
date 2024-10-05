@@ -3,6 +3,7 @@
 using System.Collections;
 using System.Windows.Data;
 using Du.Core.Interfaces;
+using Shared.Interfaces;
 
 public sealed class FilteredCollectionProvider : IFilteredCollectionProvider
 {

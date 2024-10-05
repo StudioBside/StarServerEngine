@@ -5,9 +5,10 @@ using System.Text;
 using Cs.Core.Util;
 using Cs.Logging;
 using Newtonsoft.Json.Linq;
+using Shared.Interfaces;
 using Shared.Templet.Base;
 
-public sealed class Unit : ITemplet
+public sealed class Unit : ITemplet, ISearchable
 {
     public Unit(JToken token)
     {
@@ -41,5 +42,12 @@ public sealed class Unit : ITemplet
 
     public void Validate()
     {
+    }
+
+    bool ISearchable.IsTarget(string keyword)
+    {
+        return this.Id.ToString().Contains(keyword, StringComparison.CurrentCultureIgnoreCase) ||
+               this.StrId.Contains(keyword, StringComparison.CurrentCultureIgnoreCase) ||
+               this.Comment.Contains(keyword, StringComparison.CurrentCultureIgnoreCase);
     }
 }
