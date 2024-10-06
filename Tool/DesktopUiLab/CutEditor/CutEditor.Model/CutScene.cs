@@ -10,16 +10,14 @@ public sealed class CutScene : ObservableObject, ISearchable
 {
     private readonly int cutsceneId;
     private readonly L10nText title = new();
-    private readonly L10nText shortenTalk = new();
     private string fileName = string.Empty;
     private CutsceneType cutsceneType;
     private string cutsceneFilter = string.Empty;
-    private string slideTitleIcon = string.Empty;
+    private string sideTitleIcon = string.Empty;
     private bool titleFadeout;
     private float titleFadeOutTime;
     private float titleTalkTime;
     private float subTitleTalkTime;
-    private string shortenBgFileName = string.Empty;
 
     public CutScene(JToken token)
     {
@@ -27,14 +25,12 @@ public sealed class CutScene : ObservableObject, ISearchable
         this.fileName = token.GetString("CutsceneFile");
         this.cutsceneType = token.GetEnum<CutsceneType>("CutsceneType");
         this.cutsceneFilter = token.GetString("CutsceneFilter");
-        this.slideTitleIcon = token.GetString("SlideTitleIcon");
+        this.sideTitleIcon = token.GetString("SideTitleIcon");
         this.titleFadeout = token.GetBool("TitleFadeout");
         this.titleFadeOutTime = token.GetFloat("TitleFadeOutTime");
         this.title.Load(token, "Title");
         this.titleTalkTime = token.GetFloat("TitleTalkTime");
         this.subTitleTalkTime = token.GetFloat("SubTitleTalkTime");
-        this.shortenBgFileName = token.GetString("ShortenBgFileName");
-        this.shortenTalk.Load(token, "ShortenTalk");
     }
 
     public int Id => this.cutsceneId;
@@ -45,7 +41,6 @@ public sealed class CutScene : ObservableObject, ISearchable
     }
 
     public L10nText Title => this.title;
-    public L10nText ShortenTalk => this.shortenTalk;
 
     public CutsceneType CutsceneType
     {
@@ -59,10 +54,10 @@ public sealed class CutScene : ObservableObject, ISearchable
         set => this.SetProperty(ref this.cutsceneFilter, value);
     }
 
-    public string SlideTitleIcon
+    public string SideTitleIcon
     {
-        get => this.slideTitleIcon;
-        set => this.SetProperty(ref this.slideTitleIcon, value);
+        get => this.sideTitleIcon;
+        set => this.SetProperty(ref this.sideTitleIcon, value);
     }
 
     public bool TitleFadeout
@@ -89,18 +84,11 @@ public sealed class CutScene : ObservableObject, ISearchable
         set => this.SetProperty(ref this.subTitleTalkTime, value);
     }
 
-    public string ShortenBgFileName
-    {
-        get => this.shortenBgFileName;
-        set => this.SetProperty(ref this.shortenBgFileName, value);
-    }
-
     bool ISearchable.IsTarget(string keyword)
     {
         return (int.TryParse(keyword, out int id) && this.cutsceneId == id) ||
             this.fileName.Contains(keyword, StringComparison.CurrentCultureIgnoreCase) ||
-            this.title.IsTarget(keyword) ||
-            this.shortenTalk.IsTarget(keyword);
+            this.title.IsTarget(keyword);
     }
 
     public override string ToString() => this.title.Korean;

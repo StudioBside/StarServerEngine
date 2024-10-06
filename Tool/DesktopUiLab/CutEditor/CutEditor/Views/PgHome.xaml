@@ -213,14 +213,6 @@
                                     PlaceholderText="CutsceneFilter"
                                     BorderThickness="0"/>
 
-                        <Label Grid.Column="0" Grid.Row="3"
-                               VerticalAlignment="Bottom"
-                               Content="단축 지문:"/>
-                        <ui:TextBox Grid.Column="1" Grid.Row="3" 
-                                    Text="{Binding ShortenTalk.Korean}"
-                                    PlaceholderText="ShortenTalk.Korean"
-                                    BorderThickness="0"/>
-
                     </Grid>
                 </Border>
 

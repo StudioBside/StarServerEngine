@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:CutEditor.Views"
+      xmlns:lcvt="clr-namespace:CutEditor.Converters"
       xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
       xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
       xmlns:viewmodels="clr-namespace:CutEditor.ViewModel;assembly=CutEditor.ViewModel"
@@ -113,14 +114,14 @@
                                     Content="UnitNameString"/>
 
                                 <ui:Button Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Margin="0,0,10,0"
-                                           Command="{Binding PickUnitCommand}" Padding="0" CornerRadius="8">
-                                    <ui:Image
-                                          Grid.RowSpan="2"
-                                          Width="80"
-                                          CornerRadius="8"
-                                          BorderThickness="1"
-                                          BorderBrush="Black"
-                                          Source="{Binding Cut.Unit.ImageFullPath}"/>
+                                           Command="{Binding PickUnitCommand}" Padding="0" CornerRadius="8"
+                                           Width="80"
+                                           VerticalAlignment="Stretch">
+                                    <MultiBinding Converter="{lcvt:PathToImageConverter}">
+                                        <Binding Path="Cut.Unit.ImageFullPath" />
+                                        <Binding Source="유닛 선택"/>
+                                        <Binding Source="CornerRadius:8;BorderBrush:Black;BorderThickness:1"/>
+                                    </MultiBinding>
                                 </ui:Button>
 
                                 <StackPanel Grid.Column="2" Grid.Row="0" Orientation="Horizontal">
