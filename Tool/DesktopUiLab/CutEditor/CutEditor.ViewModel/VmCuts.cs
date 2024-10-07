@@ -47,6 +47,19 @@ public sealed class VmCuts : VmPageBase
 
     public IList<VmCut> Cuts => this.cuts;
 
+    public void MoveItems(List<VmCut> items, VmCut dropTarget)
+    {
+        var dropIndex = this.cuts.IndexOf(dropTarget);
+        var itemsIndex = items.Select(this.cuts.IndexOf).OrderByDescending(i => i).ToList();
+
+        foreach (var i in itemsIndex)
+        {
+            var item = this.cuts[i];
+            this.cuts.RemoveAt(i);
+            this.cuts.Insert(dropIndex, item);
+        }
+    }
+
     //// --------------------------------------------------------------------------------------------
 
     protected override void OnPropertyChanged(PropertyChangedEventArgs e)

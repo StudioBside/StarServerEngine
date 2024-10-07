@@ -224,7 +224,11 @@
         </Grid.RowDefinitions>
 
         <ui:ListView Grid.Row="1" ItemsSource="{Binding Cuts}"
-                     ItemTemplate="{StaticResource CutItemTemplet}">
+                     ItemTemplate="{StaticResource CutItemTemplet}"
+                     PreviewMouseMove="CutList_PreviewMouseMove"
+                     Drop="CutList_Drop"
+                     AllowDrop="True"
+                     x:Name="CutList">
         </ui:ListView>
     </Grid>
 </Page>
