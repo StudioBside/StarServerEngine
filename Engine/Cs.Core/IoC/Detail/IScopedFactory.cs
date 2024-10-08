@@ -2,9 +2,9 @@
 {
     using System;
 
-    internal interface ITypeFactory
+    internal interface IScopedFactory
     {
         Type Type { get; }
-        T GetInstance<T>() where T : class;
+        IScopedInstanceHolder CreateHolder();
     }
 }

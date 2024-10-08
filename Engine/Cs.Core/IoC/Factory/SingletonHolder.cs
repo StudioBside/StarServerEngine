@@ -14,9 +14,10 @@
             this.Type = typeof(TInstance);
         }
 
+        public bool IsScoped { get; } = false;
         public Type Type { get; }
 
-        public T GetInstance<T>(object? param) where T : class
+        public T GetInstance<T>() where T : class
         {
             var result = this.instance as T;
             if (typeof(T) != this.Type || result is null)
