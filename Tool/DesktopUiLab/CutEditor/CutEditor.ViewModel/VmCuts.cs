@@ -47,17 +47,49 @@ public sealed class VmCuts : VmPageBase
 
     public IList<VmCut> Cuts => this.cuts;
 
-    public void MoveItems(List<VmCut> items, VmCut dropTarget)
+    public bool MoveItems(List<VmCut> items, VmCut dropTarget)
     {
         var dropIndex = this.cuts.IndexOf(dropTarget);
         var itemsIndex = items.Select(this.cuts.IndexOf).OrderByDescending(i => i).ToList();
 
+        // drop 대상이 items에 속해있으면 에러
+        if (itemsIndex.Contains(dropIndex))
+        {
+            Log.Error("drop target is in the moving items.");
+            return false;
+        }
+
+        // itemsIndex가 연속적이지 않으면 에러
+        if (itemsIndex.Count > 1)
+        {
+            var min = itemsIndex.Min();
+            var max = itemsIndex.Max();
+            if (max - min + 1 != itemsIndex.Count)
+            {
+                Log.Error("items are not continuous.");
+                return false;
+            }
+        }
+
+        var movingItems = new List<VmCut>();
         foreach (var i in itemsIndex)
         {
-            var item = this.cuts[i];
+            movingItems.Add(this.cuts[i]);
             this.cuts.RemoveAt(i);
+        }
+
+        // 더 아래로 내리는 경우는 목적지 인덱스가 바뀔테니 재계산 필요
+        if (dropIndex > itemsIndex.Max())
+        {
+            dropIndex -= itemsIndex.Count;
+        }
+
+        foreach (var item in movingItems)
+        {
             this.cuts.Insert(dropIndex, item);
         }
+
+        return true;
     }
 
     //// --------------------------------------------------------------------------------------------

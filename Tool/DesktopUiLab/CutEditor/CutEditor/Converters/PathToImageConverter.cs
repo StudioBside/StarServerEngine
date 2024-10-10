@@ -1,6 +1,7 @@
 namespace CutEditor.Converters;
 
 using System.Globalization;
+using System.IO;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -17,6 +18,11 @@ public class PathToImageConverter : MultiValueConverterMarkupExtension<PathToIma
         if (string.IsNullOrEmpty(imagePath))
         {
             return defaultText ?? string.Empty;
+        }
+
+        if (File.Exists(imagePath) == false)
+        {
+            return "NoFile";
         }
 
         var image = new Wpf.Ui.Controls.Image
