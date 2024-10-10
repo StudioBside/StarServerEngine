@@ -19,7 +19,7 @@ public sealed partial class PgCuts : Page
 
     private static T? FindAncestor<T>(DependencyObject current) where T : DependencyObject
     {
-        while (current != null && !(current is T))
+        while (current != null && current is not T)
         {
             current = VisualTreeHelper.GetParent(current);
         }
