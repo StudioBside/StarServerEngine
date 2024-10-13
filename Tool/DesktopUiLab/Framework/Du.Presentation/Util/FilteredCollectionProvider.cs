@@ -5,6 +5,9 @@ using System.Windows.Data;
 using Du.Core.Interfaces;
 using Shared.Interfaces;
 
+/// <summary>
+/// ViewModel에서는 Windows.Base.dll에 존재하는 ICollectionView을 참조하지 않으므로 ICollectionView를 대체하는 기능을 제공합니다.
+/// </summary>
 public sealed class FilteredCollectionProvider : IFilteredCollectionProvider
 {
     IFilteredCollection IFilteredCollectionProvider.Build<T>(IList<T> collection)

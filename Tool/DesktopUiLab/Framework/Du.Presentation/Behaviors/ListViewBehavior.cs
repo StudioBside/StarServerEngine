@@ -8,6 +8,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using Cs.Logging;
+using Du.Core.Interfaces;
+using Du.Presentation.Util;
 using Microsoft.Xaml.Behaviors;
 
 public class ListViewBehavior : Behavior<ListView>
@@ -43,11 +46,35 @@ public class ListViewBehavior : Behavior<ListView>
 
     private void AssociatedObject_PreviewMouseMove(object sender, MouseEventArgs e)
     {
-        throw new NotImplementedException();
+        if (e.LeftButton != MouseButtonState.Pressed ||
+            e.OriginalSource.FindAncestor<ListViewItem>(out var listViewItem) == false)
+        {
+            return;
+        }
+
+        if (this.AssociatedObject.SelectedItems.Count == 0)
+        {
+            return;
+        }
+
+        var data = this.AssociatedObject.SelectedItems.Cast<object>().ToList();
+        DragDrop.DoDragDrop(listViewItem, data, DragDropEffects.Move);
     }
 
     private void AssociatedObject_Drop(object sender, DragEventArgs e)
     {
-        throw new NotImplementedException();
+        if (this.AssociatedObject.FindAncestor<Page>(out var page) == false ||
+            page.DataContext is not IDragDropHandler handler)
+        {
+            Log.Warn($"DataContext is not IDragDropHandler. dataContext:{this.AssociatedObject.DataContext}");
+            return;
+        }
+
+        if (e.OriginalSource.FindAncestor<ListViewItem>(out var target) == false)
+        {
+            return;
+        }
+
+        handler.HandleDrop(this.AssociatedObject.DataContext, this.AssociatedObject.SelectedItems, target.DataContext);
     }
 }

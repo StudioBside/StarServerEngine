@@ -1,5 +1,6 @@
 ﻿namespace CutEditor.ViewModel;
 
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Cs.Core.Util;
@@ -8,9 +9,10 @@ using CutEditor.Model;
 using CutEditor.Model.Interfaces;
 using CutEditor.ViewModel.Detail;
 using Du.Core.Bases;
+using Du.Core.Interfaces;
 using Microsoft.Extensions.Configuration;
 
-public sealed class VmCuts : VmPageBase
+public sealed class VmCuts : VmPageBase, IDragDropHandler
 {
     private static CutScene lastCutSceneHistory = null!;
 
@@ -47,8 +49,16 @@ public sealed class VmCuts : VmPageBase
 
     public IList<VmCut> Cuts => this.cuts;
 
-    public bool MoveItems(List<VmCut> items, VmCut dropTarget)
+    bool IDragDropHandler.HandleDrop(object listViewContext, IList selectedItems, object targetContext)
     {
+        if (targetContext is not VmCut dropTarget)
+        {
+            Log.Error("targetContext is not VmCut.");
+            return false;
+        }
+
+        var items = selectedItems.Cast<VmCut>().ToList();
+
         var dropIndex = this.cuts.IndexOf(dropTarget);
         var itemsIndex = items.Select(this.cuts.IndexOf).OrderByDescending(i => i).ToList();
 
@@ -81,7 +91,7 @@ public sealed class VmCuts : VmPageBase
         // 더 아래로 내리는 경우는 목적지 인덱스가 바뀔테니 재계산 필요
         if (dropIndex > itemsIndex.Max())
         {
-            dropIndex -= itemsIndex.Count;
+            dropIndex -= itemsIndex.Count - 1;
         }
 
         foreach (var item in movingItems)
