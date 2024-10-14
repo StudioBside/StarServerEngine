@@ -15,7 +15,7 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="PgCutScene">
     <b:Interaction.Behaviors>
-        <behaviors:PageBehavior HandleKeyDown="True"/>
+        <behaviors:PageBehavior HandleClipboard="True"/>
     </b:Interaction.Behaviors>
     <Page.Resources>
         <DataTemplate x:Key="CutItemTemplet">

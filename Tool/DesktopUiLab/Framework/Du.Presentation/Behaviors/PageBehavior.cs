@@ -17,10 +17,23 @@ public class PageBehavior : Behavior<Page>
               typeof(PageBehavior),
               new PropertyMetadata(false, OnHandleKeyDownChanged));
 
+    public static readonly DependencyProperty HandleClipboardProperty =
+          DependencyProperty.Register(
+              "HandleClipboard",
+              typeof(bool),
+              typeof(PageBehavior),
+              new PropertyMetadata(false, OnHandleClipboardChanged));
+
     public bool HandleKeyDown
     {
         get => (bool)this.GetValue(HandleKeyDownProperty);
         set => this.SetValue(HandleKeyDownProperty, value);
+    }
+
+    public bool HandleClipboard
+    {
+        get => (bool)this.GetValue(HandleClipboardProperty);
+        set => this.SetValue(HandleClipboardProperty, value);
     }
 
     protected override void OnAttached()
@@ -39,14 +52,13 @@ public class PageBehavior : Behavior<Page>
     {
     }
 
+    private static void OnHandleClipboardChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+    }
+
     private void AssociatedObject_PreviewKeyDown(object sender, KeyEventArgs e)
     {
         if (e.Key < Key.A || e.Key > Key.Z)
-        {
-            return;
-        }
-
-        if (this.AssociatedObject.DataContext is not IKeyDownHandler handler)
         {
             return;
         }
@@ -62,7 +74,19 @@ public class PageBehavior : Behavior<Page>
         bool shift = Keyboard.Modifiers.HasFlag(ModifierKeys.Shift);
         bool alt = Keyboard.Modifiers.HasFlag(ModifierKeys.Alt);
 
-        e.Handled = handler.HandleKeyDown(key, ctrl, shift, alt);
+        if (this.HandleClipboard && ctrl && key == 'v' &&
+            this.AssociatedObject.DataContext is IClipboardHandler clipboardHandler &&
+            Clipboard.ContainsText())
+        {
+            e.Handled = clipboardHandler.HandlePastedText(Clipboard.GetText());
+            return;
+        }
+
+        if (this.HandleKeyDown &&
+            this.AssociatedObject.DataContext is IKeyDownHandler handler)
+        {
+            e.Handled = handler.HandleKeyDown(key, ctrl, shift, alt);
+        }
     }
 
     private void Page_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)

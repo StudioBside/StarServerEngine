@@ -14,7 +14,7 @@ using Microsoft.Extensions.Configuration;
 
 public sealed class VmCuts : VmPageBase,
     IDragDropHandler,
-    IKeyDownHandler
+    IClipboardHandler
 {
     private static CutScene lastCutSceneHistory = null!;
 
@@ -104,15 +104,15 @@ public sealed class VmCuts : VmPageBase,
         return true;
     }
 
-    bool IKeyDownHandler.HandleKeyDown(char key, bool ctrl, bool shift, bool alt)
+    bool IClipboardHandler.HandlePastedText(string text)
     {
-        if (ctrl && key == 'v')
+        if (string.IsNullOrEmpty(text))
         {
-            Log.Debug("Ctrl + V");
-            return true;
+            return false;
         }
 
-        return false;
+        Log.Debug($"pasted text:{text}");
+        return true;
     }
 
     //// --------------------------------------------------------------------------------------------
