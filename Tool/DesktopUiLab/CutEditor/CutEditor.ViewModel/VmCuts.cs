@@ -12,7 +12,9 @@ using Du.Core.Bases;
 using Du.Core.Interfaces;
 using Microsoft.Extensions.Configuration;
 
-public sealed class VmCuts : VmPageBase, IDragDropHandler
+public sealed class VmCuts : VmPageBase,
+    IDragDropHandler,
+    IKeyDownHandler
 {
     private static CutScene lastCutSceneHistory = null!;
 
@@ -100,6 +102,17 @@ public sealed class VmCuts : VmPageBase, IDragDropHandler
         }
 
         return true;
+    }
+
+    bool IKeyDownHandler.HandleKeyDown(char key, bool ctrl, bool shift, bool alt)
+    {
+        if (ctrl && key == 'v')
+        {
+            Log.Debug("Ctrl + V");
+            return true;
+        }
+
+        return false;
     }
 
     //// --------------------------------------------------------------------------------------------

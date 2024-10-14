@@ -97,7 +97,7 @@ public sealed class FrameBehavior : Behavior<Frame>
 
             case null:
             case "":
-                //아무것도 않함
+                //아무것도 안함
                 return;
 
             default:
