@@ -56,7 +56,7 @@ public class PageBehavior : Behavior<Page>
     {
     }
 
-    private void AssociatedObject_PreviewKeyDown(object sender, KeyEventArgs e)
+    private async void AssociatedObject_PreviewKeyDown(object sender, KeyEventArgs e)
     {
         if (e.Key < Key.A || e.Key > Key.Z)
         {
@@ -78,14 +78,14 @@ public class PageBehavior : Behavior<Page>
             this.AssociatedObject.DataContext is IClipboardHandler clipboardHandler &&
             Clipboard.ContainsText())
         {
-            e.Handled = clipboardHandler.HandlePastedText(Clipboard.GetText());
+            e.Handled = await clipboardHandler.HandlePastedTextAsync(Clipboard.GetText());
             return;
         }
 
         if (this.HandleKeyDown &&
             this.AssociatedObject.DataContext is IKeyDownHandler handler)
         {
-            e.Handled = handler.HandleKeyDown(key, ctrl, shift, alt);
+            e.Handled = await handler.HandleKeyDownAsync(key, ctrl, shift, alt);
         }
     }
 

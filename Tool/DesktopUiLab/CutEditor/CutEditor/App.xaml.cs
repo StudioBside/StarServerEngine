@@ -50,6 +50,7 @@ public partial class App : Application
         services.AddTransient<IUnitPicker, UnitPicker>();
 
         services.AddTransient<IUserInputProvider<string>, StringInputProvider>();
+        services.AddTransient<IUserInputProvider<bool>, BooleanInputProvider>();
         services.AddSingleton<IContentDialogService, ContentDialogService>();
         services.AddTransient<IUserErrorNotifier, ErrorNotifierDialog>();
         services.AddTransient<ICollectionEditor, CollectionEditor>();

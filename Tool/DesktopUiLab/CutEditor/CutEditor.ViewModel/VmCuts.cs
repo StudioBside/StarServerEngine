@@ -3,6 +3,7 @@
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Text;
 using Cs.Core.Util;
 using Cs.Logging;
 using CutEditor.Model;
@@ -11,6 +12,7 @@ using CutEditor.ViewModel.Detail;
 using Du.Core.Bases;
 using Du.Core.Interfaces;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 public sealed class VmCuts : VmPageBase,
     IDragDropHandler,
@@ -22,11 +24,13 @@ public sealed class VmCuts : VmPageBase,
     private readonly ObservableCollection<VmCut> cuts = new();
     private readonly string fullFilePath;
     private readonly TempUidGenerator uidGenerator = new();
+    private readonly IServiceProvider services;
 
     public VmCuts(VmHome vmHome, IConfiguration config, IServiceProvider services)
     {
         this.cutscene = vmHome.SelectedCutScene ?? lastCutSceneHistory;
         this.Title = $"{this.cutscene.Title} - {this.cutscene.FileName}";
+        this.services = services;
 
         lastCutSceneHistory = this.cutscene;
 
@@ -104,9 +108,28 @@ public sealed class VmCuts : VmPageBase,
         return true;
     }
 
-    bool IClipboardHandler.HandlePastedText(string text)
+    async Task<bool> IClipboardHandler.HandlePastedTextAsync(string text)
     {
         if (string.IsNullOrEmpty(text))
+        {
+            return false;
+        }
+
+        var sb = new StringBuilder();
+        int lineCount = text.Count(c => c == '\n');
+        sb.AppendLine($"다음의 텍스트를 이용해 {lineCount}개의 cut 데이터를 생성합니다.");
+        sb.AppendLine();
+        if (text.Length > 10)
+        {
+            sb.AppendLine($"{text[..10]} ... (and {text.Length - 10} more)");
+        }
+        else
+        {
+            sb.AppendLine(text);
+        }
+
+        var boolProvider = this.services.GetRequiredService<IUserInputProvider<bool>>();
+        if (await boolProvider.PromptAsync("새로운 Cut을 만듭니다", sb.ToString()) == false)
         {
             return false;
         }

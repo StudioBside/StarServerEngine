@@ -5,9 +5,10 @@ using Wpf.Ui.Controls;
 
 public partial class StringInputDialog : ContentDialog
 {
-    public StringInputDialog(ContentPresenter? contentPresenter, string message, string defaultValue)
+    public StringInputDialog(ContentPresenter? contentPresenter, string title, string message, string defaultValue)
         : base(contentPresenter)
     {
+        this.Title = title;
         this.Message = message;
         this.UserInput = defaultValue;
 

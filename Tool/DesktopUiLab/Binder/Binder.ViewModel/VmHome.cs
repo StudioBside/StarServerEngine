@@ -113,7 +113,7 @@ public sealed partial class VmHome : VmPageBase
 
     private async Task OnExtractAdd()
     {
-        var extractName = await this.stringProvider.PromptAsync("신규 Extract 규칙의 이름을 입력하세요", "XXX_TEMPLET");
+        var extractName = await this.stringProvider.PromptAsync("New Data", "신규 Extract 규칙의 이름을 입력하세요", "XXX_TEMPLET");
         if (string.IsNullOrEmpty(extractName))
         {
             return;
