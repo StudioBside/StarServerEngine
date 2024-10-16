@@ -7,7 +7,6 @@ using System.Text;
 using Cs.Core.Util;
 using Cs.Logging;
 using CutEditor.Model;
-using CutEditor.Model.Interfaces;
 using CutEditor.ViewModel.Detail;
 using Du.Core.Bases;
 using Du.Core.Interfaces;
@@ -110,14 +109,16 @@ public sealed class VmCuts : VmPageBase,
 
     async Task<bool> IClipboardHandler.HandlePastedTextAsync(string text)
     {
+        text = text.Trim();
+
         if (string.IsNullOrEmpty(text))
         {
             return false;
         }
 
         var sb = new StringBuilder();
-        int lineCount = text.Count(c => c == '\n');
-        sb.AppendLine($"다음의 텍스트를 이용해 {lineCount}개의 cut 데이터를 생성합니다.");
+        var tokens = text.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+        sb.AppendLine($"다음의 텍스트를 이용해 {tokens.Length}개의 cut 데이터를 생성합니다.");
         sb.AppendLine();
         if (text.Length > 10)
         {
@@ -134,7 +135,13 @@ public sealed class VmCuts : VmPageBase,
             return false;
         }
 
-        Log.Debug($"pasted text:{text}");
+        foreach (var token in tokens)
+        {
+            var cut = new Cut(this.uidGenerator.Generate());
+            cut.UnitTalk.Korean = token;
+            this.cuts.Add(new VmCut(cut, this.services));
+        }
+
         return true;
     }
 

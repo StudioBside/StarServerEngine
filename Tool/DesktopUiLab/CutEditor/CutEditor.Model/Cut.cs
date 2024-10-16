@@ -18,9 +18,8 @@ public sealed class Cut : ObservableObject
     private string unitStrId = string.Empty;
     private Unit? unit;
 
-    public Cut(JToken token, long uid)
+    public Cut(JToken token, long uid) : this(uid)
     {
-        this.Uid = uid;
         this.unitTalk.Load(token, "UnitTalk");
         this.unitName = token.GetString("UnitNameString", string.Empty);
         this.talkTime = token.GetFloat("TalkTime", 0f);
@@ -34,6 +33,11 @@ public sealed class Cut : ObservableObject
                 Log.Error($"유닛 템플릿을 찾을 수 없습니다. UnitStrId:{this.unitStrId}");
             }
         }
+    }
+
+    public Cut(long uid)
+    {
+        this.Uid = uid;
     }
 
     public long Uid { get; }
