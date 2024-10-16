@@ -108,6 +108,18 @@ namespace Cs.Core.IoC
             return instance.GetInstance<T>();
         }
 
+        public bool TryGetInstance<T>([MaybeNullWhen(false)] out T instance) where T : class
+        {
+            if (this.TryGet(typeof(T), out var factory))
+            {
+                instance = factory.GetInstance<T>();
+                return true;
+            }
+
+            instance = default;
+            return false;
+        }
+
         public IDiScopeProvider CreateScope()
         {
             return new DiScopeProvider(this.scopedFactories.Select(e => e.CreateHolder()));
