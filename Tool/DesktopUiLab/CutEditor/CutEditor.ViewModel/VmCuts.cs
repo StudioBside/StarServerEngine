@@ -24,6 +24,9 @@ public sealed class VmCuts : VmPageBase,
     private readonly string fullFilePath;
     private readonly TempUidGenerator uidGenerator = new();
     private readonly IServiceProvider services;
+    private bool allSectionUnit = true;
+    private bool allSectionScreen;
+    private bool allSectionCamera;
 
     public VmCuts(VmHome vmHome, IConfiguration config, IServiceProvider services)
     {
@@ -53,6 +56,44 @@ public sealed class VmCuts : VmPageBase,
     }
 
     public IList<VmCut> Cuts => this.cuts;
+    public bool AllSectionUnit
+    {
+        get => this.allSectionUnit;
+        set
+        {
+            this.SetProperty(ref this.allSectionUnit, value);
+            foreach (var cut in this.cuts)
+            {
+                cut.ShowUnitSection = value;
+            }
+        }
+    }
+
+    public bool AllSectionScreen
+    {
+        get => this.allSectionScreen;
+        set
+        {
+            this.SetProperty(ref this.allSectionScreen, value);
+            foreach (var cut in this.cuts)
+            {
+                cut.ShowScreenSection = value;
+            }
+        }
+    }
+
+    public bool AllSectionCamera
+    {
+        get => this.allSectionCamera;
+        set
+        {
+            this.SetProperty(ref this.allSectionCamera, value);
+            foreach (var cut in this.cuts)
+            {
+                cut.ShowCameraSection = value;
+            }
+        }
+    }
 
     bool IDragDropHandler.HandleDrop(object listViewContext, IList selectedItems, object targetContext)
     {
@@ -66,11 +107,15 @@ public sealed class VmCuts : VmPageBase,
 
         var dropIndex = this.cuts.IndexOf(dropTarget);
         var itemsIndex = items.Select(this.cuts.IndexOf).OrderByDescending(i => i).ToList();
+        if (itemsIndex.Count == 0)
+        {
+            return false;
+        }
 
         // drop 대상이 items에 속해있으면 에러
         if (itemsIndex.Contains(dropIndex))
         {
-            Log.Error("drop target is in the moving items.");
+            //Log.Error("drop target is in the moving items.");
             return false;
         }
 

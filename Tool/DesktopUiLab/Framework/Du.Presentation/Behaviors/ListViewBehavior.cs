@@ -1,13 +1,10 @@
 ﻿namespace Du.Presentation.Behaviors;
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using Cs.Logging;
 using Du.Core.Interfaces;
 using Du.Presentation.Util;
@@ -58,7 +55,14 @@ public class ListViewBehavior : Behavior<ListView>
         }
 
         var data = this.AssociatedObject.SelectedItems.Cast<object>().ToList();
-        DragDrop.DoDragDrop(listViewItem, data, DragDropEffects.Move);
+        try
+        {
+            DragDrop.DoDragDrop(listViewItem, data, DragDropEffects.Move);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex.ToString());
+        }
     }
 
     private void AssociatedObject_Drop(object sender, DragEventArgs e)
