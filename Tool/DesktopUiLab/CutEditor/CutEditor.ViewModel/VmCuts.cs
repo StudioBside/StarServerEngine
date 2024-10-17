@@ -11,9 +11,11 @@ using Cs.Core.Util;
 using Cs.Logging;
 using CutEditor.Model;
 using CutEditor.ViewModel.Detail;
+using CutEditor.ViewModel.UndoCommands;
 using Du.Core.Bases;
 using Du.Core.Interfaces;
 using Du.Core.Models;
+using Du.Core.Util;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -29,6 +31,7 @@ public sealed class VmCuts : VmPageBase,
     private readonly string fullFilePath;
     private readonly TempUidGenerator uidGenerator = new();
     private readonly IServiceProvider services;
+    private readonly UndoController undoController = new();
     private bool allSectionUnit = true;
     private bool allSectionScreen;
     private bool allSectionCamera;
@@ -64,10 +67,12 @@ public sealed class VmCuts : VmPageBase,
     }
 
     public IList<VmCut> Cuts => this.cuts;
-    public IList SelectedCuts => this.selectedCuts;
+    public IList<VmCut> SelectedCuts => this.selectedCuts;
     public ICommand BackCommand { get; }
     public ICommand SaveCommand { get; }
     public ICommand DeleteCommand { get; }
+    public ICommand UndoCommand => this.undoController.UndoCommand;
+    public ICommand RedoCommand => this.undoController.RedoCommand;
     public bool AllSectionUnit
     {
         get => this.allSectionUnit;
@@ -232,17 +237,13 @@ public sealed class VmCuts : VmPageBase,
 
     private void OnDelete()
     {
-        if (this.selectedCuts.Count == 0)
+        var command = DeleteCuts.Create(this);
+        if (command is null)
         {
             return;
         }
 
-        var selectedClone = this.selectedCuts.ToArray();
-        foreach (var data in selectedClone)
-        {
-            this.cuts.Remove(data);
-        }
-
-        this.selectedCuts.Clear();
+        command.Redo();
+        this.undoController.Add(command);
     }
 }

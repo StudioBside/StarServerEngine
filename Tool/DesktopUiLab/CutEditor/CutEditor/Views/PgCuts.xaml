@@ -241,6 +241,8 @@
                      extensions:ListViewExtensions.SelectedValues="{Binding SelectedCuts}">
             <ui:ListView.InputBindings>
                 <KeyBinding Key="Delete" Command="{Binding DeleteCommand}"/>
+                <KeyBinding Key="Z" Modifiers="Control" Command="{Binding UndoCommand}"/>
+                <KeyBinding Key="Y" Modifiers="Control" Command="{Binding RedoCommand}"/>
             </ui:ListView.InputBindings>
             <ui:ListView.ContextMenu>
                 <ContextMenu>
