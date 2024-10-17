@@ -25,6 +25,7 @@ public sealed class VmCuts : VmPageBase,
 
     private readonly CutScene cutscene;
     private readonly ObservableCollection<VmCut> cuts = new();
+    private readonly ObservableCollection<VmCut> selectedCuts = new();
     private readonly string fullFilePath;
     private readonly TempUidGenerator uidGenerator = new();
     private readonly IServiceProvider services;
@@ -39,6 +40,7 @@ public sealed class VmCuts : VmPageBase,
         this.services = services;
         this.BackCommand = new RelayCommand(this.OnBack);
         this.SaveCommand = new RelayCommand(this.OnSave);
+        this.DeleteCommand = new RelayCommand(this.OnDelete);
 
         lastCutSceneHistory = this.cutscene;
 
@@ -62,8 +64,10 @@ public sealed class VmCuts : VmPageBase,
     }
 
     public IList<VmCut> Cuts => this.cuts;
+    public IList SelectedCuts => this.selectedCuts;
     public ICommand BackCommand { get; }
     public ICommand SaveCommand { get; }
+    public ICommand DeleteCommand { get; }
     public bool AllSectionUnit
     {
         get => this.allSectionUnit;
@@ -223,6 +227,22 @@ public sealed class VmCuts : VmPageBase,
 
     private void OnSave()
     {
-        Log.Debug("SaveCommand");
+        Log.Debug($"SaveCommand. selected:{this.selectedCuts.Count}");
+    }
+
+    private void OnDelete()
+    {
+        if (this.selectedCuts.Count == 0)
+        {
+            return;
+        }
+
+        var selectedClone = this.selectedCuts.ToArray();
+        foreach (var data in selectedClone)
+        {
+            this.cuts.Remove(data);
+        }
+
+        this.selectedCuts.Clear();
     }
 }

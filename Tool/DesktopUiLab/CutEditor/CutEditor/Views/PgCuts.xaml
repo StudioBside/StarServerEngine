@@ -9,6 +9,7 @@
       xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
       xmlns:behaviors="clr-namespace:Du.Presentation.Behaviors;assembly=Du.Presentation"
       xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
+      xmlns:extensions="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
       xmlns:viewmodels="clr-namespace:CutEditor.ViewModel;assembly=CutEditor.ViewModel"
       d:DataContext="{d:DesignInstance Type=viewmodels:VmCuts}"
       mc:Ignorable="d" 
@@ -237,12 +238,15 @@
                      ItemTemplate="{StaticResource CutItemTemplet}"
                      AllowDrop="True"
                      SelectionMode="Extended"
-                     SelectedIndex="">
+                     extensions:ListViewExtensions.SelectedValues="{Binding SelectedCuts}">
+            <ui:ListView.InputBindings>
+                <KeyBinding Key="Delete" Command="{Binding DeleteCommand}"/>
+            </ui:ListView.InputBindings>
             <ui:ListView.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="hello">
+                    <MenuItem Header="삭제" Command="{Binding DeleteCommand}">
                         <MenuItem.Icon>
-                            <ui:SymbolIcon Symbol="Accessibility16"/>
+                            <ui:SymbolIcon Symbol="Delete12"/>
                         </MenuItem.Icon>
                     </MenuItem>
                 </ContextMenu>
