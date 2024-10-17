@@ -4,12 +4,16 @@ using System.Collections;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
+using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using Cs.Core.Util;
 using Cs.Logging;
 using CutEditor.Model;
 using CutEditor.ViewModel.Detail;
 using Du.Core.Bases;
 using Du.Core.Interfaces;
+using Du.Core.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -33,6 +37,8 @@ public sealed class VmCuts : VmPageBase,
         this.cutscene = vmHome.SelectedCutScene ?? lastCutSceneHistory;
         this.Title = $"{this.cutscene.Title} - {this.cutscene.FileName}";
         this.services = services;
+        this.BackCommand = new RelayCommand(this.OnBack);
+        this.SaveCommand = new RelayCommand(this.OnSave);
 
         lastCutSceneHistory = this.cutscene;
 
@@ -56,6 +62,8 @@ public sealed class VmCuts : VmPageBase,
     }
 
     public IList<VmCut> Cuts => this.cuts;
+    public ICommand BackCommand { get; }
+    public ICommand SaveCommand { get; }
     public bool AllSectionUnit
     {
         get => this.allSectionUnit;
@@ -206,5 +214,15 @@ public sealed class VmCuts : VmPageBase,
         //        this.StartEditCommand.NotifyCanExecuteChanged();
         //        break;
         //}
+    }
+
+    private void OnBack()
+    {
+        WeakReferenceMessenger.Default.Send(new NavigationMessage("GoBack"));
+    }
+
+    private void OnSave()
+    {
+        Log.Debug("SaveCommand");
     }
 }

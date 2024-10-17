@@ -235,7 +235,9 @@
         <!--메인 영역 : 컷 리스트-->
         <ui:ListView ItemsSource="{Binding Cuts}"
                      ItemTemplate="{StaticResource CutItemTemplet}"
-                     AllowDrop="True">
+                     AllowDrop="True"
+                     SelectionMode="Extended"
+                     SelectedIndex="">
             <ui:ListView.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="hello">
@@ -274,8 +276,10 @@
 
             <!--버튼 배열-->
             <StackPanel Orientation="Horizontal" Margin="5">
-                <ui:Button Margin="3" Content="목록으로 이동"/>
-                <ui:Button Margin="3" Content="저장하기" Appearance="Primary"/>
+                <ui:Button Margin="3" Content="목록으로 이동"
+                           Command="{Binding BackCommand}"/>
+                <ui:Button Margin="3" Content="저장하기" Appearance="Primary"
+                           Command="{Binding SaveCommand}"/>
             </StackPanel>
         </StackPanel>
     </Grid>
