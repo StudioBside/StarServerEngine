@@ -22,7 +22,7 @@
         <DataTemplate x:Key="CutItemTemplet">
             <Border BorderThickness="1" BorderBrush="LightGray"
                     CornerRadius="8">
-                <Grid Margin="10">
+                <Grid Margin="1">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
@@ -33,7 +33,7 @@
                     <DockPanel Grid.Row="0" LastChildFill="True">
                         <TextBlock DockPanel.Dock="Left" Grid.Row="0" Grid.Column="0"
                                    VerticalAlignment="Center"
-                                   Margin="10">
+                                   Margin="1">
                             <Run>Uid : </Run>
                             <Run Text="{Binding Cut.Uid, Mode=OneWay}" />
                         </TextBlock>
