@@ -16,8 +16,11 @@ public partial class MainWindow : Window
         var services = App.Current.Services;
         this.DataContext = services.GetService<VmMain>();
 
-        var dialogservice = services.GetService<IContentDialogService>();
-        dialogservice.SetDialogHost(this.RootContentDialog);
+        var dialogService = services.GetService<IContentDialogService>();
+        dialogService.SetDialogHost(this.RootContentDialog);
+
+        var snackbarService = services.GetService<ISnackbarService>();
+        snackbarService.SetSnackbarPresenter(this.SnackbarPresenter);
     }
 
     protected override void OnClosing(CancelEventArgs e)

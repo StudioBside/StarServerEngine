@@ -286,6 +286,8 @@
                            Command="{Binding BackCommand}"/>
                 <ui:Button Margin="3" Content="저장하기" Appearance="Primary"
                            Command="{Binding SaveCommand}"/>
+                <Button Margin="3" Content="취소"
+                        Click="Button_Click"/>
             </StackPanel>
         </StackPanel>
     </Grid>

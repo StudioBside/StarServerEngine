@@ -5,6 +5,7 @@
     xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"    
     xmlns:local="clr-namespace:CutEditor"
     xmlns:behaviors="clr-namespace:Du.Presentation.Behaviors;assembly=Du.Presentation"
     xmlns:viewmodels="clr-namespace:CutEditor.ViewModel;assembly=CutEditor.ViewModel"
@@ -21,5 +22,6 @@
             </b:Interaction.Behaviors>
         </Frame>
         <ContentPresenter x:Name="RootContentDialog"/>
+        <ui:SnackbarPresenter x:Name="SnackbarPresenter" VerticalAlignment="Bottom" HorizontalAlignment="Center" />
     </Grid>
 </Window>
