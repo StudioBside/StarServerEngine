@@ -58,6 +58,11 @@ public sealed class VmHome : VmPageBase
         switch (e.PropertyName)
         {
             case nameof(this.SearchKeyword):
+                if (this.selectedCutScene is not null)
+                {
+                    this.SelectedCutScene = null;
+                }
+
                 this.filteredList.Refresh(this.searchKeyword);
                 break;
 

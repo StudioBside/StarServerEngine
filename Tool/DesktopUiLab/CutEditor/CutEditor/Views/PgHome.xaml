@@ -18,211 +18,92 @@
     mc:Ignorable="d">
 
     <Grid Margin="10">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="4*" />
-            <ColumnDefinition Width="2*" />
-        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" /> <!--타이틀-->
+            <RowDefinition Height="Auto" /> <!--검색어 입력-->
+            <RowDefinition Height="*" /> <!--컷신 리스트-->
+            <RowDefinition Height="Auto" /> <!--버튼 패널-->
+        </Grid.RowDefinitions>
 
-        <!--좌측 영역-->
-        <Grid Grid.Column="0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" /> <!--타이틀-->
-                <RowDefinition Height="Auto" /> <!--검색어 입력-->
-                <RowDefinition Height="*" /> <!--컷신 리스트-->
-            </Grid.RowDefinitions>
+        <!--좌상단 타이틀 영역-->
+        <TextBlock Grid.Row="0" Margin="0,0,0,10" FontSize="20" Text="{Binding Title}" />
 
-            <!--좌상단 타이틀 영역-->
-            <TextBlock Grid.Row="0" Margin="0,0,0,10" FontSize="20" Text="{Binding Title}" />
+        <!--좌중단 검색 필터 영역-->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-            <!--좌중단 검색 필터 영역-->
-            <Grid Grid.Row="1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
+            <ui:SymbolIcon Symbol="Search12"
+                            Margin="10,0,10,0" />
 
-                <ui:SymbolIcon Symbol="Search12"
-                               Margin="10,0,10,0" />
-
-                <ui:TextBox
-                    Grid.Column="1"
-                    Margin="0,0,10,0"
-                    PlaceholderText="검색어 입력.."
-                    Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}"
-                    Icon="Search12"
-                    ext:FocusExtension.IsFocused="True"
-                    BorderThickness="0"/>
-            </Grid>
-
-            <!--좌하단 파일 리스트 영역-->
-            <ui:ListView
-                Grid.Row="2"
-                ItemsSource="{Binding FilteredFiles}"
-                Margin="0,10,0,0"
-                ScrollViewer.VerticalScrollBarVisibility="Auto"
-                SelectedItem="{Binding SelectedCutScene}"
-                SelectionMode="Single">
-                <!--<ListView.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock  Margin="8,4" FontSize="16" Text="{Binding FileName}" />
-                    </DataTemplate>
-                </ListView.ItemTemplate>-->
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn 
-                            Header="Id"
-                            Width="Auto"
-                            DisplayMemberBinding="{Binding Id}"/>
-                        <GridViewColumn 
-                            Header="타이틀"
-                            Width="Auto"
-                            DisplayMemberBinding="{Binding Title}"/>
-                        <GridViewColumn 
-                            Header="파일"
-                            Width="Auto"
-                            DisplayMemberBinding="{Binding FileName}"/>
-                        <GridViewColumn 
-                            Header="타입"
-                            Width="Auto"
-                            DisplayMemberBinding="{Binding CutsceneType}"/>
-                        <GridViewColumn 
-                            Header="필터"
-                            Width="Auto"
-                            DisplayMemberBinding="{Binding CutsceneFilter}"/>
-                    </GridView>
-                </ListView.View>
-                <b:Interaction.Triggers>
-                    <b:EventTrigger EventName="MouseDoubleClick">
-                        <b:InvokeCommandAction 
-                            Command="{Binding StartEditCommand}"
-                            CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=ListView}}"/>
-                    </b:EventTrigger>
-                </b:Interaction.Triggers>
-            </ui:ListView>
+            <ui:TextBox
+                Grid.Column="1"
+                Margin="0,0,10,0"
+                PlaceholderText="검색어 입력.."
+                Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}"
+                Icon="Search12"
+                ext:FocusExtension.IsFocused="True"
+                BorderThickness="0"/>
         </Grid>
 
-        <!--우측 영역-->
-        <ScrollViewer Grid.Column="1"
-                      Margin="10"
-                      VerticalScrollBarVisibility="Auto">
-            
-            <StackPanel Orientation="Vertical"
-                        Visibility="{Binding SelectedCutScene, Converter={converters:NullToVisibilityConverter}}">
-                
-                <!--파일 이름 및 부가 정보 텍스트-->
-                <TextBlock Text="{Binding SelectedCutScene.FileName}" Margin="0,10" />
+        <!--좌하단 파일 리스트 영역-->
+        <ui:ListView
+            Grid.Row="2"
+            ItemsSource="{Binding FilteredFiles}"
+            Margin="0,10,0,0"
+            ScrollViewer.VerticalScrollBarVisibility="Auto"
+            SelectedItem="{Binding SelectedCutScene}"
+            SelectionMode="Single">
+            <!--<ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock  Margin="8,4" FontSize="16" Text="{Binding FileName}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>-->
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn 
+                        Header="Id"
+                        Width="Auto"
+                        DisplayMemberBinding="{Binding Id}"/>
+                    <GridViewColumn 
+                        Header="타이틀"
+                        Width="Auto"
+                        DisplayMemberBinding="{Binding Title}"/>
+                    <GridViewColumn 
+                        Header="파일"
+                        Width="Auto"
+                        DisplayMemberBinding="{Binding FileName}"/>
+                    <GridViewColumn 
+                        Header="타입"
+                        Width="Auto"
+                        DisplayMemberBinding="{Binding CutsceneType}"/>
+                    <GridViewColumn 
+                        Header="필터"
+                        Width="Auto"
+                        DisplayMemberBinding="{Binding CutsceneFilter}"/>
+                </GridView>
+            </ListView.View>
+            <b:Interaction.Triggers>
+                <b:EventTrigger EventName="MouseDoubleClick">
+                    <b:InvokeCommandAction 
+                        Command="{Binding StartEditCommand}"
+                        CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=ListView}}"/>
+                </b:EventTrigger>
+            </b:Interaction.Triggers>
+        </ui:ListView>
 
-                <!--타이틀 관련 설정-->
-                <Border BorderThickness="1" BorderBrush="LightGray" CornerRadius="8" Margin="0,0,0,5"
-                        DataContext="{Binding SelectedCutScene}">
-                    <Grid Margin="10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Row="4"
+                    Margin="10"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right">
 
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
+            <ui:Button Margin="0,0,10,0"
+                Content="새 파일..."
+                Appearance="Primary"
+                Command="{Binding StartEditCommand}"/>
 
-                        <Label Grid.Column="0" Grid.Row="0"
-                               VerticalAlignment="Bottom"
-                               Content="타이틀:"/>
-                        <ui:TextBox Grid.Column="1" Grid.Row="0" 
-                                    Text="{Binding Title.Korean}"
-                                    PlaceholderText="Title.Korean"
-                                    BorderThickness="0"/>
-
-                        <Label Grid.Column="0" Grid.Row="1"
-                               VerticalAlignment="Bottom"
-                               Content="출력시간(초):"/>
-                        <ui:NumberBox Grid.Column="1" Grid.Row="1" 
-                                      Icon="NumberSymbolSquare24"
-                                      Text="{Binding TitleTalkTime}"
-                                      PlaceholderText="TitleFadeOutTime"
-                                      SpinButtonPlacementMode="Hidden"
-                                      BorderThickness="0"/>
-
-                        <CheckBox Grid.Column="0" Grid.Row="2"
-                                  Content="페이드아웃" IsChecked="{Binding TitleFadeout}" />
-
-                        <DockPanel Grid.Column="1" Grid.Row="2"
-                                   LastChildFill="True">
-
-                            <Label Content="시간(초):"
-                                   VerticalAlignment="Bottom"
-                                   Visibility="{Binding TitleFadeout, Converter={converters:BoolToVisibilityConverter}}"/>
-
-                            <ui:NumberBox Icon="NumberSymbolSquare24"
-                                          Text="{Binding TitleFadeOutTime}"
-                                          Visibility="{Binding TitleFadeout, Converter={converters:BoolToVisibilityConverter}}"
-                                          PlaceholderText="TitleFadeout"
-                                          SpinButtonPlacementMode="Hidden"
-                                          BorderThickness="0"/>
-                        </DockPanel>
-
-                    </Grid>
-                </Border>
-
-                <!--기타 설정-->
-                <Border BorderThickness="1" BorderBrush="LightGray" CornerRadius="8" Margin="0,0,0,5"
-                        DataContext="{Binding SelectedCutScene}">
-                    <Grid Margin="10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-
-                        <Label Grid.Column="0" Grid.Row="0"
-                               VerticalAlignment="Bottom"
-                               Content="파일명:"/>
-                        <ui:TextBox Grid.Column="1" Grid.Row="0" 
-                                    Text="{Binding FileName}"
-                                    PlaceholderText="FileName"
-                                    BorderThickness="0"/>
-
-                        <Label Grid.Column="0" Grid.Row="1"
-                               VerticalAlignment="Center"
-                               Content="컷신 타입:"/>
-                        <ComboBox Grid.Column="1" Grid.Row="1"
-                                  ItemsSource="{Binding Source={ext:EnumValues {x:Type models:Enums+CutsceneType}}}"
-                                  SelectedItem="{Binding CutsceneType}"
-                                  IsEditable="False">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding .}"/>
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-
-                        <Label Grid.Column="0" Grid.Row="2"
-                               VerticalAlignment="Bottom"
-                               Content="컷신 필터:"/>
-                        <ui:TextBox Grid.Column="1" Grid.Row="2" 
-                                    Text="{Binding CutsceneFilter}"
-                                    PlaceholderText="CutsceneFilter"
-                                    BorderThickness="0"/>
-
-                    </Grid>
-                </Border>
-
-                <StackPanel Orientation="Horizontal"
-                            HorizontalAlignment="Left">
-                    <Button Margin="0,0,10,0"
-                            Content="컷 편집" Command="{Binding StartEditCommand}"/>
-                </StackPanel>
-            </StackPanel>
-
-        </ScrollViewer>
+        </StackPanel>
     </Grid>
 </Page>

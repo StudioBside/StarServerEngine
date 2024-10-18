@@ -30,10 +30,10 @@
                     </Grid.RowDefinitions>
 
                     <!--컨트롤 표시 제어하는 체크박스 목록-->
-                    <DockPanel Grid.Row="0" LastChildFill="True">
+                    <DockPanel Grid.Row="0" LastChildFill="True"
+                               Margin="5,0">
                         <TextBlock DockPanel.Dock="Left" Grid.Row="0" Grid.Column="0"
-                                   VerticalAlignment="Center"
-                                   Margin="1">
+                                   VerticalAlignment="Center">
                             <Run>Uid : </Run>
                             <Run Text="{Binding Cut.Uid, Mode=OneWay}" />
                         </TextBlock>
@@ -102,7 +102,7 @@
                     </Border>
 
                     <!--컨트롤 : 유닛-->
-                    <Border Grid.Row="2" Margin="0,10,0,0" Background="Pink"
+                    <Border Grid.Row="2" Margin="0,1,0,0" Background="Pink"
                             Visibility="{Binding ShowUnitSection, Converter={converters:BoolToVisibilityConverter}}"
                             CornerRadius="8">
                         <!--컨트롤이 많으니까 3덩어리 정도로 나눠서 별도의 Grid로 묶어줍니다.-->
