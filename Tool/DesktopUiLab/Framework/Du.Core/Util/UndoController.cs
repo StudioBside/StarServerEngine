@@ -14,12 +14,12 @@ public sealed class UndoController
     public UndoController(int limit = 10)
     {
         this.limit = limit;
-        this.UndoCommand = new RelayCommand(this.Undo);
-        this.RedoCommand = new RelayCommand(this.Redo);
+        this.UndoCommand = new RelayCommand(this.Undo, () => this.currentNode is not null);
+        this.RedoCommand = new RelayCommand(this.Redo, this.CanRedo);
     }
 
-    public ICommand UndoCommand { get; }
-    public ICommand RedoCommand { get; }
+    public IRelayCommand UndoCommand { get; }
+    public IRelayCommand RedoCommand { get; }
 
     public void Add(IDormammu command)
     {
@@ -41,6 +41,9 @@ public sealed class UndoController
         {
             this.commands.RemoveFirst();
         }
+
+        this.UndoCommand.NotifyCanExecuteChanged();
+        this.RedoCommand.NotifyCanExecuteChanged();
     }
 
     public void Undo()
@@ -52,17 +55,30 @@ public sealed class UndoController
 
         this.currentNode.Value.Undo();
         this.currentNode = this.currentNode.Previous;
+
+        this.UndoCommand.NotifyCanExecuteChanged();
+        this.RedoCommand.NotifyCanExecuteChanged();
     }
 
     public void Redo()
     {
-        if (this.commands.Count == 0 || 
-            (this.currentNode is not null && this.currentNode.Next == null))
+        if (this.CanRedo() == false)
         {
             return;
         }
 
         this.currentNode = this.currentNode?.Next ?? this.commands.First!;
         this.currentNode.Value.Redo();
+
+        this.UndoCommand.NotifyCanExecuteChanged();
+        this.RedoCommand.NotifyCanExecuteChanged();
+    }
+
+    //// --------------------------------------------------------------------------------
+
+    private bool CanRedo()
+    {
+        return this.commands.Count > 0 &&
+            (this.currentNode is null || this.currentNode.Next is not null);
     }
 }

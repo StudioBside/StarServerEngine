@@ -282,12 +282,28 @@
 
             <!--버튼 배열-->
             <StackPanel Orientation="Horizontal" Margin="5">
-                <ui:Button Margin="3" Content="목록으로 이동"
+                <ui:Button Margin="3" Icon="{ui:SymbolIcon ArrowUndo16}"
+                           Command="{Binding UndoCommand}"/>
+                <ui:Button Margin="3" Icon="{ui:SymbolIcon ArrowRedo16}"
+                           Command="{Binding RedoCommand}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="5">
+                <ui:Button Margin="3" Content="새로운 컷"
+                           Icon="{ui:SymbolIcon Add16}"/>
+                <ui:Button Margin="3" Content="선택 컷 삭제"
+                           Icon="{ui:SymbolIcon Subtract16}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="5">
+                <ui:Button Margin="3" Content="오류 메세지 테스트"
+                        Click="Button_Click"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="5">
+                <ui:Button Margin="3" Content="목록으로"
+                           Icon="{ui:SymbolIcon ArrowStepBack16}"
                            Command="{Binding BackCommand}"/>
                 <ui:Button Margin="3" Content="저장하기" Appearance="Primary"
+                           Icon="{ui:SymbolIcon Save16}"
                            Command="{Binding SaveCommand}"/>
-                <Button Margin="3" Content="취소"
-                        Click="Button_Click"/>
             </StackPanel>
         </StackPanel>
     </Grid>
