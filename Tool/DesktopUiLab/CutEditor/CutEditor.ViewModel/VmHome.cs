@@ -11,19 +11,23 @@ using CutEditor.Model;
 using Du.Core.Bases;
 using Du.Core.Interfaces;
 using Du.Core.Models;
+using Microsoft.Extensions.DependencyInjection;
 
 public sealed class VmHome : VmPageBase
 {
     private readonly List<CutScene> cutScenes = new();
+    private readonly IServiceProvider services;
     private readonly IFilteredCollection filteredList;
     private CutScene? selectedCutScene;
     private string searchKeyword = string.Empty;
 
-    public VmHome(IFilteredCollectionProvider collectionViewProvider)
+    public VmHome(IServiceProvider services)
     {
         this.Title = "컷신 목록";
-        this.filteredList = collectionViewProvider.Build(this.cutScenes);
+        this.services = services;
+        this.filteredList = services.GetRequiredService<IFilteredCollectionProvider>().Build(this.cutScenes);
         this.StartEditCommand = new RelayCommand(this.OnStartEdit, () => this.selectedCutScene is not null);
+        this.NewFileCommand = new AsyncRelayCommand(this.OnNewFile);
     }
 
     public IList<CutScene> CutScenes => this.cutScenes;
@@ -42,6 +46,7 @@ public sealed class VmHome : VmPageBase
     }
 
     public IRelayCommand StartEditCommand { get; }
+    public ICommand NewFileCommand { get; }
 
     public void AddCutScenes(IEnumerable<CutScene> cutScenes)
     {
@@ -80,6 +85,21 @@ public sealed class VmHome : VmPageBase
             return;
         }
    
+        GlobalState.Instance.ReserveVmCuts(new VmCuts.CrateParam { CutScene = this.selectedCutScene });
+        WeakReferenceMessenger.Default.Send(new NavigationMessage("Views/PgCuts.xaml"));
+    }
+
+    private async Task OnNewFile()
+    {
+        var userinputprovider = this.services.GetRequiredService<IUserInputProvider<string>>();
+        var fileName = await userinputprovider.PromptAsync("새로운 컷신을 만듭니다", "컷신 이름을 입력하세요");
+
+        if (string.IsNullOrWhiteSpace(fileName))
+        {
+            return;
+        }
+
+        GlobalState.Instance.ReserveVmCuts(new VmCuts.CrateParam { NewFileName = fileName });
         WeakReferenceMessenger.Default.Send(new NavigationMessage("Views/PgCuts.xaml"));
     }
 }

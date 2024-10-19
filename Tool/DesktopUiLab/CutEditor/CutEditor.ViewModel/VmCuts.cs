@@ -23,9 +23,6 @@ public sealed class VmCuts : VmPageBase,
     IDragDropHandler,
     IClipboardHandler
 {
-    private static CutScene lastCutSceneHistory = null!;
-
-    private readonly CutScene cutscene;
     private readonly ObservableCollection<VmCut> cuts = new();
     private readonly ObservableCollection<VmCut> selectedCuts = new();
     private readonly string fullFilePath;
@@ -36,34 +33,45 @@ public sealed class VmCuts : VmPageBase,
     private bool allSectionScreen;
     private bool allSectionCamera;
 
-    public VmCuts(VmHome vmHome, IConfiguration config, IServiceProvider services)
+    public VmCuts(IConfiguration config, IServiceProvider services)
     {
-        this.cutscene = vmHome.SelectedCutScene ?? lastCutSceneHistory;
-        this.Title = $"{this.cutscene.Title} - {this.cutscene.FileName}";
         this.services = services;
         this.BackCommand = new RelayCommand(this.OnBack);
         this.SaveCommand = new RelayCommand(this.OnSave);
         this.DeleteCommand = new RelayCommand(this.OnDelete);
 
-        lastCutSceneHistory = this.cutscene;
-
-        var path = config["CutFilesPath"] ?? throw new Exception("CutFilesPath is not set in the configuration file.");
-        this.fullFilePath = Path.Combine(path, $"CLIENT_{this.cutscene.FileName}.exported");
-
-        if (File.Exists(this.fullFilePath) == false)
+        if (GlobalState.Instance.PopVmCuts(out var param) == false)
         {
-            Log.Debug($"cutscene file not found: {this.fullFilePath}");
-            return;
+            throw new Exception($"VmCuts.CreateParam is not set in the GlobalState.");
         }
 
-        var json = JsonUtil.Load(this.fullFilePath);
-        json.GetArray("Data", this.cuts, (e, i) =>
-        {
-            var cut = new Cut(e, this.uidGenerator.Generate());
-            return new VmCut(cut, services);
-        });
+        var path = config["CutFilesPath"] ?? throw new Exception("CutFilesPath is not set in the configuration file.");
 
-        Log.Info($"cutscene loading finished. {this.cuts.Count} cuts loaded.");
+        if (param.CutScene is null)
+        {
+            this.fullFilePath = Path.Combine(path, $"CLIENT_{param.NewFileName}.exported");
+            this.Title = $"새로운 파일 생성 - {param.NewFileName}";
+        }
+        else
+        {
+            this.fullFilePath = Path.Combine(path, $"CLIENT_{param.CutScene.FileName}.exported");
+            this.Title = $"{param.CutScene.Title} - {param.CutScene.FileName}";
+
+            if (File.Exists(this.fullFilePath) == false)
+            {
+                Log.Debug($"cutscene file not found: {this.fullFilePath}");
+                return;
+            }
+
+            var json = JsonUtil.Load(this.fullFilePath);
+            json.GetArray("Data", this.cuts, (e, i) =>
+            {
+                var cut = new Cut(e, this.uidGenerator.Generate());
+                return new VmCut(cut, this.services);
+            });
+
+            Log.Info($"cutscene loading finished. {this.cuts.Count} cuts loaded.");
+        }
     }
 
     public IList<VmCut> Cuts => this.cuts;
@@ -245,5 +253,11 @@ public sealed class VmCuts : VmPageBase,
 
         command.Redo();
         this.undoController.Add(command);
+    }
+
+    public sealed record CrateParam
+    {
+        public CutScene? CutScene { get; init; }
+        public string? NewFileName { get; init; }
     }
 }

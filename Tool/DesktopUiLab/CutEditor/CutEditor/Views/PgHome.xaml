@@ -100,9 +100,13 @@
                     HorizontalAlignment="Right">
 
             <ui:Button Margin="0,0,10,0"
+                Content="편집"
+                Command="{Binding StartEditCommand}"/>
+
+            <ui:Button Margin="0,0,10,0"
                 Content="새 파일..."
                 Appearance="Primary"
-                Command="{Binding StartEditCommand}"/>
+                Command="{Binding NewFileCommand}"/>
 
         </StackPanel>
     </Grid>
