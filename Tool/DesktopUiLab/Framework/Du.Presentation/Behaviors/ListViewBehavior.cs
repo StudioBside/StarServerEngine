@@ -80,5 +80,6 @@ public class ListViewBehavior : Behavior<ListView>
         }
 
         handler.HandleDrop(this.AssociatedObject.DataContext, this.AssociatedObject.SelectedItems, target.DataContext);
+        e.Handled = true;
     }
 }

@@ -39,6 +39,7 @@ public sealed class VmCuts : VmPageBase,
         this.BackCommand = new RelayCommand(this.OnBack);
         this.SaveCommand = new RelayCommand(this.OnSave);
         this.DeleteCommand = new RelayCommand(this.OnDelete);
+        this.NewCutCommand = new RelayCommand(this.OnNewCut);
 
         if (GlobalState.Instance.PopVmCuts(out var param) == false)
         {
@@ -76,11 +77,12 @@ public sealed class VmCuts : VmPageBase,
 
     public IList<VmCut> Cuts => this.cuts;
     public IList<VmCut> SelectedCuts => this.selectedCuts;
+    public ICommand UndoCommand => this.undoController.UndoCommand;
+    public ICommand RedoCommand => this.undoController.RedoCommand;
     public ICommand BackCommand { get; }
     public ICommand SaveCommand { get; }
     public ICommand DeleteCommand { get; }
-    public ICommand UndoCommand => this.undoController.UndoCommand;
-    public ICommand RedoCommand => this.undoController.RedoCommand;
+    public ICommand NewCutCommand { get; }
     public bool AllSectionUnit
     {
         get => this.allSectionUnit;
@@ -119,6 +121,9 @@ public sealed class VmCuts : VmPageBase,
             }
         }
     }
+
+    internal TempUidGenerator UidGenerator => this.uidGenerator;
+    internal IServiceProvider Services => this.services;
 
     bool IDragDropHandler.HandleDrop(object listViewContext, IList selectedItems, object targetContext)
     {
@@ -251,6 +256,13 @@ public sealed class VmCuts : VmPageBase,
             return;
         }
 
+        command.Redo();
+        this.undoController.Add(command);
+    }
+
+    private void OnNewCut()
+    {
+        var command = NewCut.Create(this);
         command.Redo();
         this.undoController.Add(command);
     }

@@ -262,7 +262,8 @@
                            Command="{Binding RedoCommand}"/>
 
                 <ui:Button Margin="3" Content="새로운 컷"
-                           Icon="{ui:SymbolIcon Add16}"/>
+                           Icon="{ui:SymbolIcon Add16}"
+                           Command="{Binding NewCutCommand}"/>
                 <ui:Button Margin="3" Content="선택 컷 삭제"
                            Icon="{ui:SymbolIcon Subtract16}"/>
 
