@@ -9,10 +9,15 @@ using Wpf.Ui;
 internal sealed class UnitPicker(UnitPickerDialog dialog, IContentDialogService contentDialogService)
     : IUnitPicker
 {
-    public async Task<Unit?> PickUnit()
+    public async Task<IUnitPicker.PickResult> PickUnit()
     {
         dialog.DialogHost = contentDialogService.GetDialogHost();
-        _ = await dialog.ShowAsync();
-        return dialog.SelectedUnit;
+        var result = await dialog.ShowAsync();
+        return result switch
+        {
+            Wpf.Ui.Controls.ContentDialogResult.Primary => new IUnitPicker.PickResult(dialog.SelectedUnit, false),
+            Wpf.Ui.Controls.ContentDialogResult.Secondary => new IUnitPicker.PickResult(null, false),
+            _ => new IUnitPicker.PickResult(null, true),
+        };
     }
 }

@@ -62,6 +62,12 @@ public sealed class VmCut : ObservableObject
     private async Task OnPickUnit()
     {
         var unitpicker = this.services.GetRequiredService<IUnitPicker>();
-        this.Cut.Unit = await unitpicker.PickUnit();
+        var result = await unitpicker.PickUnit();
+        if (result.IsCanceled)
+        {
+            return;
+        }
+
+        this.Cut.Unit = result.Unit;
     }
 }

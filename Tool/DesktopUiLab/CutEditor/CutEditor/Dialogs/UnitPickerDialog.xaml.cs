@@ -31,15 +31,4 @@ public partial class UnitPickerDialog : ContentDialog
 
         base.OnButtonClick(button);
     }
-
-    protected override void OnClosed(ContentDialogResult result)
-    {
-        if (result != ContentDialogResult.Primary)
-        {
-            // 선택 버튼을 누르지 않은 경우는 선택 사항을 취소시킨다.
-            this.SelectedUnit = null;
-        }
-
-        base.OnClosed(result);
-    }
 }

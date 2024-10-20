@@ -5,5 +5,7 @@ using Shared.Templet.TempletTypes;
 
 public interface IUnitPicker
 {
-    Task<Unit?> PickUnit();
+    Task<PickResult> PickUnit();
+
+    public readonly record struct PickResult(Unit? Unit, bool IsCanceled);
 }

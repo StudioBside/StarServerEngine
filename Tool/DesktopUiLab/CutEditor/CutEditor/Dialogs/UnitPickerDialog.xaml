@@ -8,13 +8,16 @@
     xmlns:local="clr-namespace:CutEditor.Dialogs"
     xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
     mc:Ignorable="d" 
+    d:DataContext="{d:DesignInstance Type=local:UnitPickerDialog}"
     d:DesignHeight="450" d:DesignWidth="800"
     ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
     ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     Title="유닛 선택"
     PrimaryButtonText="선택"
+    SecondaryButtonText="비우기"
     CloseButtonText="취소"
-    IsPrimaryButtonEnabled="True">
+    IsPrimaryButtonEnabled="True"
+    IsSecondaryButtonEnabled="True">
 
     <ui:ContentDialog.Resources>
         <Style BasedOn="{StaticResource {x:Type ui:ContentDialog}}" TargetType="{x:Type local:UnitPickerDialog}" />
