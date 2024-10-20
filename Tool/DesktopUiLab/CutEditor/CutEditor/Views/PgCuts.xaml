@@ -228,13 +228,60 @@
     </Page.Resources>
 
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="250"/>
-        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!--우측 패널-->
+        <WrapPanel Grid.Row="0" Orientation="Horizontal">
+
+            <!--일괄 제어-->
+            <Border BorderThickness="1" BorderBrush="LightGray"
+                    CornerRadius="8"
+                    Margin="5">
+                <StackPanel Orientation="Horizontal" Margin="5">
+                    <ui:TextBlock FontTypography="Subtitle" Text="일괄 제어" />
+                    <Border HorizontalAlignment="Stretch" BorderThickness=".7" BorderBrush="LightGray"
+                            Margin="10,0,10,0"/>
+                    <CheckBox Content="유닛" Background="Pink" MinWidth="80"
+                              IsChecked="{Binding AllSectionUnit}"/>
+                    <CheckBox Content="화면" Background="LightSkyBlue" MinWidth="80"
+                              IsChecked="{Binding AllSectionScreen}"/>
+                    <CheckBox Content="카메라" Background="GreenYellow" MinWidth="80"
+                              IsChecked="{Binding AllSectionCamera}"/>
+                </StackPanel>
+            </Border>
+
+            <!--버튼 배열-->
+            <StackPanel Orientation="Horizontal" Margin="5">
+                <ui:Button Margin="3" Icon="{ui:SymbolIcon ArrowUndo16}"
+                           Command="{Binding UndoCommand}"/>
+                <ui:Button Margin="3" Icon="{ui:SymbolIcon ArrowRedo16}"
+                           Command="{Binding RedoCommand}"/>
+
+                <ui:Button Margin="3" Content="새로운 컷"
+                           Icon="{ui:SymbolIcon Add16}"/>
+                <ui:Button Margin="3" Content="선택 컷 삭제"
+                           Icon="{ui:SymbolIcon Subtract16}"/>
+
+                <ui:Button Margin="3" Content="오류 메세지 테스트"
+                        Click="Button_Click"/>
+
+                <ui:Button Margin="3" Content="목록으로"
+                           Icon="{ui:SymbolIcon ArrowStepBack16}"
+                           Command="{Binding BackCommand}"/>
+                <ui:Button Margin="3" Content="저장하기" Appearance="Primary"
+                           Icon="{ui:SymbolIcon Save16}"
+                           Command="{Binding SaveCommand}"/>
+            </StackPanel>
+        </WrapPanel>
+
+        <Border BorderThickness="1" BorderBrush="Gray"/>
 
         <!--메인 영역 : 컷 리스트-->
-        <ui:ListView ItemsSource="{Binding Cuts}"
+        <ui:ListView Grid.Row="2" ItemsSource="{Binding Cuts}"
                      ItemTemplate="{StaticResource CutItemTemplet}"
                      AllowDrop="True"
                      SelectionMode="Extended"
@@ -258,53 +305,5 @@
             </b:Interaction.Behaviors>
         </ui:ListView>
         
-        <!--우측 패널-->
-        <StackPanel Grid.Column="1" Orientation="Vertical">
-            
-            <!--일괄 제어-->
-            <Border BorderThickness="1" BorderBrush="LightGray"
-                    CornerRadius="8"
-                    Margin="10">
-                <StackPanel Margin="10">
-                    <ui:TextBlock FontTypography="Subtitle" Text="일괄 제어" />
-                    <Border HorizontalAlignment="Stretch" BorderThickness=".7" BorderBrush="LightGray"
-                            Margin="0,5"/>
-                    <CheckBox Content="유닛" Background="Pink"
-                              IsChecked="{Binding AllSectionUnit}"/>
-                    <CheckBox Content="화면" Background="LightSkyBlue"
-                              IsChecked="{Binding AllSectionScreen}"/>
-                    <CheckBox Content="카메라" Background="GreenYellow"
-                              IsChecked="{Binding AllSectionCamera}"/>
-                </StackPanel>
-            </Border>
-            
-            <!--작업 히스토리-->
-
-            <!--버튼 배열-->
-            <StackPanel Orientation="Horizontal" Margin="5">
-                <ui:Button Margin="3" Icon="{ui:SymbolIcon ArrowUndo16}"
-                           Command="{Binding UndoCommand}"/>
-                <ui:Button Margin="3" Icon="{ui:SymbolIcon ArrowRedo16}"
-                           Command="{Binding RedoCommand}"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="5">
-                <ui:Button Margin="3" Content="새로운 컷"
-                           Icon="{ui:SymbolIcon Add16}"/>
-                <ui:Button Margin="3" Content="선택 컷 삭제"
-                           Icon="{ui:SymbolIcon Subtract16}"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="5">
-                <ui:Button Margin="3" Content="오류 메세지 테스트"
-                        Click="Button_Click"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal" Margin="5">
-                <ui:Button Margin="3" Content="목록으로"
-                           Icon="{ui:SymbolIcon ArrowStepBack16}"
-                           Command="{Binding BackCommand}"/>
-                <ui:Button Margin="3" Content="저장하기" Appearance="Primary"
-                           Icon="{ui:SymbolIcon Save16}"
-                           Command="{Binding SaveCommand}"/>
-            </StackPanel>
-        </StackPanel>
     </Grid>
 </Page>
