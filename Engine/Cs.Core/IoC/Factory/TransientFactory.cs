@@ -14,7 +14,6 @@
             this.Type = typeof(TInstance);
         }
 
-        public bool IsScoped { get; } = false;
         public Type Type { get; }
 
         public T GetInstance<T>() where T : class

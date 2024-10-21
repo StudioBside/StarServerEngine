@@ -29,6 +29,30 @@
             this.cases.Add(new CaseData(ratio, this.totalRatio, value));
         }
 
+        public void RemoveCase(Predicate<T> predicate)
+        {
+            var newInstance = new RatioLottery<T>();
+
+            foreach (var data in this.cases)
+            {
+                if (predicate(data.Value))
+                {
+                    continue;
+                }
+
+                newInstance.AddCase(data.Ratio, data.Value);
+            }
+
+            if (newInstance.Count == this.Count)
+            {
+                return;
+            }
+
+            this.cases.Clear();
+            this.cases.AddRange(newInstance.cases);
+            this.totalRatio = newInstance.totalRatio;
+        }
+
         public T Decide()
         {
             int randomValue = RandomGenerator.Next(this.TotalRatio);
