@@ -242,7 +242,7 @@
                     CornerRadius="8"
                     Margin="5">
                 <StackPanel Orientation="Horizontal" Margin="5">
-                    <ui:TextBlock FontTypography="Subtitle" Text="일괄 제어" />
+                    <ui:TextBlock FontTypography="BodyStrong" Text="일괄 제어" VerticalAlignment="Center" />
                     <Border HorizontalAlignment="Stretch" BorderThickness=".7" BorderBrush="LightGray"
                             Margin="10,0,10,0"/>
                     <CheckBox Content="유닛" Background="Pink" MinWidth="80"
