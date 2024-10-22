@@ -12,6 +12,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Cs.Core" Version="0.0.8" />
+    <PackageReference Include="Cs.Logging" Version="0.0.23" />
+    <PackageReference Include="Cs.Antlr" Version="0.0.2" />
     <PackageReference Include="stylecop.analyzers" Version="1.2.0-beta.556">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -22,4 +25,24 @@
     <ProjectReference Include="..\CutEditor.Model\CutEditor.Model.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!--파일 출력용 antlr template-->
+    <None Include="..\..\..\Bin\Excel2Json\TextTemplate\*.stg">
+      <Link>TextTemplate\%(RecursiveDir)%(FileName)%(Extension)</Link>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="TextTemplates\CutsOutput.stg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="TextTemplates\CutsOutput.stg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Antlr4.StringTemplate">
+      <HintPath>Antlr4.StringTemplate.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>

@@ -7,6 +7,7 @@ using System.Text;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Cs.Antlr;
 using Cs.Core.Util;
 using Cs.Logging;
 using CutEditor.Model;
@@ -246,6 +247,24 @@ public sealed class VmCuts : VmPageBase,
     private void OnSave()
     {
         Log.Debug($"SaveCommand. selected:{this.selectedCuts.Count}");
+
+        var template = StringTemplateFactory.Instance.GetTemplet("CutsOutput", "writeFile");
+        if (template is null)
+        {
+            Log.Error($"[VmCuts] template not found: CutsOutput.writeFile");
+            return;
+        }
+
+        var model = this.cuts.Select(e => e.Cut.ToOutputType()).ToList<object>;
+        template.Add("model", model);
+
+        if (File.Exists(this.fullFilePath))
+        {
+            File.SetAttributes(this.fullFilePath, FileAttributes.Normal);
+        }
+
+        using var sw = new StreamWriter(this.fullFilePath, append: false, Encoding.UTF8);
+        sw.WriteLine(template.Render());
     }
 
     private void OnDelete()

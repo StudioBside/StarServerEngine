@@ -5,7 +5,6 @@ using System.Windows;
 using Cs.Logging;
 using Cs.Logging.Providers;
 using CutEditor.Dialogs;
-using CutEditor.Model;
 using CutEditor.Model.Interfaces;
 using CutEditor.Services;
 using CutEditor.ViewModel;
@@ -65,6 +64,7 @@ public partial class App : Application
     {
         Log.Initialize(new SimpleFileLogProvider("log.txt"), LogLevelConfig.All);
 
+        GlobalState.Instance.Initialize();
         TempletLoad.Execute(this.Services.GetRequiredService<IConfiguration>());
 
         var loader = this.Services.GetRequiredService<FileLoader>();

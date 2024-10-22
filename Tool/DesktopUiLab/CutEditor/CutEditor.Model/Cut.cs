@@ -60,6 +60,20 @@ public sealed class Cut : ObservableObject
         set => this.SetProperty(ref this.unit, value);
     }
 
+    public object ToOutputType()
+    {
+        return new
+        {
+            UnitStrId = this.unitStrId,
+            UnitTalk_KOR = this.unitTalk.Korean,
+            UnitTalk_ENG = this.unitTalk.English,
+            UnitTalk_JPN = this.unitTalk.Japanese,
+            UnitTalk_CHS = this.unitTalk.ChineseSimplified,
+            UnitTalk_CHT = this.unitTalk.ChineseTraditional,
+            TalkTime = this.talkTime,
+        };
+    }
+
     //// --------------------------------------------------------------------------------
 
     protected override void OnPropertyChanged(PropertyChangedEventArgs e)

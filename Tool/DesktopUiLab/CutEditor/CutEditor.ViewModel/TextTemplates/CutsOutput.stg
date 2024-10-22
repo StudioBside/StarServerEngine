@@ -1,0 +1,29 @@
+﻿writeFile(model) ::= <<
+{
+    "$schema" :"../../../../../DataSchema/Exported.jsonc",
+    "$comment": "name: <model.Extract.OutputFile>",
+    "_Version": 0,
+    "Data": [
+        <model.Rows:{row | <row:writeRow()>};separator=",\n">
+    ]
+}
+>>
+
+writeRow(table) ::= <<
+<table.OpenBracket>
+  <table.Elements:{element | <element:writeElement()>};separator=",\n"><if (table.HasSubTables)>,<endif>
+  <table.SubTables:{table | <table:writeTable()>};separator=",\n">
+<table.CloseBracket>
+>>
+
+writeTable(table) ::= <<
+<if(table.HasName)>"<table.Name>" : <endif>
+<table.OpenBracket>
+  <table.Elements:{element | <element:writeElement()>};separator=",\n">
+  <table.SubTables:{table | <table:writeTable()>};separator=",\n">
+<table.CloseBracket>
+>>
+
+writeElement(element) ::= <<
+"<element.Key>" : <element.OutputValue>
+>>
