@@ -41,11 +41,13 @@
 
         public void CreateFromString(string sourceName, string text)
         {
-            if (this.cache.TryGetValue(sourceName, out var templetGroup) == false)
+            if (this.cache.ContainsKey(sourceName))
             {
-                templetGroup = new TemplateGroupString(sourceName, text);
-                this.cache.Add(text, templetGroup);
+                return;
             }
+
+            var templetGroup = new TemplateGroupString(sourceName, text);
+            this.cache.Add(sourceName, templetGroup);
         }
 
         public Template? GetTemplet(string sourceName, string name)
