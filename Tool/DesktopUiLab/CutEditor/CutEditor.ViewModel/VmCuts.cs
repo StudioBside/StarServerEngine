@@ -27,7 +27,8 @@ public sealed class VmCuts : VmPageBase,
 {
     private readonly ObservableCollection<VmCut> cuts = new();
     private readonly ObservableCollection<VmCut> selectedCuts = new();
-    private readonly string fullFilePath;
+    private readonly string textFilePath;
+    private readonly string binFilePath;
     private readonly string name;
     private readonly TempUidGenerator uidGenerator = new();
     private readonly IServiceProvider services;
@@ -49,7 +50,8 @@ public sealed class VmCuts : VmPageBase,
             throw new Exception($"VmCuts.CreateParam is not set in the GlobalState.");
         }
 
-        var path = config["CutFilesPath"] ?? throw new Exception("CutFilesPath is not set in the configuration file.");
+        this.textFilePath = config["CutTextFilePath"] ?? throw new Exception("CutTextFilePath is not set in the configuration file.");
+        this.binFilePath = config["CutBinFilePath"] ?? throw new Exception("CutBinFilePath is not set in the configuration file.");
 
         if (param.CutScene is null)
         {
@@ -62,14 +64,14 @@ public sealed class VmCuts : VmPageBase,
             this.Title = $"{param.CutScene.Title} - {this.name}";
         }
 
-        this.fullFilePath = Path.Combine(path, $"CLIENT_{this.name}.exported");
-        if (File.Exists(this.fullFilePath) == false)
+        var textFilePath = this.GetTextFilePath();
+        if (File.Exists(textFilePath) == false)
         {
-            Log.Debug($"cutscene file not found: {this.fullFilePath}");
+            Log.Debug($"cutscene file not found: {textFilePath}");
             return;
         }
 
-        var json = JsonUtil.Load(this.fullFilePath);
+        var json = JsonUtil.Load(textFilePath);
         json.GetArray("Data", this.cuts, (e, i) =>
         {
             var cut = new Cut(e, this.uidGenerator.Generate());
@@ -250,11 +252,10 @@ public sealed class VmCuts : VmPageBase,
 
     private void OnSave()
     {
-        Log.Debug($"SaveCommand. selected:{this.selectedCuts.Count}");
-
+        var textFilePath = this.GetTextFilePath();
         if (DevOps.GetStreamInfo(out var streamInfo) && streamInfo.Id == (int)DevOps.P4StreamType.Alpha)
         {
-            Log.Warn($"{this.DebugName} 알파 스트림에서는 파일을 저장할 수 없습니다.");
+            Log.Warn($"{this.DebugName} 알파 스트림에서는 파일을 저장할 수 없습니다.\n전체경로:{textFilePath}");
             return;
         }
 
@@ -264,6 +265,7 @@ public sealed class VmCuts : VmPageBase,
             return;
         }
 
+        // -------------------------- save text file --------------------------
         var template = StringTemplateFactory.Instance.GetTemplet("CutsOutput", "writeFile");
         if (template is null)
         {
@@ -283,47 +285,45 @@ public sealed class VmCuts : VmPageBase,
 
         var model = new
         {
-            OutputFile = Path.GetFileNameWithoutExtension(this.fullFilePath),
+            OutputFile = this.name,
             Rows = rows,
         };
 
         template.Add("model", model);
 
-        if (File.Exists(this.fullFilePath))
+        if (File.Exists(textFilePath))
         {
-            File.SetAttributes(this.fullFilePath, FileAttributes.Normal);
+            File.SetAttributes(textFilePath, FileAttributes.Normal);
         }
 
-        using (var sw = new StreamWriter(this.fullFilePath, append: false, Encoding.UTF8))
+        using (var sw = new StreamWriter(textFilePath, append: false, Encoding.UTF8))
         {
             sw.WriteLine(template.Render());
         }
 
-        if (p4Commander.CheckIfOpened(this.fullFilePath))
+        if (p4Commander.CheckIfOpened(textFilePath) == false)
         {
-            Log.Debug($"{this.DebugName} file already opened. filePath:{this.fullFilePath}");
-            return;
+            if (p4Commander.CheckIfChanged(textFilePath, out bool changed) == false)
+            {
+                Log.Error($"{this.DebugName} text 파일 변경 여부 확인 실패.\n전체경로:{textFilePath}");
+                return;
+            }
+
+            if (changed == false)
+            {
+                Log.Info($"{this.DebugName} text 파일 변경사항이 확인되지 않았습니다.\n전체경로:{textFilePath}");
+                return;
+            }
+
+            if (p4Commander.OpenForEdit(textFilePath, out string p4Output) == false)
+            {
+                Log.Error($"{this.DebugName} text 파일 오픈 실패.\n전체경로:{textFilePath}");
+                return;
+            }
         }
 
-        if (p4Commander.CheckIfChanged(this.fullFilePath, out bool changed) == false)
-        {
-            Log.Error($"{this.DebugName} 파일 변경 여부 확인 실패. filePath:{this.fullFilePath}");
-            return;
-        }
-
-        if (changed == false)
-        {
-            Log.Debug($"{this.DebugName} file not changed. filePath:{this.fullFilePath}");
-            return;
-        }
-
-        if (p4Commander.OpenForEdit(this.fullFilePath, out string p4Output) == false)
-        {
-            Log.Error($"{this.DebugName} 파일 오픈 실패. filePath:{this.fullFilePath}");
-            return;
-        }
-
-        Log.Info($"{this.DebugName} file saved. filePath:{this.fullFilePath}");
+        // -------------------------- save binary file --------------------------
+        Log.Info($"{this.DebugName} 파일을 저장했습니다.\n전체경로:{textFilePath}");
     }
 
     private void OnDelete()
@@ -344,6 +344,9 @@ public sealed class VmCuts : VmPageBase,
         command.Redo();
         this.undoController.Add(command);
     }
+
+    private string GetTextFilePath() => Path.Combine(this.textFilePath, $"CLIENT_{this.name}.exported");
+    private string GetBinFilePath() => Path.Combine(this.binFilePath, $"CLIENT_{this.name}.bytes");
 
     public sealed record CrateParam
     {
