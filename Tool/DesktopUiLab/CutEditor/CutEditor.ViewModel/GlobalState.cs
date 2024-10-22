@@ -2,9 +2,9 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using Cs.Antlr;
 using Cs.Core;
 using Cs.Core.Util;
+using CutEditor.ViewModel.Detail;
 
 public sealed class GlobalState
 {

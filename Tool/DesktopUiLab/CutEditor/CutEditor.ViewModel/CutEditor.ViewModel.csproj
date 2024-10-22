@@ -12,9 +12,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Cs.Core" Version="0.0.8" />
-    <PackageReference Include="Cs.Logging" Version="0.0.23" />
-    <PackageReference Include="Cs.Antlr" Version="0.0.2" />
     <PackageReference Include="stylecop.analyzers" Version="1.2.0-beta.556">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

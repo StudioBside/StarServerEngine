@@ -7,7 +7,6 @@ using System.Text;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using Cs.Antlr;
 using Cs.Core.Util;
 using Cs.Logging;
 using CutEditor.Model;
@@ -19,6 +18,7 @@ using Du.Core.Models;
 using Du.Core.Util;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 
 public sealed class VmCuts : VmPageBase,
     IDragDropHandler,
@@ -255,7 +255,22 @@ public sealed class VmCuts : VmPageBase,
             return;
         }
 
-        var model = this.cuts.Select(e => e.Cut.ToOutputType()).ToList<object>;
+        var setting = new JsonSerializerSettings
+        {
+            NullValueHandling = NullValueHandling.Ignore,
+            Formatting = Formatting.Indented,
+        };
+
+        var rows = this.cuts.Select(e => e.Cut.ToOutputType())
+            .Select(e => JsonConvert.SerializeObject(e, setting))
+            .ToArray();
+
+        var model = new
+        {
+            OutputFile = Path.GetFileNameWithoutExtension(this.fullFilePath),
+            Rows = rows,
+        };
+
         template.Add("model", model);
 
         if (File.Exists(this.fullFilePath))
