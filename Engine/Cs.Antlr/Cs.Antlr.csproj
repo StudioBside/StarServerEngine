@@ -27,6 +27,11 @@
     <Copyright>Copyright © 2024 StudioBside Limited</Copyright>
     <PackageTags>utility</PackageTags>
   </PropertyGroup>
+	
+  <ItemGroup>
+      <None Include="..\..\Document\Images\icon.png" Pack="true" PackagePath="\" />
+      <None Include=".\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="stylecop.analyzers" Version="1.2.0-beta.556">
@@ -42,11 +47,5 @@
     <Reference Include="Antlr4.StringTemplate">
       <HintPath>Antlr4.StringTemplate.dll</HintPath>
     </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="README.md">
-      <PackagePath>\</PackagePath>
-      <Pack>true</Pack>
-    </None>
   </ItemGroup>
 </Project>
