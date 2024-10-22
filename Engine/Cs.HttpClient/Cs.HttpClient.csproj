@@ -25,7 +25,7 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageReleaseNotes>first release</PackageReleaseNotes>
     <Description>gathers logic related to handling HTTP requests required for using external REST APIs.</Description>
-    <Copyright>Copyright © 2023 StudioBside Limited</Copyright>
+    <Copyright>Copyright © 2024 StudioBside Limited</Copyright>
     <PackageTags>HhttpClient;web api</PackageTags>
   </PropertyGroup>
     

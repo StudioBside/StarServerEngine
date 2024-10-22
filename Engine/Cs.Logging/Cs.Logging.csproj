@@ -26,7 +26,7 @@
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageReleaseNotes>first release</PackageReleaseNotes>
     <Description>Defines an interface for logging to files or the console.</Description>
-    <Copyright>Copyright © 2023 StudioBside Limited</Copyright>
+    <Copyright>Copyright © 2024 StudioBside Limited</Copyright>
     <PackageTags>log</PackageTags>
   </PropertyGroup>
     
