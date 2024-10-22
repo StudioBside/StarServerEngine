@@ -7,6 +7,7 @@ using System.Text;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Cs.Core.Perforce;
 using Cs.Core.Util;
 using Cs.Logging;
 using CutEditor.Model;
@@ -27,6 +28,7 @@ public sealed class VmCuts : VmPageBase,
     private readonly ObservableCollection<VmCut> cuts = new();
     private readonly ObservableCollection<VmCut> selectedCuts = new();
     private readonly string fullFilePath;
+    private readonly string name;
     private readonly TempUidGenerator uidGenerator = new();
     private readonly IServiceProvider services;
     private readonly UndoController undoController = new();
@@ -51,29 +53,30 @@ public sealed class VmCuts : VmPageBase,
 
         if (param.CutScene is null)
         {
-            this.fullFilePath = Path.Combine(path, $"CLIENT_{param.NewFileName}.exported");
-            this.Title = $"새로운 파일 생성 - {param.NewFileName}";
+            this.name = param.NewFileName ?? throw new Exception("invalid createParam. newFileName is empty.");
+            this.Title = $"새로운 파일 생성 - {this.name}";
         }
         else
         {
-            this.fullFilePath = Path.Combine(path, $"CLIENT_{param.CutScene.FileName}.exported");
-            this.Title = $"{param.CutScene.Title} - {param.CutScene.FileName}";
-
-            if (File.Exists(this.fullFilePath) == false)
-            {
-                Log.Debug($"cutscene file not found: {this.fullFilePath}");
-                return;
-            }
-
-            var json = JsonUtil.Load(this.fullFilePath);
-            json.GetArray("Data", this.cuts, (e, i) =>
-            {
-                var cut = new Cut(e, this.uidGenerator.Generate());
-                return new VmCut(cut, this.services);
-            });
-
-            Log.Info($"cutscene loading finished. {this.cuts.Count} cuts loaded.");
+            this.name = param.CutScene.FileName;
+            this.Title = $"{param.CutScene.Title} - {this.name}";
         }
+
+        this.fullFilePath = Path.Combine(path, $"CLIENT_{this.name}.exported");
+        if (File.Exists(this.fullFilePath) == false)
+        {
+            Log.Debug($"cutscene file not found: {this.fullFilePath}");
+            return;
+        }
+
+        var json = JsonUtil.Load(this.fullFilePath);
+        json.GetArray("Data", this.cuts, (e, i) =>
+        {
+            var cut = new Cut(e, this.uidGenerator.Generate());
+            return new VmCut(cut, this.services);
+        });
+
+        Log.Info($"{this.name} 파일 로딩 완료. 총 컷의 개수:{this.cuts.Count}");
     }
 
     public IList<VmCut> Cuts => this.cuts;
@@ -125,6 +128,7 @@ public sealed class VmCuts : VmPageBase,
 
     internal TempUidGenerator UidGenerator => this.uidGenerator;
     internal IServiceProvider Services => this.services;
+    private string DebugName => $"[VmCuts:{this.name}]";
 
     bool IDragDropHandler.HandleDrop(object listViewContext, IList selectedItems, object targetContext)
     {
@@ -248,10 +252,22 @@ public sealed class VmCuts : VmPageBase,
     {
         Log.Debug($"SaveCommand. selected:{this.selectedCuts.Count}");
 
+        if (DevOps.GetStreamInfo(out var streamInfo) && streamInfo.Id == (int)DevOps.P4StreamType.Alpha)
+        {
+            Log.Warn($"{this.DebugName} 알파 스트림에서는 파일을 저장할 수 없습니다.");
+            return;
+        }
+
+        if (P4Commander.TryCreate(out var p4Commander) == false)
+        {
+            Log.Error($"{this.DebugName} P4Commander 객체 생성 실패");
+            return;
+        }
+
         var template = StringTemplateFactory.Instance.GetTemplet("CutsOutput", "writeFile");
         if (template is null)
         {
-            Log.Error($"[VmCuts] template not found: CutsOutput.writeFile");
+            Log.Error($"{this.DebugName} template not found: CutsOutput.writeFile");
             return;
         }
 
@@ -278,8 +294,36 @@ public sealed class VmCuts : VmPageBase,
             File.SetAttributes(this.fullFilePath, FileAttributes.Normal);
         }
 
-        using var sw = new StreamWriter(this.fullFilePath, append: false, Encoding.UTF8);
-        sw.WriteLine(template.Render());
+        using (var sw = new StreamWriter(this.fullFilePath, append: false, Encoding.UTF8))
+        {
+            sw.WriteLine(template.Render());
+        }
+
+        if (p4Commander.CheckIfOpened(this.fullFilePath))
+        {
+            Log.Debug($"{this.DebugName} file already opened. filePath:{this.fullFilePath}");
+            return;
+        }
+
+        if (p4Commander.CheckIfChanged(this.fullFilePath, out bool changed) == false)
+        {
+            Log.Error($"{this.DebugName} 파일 변경 여부 확인 실패. filePath:{this.fullFilePath}");
+            return;
+        }
+
+        if (changed == false)
+        {
+            Log.Debug($"{this.DebugName} file not changed. filePath:{this.fullFilePath}");
+            return;
+        }
+
+        if (p4Commander.OpenForEdit(this.fullFilePath, out string p4Output) == false)
+        {
+            Log.Error($"{this.DebugName} 파일 오픈 실패. filePath:{this.fullFilePath}");
+            return;
+        }
+
+        Log.Info($"{this.DebugName} file saved. filePath:{this.fullFilePath}");
     }
 
     private void OnDelete()

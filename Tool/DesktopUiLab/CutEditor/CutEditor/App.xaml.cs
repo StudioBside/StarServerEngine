@@ -45,6 +45,7 @@ public partial class App : Application
         services.AddSingleton<VmHome>();
         services.AddTransient<VmCuts>();
         services.AddTransient<FileLoader>();
+        services.AddTransient<FileAndSnackbarLog>();
         services.AddTransient<UnitPickerDialog>();
         services.AddTransient<IUnitPicker, UnitPicker>();
 
@@ -62,7 +63,7 @@ public partial class App : Application
 
     private void Initialize()
     {
-        Log.Initialize(new SimpleFileLogProvider("log.txt"), LogLevelConfig.All);
+        Log.Initialize(this.Services.GetService<FileAndSnackbarLog>(), LogLevelConfig.All);
 
         GlobalState.Instance.Initialize();
         TempletLoad.Execute(this.Services.GetRequiredService<IConfiguration>());

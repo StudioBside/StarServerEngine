@@ -13,6 +13,7 @@
   <PropertyGroup>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DebugType>Full</DebugType>
+    <!--<ApplicationIcon>.\appicon.ico</ApplicationIcon>-->
   </PropertyGroup>
 
   <ItemGroup>

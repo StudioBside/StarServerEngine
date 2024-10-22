@@ -10,6 +10,7 @@
                 <ui:ThemesDictionary Theme="Light" />
                 <ui:ControlsDictionary />
                 <ResourceDictionary Source="pack://application:,,,/Du.WpfLib;component/Assets/Fonts.xaml" />
+                <ResourceDictionary Source="Views/Colors.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
