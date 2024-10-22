@@ -8,13 +8,19 @@
     {
         private readonly Func<TInstance> factory;
 
-        public TransientFactory(Func<TInstance> factory)
+        public TransientFactory(Func<TInstance> factory) : this(key: string.Empty, factory)
         {
+        }
+
+        public TransientFactory(string key, Func<TInstance> factory)
+        {
+            this.Key = key;
             this.factory = factory;
             this.Type = typeof(TInstance);
         }
 
         public Type Type { get; }
+        public string Key { get; } = string.Empty;
 
         public T GetInstance<T>() where T : class
         {

@@ -8,13 +8,19 @@
     {
         private readonly TInstance instance;
 
-        public SingletonHolder(TInstance instance)
+        public SingletonHolder(TInstance instance) : this(key: string.Empty, instance)
         {
+        }
+
+        public SingletonHolder(string key, TInstance instance)
+        {
+            this.Key = key;
             this.instance = instance;
             this.Type = typeof(TInstance);
         }
 
         public Type Type { get; }
+        public string Key { get; } = string.Empty;
 
         public T GetInstance<T>() where T : class
         {

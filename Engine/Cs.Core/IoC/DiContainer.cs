@@ -30,6 +30,20 @@ namespace Cs.Core.IoC
             return this;
         }
 
+        public DiContainer AddSingleton<T>(string key, T instance) where T : class
+        {
+            //// note: thread un-safe.
+
+            var type = typeof(T);
+            if (this.TryGet(key, type, out _))
+            {
+                throw new Exception($"instance already exist. key:{key} type:{type.Name}");
+            }
+
+            this.instances.Add(new SingletonHolder<T>(key, instance));
+            return this;
+        }
+
         public DiContainer UpdateSingleton<T>(T instance) where T : class
         {
             //// note: thread un-safe.
@@ -61,6 +75,22 @@ namespace Cs.Core.IoC
             }
 
             this.instances.Add(new TransientFactory<TParent>(() => new TChild()));
+            return this;
+        }
+
+        public DiContainer AddTransient<TParent, TChild>(string key)
+            where TParent : class
+            where TChild : TParent, new()
+        {
+            //// note: thread un-safe.
+
+            var type = typeof(TParent);
+            if (this.TryGet(key, type, out _))
+            {
+                throw new Exception($"instance already exist. key:{key} type:{type.Name}");
+            }
+
+            this.instances.Add(new TransientFactory<TParent>(key, () => new TChild()));
             return this;
         }
 
@@ -108,9 +138,31 @@ namespace Cs.Core.IoC
             return instance.GetInstance<T>();
         }
 
+        public T GetInstance<T>(string key) where T : class
+        {
+            if (this.TryGet(key, typeof(T), out var instance) == false)
+            {
+                throw new Exception($"instance not exist. #instance:{this.instances.Count} type:{typeof(T).Name}");
+            }
+
+            return instance.GetInstance<T>();
+        }
+
         public bool TryGetInstance<T>([MaybeNullWhen(false)] out T instance) where T : class
         {
             if (this.TryGet(typeof(T), out var factory))
+            {
+                instance = factory.GetInstance<T>();
+                return true;
+            }
+
+            instance = default;
+            return false;
+        }
+
+        public bool TryGetInstance<T>(string key, [MaybeNullWhen(false)] out T instance) where T : class
+        {
+            if (this.TryGet(key, typeof(T), out var factory))
             {
                 instance = factory.GetInstance<T>();
                 return true;
@@ -131,7 +183,27 @@ namespace Cs.Core.IoC
         {
             foreach (var data in this.instances)
             {
-                if (data.Type == type)
+                if (data.Type == type && string.IsNullOrEmpty(data.Key))
+                {
+                    instance = data;
+                    return true;
+                }
+            }
+
+            instance = default;
+            return false;
+        }
+
+        private bool TryGet(string key, Type type, [MaybeNullWhen(false)] out ITypeFactory instance)
+        {
+            if (string.IsNullOrEmpty(key))
+            {
+                throw new Exception("invalid useage: key is empty.");
+            }
+
+            foreach (var data in this.instances)
+            {
+                if (data.Type == type && data.Key.Equals(key))
                 {
                     instance = data;
                     return true;
