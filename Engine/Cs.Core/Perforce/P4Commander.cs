@@ -7,17 +7,18 @@ using System.Text.RegularExpressions;
 using Cs.Core.Util;
 using Cs.Logging;
 
-public readonly struct P4Commander
+public readonly record struct P4Commander
 {
     private const string Seperator = "@@";
-    private readonly string stream;
-    private readonly string clientRoot;
 
     private P4Commander(string stream, string clientRoot)
     {
-        this.stream = stream;
-        this.clientRoot = clientRoot;
+        this.Stream = stream;
+        this.ClientRoot = clientRoot;
     }
+
+    public string ClientRoot { get; init; }
+    public string Stream { get; init; }
 
     public static bool TryCreate(out P4Commander result)
     {
@@ -256,14 +257,14 @@ public readonly struct P4Commander
     private string ToSingleDepotPath(string localFilePath)
     {
         return Path.GetFullPath(localFilePath)
-            .Replace(this.clientRoot, this.stream)
+            .Replace(this.ClientRoot, this.Stream)
             .Replace('\\', '/');
     }
 
     private string ToDepotPath(string localPath, string extension)
     {
         var temp = Path.GetFullPath(localPath)
-            .Replace(this.clientRoot, this.stream);
+            .Replace(this.ClientRoot, this.Stream);
 
         return Path.Combine(temp, $"...{extension}")
             .Replace('\\', '/');
@@ -272,7 +273,7 @@ public readonly struct P4Commander
     private string ToLocalPath(string depotPath)
     {
         return depotPath
-            .Replace(this.stream, this.clientRoot)
+            .Replace(this.Stream, this.ClientRoot)
             .Replace('/', '\\');
     }
 }
