@@ -9,7 +9,7 @@
     public sealed class StringTemplateFactory
     {
         private readonly Dictionary<string, TemplateGroup> cache = new();
-        private string filePath;
+        private string filePath = string.Empty;
 
         public static StringTemplateFactory Instance => Singleton<StringTemplateFactory>.Instance;
 
@@ -26,13 +26,33 @@
             return true;
         }
 
-        public Template Create(string fileName, string name)
+        public Template CreateFromFile(string fileName, string name)
         {
             if (this.cache.TryGetValue(fileName, out var templetGroup) == false)
             {
                 string groupFilePath = Path.Combine(this.filePath, fileName);
                 groupFilePath = Path.GetFullPath(groupFilePath);
                 templetGroup = new TemplateGroupFile(groupFilePath);
+                this.cache.Add(fileName, templetGroup);
+            }
+
+            return templetGroup.GetInstanceOf(name);
+        }
+
+        public void CreateFromString(string sourceName, string text)
+        {
+            if (this.cache.TryGetValue(sourceName, out var templetGroup) == false)
+            {
+                templetGroup = new TemplateGroupString(sourceName, text);
+                this.cache.Add(text, templetGroup);
+            }
+        }
+
+        public Template? GetTemplet(string sourceName, string name)
+        {
+            if (this.cache.TryGetValue(sourceName, out var templetGroup) == false)
+            {
+                return null;
             }
 
             return templetGroup.GetInstanceOf(name);

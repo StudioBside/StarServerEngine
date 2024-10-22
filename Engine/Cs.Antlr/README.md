@@ -21,7 +21,13 @@ if (StringTemplateFactory.Instance.Initialize(config.Path.TextTemplate) == false
 
 ...
 
-var template = StringTemplateFactory.Instance.Create("Template_enum.stg", "writeFile");
+// create template from file
+var template = StringTemplateFactory.Instance.CreateFromFile("Template_enum.stg", "writeFile");
+
+// or create templet from string
+StringTempletFactory.Instance.CreateFromStgring("sourceName", "templateSourceBody...");
+templet = StringTempletFactory.Instance.GetTemplet("sourceName", "writeFile");
+
 templet.Add("model", this);
 
 using (var sw = new StreamWriter(outputFilePath, append: false, Encoding.UTF8))
