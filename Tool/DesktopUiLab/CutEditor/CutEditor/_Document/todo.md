@@ -1,6 +1,6 @@
 ﻿## todo
 
-- multi select를 부드럽게 다듬어야 한다. 여러 개 선택한 후 재선택할 때 풀리지 않게 하기
+- 유닛 포지션 데이터 연동.
 
 ```csharp
 using System.Text.RegularExpressions;
@@ -68,3 +68,4 @@ namespace WpfApp
 
 - unitTemplet 읽기
 - unit portrait 로딩 및 출력
+- multi select를 부드럽게 다듬어야 한다. 여러 개 선택한 후 재선택할 때 풀리지 않게 하기

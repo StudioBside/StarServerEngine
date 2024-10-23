@@ -15,6 +15,11 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="PgCutScene">
+    <Page.InputBindings>
+        <KeyBinding Key="Delete" Command="{Binding DeleteCommand}"/>
+        <KeyBinding Key="Z" Modifiers="Control" Command="{Binding UndoCommand}"/>
+        <KeyBinding Key="Y" Modifiers="Control" Command="{Binding RedoCommand}"/>
+    </Page.InputBindings>
     <b:Interaction.Behaviors>
         <behaviors:PageBehavior HandleClipboard="True"/>
     </b:Interaction.Behaviors>
@@ -265,9 +270,6 @@
                 <ui:Button Margin="3" Content="선택 컷 삭제"
                            Icon="{ui:SymbolIcon Subtract16}"/>
 
-                <ui:Button Margin="3" Content="오류 메세지 테스트"
-                        Click="Button_Click"/>
-
                 <ui:Button Margin="3" Content="목록으로"
                            Icon="{ui:SymbolIcon ArrowStepBack16}"
                            Command="{Binding BackCommand}"/>
@@ -285,11 +287,6 @@
                      AllowDrop="True"
                      SelectionMode="Extended"
                      extensions:ListViewExtensions.SelectedValues="{Binding SelectedCuts}">
-            <ui:ListView.InputBindings>
-                <KeyBinding Key="Delete" Command="{Binding DeleteCommand}"/>
-                <KeyBinding Key="Z" Modifiers="Control" Command="{Binding UndoCommand}"/>
-                <KeyBinding Key="Y" Modifiers="Control" Command="{Binding RedoCommand}"/>
-            </ui:ListView.InputBindings>
             <ui:ListView.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="삭제" Command="{Binding DeleteCommand}">

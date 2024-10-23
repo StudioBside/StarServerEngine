@@ -29,12 +29,14 @@ public class ListViewBehavior : Behavior<ListView>
     {
         this.AssociatedObject.PreviewMouseMove += this.AssociatedObject_PreviewMouseMove;
         this.AssociatedObject.Drop += this.AssociatedObject_Drop;
+        this.AssociatedObject.PreviewMouseLeftButtonDown += this.AssociatedObject_PreviewMouseLeftButtonDown;
     }
 
     protected override void OnDetaching()
     {
         this.AssociatedObject.PreviewMouseMove -= this.AssociatedObject_PreviewMouseMove;
         this.AssociatedObject.Drop -= this.AssociatedObject_Drop;
+        this.AssociatedObject.PreviewMouseLeftButtonDown -= this.AssociatedObject_PreviewMouseLeftButtonDown;
     }
 
     private static void OnReorderByDragDropChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -81,5 +83,19 @@ public class ListViewBehavior : Behavior<ListView>
 
         handler.HandleDrop(this.AssociatedObject.DataContext, this.AssociatedObject.SelectedItems, target.DataContext);
         e.Handled = true;
+    }
+
+    private void AssociatedObject_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        var item = ItemsControl.ContainerFromElement(this.AssociatedObject, e.OriginalSource as DependencyObject) as ListViewItem;
+
+        if (item != null && Keyboard.Modifiers == ModifierKeys.None)
+        {
+            if (item.IsSelected)
+            {
+                // 이미 선택된 항목을 다시 클릭해도 선택 상태를 유지
+                e.Handled = true;
+            }
+        }
     }
 }
