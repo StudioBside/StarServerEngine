@@ -3,10 +3,10 @@
 using System;
 using Du.Core.Interfaces;
 
-internal sealed class DeleteCuts(VmCuts vmCuts) : IDormammu
+internal sealed class DeleteCuts(VmCuts vmCuts, IReadOnlyList<VmCut> targets) : IDormammu
 {
     private readonly IReadOnlyList<VmCut> cuts = vmCuts.Cuts.ToArray();
-    private readonly IReadOnlyList<VmCut> selected = vmCuts.SelectedCuts.ToArray();
+    private readonly IReadOnlyList<VmCut> targets = targets;
 
     public static DeleteCuts? Create(VmCuts vmCuts)
     {
@@ -15,12 +15,17 @@ internal sealed class DeleteCuts(VmCuts vmCuts) : IDormammu
             return null;
         }
 
-        return new DeleteCuts(vmCuts);
+        return new DeleteCuts(vmCuts, vmCuts.SelectedCuts.ToArray());
+    }
+
+    public static DeleteCuts? Create(VmCuts vmCuts, VmCut deleteTarget)
+    {
+        return new DeleteCuts(vmCuts, [deleteTarget]);
     }
 
     public void Redo()
     {
-        foreach (var cut in this.selected)
+        foreach (var cut in this.targets)
         {
             vmCuts.Cuts.Remove(cut);
         }
@@ -44,9 +49,9 @@ internal sealed class DeleteCuts(VmCuts vmCuts) : IDormammu
             index++;
         }
 
-        // 선택된 항목을 다시 선택
+        // 제거되었다 되살아난 항목을 다시 선택
         vmCuts.SelectedCuts.Clear();
-        foreach (var cut in this.selected)
+        foreach (var cut in this.targets)
         {
             vmCuts.SelectedCuts.Add(cut);
         }

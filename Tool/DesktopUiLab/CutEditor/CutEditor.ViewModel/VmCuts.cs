@@ -47,6 +47,7 @@ public sealed class VmCuts : VmPageBase,
         this.SaveCommand = new RelayCommand(this.OnSave);
         this.DeleteCommand = new RelayCommand(this.OnDelete);
         this.NewCutCommand = new RelayCommand(this.OnNewCut);
+        this.DeletePickCommand = new RelayCommand<VmCut>(this.OnDeletePick);
 
         if (GlobalState.Instance.PopVmCuts(out var param) == false)
         {
@@ -91,8 +92,9 @@ public sealed class VmCuts : VmPageBase,
     public ICommand RedoCommand => this.undoController.RedoCommand;
     public ICommand BackCommand { get; }
     public ICommand SaveCommand { get; }
-    public ICommand DeleteCommand { get; }
+    public ICommand DeleteCommand { get; } // 현재 (멀티)선택한 대상을 모두 삭제
     public ICommand NewCutCommand { get; }
+    public ICommand DeletePickCommand { get; } // 인자로 넘어오는 1개의 cut을 삭제
     public bool AllSectionUnit
     {
         get => this.allSectionUnit;
@@ -384,6 +386,24 @@ public sealed class VmCuts : VmPageBase,
     private void OnNewCut()
     {
         var command = NewCut.Create(this);
+        command.Redo();
+        this.undoController.Add(command);
+    }
+
+    private void OnDeletePick(VmCut? cut)
+    {
+        if (cut is null)
+        {
+            Log.Error($"{this.DebugName} 삭제 대상을 확인할 수 없습니다.");
+            return;
+        }
+
+        var command = DeleteCuts.Create(this, cut);
+        if (command is null)
+        {
+            return;
+        }
+
         command.Redo();
         this.undoController.Add(command);
     }

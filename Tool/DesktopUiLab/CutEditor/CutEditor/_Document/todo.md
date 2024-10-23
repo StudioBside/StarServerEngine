@@ -2,7 +2,9 @@
 
 - 드래그 할 때 시인성 높이기
 - 다중 선택해서 값 변경하기
-
+- 브랜치컷 표현방식 구상
+- talk append 처리방식 구상
+- 컷 추가할 때 스크롤 내리기
 ```csharp
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -67,6 +69,7 @@ namespace WpfApp
 
 ## done
 
+- sound 표시위치에 여백 확보
 - unitTemplet 읽기
 - unit portrait 로딩 및 출력
 - multi select를 부드럽게 다듬어야 한다. 여러 개 선택한 후 재선택할 때 풀리지 않게 하기

@@ -49,6 +49,14 @@ public sealed class SelectedItemsBinder
 
     private void Collection_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
+        if (e.Action == NotifyCollectionChangedAction.Reset &&
+            e.NewItems == null && 
+            e.OldItems == null)
+        {
+            this.listView.SelectedItems.Clear();
+            return;
+        }
+
         foreach (var item in e.NewItems ?? new object[0])
         {
             if (!this.listView.SelectedItems.Contains(item))

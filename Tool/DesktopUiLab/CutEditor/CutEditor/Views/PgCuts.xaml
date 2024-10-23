@@ -129,7 +129,7 @@
 
                                 <ui:Button Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Margin="0,0,10,0"
                                            Command="{Binding PickUnitCommand}" Padding="0" CornerRadius="8"
-                                           Width="80"
+                                           Width="80" Height="80"
                                            VerticalAlignment="Stretch">
                                     <MultiBinding Converter="{lcvt:PathToImageConverter}">
                                         <Binding Path="Cut.Unit.ImageFullPath" />
@@ -173,14 +173,14 @@
                                 </Grid.RowDefinitions>
 
                                 <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="60"/>
                                     <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="60"/>
                                 </Grid.ColumnDefinitions>
 
                                 <ui:Button Grid.Column="0" Grid.Row="0" Background="{StaticResource SoundBoxBrush}"
                                            Visibility="{Binding ShowSoundASection, Converter={converters:BoolToVisibilityConverter}}"
-                                           Margin="0,0,10,10">
+                                           Margin="0,0,0,5">
                                     <TextBlock TextAlignment="Center" FontSize="10">
                                     <Run>BGM</Run>
                                     <LineBreak/>
@@ -209,7 +209,7 @@
 
                                 <ui:Button Grid.Column="2" Grid.Row="0" Background="{StaticResource SoundBoxBrush}"
                                            Visibility="{Binding ShowSoundBSection, Converter={converters:BoolToVisibilityConverter}}"
-                                           Margin="0,0,10,10">
+                                           Margin="0,0,0,5">
                                     <TextBlock TextAlignment="Center" FontSize="10">
                                     <Run>BGM</Run>
                                     <LineBreak/>
@@ -228,8 +228,18 @@
                             </Grid>
 
                             <!-- Grid 3 : 우측 버튼 배치 영역-->
-                            <Grid VerticalAlignment="Top" Margin="10">
-                                <ui:Button Content="TalkVoice"/>
+                            <Grid VerticalAlignment="Top" Margin="10" HorizontalAlignment="Stretch">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <ui:Button Content="TalkVoice" Margin="0,0,10,0"/>
+                                <ui:Button Grid.Column="2" Content="삭제"
+                                           Appearance="Transparent"
+                                           Command="{Binding DataContext.DeletePickCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                           CommandParameter="{Binding .}"/>
                             </Grid>
 
                         </StackPanel>
