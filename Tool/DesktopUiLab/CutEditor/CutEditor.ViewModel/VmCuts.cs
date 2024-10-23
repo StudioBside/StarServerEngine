@@ -20,6 +20,7 @@ using Du.Core.Util;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 
 public sealed class VmCuts : VmPageBase,
@@ -280,6 +281,10 @@ public sealed class VmCuts : VmPageBase,
         {
             NullValueHandling = NullValueHandling.Ignore,
             Formatting = Formatting.Indented,
+            Converters =
+            [
+                new StringEnumConverter(),
+            ],
         };
 
         var rows = this.cuts.Select(e => e.Cut.ToOutputType())

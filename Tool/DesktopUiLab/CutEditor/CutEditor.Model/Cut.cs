@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Cs.Core.Util;
 using Cs.Logging;
 using Newtonsoft.Json.Linq;
+using NKM;
 using Shared.Templet.Base;
 using Shared.Templet.TempletTypes;
 
@@ -35,7 +36,7 @@ public sealed class Cut : ObservableObject
     private string? unitStrId;
     private Unit? unit;
     private bool unitQuickSet;
-    private string? unitPos; // enum
+    private CutsceneUnitPos unitPos;
     private string? cameraOffset; // enum
     private string? cameraOffsetTime; // enum
     private float talkTime;
@@ -61,7 +62,7 @@ public sealed class Cut : ObservableObject
         this.startBgmFileName = token.GetString("StartBgmFileName", null!);
         this.startFxSoundName = token.GetString("StartFxSoundName", null!);
         this.unitQuickSet = token.GetBool("UnitQuickSet", false);
-        this.unitPos = token.GetString("UnitPos", null!);
+        this.unitPos = token.GetEnum("UnitPos", CutsceneUnitPos.NONE);
         this.cameraOffset = token.GetString("CameraOffset", null!);
         this.cameraOffsetTime = token.GetString("CameraOffsetTime", null!);
 
@@ -132,7 +133,7 @@ public sealed class Cut : ObservableObject
             UnitStrId = this.unitStrId,
             UnitNameString = this.unitName,
             UnitQuickSet = EliminateFalse(this.unitQuickSet),
-            UnitPos = this.unitPos,
+            UnitPos = EliminateEnum(this.unitPos, CutsceneUnitPos.NONE),
             CameraOffset = this.cameraOffset,
             CameraOffsetTime = this.cameraOffsetTime,
             EmotionEffect = this.emotionEffect,
@@ -162,6 +163,11 @@ public sealed class Cut : ObservableObject
         static bool? EliminateFalse(bool source)
         {
             return source ? source : null;
+        }
+
+        static T? EliminateEnum<T>(T source, T defaultValue) where T : struct, Enum
+        {
+            return source.Equals(defaultValue) ? null : source;
         }
     }
 
