@@ -12,7 +12,8 @@
     d:DataContext="{d:DesignInstance Type=viewmodels:VmMain}"
     mc:Ignorable="d"
     Title="{Binding ElementName=MyFrame, Path=Content.DataContext.Title}"
-    Height="450" Width="800">
+    Height="450" Width="800"
+    MinWidth="1330">
     <Grid>
         <Frame 
             NavigationUIVisibility="Hidden"
