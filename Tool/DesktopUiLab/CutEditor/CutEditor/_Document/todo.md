@@ -1,6 +1,7 @@
 ﻿## todo
 
-- 유닛 포지션 데이터 연동.
+- 드래그 할 때 시인성 높이기
+- 다중 선택해서 값 변경하기
 
 ```csharp
 using System.Text.RegularExpressions;
@@ -69,3 +70,4 @@ namespace WpfApp
 - unitTemplet 읽기
 - unit portrait 로딩 및 출력
 - multi select를 부드럽게 다듬어야 한다. 여러 개 선택한 후 재선택할 때 풀리지 않게 하기
+- 유닛 포지션 데이터 연동.

@@ -108,6 +108,12 @@ public sealed class Cut : ObservableObject
         set => this.SetProperty(ref this.unit, value);
     }
 
+    public CutsceneUnitPos UnitPos
+    {
+        get => this.unitPos;
+        set => this.SetProperty(ref this.unitPos, value);
+    }
+
     public object ToOutputType()
     {
         return new
