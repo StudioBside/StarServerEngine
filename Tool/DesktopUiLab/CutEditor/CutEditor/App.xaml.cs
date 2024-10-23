@@ -1,6 +1,7 @@
 ﻿namespace CutEditor;
 
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using Cs.Logging;
 using Cs.Logging.Providers;
@@ -39,6 +40,8 @@ public partial class App : Application
             //.AddJsonFile("appsettings.local.json", optional: true)
             .Build();
 
+        VerifyConfiguration(config);
+
         services.AddTransient<IConfiguration>(_ => config);
 
         services.AddTransient<VmMain>();
@@ -59,6 +62,25 @@ public partial class App : Application
         services.AddTransient<IUserWaitingNotifier, WaitingNotifierDialog>();
 
         return services.BuildServiceProvider();
+    }
+
+    private static void VerifyConfiguration(IConfiguration config)
+    {
+        if (config["CutTextFilePath"] is null)
+        {
+            Log.ErrorAndExit("CutTextFilePath is not set in appsettings.json");
+        }
+
+        if (config["CutBinFilePath"] is null)
+        {
+            Log.ErrorAndExit("CutBinFilePath is not set in appsettings.json");
+        }
+
+        var textFilePacker = config["TextFilePacker"] ?? throw new Exception("TextFilePacker is not set in appsettings.json");
+        if (File.Exists(textFilePacker) == false)
+        {
+            Log.ErrorAndExit($"TextFilePacker does not exist. config:{textFilePacker}");
+        }
     }
 
     private void Initialize()

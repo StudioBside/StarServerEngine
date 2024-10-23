@@ -20,6 +20,7 @@ using Du.Core.Util;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 public sealed class VmCuts : VmPageBase,
     IDragDropHandler,
@@ -33,6 +34,7 @@ public sealed class VmCuts : VmPageBase,
     private readonly TempUidGenerator uidGenerator = new();
     private readonly IServiceProvider services;
     private readonly UndoController undoController = new();
+    private readonly string packetExeFile;
     private bool allSectionUnit = true;
     private bool allSectionScreen;
     private bool allSectionCamera;
@@ -52,6 +54,7 @@ public sealed class VmCuts : VmPageBase,
 
         this.textFilePath = config["CutTextFilePath"] ?? throw new Exception("CutTextFilePath is not set in the configuration file.");
         this.binFilePath = config["CutBinFilePath"] ?? throw new Exception("CutBinFilePath is not set in the configuration file.");
+        this.packetExeFile = config["TextFilePacker"] ?? throw new Exception("TextFilePacker is not set in the configuration file.");
 
         if (param.CutScene is null)
         {
@@ -130,7 +133,7 @@ public sealed class VmCuts : VmPageBase,
 
     internal TempUidGenerator UidGenerator => this.uidGenerator;
     internal IServiceProvider Services => this.services;
-    private string DebugName => $"[VmCuts:{this.name}]";
+    private string DebugName => $"[{this.name}]";
 
     bool IDragDropHandler.HandleDrop(object listViewContext, IList selectedItems, object targetContext)
     {
@@ -253,16 +256,16 @@ public sealed class VmCuts : VmPageBase,
     private void OnSave()
     {
         var textFilePath = this.GetTextFilePath();
-        if (DevOps.GetStreamInfo(out var streamInfo) && streamInfo.Id == (int)DevOps.P4StreamType.Alpha)
-        {
-            Log.Warn($"{this.DebugName} 알파 스트림에서는 파일을 저장할 수 없습니다.\n전체경로:{textFilePath}");
-            return;
-        }
-
         if (P4Commander.TryCreate(out var p4Commander) == false)
         {
             Log.Error($"{this.DebugName} P4Commander 객체 생성 실패");
             return;
+        }
+
+        if (p4Commander.Stream.Contains("/alpha"))
+        {
+            // 컷 데이터파일은 현재 p4 설저상 임포트(import+) 되어있어서, depot address에는 dev로 표기됩니다.
+            p4Commander = p4Commander with { Stream = "//stream/dev" };
         }
 
         // -------------------------- save text file --------------------------
@@ -301,29 +304,64 @@ public sealed class VmCuts : VmPageBase,
             sw.WriteLine(template.Render());
         }
 
-        if (p4Commander.CheckIfOpened(textFilePath) == false)
+        if (OpenForEdit(p4Commander, textFilePath, "text 파일") == false)
         {
-            if (p4Commander.CheckIfChanged(textFilePath, out bool changed) == false)
+            return;
+        }
+
+        // -------------------------- save binary file --------------------------
+        var binFilePath = this.GetBinFilePath();
+        if (OutProcess.Run(this.packetExeFile, $"\"{textFilePath}\" \"{binFilePath}\"", out string result) == false)
+        {
+            Log.Error($"{this.DebugName} binary 파일 생성 실패.\result:{result}");
+            return;
+        }
+
+        if (OpenForEdit(p4Commander, binFilePath, "bin 파일") == false)
+        {
+            return;
+        }
+
+        var jObject = JsonConvert.DeserializeObject<JObject>(result) ?? throw new Exception("result is not JObject");
+        long textFileSize = jObject.GetInt64("TextFileSize");
+        //long bsonFileSize = jObject.GetInt64("BsonFileSize");
+        long binFileSize = jObject.GetInt64("BinFileSize");
+        float downRate = binFileSize * 100f / textFileSize;
+
+        var sb = new StringBuilder();
+        sb.AppendLine($"{this.DebugName} 파일을 저장했습니다.");
+        sb.AppendLine($"- 텍스트 파일: {textFileSize.ToByteFormat()}");
+        sb.AppendLine($"- 바이트 파일: {binFileSize.ToByteFormat()} ({downRate:0.00}%)");
+        Log.Info(sb.ToString());
+
+        // -- local function
+        static bool OpenForEdit(P4Commander p4Commander, string filePath, string name)
+        {
+            if (p4Commander.CheckIfOpened(filePath) != false)
             {
-                Log.Error($"{this.DebugName} text 파일 변경 여부 확인 실패.\n전체경로:{textFilePath}");
-                return;
+                return true;
+            }
+
+            if (p4Commander.CheckIfChanged(filePath, out bool changed) == false)
+            {
+                Log.Error($"{name} 변경 여부 확인 실패.\n전체경로:{filePath}");
+                return false;
             }
 
             if (changed == false)
             {
-                Log.Info($"{this.DebugName} text 파일 변경사항이 확인되지 않았습니다.\n전체경로:{textFilePath}");
-                return;
+                Log.Info($"{name} 변경사항이 확인되지 않았습니다.\n전체경로:{filePath}");
+                return false;
             }
 
-            if (p4Commander.OpenForEdit(textFilePath, out string p4Output) == false)
+            if (p4Commander.OpenForEdit(filePath, out string p4Output) == false)
             {
-                Log.Error($"{this.DebugName} text 파일 오픈 실패.\n전체경로:{textFilePath}");
-                return;
+                Log.Error($"{name} 오픈 실패.\n전체경로:{filePath}");
+                return false;
             }
-        }
 
-        // -------------------------- save binary file --------------------------
-        Log.Info($"{this.DebugName} 파일을 저장했습니다.\n전체경로:{textFilePath}");
+            return true;
+        }
     }
 
     private void OnDelete()
