@@ -2,7 +2,7 @@
 {
     using System;
 
-    internal class ScopedFactory<TParent, TChild> : IScopedFactory
+    internal sealed class ScopedFactory<TParent, TChild> : IScopedFactory
             where TParent : class
             where TChild : TParent, new()
     {

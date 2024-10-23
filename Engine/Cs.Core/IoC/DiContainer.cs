@@ -44,24 +44,6 @@ namespace Cs.Core.IoC
             return this;
         }
 
-        public DiContainer UpdateSingleton<T>(T instance) where T : class
-        {
-            //// note: thread un-safe.
-
-            var type = typeof(T);
-            for (int i = 0; i < this.instances.Count; ++i)
-            {
-                if (this.instances[i].Type == type)
-                {
-                    this.instances[i] = new SingletonHolder<T>(instance);
-                    return this;
-                }
-            }
-
-            this.instances.Add(new SingletonHolder<T>(instance));
-            return this;
-        }
-
         public DiContainer AddTransient<TParent, TChild>()
             where TParent : class
             where TChild : TParent, new()
@@ -125,6 +107,29 @@ namespace Cs.Core.IoC
             }
 
             this.instances.Add(new TransientFactory<T>(factory));
+            return this;
+        }
+
+        public DiContainer UpdateTransient<T>(string key, Func<T> factory) where T : class
+        {
+            //// note: thread un-safe.
+
+            if (string.IsNullOrEmpty(key))
+            {
+                throw new Exception("invalid useage: key is empty.");
+            }
+
+            var type = typeof(T);
+            for (int i = 0; i < this.instances.Count; ++i)
+            {
+                if (this.instances[i].Type == type && this.instances[i].Key.Equals(key))
+                {
+                    this.instances[i] = new TransientFactory<T>(key, factory);
+                    return this;
+                }
+            }
+
+            this.instances.Add(new TransientFactory<T>(key, factory));
             return this;
         }
 
