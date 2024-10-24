@@ -162,6 +162,10 @@ public sealed class VmCuts : VmPageBase,
             return false;
         }
 
+        var indices = itemsIndex.Count == 1
+            ? itemsIndex[0].ToString()
+            : string.Join(", ", itemsIndex.OrderBy(e => e));
+
         // itemsIndex가 연속적이지 않으면 에러
         if (itemsIndex.Count > 1)
         {
@@ -169,10 +173,12 @@ public sealed class VmCuts : VmPageBase,
             var max = itemsIndex.Max();
             if (max - min + 1 != itemsIndex.Count)
             {
-                Log.Error("items are not continuous.");
+                Log.Warn($"위치를 이동할 아이템은 연속적으로 선택해야 합니다. 현재 선택 인덱스:{indices}");
                 return false;
             }
         }
+
+        Log.Info($"위치 조정: {indices} -> {dropIndex}");
 
         var movingItems = new List<VmCut>();
         foreach (var i in itemsIndex)

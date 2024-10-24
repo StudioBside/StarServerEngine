@@ -10,7 +10,7 @@ using Du.Core.Interfaces;
 using Du.Presentation.Util;
 using Microsoft.Xaml.Behaviors;
 
-public class ListViewBehavior : Behavior<ListView>
+public sealed class ListViewBehavior : Behavior<ListView>
 {
     public static readonly DependencyProperty ReorderByDragDropProperty =
           DependencyProperty.Register(
@@ -18,6 +18,8 @@ public class ListViewBehavior : Behavior<ListView>
               typeof(bool),
               typeof(ListViewBehavior),
               new PropertyMetadata(false, OnReorderByDragDropChanged));
+
+    private Point cursorStartPos;
 
     public bool ReorderByDragDrop
     {
@@ -27,6 +29,7 @@ public class ListViewBehavior : Behavior<ListView>
 
     protected override void OnAttached()
     {
+        this.AssociatedObject.PreviewMouseLeftButtonDown += this.AssociatedObject_PreviewMouseLeftButtonDown;
         this.AssociatedObject.PreviewMouseMove += this.AssociatedObject_PreviewMouseMove;
         this.AssociatedObject.Drop += this.AssociatedObject_Drop;
     }
@@ -41,34 +44,38 @@ public class ListViewBehavior : Behavior<ListView>
     {
     }
 
+    private void AssociatedObject_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        this.cursorStartPos = e.GetPosition(relativeTo: null);
+    }
+
     private void AssociatedObject_PreviewMouseMove(object sender, MouseEventArgs e)
     {
-        if (e.LeftButton != MouseButtonState.Pressed ||
-            e.OriginalSource.FindAncestor<ListViewItem>(out var listViewItem) == false)
+        if (e.LeftButton != MouseButtonState.Pressed || // 마우스 버튼이 눌려있지 않음
+            e.OriginalSource.FindAncestor<ListViewItem>(out var dragStartItem) == false || // 대상 아이템을 찾을 수 없음
+            this.AssociatedObject.SelectedItems.Count == 0) // 선택된 아이템이 없음
         {
             return;
         }
 
-        if (this.AssociatedObject.SelectedItems.Count == 0)
+        // 마우스가 현재 선택된 아이템 위에 있지 않으면 리턴
+        if (this.AssociatedObject.SelectedItems.Contains(dragStartItem.DataContext) == false)
         {
             return;
         }
 
-        var item = ItemsControl.ContainerFromElement(this.AssociatedObject, e.OriginalSource as DependencyObject) as ListViewItem;
-        if (item is null)
+        Point currentCursorPos = e.GetPosition(relativeTo: null);
+        var cursorVector = this.cursorStartPos - currentCursorPos;
+        if (cursorVector.Length < 10)
         {
+            // 마우스가 일정 범위 움직여야만 드래그 시작
             return;
         }
 
-        if (this.AssociatedObject.SelectedItems.Contains(item.DataContext) == false)
-        {
-            return;
-        }
-
-        var data = this.AssociatedObject.SelectedItems.Cast<object>().ToList();
+        var selectedItems = this.AssociatedObject.SelectedItems.Cast<object>().ToList();
         try
         {
-            DragDrop.DoDragDrop(listViewItem, data, DragDropEffects.Move);
+            DragDrop.DoDragDrop(dragStartItem, selectedItems, DragDropEffects.Move);
         }
         catch (Exception ex)
         {
@@ -85,12 +92,12 @@ public class ListViewBehavior : Behavior<ListView>
             return;
         }
 
-        if (e.OriginalSource.FindAncestor<ListViewItem>(out var target) == false)
+        if (e.OriginalSource.FindAncestor<ListViewItem>(out var dragStopItem) == false)
         {
             return;
         }
 
-        handler.HandleDrop(this.AssociatedObject.DataContext, this.AssociatedObject.SelectedItems, target.DataContext);
+        handler.HandleDrop(this.AssociatedObject.DataContext, this.AssociatedObject.SelectedItems, dragStopItem.DataContext);
         e.Handled = true;
     }
 }
