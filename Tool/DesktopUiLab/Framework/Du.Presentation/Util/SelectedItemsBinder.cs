@@ -8,11 +8,14 @@ public sealed class SelectedItemsBinder
 {
     private readonly ListView listView;
     private readonly IList collection;
+    private readonly Type elementType;
 
     public SelectedItemsBinder(ListView listView, IList collection)
     {
         this.listView = listView;
         this.collection = collection;
+
+        this.elementType = listView.ItemsSource.GetType().GetGenericArguments()[0];
 
         this.listView.SelectedItems.Clear();
 
@@ -75,6 +78,11 @@ public sealed class SelectedItemsBinder
     {
         foreach (var item in e.AddedItems ?? new object[0])
         {
+            if (item.GetType() != this.elementType)
+            {
+                return;
+            }
+
             if (!this.collection.Contains(item))
             {
                 this.collection.Add(item);

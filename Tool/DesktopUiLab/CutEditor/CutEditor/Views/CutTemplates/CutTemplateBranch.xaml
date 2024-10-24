@@ -24,8 +24,8 @@
                     <!--유닛 박스-->
                 </Grid.RowDefinitions>
 
-                <!--컨트롤 표시 제어하는 체크박스 목록-->
-                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5,0">
+                <!--헤더. 추가버튼 위치-->
+                <DockPanel Grid.Row="0" Margin="5,7" LastChildFill="True">
                     <TextBlock DockPanel.Dock="Left" Grid.Row="0" Grid.Column="0"
                                    VerticalAlignment="Center"
                                    Margin="0,0,50,0">
@@ -33,9 +33,28 @@
                             <Run Text="{Binding Cut.Uid, Mode=OneWay}" />
                     </TextBlock>
 
-                    <ui:TextBlock Text="브랜치컷" />
+                    <ui:TextBlock FontTypography="BodyStrong" Text="&lt;선택지>" VerticalAlignment="Center"/>
 
-                </StackPanel>
+                    <ui:Button Content="추가" Margin="30,0"/>
+
+                </DockPanel>
+
+                <!--바디. 선택지 리스트--> 
+                <Border Grid.Row="1" Margin="0,0,0,0" Background="{StaticResource BranchCutBrush}">
+                    <ui:ListView ItemsSource="{Binding Cut.Choices}"
+                                 Margin="50,0">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <ui:Button Content="삭제" Margin="10,0"/>
+                                    <ui:Button Content="수정" Margin="0,0,10,0"/>
+                                    <TextBlock VerticalAlignment="Center" Text="{Binding Text.Korean}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ui:ListView>
+                </Border>
+
             </Grid>
         </Border>
     </DataTemplate>

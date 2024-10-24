@@ -7,6 +7,7 @@
     <Color x:Key="CameraBoxColor">#EFF6E0</Color>
     <Color x:Key="SoundBoxColor">#AEC3B0</Color>
     <Color x:Key="SelectedItemColor">#F4E9CD</Color>
+    <Color x:Key="BranchCutColor">#E8F1F2</Color>
 
     <!-- SolidColorBrush 정의 -->
     <SolidColorBrush x:Key="UnitBoxBrush" Color="{StaticResource UnitBoxColor}"/>
@@ -14,5 +15,6 @@
     <SolidColorBrush x:Key="CameraBoxBrush" Color="{StaticResource CameraBoxColor}"/>
     <SolidColorBrush x:Key="SoundBoxBrush" Color="{StaticResource SoundBoxColor}"/>
     <SolidColorBrush x:Key="SelectedItemBrush" Color="{StaticResource SelectedItemColor}"/>
+    <SolidColorBrush x:Key="BranchCutBrush" Color="{StaticResource BranchCutColor}"/>
 
 </ResourceDictionary>

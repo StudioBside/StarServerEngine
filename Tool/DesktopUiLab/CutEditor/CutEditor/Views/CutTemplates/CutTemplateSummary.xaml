@@ -33,7 +33,7 @@
                             <Run Text="{Binding Cut.Uid, Mode=OneWay}" />
                     </TextBlock>
 
-                    <ui:TextBlock Text="{Binding Cut.UnitTalk.Korean}" />
+                    <TextBlock Text="{Binding SummaryText}" />
 
                 </StackPanel>
             </Grid>

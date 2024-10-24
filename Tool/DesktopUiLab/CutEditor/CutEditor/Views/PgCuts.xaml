@@ -43,12 +43,12 @@
 
                             <!-- Triggers to change Template -->
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding DataContext.ShowSummary, RelativeSource={RelativeSource AncestorType=ListView}}" Value="True">
-                                    <Setter Property="ContentTemplate" Value="{StaticResource CutSummaryTemplet}" />
-                                </DataTrigger>
-
                                 <DataTrigger Binding="{Binding DataType}" Value="{x:Static viewmodels:Enums+CutDataType.Branch}">
                                     <Setter Property="ContentTemplate" Value="{StaticResource CutBranchTemplet}" />
+                                </DataTrigger>
+
+                                <DataTrigger Binding="{Binding DataContext.ShowSummary, RelativeSource={RelativeSource AncestorType=ListView}}" Value="True">
+                                    <Setter Property="ContentTemplate" Value="{StaticResource CutSummaryTemplet}" />
                                 </DataTrigger>
                             </Style.Triggers>
 

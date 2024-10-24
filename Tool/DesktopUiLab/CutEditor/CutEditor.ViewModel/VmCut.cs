@@ -63,6 +63,8 @@ public sealed class VmCut : ObservableObject
         set => this.SetProperty(ref this.showSoundBSection, value);
     }
 
+    public string SummaryText => this.Cut.GetSummaryText();
+
     public CutDataType DataType
     {
         get => this.dataType;

@@ -25,7 +25,7 @@
                 </Grid.RowDefinitions>
 
                 <!--컨트롤 표시 제어하는 체크박스 목록-->
-                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5,0">
+                <DockPanel Grid.Row="0" Margin="5,0" LastChildFill="True">
                     <TextBlock DockPanel.Dock="Left" Grid.Row="0" Grid.Column="0"
                                    VerticalAlignment="Center"
                                    Margin="0,0,50,0">
@@ -43,7 +43,17 @@
                                 IsChecked="{Binding ShowSoundASection}" MinWidth="100"/>
                     <CheckBox Content="사운드(뒤)" Background="{StaticResource SoundBoxBrush}"
                                 IsChecked="{Binding ShowSoundBSection}" MinWidth="100"/>
-                </StackPanel>
+
+                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal"
+                                HorizontalAlignment="Right">
+                        <Canvas Width="30">
+                            <Image Width="20" Stretch="Uniform" Canvas.ZIndex="1"
+                                   Source="pack://application:,,,/Assets/clip.png"
+                                   Canvas.Top="-35"/>
+                        </Canvas>
+                        <CheckBox Content="TalkAppend"/>
+                    </StackPanel>
+                </DockPanel>
 
                 <!--컨트롤 : 화면-->
                 <Border Grid.Row="1" Margin="0,10,0,0" Background="{StaticResource ScreenBoxBrush}"
