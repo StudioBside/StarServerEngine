@@ -36,4 +36,5 @@ internal class CutOutputFormat
     public float? TalkTime { get; set; }
     public int[]? TalkPositionControl { get; set; }
     public object[]? JumpAnchorData { get; set; }
+    public bool? TalkAppend { get; set; }
 }

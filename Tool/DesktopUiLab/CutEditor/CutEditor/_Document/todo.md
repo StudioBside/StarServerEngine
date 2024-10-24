@@ -3,10 +3,10 @@
 - 다중 선택해서 값 변경하기
 - 브랜치컷 표현방식 구상
 - talk append 처리방식 구상
+  - 드래그할 때 별개로 이동하지 못하게 일단 막음.
 - 컷 추가할 때 스크롤 내리기
-- 텍스트에 부분선택해서 색상 쉽게 입히기
-- 요약 표현 기능 넣고, 일괄 박스 제어 기능 대체
 - listview item 간의 여백 더 좁게 조정
+- 텍스트에 부분선택해서 색상 쉽게 입히기
 ```csharp
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -71,6 +71,7 @@ namespace WpfApp
 
 ## done
 
+- 요약 표현 기능 넣고, 일괄 박스 제어 기능 대체
 - 드래그 할 때 시인성 높이기
 - sound 표시위치에 여백 확보
 - unitTemplet 읽기

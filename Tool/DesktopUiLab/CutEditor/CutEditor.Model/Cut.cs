@@ -46,6 +46,7 @@ public sealed class Cut : ObservableObject
     private string? cameraOffsetTime; // enum
     private float talkTime;
     private Color? talkPositionControl; // enum
+    private bool talkAppend;
 
     public Cut(JToken token, long uid) : this(uid)
     {
@@ -78,6 +79,7 @@ public sealed class Cut : ObservableObject
         this.talkPositionControl = LoadColor(token, "TalkPositionControl");
         token.TryGetArray("JumpAnchorData", this.choices, ChoiceOption.Load);
         token.TryGetArray("UnitNameString", this.unitNames);
+        this.talkAppend = token.GetBool("TalkAppend", false);
 
         if (string.IsNullOrEmpty(this.unitStrId) == false)
         {
@@ -117,6 +119,12 @@ public sealed class Cut : ObservableObject
         set => this.SetProperty(ref this.unitPos, value);
     }
 
+    public bool TalkAppend
+    {
+        get => this.talkAppend;
+        set => this.SetProperty(ref this.talkAppend, value);
+    }
+
     public object ToOutputType()
     {
         var result = new CutOutputFormat
@@ -151,6 +159,7 @@ public sealed class Cut : ObservableObject
             UnitTalk_CHN = this.unitTalk.AsNullable(L10nType.ChineseSimplified),
             TalkTime = EliminateZero(this.talkTime),
             TalkPositionControl = ConvertColor(this.talkPositionControl),
+            TalkAppend = EliminateFalse(this.talkAppend),
         };
 
         if (this.choices.Count > 0)
