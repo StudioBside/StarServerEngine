@@ -32,16 +32,55 @@ public sealed class ListViewBehavior : Behavior<ListView>
         this.AssociatedObject.PreviewMouseLeftButtonDown += this.AssociatedObject_PreviewMouseLeftButtonDown;
         this.AssociatedObject.PreviewMouseMove += this.AssociatedObject_PreviewMouseMove;
         this.AssociatedObject.Drop += this.AssociatedObject_Drop;
+        this.AssociatedObject.Initialized += this.AssociatedObject_Initialized;
     }
 
     protected override void OnDetaching()
     {
+        this.AssociatedObject.PreviewMouseLeftButtonDown -= this.AssociatedObject_PreviewMouseLeftButtonDown;
         this.AssociatedObject.PreviewMouseMove -= this.AssociatedObject_PreviewMouseMove;
         this.AssociatedObject.Drop -= this.AssociatedObject_Drop;
+        this.AssociatedObject.Initialized -= this.AssociatedObject_Initialized;
     }
 
     private static void OnReorderByDragDropChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
+    }
+
+    private void AssociatedObject_Initialized(object? sender, EventArgs e)
+    {
+        var style = this.AssociatedObject.ItemContainerStyle ?? new Style(typeof(ListViewItem));
+
+        var eventSetter = new EventSetter(
+            UIElement.PreviewMouseLeftButtonDownEvent,
+            new MouseButtonEventHandler(this.ListItem_PreviewMouseLeftButtonDown));
+
+        style.Setters.Add(eventSetter);
+
+        // 스타일을 다시 설정
+        this.AssociatedObject.ItemContainerStyle = style;
+    }
+
+    private void ListItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        Log.Debug($"item_PreviewMouseLeftButtonDown: {sender.GetType()}");
+
+        if (e.OriginalSource.FindAncestor<ListViewItem>(out var clickedItem) == false)
+        {
+            return;
+        }
+
+        if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control) ||
+            Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ||
+            this.AssociatedObject.SelectedItems.Count == 1)
+        {
+            return;
+        }
+
+        if (clickedItem.IsSelected)
+        {
+            e.Handled = true;
+        }
     }
 
     private void AssociatedObject_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)

@@ -24,8 +24,45 @@
         <behaviors:PageBehavior HandleClipboard="True"/>
     </b:Interaction.Behaviors>
     <Page.Resources>
+        <!-- 애니메이션 스타일 정의 -->
+        <Style x:Key="AnimatedBorderStyle" TargetType="Border">
+            <Setter Property="BorderBrush" Value="LightGray"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListViewItem}}" Value="True">
+                    <Setter Property="BorderBrush">
+                        <Setter.Value>
+                            <SolidColorBrush Color="White"/>
+                        </Setter.Value>
+                    </Setter>
+                    <DataTrigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation 
+                                    Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)"
+                                    From="White"
+                                    To="Orange"
+                                    Duration="0:0:5"
+                                    AutoReverse="True"
+                                    RepeatBehavior="Forever"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </DataTrigger.EnterActions>
+                    <DataTrigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation
+                                    Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)"
+                                    To="LightGray"
+                                    Duration="0:0:0.5"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </DataTrigger.ExitActions>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
         <DataTemplate x:Key="CutItemTemplet">
-            <Border BorderThickness="1" BorderBrush="LightGray"
+            <Border Style="{StaticResource AnimatedBorderStyle}" BorderThickness="1" BorderBrush="LightGray"
                     CornerRadius="3">
                 <Grid Margin="1">
                     <Grid.RowDefinitions>
