@@ -36,12 +36,12 @@ public sealed class VmCuts : VmPageBase,
     private readonly IServiceProvider services;
     private readonly UndoController undoController = new();
     private readonly string packetExeFile;
-    private bool allSectionUnit = true;
-    private bool allSectionScreen;
-    private bool allSectionCamera;
+    private bool showSummary;
 
     public VmCuts(IConfiguration config, IServiceProvider services)
     {
+        LastInstance = this;
+
         this.services = services;
         this.BackCommand = new RelayCommand(this.OnBack);
         this.SaveCommand = new RelayCommand(this.OnSave);
@@ -86,6 +86,7 @@ public sealed class VmCuts : VmPageBase,
         Log.Info($"{this.name} 파일 로딩 완료. 총 컷의 개수:{this.cuts.Count}");
     }
 
+    public static VmCuts? LastInstance { get; private set; }
     public IList<VmCut> Cuts => this.cuts;
     public IList<VmCut> SelectedCuts => this.selectedCuts;
     public ICommand UndoCommand => this.undoController.UndoCommand;
@@ -95,43 +96,10 @@ public sealed class VmCuts : VmPageBase,
     public ICommand DeleteCommand { get; } // 현재 (멀티)선택한 대상을 모두 삭제
     public ICommand NewCutCommand { get; }
     public ICommand DeletePickCommand { get; } // 인자로 넘어오는 1개의 cut을 삭제
-    public bool AllSectionUnit
+    public bool ShowSummary
     {
-        get => this.allSectionUnit;
-        set
-        {
-            this.SetProperty(ref this.allSectionUnit, value);
-            foreach (var cut in this.cuts)
-            {
-                cut.ShowUnitSection = value;
-            }
-        }
-    }
-
-    public bool AllSectionScreen
-    {
-        get => this.allSectionScreen;
-        set
-        {
-            this.SetProperty(ref this.allSectionScreen, value);
-            foreach (var cut in this.cuts)
-            {
-                cut.ShowScreenSection = value;
-            }
-        }
-    }
-
-    public bool AllSectionCamera
-    {
-        get => this.allSectionCamera;
-        set
-        {
-            this.SetProperty(ref this.allSectionCamera, value);
-            foreach (var cut in this.cuts)
-            {
-                cut.ShowCameraSection = value;
-            }
-        }
+        get => this.showSummary;
+        set => this.SetProperty(ref this.showSummary, value);
     }
 
     internal TempUidGenerator UidGenerator => this.uidGenerator;

@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.Input;
 using CutEditor.Model;
 using CutEditor.Model.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+using static CutEditor.ViewModel.Enums;
 
 public sealed class VmCut : ObservableObject
 {
@@ -15,10 +16,15 @@ public sealed class VmCut : ObservableObject
     private bool showCameraSection;
     private bool showSoundASection;
     private bool showSoundBSection;
+    private CutDataType dataType;
 
     public VmCut(Cut cut, IServiceProvider services)
     {
         this.Cut = cut;
+        this.dataType = cut.Choices.Count > 0
+            ? CutDataType.Branch
+            : CutDataType.Normal;
+
         this.services = services;
         this.PickUnitCommand = new AsyncRelayCommand(this.OnPickUnit);
 
@@ -55,6 +61,12 @@ public sealed class VmCut : ObservableObject
     {
         get => this.showSoundBSection;
         set => this.SetProperty(ref this.showSoundBSection, value);
+    }
+
+    public CutDataType DataType
+    {
+        get => this.dataType;
+        set => this.SetProperty(ref this.dataType, value);
     }
 
     //// --------------------------------------------------------------------------------------------

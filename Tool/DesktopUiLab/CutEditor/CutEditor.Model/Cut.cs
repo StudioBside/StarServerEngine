@@ -1,27 +1,33 @@
 ﻿namespace CutEditor.Model;
 
 using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Drawing;
 using System.Text;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Cs.Core.Util;
 using Cs.Logging;
+using CutEditor.Model.Detail;
 using Newtonsoft.Json.Linq;
 using NKM;
 using Shared.Templet.Base;
 using Shared.Templet.TempletTypes;
+using static CutEditor.Model.Enums;
 
 public sealed class Cut : ObservableObject
 {
     private readonly L10nText unitTalk = new();
+    private readonly ObservableCollection<ChoiceOption> choices = new();
+    private readonly ObservableCollection<string> unitNames = new();
     private string? contentsTag;
     private string? cutsceneStrId;
     private bool waitClick;
     private float waitTime;
-    private string? bgFadeInStartCol;
-    private string? bgFadeInCol;
+    private Color? bgFadeInStartCol;
+    private Color? bgFadeInCol;
     private float bgFadeInTime;
-    private string? bgFadeOutCol;
+    private Color? bgFadeOutCol;
     private float bgFadeOutTime;
     private float bgFlashBang;
     private float bgCrash;
@@ -31,7 +37,6 @@ public sealed class Cut : ObservableObject
     private string? bgFileName;
     private string? startBgmFileName;
     private string? startFxSoundName;
-    private string? unitName;
     private string? emotionEffect; // enum
     private string? unitStrId;
     private Unit? unit;
@@ -40,7 +45,7 @@ public sealed class Cut : ObservableObject
     private string? cameraOffset; // enum
     private string? cameraOffsetTime; // enum
     private float talkTime;
-    private string? talkPositionControl; // enum
+    private Color? talkPositionControl; // enum
 
     public Cut(JToken token, long uid) : this(uid)
     {
@@ -48,10 +53,10 @@ public sealed class Cut : ObservableObject
         this.cutsceneStrId = token.GetString("CutsceneStrId", null!);
         this.waitClick = token.GetBool("WaitClick", false);
         this.waitTime = token.GetFloat("WaitTime", 0f);
-        this.bgFadeInStartCol = token.GetString("BgFadeInStartCol", null!);
-        this.bgFadeInCol = token.GetString("BgFadeInCol", null!);
+        this.bgFadeInStartCol = LoadColor(token, "BgFadeInStartCol");
+        this.bgFadeInCol = LoadColor(token, "BgFadeInCol");
         this.bgFadeInTime = token.GetFloat("BgFadeInTime", 0f);
-        this.bgFadeOutCol = token.GetString("BgFadeOutCol", null!);
+        this.bgFadeOutCol = LoadColor(token, "BgFadeOutCol");
         this.bgFadeOutTime = token.GetFloat("BgFadeOutTime", 0f);
         this.bgFlashBang = token.GetFloat("BgFlashBang", 0f);
         this.bgCrash = token.GetFloat("BgCrash", 0f);
@@ -66,12 +71,13 @@ public sealed class Cut : ObservableObject
         this.cameraOffset = token.GetString("CameraOffset", null!);
         this.cameraOffsetTime = token.GetString("CameraOffsetTime", null!);
 
-        this.unitName = token.GetString("UnitNameString", null!);
         this.emotionEffect = token.GetString("EmotionEffect", null!);
         this.unitTalk.Load(token, "UnitTalk");
         this.talkTime = token.GetFloat("TalkTime", 0f);
         this.unitStrId = token.GetString("UnitStrId", null!);
-        this.talkPositionControl = token.GetString("TalkPositionControl", null!);
+        this.talkPositionControl = LoadColor(token, "TalkPositionControl");
+        token.TryGetArray("JumpAnchorData", this.choices, ChoiceOption.Load);
+        token.TryGetArray("UnitNameString", this.unitNames);
 
         if (string.IsNullOrEmpty(this.unitStrId) == false)
         {
@@ -90,11 +96,8 @@ public sealed class Cut : ObservableObject
 
     public long Uid { get; }
     public L10nText UnitTalk => this.unitTalk;
-    public string? UnitName
-    {
-        get => this.unitName;
-        set => this.SetProperty(ref this.unitName, value);
-    }
+    public IList<ChoiceOption> Choices => this.choices;
+    public IList<string> UnitNames => this.unitNames;
 
     public float TalkTime
     {
@@ -116,17 +119,17 @@ public sealed class Cut : ObservableObject
 
     public object ToOutputType()
     {
-        return new
+        var result = new CutOutputFormat
         {
             Uid = this.Uid,
             ContentsTag = this.contentsTag,
             CutsceneStrId = this.cutsceneStrId,
             WaitClick = this.waitClick,
             WaitTime = this.waitTime,
-            BgFadeInStartCol = this.bgFadeInStartCol,
-            BgFadeInCol = this.bgFadeInCol,
+            BgFadeInStartCol = ConvertColor(this.bgFadeInStartCol),
+            BgFadeInCol = ConvertColor(this.bgFadeInCol),
             BgFadeInTime = EliminateZero(this.bgFadeInTime),
-            BgFadeOutCol = this.bgFadeOutCol,
+            BgFadeOutCol = ConvertColor(this.bgFadeOutCol),
             BgFadeOutTime = EliminateZero(this.bgFadeOutTime),
             BgFlashBang = EliminateZero(this.bgFlashBang),
             BgCrash = EliminateZero(this.bgCrash),
@@ -137,27 +140,30 @@ public sealed class Cut : ObservableObject
             StartFxSoundName = this.startFxSoundName,
             CutsceneClear = this.cutsceneClear,
             UnitStrId = this.unitStrId,
-            UnitNameString = this.unitName,
             UnitQuickSet = EliminateFalse(this.unitQuickSet),
             UnitPos = EliminateEnum(this.unitPos, CutsceneUnitPos.NONE),
             CameraOffset = this.cameraOffset,
             CameraOffsetTime = this.cameraOffsetTime,
             EmotionEffect = this.emotionEffect,
-            UnitTalk_KOR = EliminateEmpty(this.unitTalk.Korean),
-            UnitTalk_ENG = EliminateEmpty(this.unitTalk.English),
-            UnitTalk_JPN = EliminateEmpty(this.unitTalk.Japanese),
-            UnitTalk_CHN = EliminateEmpty(this.unitTalk.ChineseSimplified),
-            //UnitTalk_CHT = EliminateEmpty(this.unitTalk.ChineseTraditional),
+            UnitTalk_KOR = this.unitTalk.AsNullable(L10nType.Korean),
+            UnitTalk_ENG = this.unitTalk.AsNullable(L10nType.English),
+            UnitTalk_JPN = this.unitTalk.AsNullable(L10nType.Japanese),
+            UnitTalk_CHN = this.unitTalk.AsNullable(L10nType.ChineseSimplified),
             TalkTime = EliminateZero(this.talkTime),
-            TalkPositionControl = this.talkPositionControl,
+            TalkPositionControl = ConvertColor(this.talkPositionControl),
         };
 
-        static string? EliminateEmpty(string source)
+        if (this.choices.Count > 0)
         {
-            return string.IsNullOrEmpty(source)
-                ? null
-                : source;
+            result.JumpAnchorData = this.choices.Select(e => e.ToOutputType()).ToArray();
         }
+
+        if (this.unitNames.Count > 0)
+        {
+            result.UnitNameString = this.unitNames.ToArray();
+        }
+
+        return result;
 
         static float? EliminateZero(float source)
         {
@@ -175,6 +181,21 @@ public sealed class Cut : ObservableObject
         {
             return source.Equals(defaultValue) ? null : source;
         }
+
+        static int[]? ConvertColor(Color? color)
+        {
+            if (color is null)
+            {
+                return null;
+            }
+
+            return [
+                color.Value.R,
+                color.Value.G,
+                color.Value.B,
+                color.Value.A
+            ];
+        }
     }
 
     //// --------------------------------------------------------------------------------
@@ -189,6 +210,23 @@ public sealed class Cut : ObservableObject
                 this.ResetUnitStrId();
                 break;
         }
+    }
+
+    private static Color? LoadColor(JToken token, string key)
+    {
+        var buffer = new List<int>();
+        if (token.TryGetArray(key, buffer) == false)
+        {
+            return null;
+        }
+
+        if (buffer.Count != 4)
+        {
+            return null;
+        }
+
+        // 데이터에는 RGBA 순서로 들어있고, 아래 생성자는 ARGB 순서로 받습니다.
+        return Color.FromArgb(buffer[3], buffer[0], buffer[1], buffer[2]);
     }
 
     private void ResetUnitStrId()

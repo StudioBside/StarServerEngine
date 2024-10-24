@@ -62,4 +62,10 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Page Update="Views\CutTemplates\CutTemplateBranch.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
 </Project>

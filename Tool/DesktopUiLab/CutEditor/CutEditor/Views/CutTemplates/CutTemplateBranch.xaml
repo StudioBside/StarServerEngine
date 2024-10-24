@@ -1,0 +1,43 @@
+﻿<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:lcvt="clr-namespace:CutEditor.Converters"
+    xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
+    xmlns:viewmodels="clr-namespace:CutEditor.ViewModel;assembly=CutEditor.ViewModel"
+    >
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="CutCommon.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <DataTemplate x:Key="CutBranchTemplet">
+        <Border Style="{StaticResource ChangeSelectedBgStyle}" BorderThickness="1" BorderBrush="LightGray"
+                    CornerRadius="3">
+            <Grid Margin="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <!--헤더. uid 및 체크박스 목록-->
+                    <RowDefinition Height="Auto"/>
+                    <!--화면 박스-->
+                    <RowDefinition Height="Auto"/>
+                    <!--유닛 박스-->
+                </Grid.RowDefinitions>
+
+                <!--컨트롤 표시 제어하는 체크박스 목록-->
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5,0">
+                    <TextBlock DockPanel.Dock="Left" Grid.Row="0" Grid.Column="0"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,50,0">
+                            <Run>Uid : </Run>
+                            <Run Text="{Binding Cut.Uid, Mode=OneWay}" />
+                    </TextBlock>
+
+                    <ui:TextBlock Text="브랜치컷" />
+
+                </StackPanel>
+            </Grid>
+        </Border>
+    </DataTemplate>
+   
+</ResourceDictionary>

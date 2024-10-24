@@ -63,4 +63,9 @@ public sealed class L10nText : ObservableObject, ISearchable
             this.values[i] = token.GetString(l10nType.ToJsonKey(prefix), string.Empty);
         }
     }
+
+    internal string? AsNullable(L10nType l10nType)
+    {
+        return this.values[(int)l10nType];
+    }
 }
