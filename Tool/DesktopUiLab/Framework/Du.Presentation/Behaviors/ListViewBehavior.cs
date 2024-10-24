@@ -20,6 +20,7 @@ public sealed class ListViewBehavior : Behavior<ListView>
               new PropertyMetadata(false, OnReorderByDragDropChanged));
 
     private Point cursorStartPos;
+    private ToolTip? toolTip;
 
     public bool ReorderByDragDrop
     {
@@ -32,7 +33,7 @@ public sealed class ListViewBehavior : Behavior<ListView>
         this.AssociatedObject.PreviewMouseLeftButtonDown += this.AssociatedObject_PreviewMouseLeftButtonDown;
         this.AssociatedObject.PreviewMouseMove += this.AssociatedObject_PreviewMouseMove;
         this.AssociatedObject.Drop += this.AssociatedObject_Drop;
-        this.AssociatedObject.Initialized += this.AssociatedObject_Initialized;
+        this.AssociatedObject.DragOver += this.AssociatedObject_DragOver;
     }
 
     protected override void OnDetaching()
@@ -40,25 +41,28 @@ public sealed class ListViewBehavior : Behavior<ListView>
         this.AssociatedObject.PreviewMouseLeftButtonDown -= this.AssociatedObject_PreviewMouseLeftButtonDown;
         this.AssociatedObject.PreviewMouseMove -= this.AssociatedObject_PreviewMouseMove;
         this.AssociatedObject.Drop -= this.AssociatedObject_Drop;
-        this.AssociatedObject.Initialized -= this.AssociatedObject_Initialized;
+        this.AssociatedObject.DragOver -= this.AssociatedObject_DragOver;
     }
 
     private static void OnReorderByDragDropChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
     }
 
-    private void AssociatedObject_Initialized(object? sender, EventArgs e)
+    private void AssociatedObject_DragOver(object sender, DragEventArgs e)
     {
-        var style = this.AssociatedObject.ItemContainerStyle ?? new Style(typeof(ListViewItem));
+        ////// 커서 위치 가져오기
+        ////var position = e.GetPosition(this.AssociatedObject);
 
-        var eventSetter = new EventSetter(
-            UIElement.PreviewMouseLeftButtonDownEvent,
-            new MouseButtonEventHandler(this.ListItem_PreviewMouseLeftButtonDown));
+        ////// 정보 표시를 위한 툴팁 생성
+        ////var toolTip = new ToolTip
+        ////{
+        ////    Content = $"Uid: 드래그 추가정보",
+        ////    IsOpen = true,
+        ////    Placement = System.Windows.Controls.Primitives.PlacementMode.Mouse,
+        ////};
 
-        style.Setters.Add(eventSetter);
-
-        // 스타일을 다시 설정
-        this.AssociatedObject.ItemContainerStyle = style;
+        ////// 툴팁을 커서 위치에 표시
+        ////ToolTipService.SetToolTip(this, this.toolTip);
     }
 
     private void ListItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -86,10 +90,25 @@ public sealed class ListViewBehavior : Behavior<ListView>
     private void AssociatedObject_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
         this.cursorStartPos = e.GetPosition(relativeTo: null);
+
+        if (e.OriginalSource.FindAncestor<ListViewItem>(out var clickedItem) && // 아이템 클릭 했을 때
+            clickedItem.IsSelected && // 현재 선택된 상태이고
+            Keyboard.Modifiers.HasFlag(ModifierKeys.Control) == false && // ctrl 누른 상태 아니고
+            Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) == false && // shift 누른 상태 아니고
+            this.AssociatedObject.SelectedItems.Count > 1) // 선택된 아이템이 여러개일 때
+        {
+            e.Handled = true; // 이벤트를 무시해서 지금 선택된 리스트가 리셋되는 것을 막아준다.
+            return;
+        }
     }
 
     private void AssociatedObject_PreviewMouseMove(object sender, MouseEventArgs e)
     {
+        if (e.LeftButton != MouseButtonState.Pressed && this.toolTip is not null && this.toolTip.IsOpen)
+        {
+            this.toolTip.IsOpen = false;
+        }
+
         if (e.LeftButton != MouseButtonState.Pressed || // 마우스 버튼이 눌려있지 않음
             e.OriginalSource.FindAncestor<ListViewItem>(out var dragStartItem) == false || // 대상 아이템을 찾을 수 없음
             this.AssociatedObject.SelectedItems.Count == 0) // 선택된 아이템이 없음
@@ -112,8 +131,24 @@ public sealed class ListViewBehavior : Behavior<ListView>
         }
 
         var selectedItems = this.AssociatedObject.SelectedItems.Cast<object>().ToList();
+        if (this.toolTip is null)
+        {
+            this.toolTip = new ToolTip
+            {
+                Content = $"드래그 추가정보",
+                IsOpen = true,
+                Placement = System.Windows.Controls.Primitives.PlacementMode.Mouse,
+            };
+
+            // 툴팁을 커서 위치에 표시
+            ToolTipService.SetToolTip(this, this.toolTip);
+        }
+
         try
         {
+            this.toolTip.Content = $"{this.AssociatedObject.SelectedItems.Count}개 항목 위치 이동";
+            this.toolTip.IsOpen = true;
+
             DragDrop.DoDragDrop(dragStartItem, selectedItems, DragDropEffects.Move);
         }
         catch (Exception ex)
@@ -129,6 +164,11 @@ public sealed class ListViewBehavior : Behavior<ListView>
         {
             Log.Warn($"DataContext is not IDragDropHandler. dataContext:{this.AssociatedObject.DataContext}");
             return;
+        }
+
+        if (this.toolTip is not null && this.toolTip.IsOpen)
+        {
+            this.toolTip.IsOpen = false;
         }
 
         if (e.OriginalSource.FindAncestor<ListViewItem>(out var dragStopItem) == false)

@@ -1,10 +1,10 @@
 ﻿## todo
 
-- 드래그 할 때 시인성 높이기
 - 다중 선택해서 값 변경하기
 - 브랜치컷 표현방식 구상
 - talk append 처리방식 구상
 - 컷 추가할 때 스크롤 내리기
+- 텍스트에 부분선택해서 색상 쉽게 입히기
 ```csharp
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -69,6 +69,7 @@ namespace WpfApp
 
 ## done
 
+- 드래그 할 때 시인성 높이기
 - sound 표시위치에 여백 확보
 - unitTemplet 읽기
 - unit portrait 로딩 및 출력

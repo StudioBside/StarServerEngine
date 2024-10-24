@@ -61,8 +61,20 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+        <Style x:Key="ChangeSelectedBgStyle" TargetType="Border">
+            <Setter Property="BorderBrush" Value="White"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListViewItem}}" Value="True">
+                    <Setter Property="Background" Value="{StaticResource SelectedItemBrush}"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListViewItem}}" Value="False">
+                    <Setter Property="Background" Value="White"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
         <DataTemplate x:Key="CutItemTemplet">
-            <Border Style="{StaticResource AnimatedBorderStyle}" BorderThickness="1" BorderBrush="LightGray"
+            <Border Style="{StaticResource ChangeSelectedBgStyle}" BorderThickness="1" BorderBrush="LightGray"
                     CornerRadius="3">
                 <Grid Margin="1">
                     <Grid.RowDefinitions>
