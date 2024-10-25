@@ -1,10 +1,8 @@
 ﻿## todo
 
 - 다중 선택해서 값 변경하기
-- 브랜치컷 표현방식 구상
 - 컷 추가할 때 스크롤 내리기
 - listview item 간의 여백 더 좁게 조정
-- jump anchor 처리
 - color picker 알아보기
 - UnitMotion, TransitionEffect, TransitionControl
 - 텍스트에 부분선택해서 색상 쉽게 입히기
@@ -72,6 +70,8 @@ namespace WpfApp
 
 ## done
 
+- 브랜치컷 표현방식 구상
+- jump anchor 처리
 - talk append 처리방식 구상
   - 증요도가 높지 않아 디테일 보강은 나중에 하기로.
 - 요약 표현 기능 넣고, 일괄 박스 제어 기능 대체

@@ -60,7 +60,7 @@ public sealed class ChoiceOption : ObservableObject
     internal string GetSummaryText()
     {
         var sb = new StringBuilder();
-        sb.Append(this.text.Korean);
+        sb.Append($"{this.UidString} : {this.text.Korean}");
         if (this.jumpAnchor != StartAnchorType.None)
         {
             sb.Append($" -> {this.jumpAnchor}");

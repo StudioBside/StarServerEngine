@@ -13,7 +13,7 @@
   <PropertyGroup>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DebugType>Full</DebugType>
-    <!--<ApplicationIcon>.\appicon.ico</ApplicationIcon>-->
+    <ApplicationIcon>.\appicon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Assets\clip.png" />
