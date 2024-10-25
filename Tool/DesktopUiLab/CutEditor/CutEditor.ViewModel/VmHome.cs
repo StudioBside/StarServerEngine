@@ -85,7 +85,7 @@ public sealed class VmHome : VmPageBase
             return;
         }
    
-        GlobalState.Instance.ReserveVmCuts(new VmCuts.CrateParam { CutScene = this.selectedCutScene });
+        VmGlobalState.Instance.ReserveVmCuts(new VmCuts.CrateParam { CutScene = this.selectedCutScene });
         WeakReferenceMessenger.Default.Send(new NavigationMessage("Views/PgCuts.xaml"));
     }
 
@@ -99,7 +99,7 @@ public sealed class VmHome : VmPageBase
             return;
         }
 
-        GlobalState.Instance.ReserveVmCuts(new VmCuts.CrateParam { NewFileName = fileName });
+        VmGlobalState.Instance.ReserveVmCuts(new VmCuts.CrateParam { NewFileName = fileName });
         WeakReferenceMessenger.Default.Send(new NavigationMessage("Views/PgCuts.xaml"));
     }
 }

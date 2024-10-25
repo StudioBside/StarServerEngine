@@ -6,13 +6,11 @@ using Cs.Core;
 using Cs.Core.Util;
 using CutEditor.ViewModel.Detail;
 
-public sealed class GlobalState
+public sealed class VmGlobalState
 {
     private VmCuts.CrateParam? vmCutsCreateParam;
 
-    public static GlobalState Instance => Singleton<GlobalState>.Instance;
-
-    internal VmCuts.CrateParam? VmCutCreateParam { get; set; }
+    public static VmGlobalState Instance => Singleton<VmGlobalState>.Instance;
 
     public void Initialize()
     {

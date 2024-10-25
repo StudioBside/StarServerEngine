@@ -34,14 +34,15 @@ public sealed class VmCuts : VmPageBase,
     private readonly string name;
     private readonly TempUidGenerator uidGenerator = new();
     private readonly IServiceProvider services;
-    private readonly UndoController undoController = new();
+    private readonly UndoController undoController;
     private readonly string packetExeFile;
+    private readonly IServiceScope serviceScope;
     private bool showSummary;
 
     public VmCuts(IConfiguration config, IServiceProvider services)
     {
-        LastInstance = this;
-
+        this.serviceScope = services.CreateScope();
+        this.undoController = this.serviceScope.ServiceProvider.GetServiceNotNull<UndoController>();
         this.services = services;
         this.BackCommand = new RelayCommand(this.OnBack);
         this.SaveCommand = new RelayCommand(this.OnSave);
@@ -49,7 +50,7 @@ public sealed class VmCuts : VmPageBase,
         this.NewCutCommand = new RelayCommand(this.OnNewCut);
         this.DeletePickCommand = new RelayCommand<VmCut>(this.OnDeletePick);
 
-        if (GlobalState.Instance.PopVmCuts(out var param) == false)
+        if (VmGlobalState.Instance.PopVmCuts(out var param) == false)
         {
             throw new Exception($"VmCuts.CreateParam is not set in the GlobalState.");
         }
@@ -86,7 +87,6 @@ public sealed class VmCuts : VmPageBase,
         Log.Info($"{this.name} 파일 로딩 완료. 총 컷의 개수:{this.cuts.Count}");
     }
 
-    public static VmCuts? LastInstance { get; private set; }
     public IList<VmCut> Cuts => this.cuts;
     public IList<VmCut> SelectedCuts => this.selectedCuts;
     public ICommand UndoCommand => this.undoController.UndoCommand;
@@ -205,6 +205,14 @@ public sealed class VmCuts : VmPageBase,
         }
 
         return true;
+    }
+
+    public override void OnNavigating(object sender, Uri uri)
+    {
+        // 다른 페이지로의 네이게이션이 시작될 때 (= 지금 페이지가 닫힐 때)
+        Log.Debug($"{this.DebugName} OnNavigating: {uri}");
+
+        this.serviceScope.Dispose();
     }
 
     //// --------------------------------------------------------------------------------------------

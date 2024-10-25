@@ -14,12 +14,12 @@ public partial class MainWindow : Window
         this.LoadWindowState();
 
         var services = App.Current.Services;
-        this.DataContext = services.GetService<VmMain>();
+        this.DataContext = services.GetServiceNotNull<VmMain>();
 
-        var dialogService = services.GetService<IContentDialogService>();
+        var dialogService = services.GetServiceNotNull<IContentDialogService>();
         dialogService.SetDialogHost(this.RootContentDialog);
 
-        var snackbarService = services.GetService<ISnackbarService>();
+        var snackbarService = services.GetServiceNotNull<ISnackbarService>();
         snackbarService.SetSnackbarPresenter(this.SnackbarPresenter);
     }
 

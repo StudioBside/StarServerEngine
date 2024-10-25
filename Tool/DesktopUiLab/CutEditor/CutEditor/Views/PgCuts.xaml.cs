@@ -9,6 +9,6 @@ public sealed partial class PgCuts : Page
     public PgCuts()
     {
         this.InitializeComponent();
-        this.DataContext = App.Current.Services.GetService<VmCuts>();
+        this.DataContext = App.Current.Services.GetServiceNotNull<VmCuts>();
     }
 }

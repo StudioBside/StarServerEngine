@@ -9,6 +9,6 @@ public partial class PgHome : Page
     public PgHome()
     {
         this.InitializeComponent();
-        this.DataContext = App.Current.Services.GetService<VmHome>();
+        this.DataContext = App.Current.Services.GetServiceNotNull<VmHome>();
     }
 }

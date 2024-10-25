@@ -10,6 +10,7 @@ using CutEditor.Model.Interfaces;
 using CutEditor.Services;
 using CutEditor.ViewModel;
 using Du.Core.Interfaces;
+using Du.Core.Util;
 using Du.Excel;
 using Du.Presentation.Util;
 using Du.WpfLib;
@@ -51,6 +52,7 @@ public partial class App : Application
         services.AddTransient<FileAndSnackbarLog>();
         services.AddTransient<UnitPickerDialog>();
         services.AddTransient<IUnitPicker, UnitPicker>();
+        services.AddScoped<UndoController>();
 
         services.AddTransient<IUserInputProvider<string>, StringInputProvider>();
         services.AddTransient<IUserInputProvider<bool>, BooleanInputProvider>();
@@ -87,7 +89,7 @@ public partial class App : Application
     {
         Log.Initialize(this.Services.GetService<FileAndSnackbarLog>(), LogLevelConfig.All);
 
-        GlobalState.Instance.Initialize();
+        VmGlobalState.Instance.Initialize();
         TempletLoad.Execute(this.Services.GetRequiredService<IConfiguration>());
 
         var loader = this.Services.GetRequiredService<FileLoader>();
