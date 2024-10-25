@@ -1,10 +1,8 @@
 ﻿namespace CutEditor.Model;
 
-using System;
 using System.Text;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Cs.Core.Util;
-using Cs.Logging;
 using CutEditor.Model.Detail;
 using Newtonsoft.Json.Linq;
 using static CutEditor.Model.Enums;

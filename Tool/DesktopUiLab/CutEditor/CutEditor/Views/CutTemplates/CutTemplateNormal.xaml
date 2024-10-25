@@ -4,7 +4,9 @@
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:lcvt="clr-namespace:CutEditor.Converters"
     xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
+    xmlns:models="clr-namespace:CutEditor.Model;assembly=CutEditor.Model"
     xmlns:viewmodels="clr-namespace:CutEditor.ViewModel;assembly=CutEditor.ViewModel"
+    xmlns:extensions="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
     >
 
     <ResourceDictionary.MergedDictionaries>
@@ -44,7 +46,19 @@
                     <CheckBox Content="사운드(뒤)" Background="{StaticResource SoundBoxBrush}"
                                 IsChecked="{Binding ShowSoundBSection}" MinWidth="100"/>
 
-                    <ui:Button Margin="20,0,10,0" Content="앵커 설정"/>
+                    <ui:DropDownButton Margin="20,0,10,0" Content="앵커 설정">
+                        <ui:DropDownButton.Flyout>
+                            <ContextMenu ItemsSource="{Binding Source={extensions:EnumValues {x:Type models:Enums+DestAnchorType}}}">
+                                <ContextMenu.ItemTemplate>
+                                    <DataTemplate>
+                                        <MenuItem Header="{Binding .}"
+                                                  Command="{Binding DataContext.SetAnchorCommand, RelativeSource={RelativeSource AncestorType=ListViewItem}}"
+                                                  CommandParameter="{Binding .}"/>
+                                    </DataTemplate>
+                                </ContextMenu.ItemTemplate>
+                            </ContextMenu>
+                        </ui:DropDownButton.Flyout>
+                    </ui:DropDownButton>
                     <Border BorderBrush="{StaticResource AnchorBrush}" BorderThickness="1" Margin="5" Padding="5"
                             CornerRadius="10"
                             Visibility="{Binding Cut.JumpAnchor, Converter={converters:EnumToCollapsedConverter}, ConverterParameter=None}">

@@ -9,6 +9,7 @@ using CutEditor.Model;
 using CutEditor.Model.Interfaces;
 using CutEditor.ViewModel.Detail;
 using Microsoft.Extensions.DependencyInjection;
+using static CutEditor.Model.Enums;
 using static CutEditor.ViewModel.Enums;
 
 public sealed class VmCut : ObservableObject
@@ -33,6 +34,7 @@ public sealed class VmCut : ObservableObject
         this.PickUnitCommand = new AsyncRelayCommand(this.OnPickUnit);
         this.AddChoiceOptionCommand = new RelayCommand(this.OnAddChoiceOption);
         this.DeleteChoiceOptionCommand = new RelayCommand<ChoiceOption>(this.OnDeleteChoiceOption);
+        this.SetAnchorCommand = new RelayCommand<DestAnchorType>(this.OnSetAnchor);
 
         this.showUnitSection = true;
 
@@ -44,6 +46,7 @@ public sealed class VmCut : ObservableObject
     public IRelayCommand PickUnitCommand { get; }
     public ICommand AddChoiceOptionCommand { get; }
     public ICommand DeleteChoiceOptionCommand { get; }
+    public ICommand SetAnchorCommand { get; }
     public bool ShowUnitSection
     {
         get => this.showUnitSection;
@@ -114,5 +117,10 @@ public sealed class VmCut : ObservableObject
         }
 
         this.Cut.Choices.Remove(target);
+    }
+
+    private void OnSetAnchor(DestAnchorType type)
+    {
+        this.Cut.JumpAnchor = type;
     }
 }

@@ -2,12 +2,11 @@
 
 - 다중 선택해서 값 변경하기
 - 브랜치컷 표현방식 구상
-- talk append 처리방식 구상
-  - 드래그할 때 별개로 이동하지 못하게 일단 막음.
 - 컷 추가할 때 스크롤 내리기
 - listview item 간의 여백 더 좁게 조정
 - jump anchor 처리
 - color picker 알아보기
+- UnitMotion, TransitionEffect, TransitionControl
 - 텍스트에 부분선택해서 색상 쉽게 입히기
 ```csharp
 using System.Text.RegularExpressions;
@@ -73,6 +72,8 @@ namespace WpfApp
 
 ## done
 
+- talk append 처리방식 구상
+  - 증요도가 높지 않아 디테일 보강은 나중에 하기로.
 - 요약 표현 기능 넣고, 일괄 박스 제어 기능 대체
 - 드래그 할 때 시인성 높이기
 - sound 표시위치에 여백 확보

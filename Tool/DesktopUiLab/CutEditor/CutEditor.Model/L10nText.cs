@@ -66,6 +66,7 @@ public sealed class L10nText : ObservableObject, ISearchable
 
     internal string? AsNullable(L10nType l10nType)
     {
-        return this.values[(int)l10nType];
+        return string.IsNullOrEmpty(this.values[(int)l10nType])
+            ? null : this.values[(int)l10nType];
     }
 }
