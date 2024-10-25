@@ -1,9 +1,11 @@
 ﻿<ResourceDictionary 
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:lcvt="clr-namespace:CutEditor.Converters"
     xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
+    xmlns:behaviors="clr-namespace:Du.Presentation.Behaviors;assembly=Du.Presentation"
     xmlns:viewmodels="clr-namespace:CutEditor.ViewModel;assembly=CutEditor.ViewModel"
     >
 
@@ -42,16 +44,45 @@
                 <!--바디. 선택지 리스트--> 
                 <Border Grid.Row="1" Margin="0,0,0,0" Background="{StaticResource BranchCutBrush}">
                     <ui:ListView ItemsSource="{Binding Cut.Choices}"
-                                 Margin="50,0">
-                        <ListView.ItemTemplate>
+                                 BorderThickness="0"
+                                 Margin="0,0">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="텍스트(Korean)" Width="Auto">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Text.Korean}">
+                                                <b:Interaction.Behaviors>
+                                                    <behaviors:TextBlockColorBehavior />
+                                                </b:Interaction.Behaviors>
+                                            </TextBlock>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="점프" DisplayMemberBinding="{Binding JumpAnchor}" Width="Auto"/>
+                                <GridViewColumn Header="보상" DisplayMemberBinding="{Binding RewardAnchor}" Width="Auto"/>
+                                <GridViewColumn Header="편집" Width="Auto">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <ui:Button Content="수정"/>
+                                                <ui:Button Content="삭제"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                        <!--<ListView.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
                                     <ui:Button Content="삭제" Margin="10,0"/>
                                     <ui:Button Content="수정" Margin="0,0,10,0"/>
                                     <TextBlock VerticalAlignment="Center" Text="{Binding Text.Korean}" />
+                                    <TextBlock VerticalAlignment="Center" Text="{Binding JumpAnchorId}" />
                                 </StackPanel>
                             </DataTemplate>
-                        </ListView.ItemTemplate>
+                        </ListView.ItemTemplate>-->
                     </ui:ListView>
                 </Border>
 

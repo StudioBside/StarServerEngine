@@ -2,12 +2,21 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!-- 색상 정의 -->
+    <!--컷 아이템 하위 박스 색상-->
     <Color x:Key="UnitBoxColor">#DCDCDD</Color>
     <Color x:Key="ScreenBoxColor">#C5C3C6</Color>
     <Color x:Key="CameraBoxColor">#EFF6E0</Color>
     <Color x:Key="SoundBoxColor">#AEC3B0</Color>
+
+    <!--컷 아이템 선택된 상태일 때 시인성 높이기 위해 배경색 변경-->
     <Color x:Key="SelectedItemColor">#F4E9CD</Color>
-    <Color x:Key="BranchCutColor">#E8F1F2</Color>
+
+    <!--컷 아이템 타입 : 브랜치 컷-->
+    <Color x:Key="BranchCutColor">#fefefe</Color>
+    <Color x:Key="BranchCutColor2">#E8F1F2</Color>
+
+    <!--(점프/리워드)앵커 정보-->
+    <Color x:Key="AnchorColor">#164e8b</Color>
 
     <!-- SolidColorBrush 정의 -->
     <SolidColorBrush x:Key="UnitBoxBrush" Color="{StaticResource UnitBoxColor}"/>
@@ -16,5 +25,6 @@
     <SolidColorBrush x:Key="SoundBoxBrush" Color="{StaticResource SoundBoxColor}"/>
     <SolidColorBrush x:Key="SelectedItemBrush" Color="{StaticResource SelectedItemColor}"/>
     <SolidColorBrush x:Key="BranchCutBrush" Color="{StaticResource BranchCutColor}"/>
+    <SolidColorBrush x:Key="AnchorBrush" Color="{StaticResource AnchorColor}"/>
 
 </ResourceDictionary>

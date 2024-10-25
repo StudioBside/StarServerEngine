@@ -86,7 +86,7 @@ public sealed class CutScene : ObservableObject, ISearchable
 
     bool ISearchable.IsTarget(string keyword)
     {
-        return (int.TryParse(keyword, out int id) && this.cutsceneId == id) ||
+        return this.cutsceneId.ToString().Contains(keyword, StringComparison.CurrentCultureIgnoreCase) ||
             this.fileName.Contains(keyword, StringComparison.CurrentCultureIgnoreCase) ||
             this.title.IsTarget(keyword);
     }

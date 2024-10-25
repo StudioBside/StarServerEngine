@@ -44,6 +44,14 @@
                     <CheckBox Content="사운드(뒤)" Background="{StaticResource SoundBoxBrush}"
                                 IsChecked="{Binding ShowSoundBSection}" MinWidth="100"/>
 
+                    <ui:Button Margin="20,0,10,0" Content="앵커 설정"/>
+                    <Border BorderBrush="{StaticResource AnchorBrush}" BorderThickness="1" Margin="5" Padding="5"
+                            CornerRadius="10"
+                            Visibility="{Binding Cut.AnchorInfo, Converter={converters:NullToVisibilityConverter}}">
+                        <TextBlock VerticalAlignment="Center"
+                               Text="{Binding Cut.AnchorInfo}" />
+                    </Border>
+
                     <StackPanel DockPanel.Dock="Right" Orientation="Horizontal"
                                 HorizontalAlignment="Right">
                         <Canvas Width="30">
@@ -122,6 +130,9 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
+
+                            <!--<TextBlock Grid.Column="0" Grid.Row="0"
+                                       Text="{Binding Cut.JumpAnchor}"/>-->
 
                             <ui:Button Grid.Column="0" Grid.Row="1" Margin="0,0,10,0"
                                     Content="UnitNameString"/>

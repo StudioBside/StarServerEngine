@@ -14,6 +14,7 @@ using NKM;
 using Shared.Templet.Base;
 using Shared.Templet.TempletTypes;
 using static CutEditor.Model.Enums;
+using static NKM.NKMCutsceneEnums;
 
 public sealed class Cut : ObservableObject
 {
@@ -47,6 +48,8 @@ public sealed class Cut : ObservableObject
     private float talkTime;
     private Color? talkPositionControl; // enum
     private bool talkAppend;
+    private JumpAnchorType jumpAnchor;
+    private RewardAnchorType rewardAnchor;
 
     public Cut(JToken token, long uid) : this(uid)
     {
@@ -80,6 +83,8 @@ public sealed class Cut : ObservableObject
         token.TryGetArray("JumpAnchorData", this.choices, ChoiceOption.Load);
         token.TryGetArray("UnitNameString", this.unitNames);
         this.talkAppend = token.GetBool("TalkAppend", false);
+        this.jumpAnchor = token.GetEnum("JumpAnchorInfo", JumpAnchorType.None);
+        this.rewardAnchor = token.GetEnum("RewardAnchor", RewardAnchorType.None);
 
         if (string.IsNullOrEmpty(this.unitStrId) == false)
         {
@@ -125,6 +130,20 @@ public sealed class Cut : ObservableObject
         set => this.SetProperty(ref this.talkAppend, value);
     }
 
+    public JumpAnchorType JumpAnchor
+    {
+        get => this.jumpAnchor;
+        set => this.SetProperty(ref this.jumpAnchor, value);
+    }
+
+    public RewardAnchorType RewardAnchor
+    {
+        get => this.rewardAnchor;
+        set => this.SetProperty(ref this.rewardAnchor, value);
+    }
+
+    public string? AnchorInfo => this.GetAnchorInfo();
+
     public object ToOutputType()
     {
         var result = new CutOutputFormat
@@ -160,6 +179,8 @@ public sealed class Cut : ObservableObject
             TalkTime = EliminateZero(this.talkTime),
             TalkPositionControl = ConvertColor(this.talkPositionControl),
             TalkAppend = EliminateFalse(this.talkAppend),
+            JumpAnchorInfo = EliminateEnum(this.jumpAnchor, JumpAnchorType.None),
+            RewardAnchor = EliminateEnum(this.rewardAnchor, RewardAnchorType.None),
         };
 
         if (this.choices.Count > 0)
@@ -229,6 +250,11 @@ public sealed class Cut : ObservableObject
             case nameof(this.Unit):
                 this.ResetUnitStrId();
                 break;
+
+            case nameof(this.JumpAnchor):
+            case nameof(this.RewardAnchor):
+                this.OnPropertyChanged(nameof(this.AnchorInfo));
+                break;
         }
     }
 
@@ -258,5 +284,32 @@ public sealed class Cut : ObservableObject
         }
 
         this.unitStrId = this.unit.StrId;
+    }
+
+    private string? GetAnchorInfo()
+    {
+        if (this.rewardAnchor == RewardAnchorType.None &&
+            this.jumpAnchor == JumpAnchorType.None)
+        {
+            return null;
+        }
+
+        var sb = new StringBuilder();
+        if (this.rewardAnchor != RewardAnchorType.None)
+        {
+            sb.Append($"보상: {this.rewardAnchor}");
+        }
+
+        if (this.jumpAnchor != JumpAnchorType.None)
+        {
+            if (sb.Length > 0)
+            {
+                sb.Append(", ");
+            }
+
+            sb.Append($"점프: {this.jumpAnchor}");
+        }
+
+        return sb.ToString();
     }
 }

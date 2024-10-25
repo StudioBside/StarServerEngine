@@ -41,6 +41,13 @@
                         </b:Interaction.Behaviors>
                     </TextBlock>
 
+                    <Border BorderBrush="{StaticResource AnchorBrush}" BorderThickness="1" Margin="0" Padding="5"
+                            CornerRadius="10"
+                            Visibility="{Binding Cut.AnchorInfo, Converter={converters:NullToVisibilityConverter}}">
+                        <TextBlock VerticalAlignment="Center"
+                               Text="{Binding Cut.AnchorInfo}" />
+                    </Border>
+
                 </StackPanel>
             </Grid>
         </Border>
