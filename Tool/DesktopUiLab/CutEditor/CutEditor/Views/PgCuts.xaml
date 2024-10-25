@@ -6,7 +6,6 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:local="clr-namespace:CutEditor.Views"
       xmlns:lcvt="clr-namespace:CutEditor.Converters"
-      xmlns:selectors="clr-namespace:CutEditor.Selectors"
       xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
       xmlns:behaviors="clr-namespace:Du.Presentation.Behaviors;assembly=Du.Presentation"
       xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
@@ -112,11 +111,6 @@
                      ItemTemplate="{StaticResource SwitchableTemplet}"
                      SelectionMode="Extended"
                      extensions:ListViewExtensions.SelectedValues="{Binding SelectedCuts}">
-            <!--<ui:ListView.ItemTemplateSelector>
-                <selectors:CutItemTempletSelector 
-                    NormalTemplate="{StaticResource CutNormalTemplet}"
-                    SummaryTemplate="{StaticResource CutSummaryTemplet}"/>
-            </ui:ListView.ItemTemplateSelector>-->
             <ui:ListView.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="삭제" Command="{Binding DeleteCommand}">

@@ -211,8 +211,8 @@ public sealed class Cut : ObservableObject
     {
         if (this.choices.Count > 0)
         {
-            var list = string.Join(" / ", this.choices.Select(e => e.Text.Korean));
-            return $"[선택지] {list}";
+            var list = string.Join(Environment.NewLine, this.choices.Select(e => e.Text.Korean));
+            return $"[선택지] {Environment.NewLine}{list}";
         }
 
         return this.unitTalk.Korean;
