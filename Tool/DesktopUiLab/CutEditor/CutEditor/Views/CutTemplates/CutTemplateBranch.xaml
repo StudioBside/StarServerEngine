@@ -64,29 +64,12 @@
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
                                 <!--<GridViewColumn Header="점프" DisplayMemberBinding="{Binding JumpAnchor}" Width="Auto"/>-->
-                                <GridViewColumn Header="점프" Width="Auto">
+                                <GridViewColumn Header="앵커" Width="Auto">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <ComboBox 
-                                                ItemsSource="{Binding Source={extensions:EnumValues {x:Type models:NKMCutsceneEnums+JumpAnchorType}}}"
+                                                ItemsSource="{Binding Source={extensions:EnumValues {x:Type models:Enums+StartAnchorType}}}"
                                                 SelectedItem="{Binding JumpAnchor}"
-                                                IsEditable="False">
-                                                <ComboBox.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <TextBlock Text="{Binding .}" />
-                                                    </DataTemplate>
-                                                </ComboBox.ItemTemplate>
-                                            </ComboBox>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                                <!--<GridViewColumn Header="보상" DisplayMemberBinding="{Binding RewardAnchor}" Width="Auto"/>-->
-                                <GridViewColumn Header="보상" Width="Auto">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <ComboBox 
-                                                ItemsSource="{Binding Source={extensions:EnumValues {x:Type models:NKMCutsceneEnums+RewardAnchorType}}}"
-                                                SelectedItem="{Binding RewardAnchor}"
                                                 IsEditable="False">
                                                 <ComboBox.ItemTemplate>
                                                     <DataTemplate>

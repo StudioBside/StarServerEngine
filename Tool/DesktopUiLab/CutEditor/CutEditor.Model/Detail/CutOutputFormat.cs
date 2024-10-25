@@ -1,7 +1,7 @@
 ﻿namespace CutEditor.Model.Detail;
 
 using NKM;
-using static CutEditor.Model.NKMCutsceneEnums;
+using static CutEditor.Model.Enums;
 
 internal class CutOutputFormat
 {
@@ -36,8 +36,8 @@ internal class CutOutputFormat
     public string? UnitTalk_CHN { get; set; }
     public float? TalkTime { get; set; }
     public int[]? TalkPositionControl { get; set; }
-    public object[]? JumpAnchorData { get; set; }
+    public ChoiceOutputFormat[]? JumpAnchorData { get; set; }
     public bool? TalkAppend { get; set; }
-    public JumpAnchorType? JumpAnchorInfo { get; set; }
-    public RewardAnchorType? RewardAnchor { get; set; }
+    public DestAnchorType? JumpAnchorInfo { get; set; }
+    public DestAnchorType? RewardAnchor { get; set; }
 }

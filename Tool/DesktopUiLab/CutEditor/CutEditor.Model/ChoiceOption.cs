@@ -1,34 +1,27 @@
 ﻿namespace CutEditor.Model;
 
 using System;
+using System.Text;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Cs.Core.Util;
 using Cs.Logging;
+using CutEditor.Model.Detail;
 using Newtonsoft.Json.Linq;
 using static CutEditor.Model.Enums;
-using static CutEditor.Model.NKMCutsceneEnums;
 
 public sealed class ChoiceOption : ObservableObject
 {
     private readonly L10nText text = new();
-    private JumpAnchorType jumpAnchor = JumpAnchorType.None;
-    private RewardAnchorType rewardAnchor = RewardAnchorType.None;
+    private StartAnchorType jumpAnchor;
 
     public long CutUid { get; private set; }
     public long ChoiceUid { get; private set; }
     public L10nText Text => this.text;
-    public string? JumpAnchorId { get; private set; }
     public string UidString => $"{this.CutUid}-{this.ChoiceUid}";
-    public JumpAnchorType JumpAnchor
+    public StartAnchorType JumpAnchor
     {
         get => this.jumpAnchor;
         set => this.SetProperty(ref this.jumpAnchor, value);
-    }
-
-    public RewardAnchorType RewardAnchor
-    {
-        get => this.rewardAnchor;
-        set => this.SetProperty(ref this.rewardAnchor, value);
     }
 
     public void InitializeUid(long cutUid, long choiceUid)
@@ -43,35 +36,38 @@ public sealed class ChoiceOption : ObservableObject
     {
         var result = new ChoiceOption();
         result.text.Load(token, "JumpAnchorStringId");
-        result.JumpAnchorId = token.GetString("JumpAnchorId", null!);
-        if (string.IsNullOrEmpty(result.JumpAnchorId) == false)
-        {
-            if (Enum.TryParse<JumpAnchorType>(result.JumpAnchorId, out var jumpAnchor))
-            {
-                result.JumpAnchor = jumpAnchor;
-            }
-            else if (Enum.TryParse<RewardAnchorType>(result.JumpAnchorId, out var rewardAnchor))
-            {
-                result.RewardAnchor = rewardAnchor;
-            }
-            else
-            {
-                ErrorContainer.Add($"[BranchData] JumpAnchorId 파싱에 실패했습니다. idString:{result.JumpAnchorId}");
-            }
-        }
+        result.jumpAnchor = token.GetEnum("JumpAnchorId", StartAnchorType.None);
 
         return result;
     }
 
-    internal object ToOutputType()
+    internal ChoiceOutputFormat ToOutputType()
     {
-        return new
+        var result = new ChoiceOutputFormat
         {
             JumpAnchorStringId_KOR = this.text.AsNullable(L10nType.Korean),
             JumpAnchorStringId_ENG = this.text.AsNullable(L10nType.English),
             JumpAnchorStringId_JPN = this.text.AsNullable(L10nType.Japanese),
             JumpAnchorStringId_CHN = this.text.AsNullable(L10nType.ChineseSimplified),
-            JumpAnchorId = this.JumpAnchorId,
         };
+
+        if (this.JumpAnchor != StartAnchorType.None)
+        {
+            result.JumpAnchorId = this.JumpAnchor;
+        }
+
+        return result;
+    }
+
+    internal string GetSummaryText()
+    {
+        var sb = new StringBuilder();
+        sb.Append(this.text.Korean);
+        if (this.jumpAnchor != StartAnchorType.None)
+        {
+            sb.Append($" -> {this.jumpAnchor}");
+        }
+
+        return sb.ToString();
     }
 }
