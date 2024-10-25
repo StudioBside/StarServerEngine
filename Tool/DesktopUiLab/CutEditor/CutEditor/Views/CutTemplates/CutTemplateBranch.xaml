@@ -4,9 +4,11 @@
     xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:lcvt="clr-namespace:CutEditor.Converters"
+    xmlns:models="clr-namespace:CutEditor.Model;assembly=CutEditor.Model"
     xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
     xmlns:behaviors="clr-namespace:Du.Presentation.Behaviors;assembly=Du.Presentation"
     xmlns:viewmodels="clr-namespace:CutEditor.ViewModel;assembly=CutEditor.ViewModel"
+    xmlns:extensions="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
     >
 
     <ResourceDictionary.MergedDictionaries>
@@ -37,7 +39,8 @@
 
                     <ui:TextBlock FontTypography="BodyStrong" Text="&lt;선택지>" VerticalAlignment="Center"/>
 
-                    <ui:Button Content="추가" Margin="30,0"/>
+                    <ui:Button Content="추가" Margin="30,0"
+                               Command="{Binding AddChoiceOptionCommand}"/>
 
                 </DockPanel>
 
@@ -48,6 +51,7 @@
                                  Margin="0,0">
                         <ListView.View>
                             <GridView>
+                                <GridViewColumn Header="Uid" DisplayMemberBinding="{Binding UidString}" Width="Auto"/>
                                 <GridViewColumn Header="텍스트(Korean)" Width="Auto">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
@@ -59,14 +63,48 @@
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
-                                <GridViewColumn Header="점프" DisplayMemberBinding="{Binding JumpAnchor}" Width="Auto"/>
-                                <GridViewColumn Header="보상" DisplayMemberBinding="{Binding RewardAnchor}" Width="Auto"/>
+                                <!--<GridViewColumn Header="점프" DisplayMemberBinding="{Binding JumpAnchor}" Width="Auto"/>-->
+                                <GridViewColumn Header="점프" Width="Auto">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ComboBox 
+                                                ItemsSource="{Binding Source={extensions:EnumValues {x:Type models:NKMCutsceneEnums+JumpAnchorType}}}"
+                                                SelectedItem="{Binding JumpAnchor}"
+                                                IsEditable="False">
+                                                <ComboBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding .}" />
+                                                    </DataTemplate>
+                                                </ComboBox.ItemTemplate>
+                                            </ComboBox>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <!--<GridViewColumn Header="보상" DisplayMemberBinding="{Binding RewardAnchor}" Width="Auto"/>-->
+                                <GridViewColumn Header="보상" Width="Auto">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ComboBox 
+                                                ItemsSource="{Binding Source={extensions:EnumValues {x:Type models:NKMCutsceneEnums+RewardAnchorType}}}"
+                                                SelectedItem="{Binding RewardAnchor}"
+                                                IsEditable="False">
+                                                <ComboBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding .}" />
+                                                    </DataTemplate>
+                                                </ComboBox.ItemTemplate>
+                                            </ComboBox>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
                                 <GridViewColumn Header="편집" Width="Auto">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal">
-                                                <ui:Button Content="수정"/>
-                                                <ui:Button Content="삭제"/>
+                                                <ui:Button Content="수정" Margin="10,0"/>
+                                                <ui:Button Content="삭제"
+                                                           Command="{Binding DataContext.DeleteChoiceOptionCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                                           CommandParameter="{Binding .}"/>
                                             </StackPanel>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>

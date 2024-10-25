@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-namespace NKM
+namespace CutEditor.Model
 {
     public static class NKMCutsceneEnums
     {

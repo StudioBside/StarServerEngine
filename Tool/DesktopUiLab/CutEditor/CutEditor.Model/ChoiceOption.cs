@@ -1,20 +1,43 @@
 ﻿namespace CutEditor.Model;
 
 using System;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Cs.Core.Util;
 using Cs.Logging;
 using Newtonsoft.Json.Linq;
 using static CutEditor.Model.Enums;
-using static NKM.NKMCutsceneEnums;
+using static CutEditor.Model.NKMCutsceneEnums;
 
-public sealed class ChoiceOption
+public sealed class ChoiceOption : ObservableObject
 {
     private readonly L10nText text = new();
-   
+    private JumpAnchorType jumpAnchor = JumpAnchorType.None;
+    private RewardAnchorType rewardAnchor = RewardAnchorType.None;
+
+    public long CutUid { get; private set; }
+    public long ChoiceUid { get; private set; }
     public L10nText Text => this.text;
     public string? JumpAnchorId { get; private set; }
-    public JumpAnchorType JumpAnchor { get; private set; } = JumpAnchorType.None;
-    public RewardAnchorType RewardAnchor { get; private set; } = RewardAnchorType.None;
+    public string UidString => $"{this.CutUid}-{this.ChoiceUid}";
+    public JumpAnchorType JumpAnchor
+    {
+        get => this.jumpAnchor;
+        set => this.SetProperty(ref this.jumpAnchor, value);
+    }
+
+    public RewardAnchorType RewardAnchor
+    {
+        get => this.rewardAnchor;
+        set => this.SetProperty(ref this.rewardAnchor, value);
+    }
+
+    public void InitializeUid(long cutUid, long choiceUid)
+    {
+        this.CutUid = cutUid;
+        this.ChoiceUid = choiceUid;
+    }
+
+    //// -----------------------------------------------------------------------------------------
 
     internal static ChoiceOption? Load(JToken token, int index)
     {

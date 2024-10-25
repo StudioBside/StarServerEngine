@@ -14,7 +14,7 @@ using NKM;
 using Shared.Templet.Base;
 using Shared.Templet.TempletTypes;
 using static CutEditor.Model.Enums;
-using static NKM.NKMCutsceneEnums;
+using static CutEditor.Model.NKMCutsceneEnums;
 
 public sealed class Cut : ObservableObject
 {

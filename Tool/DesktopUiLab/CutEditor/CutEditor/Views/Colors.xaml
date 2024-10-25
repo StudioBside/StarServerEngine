@@ -12,7 +12,7 @@
     <Color x:Key="SelectedItemColor">#F4E9CD</Color>
 
     <!--컷 아이템 타입 : 브랜치 컷-->
-    <Color x:Key="BranchCutColor">#fefefe</Color>
+    <Color x:Key="BranchCutColor">#a0a0a0</Color>
     <Color x:Key="BranchCutColor2">#E8F1F2</Color>
 
     <!--(점프/리워드)앵커 정보-->

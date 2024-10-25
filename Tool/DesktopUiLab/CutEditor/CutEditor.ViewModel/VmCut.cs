@@ -1,15 +1,19 @@
 ﻿namespace CutEditor.ViewModel;
 
 using System;
+using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Cs.Logging;
 using CutEditor.Model;
 using CutEditor.Model.Interfaces;
+using CutEditor.ViewModel.Detail;
 using Microsoft.Extensions.DependencyInjection;
 using static CutEditor.ViewModel.Enums;
 
 public sealed class VmCut : ObservableObject
 {
+    private readonly ChoiceUidGenerator choiceUidGenerator;
     private readonly IServiceProvider services;
     private bool showUnitSection;
     private bool showScreenSection;
@@ -27,12 +31,19 @@ public sealed class VmCut : ObservableObject
 
         this.services = services;
         this.PickUnitCommand = new AsyncRelayCommand(this.OnPickUnit);
+        this.AddChoiceOptionCommand = new RelayCommand(this.OnAddChoiceOption);
+        this.DeleteChoiceOptionCommand = new RelayCommand<ChoiceOption>(this.OnDeleteChoiceOption);
 
         this.showUnitSection = true;
+
+        this.choiceUidGenerator = new(cut.Uid);
+        this.choiceUidGenerator.Initialize(cut.Choices);
     }
 
     public Cut Cut { get; }
     public IRelayCommand PickUnitCommand { get; }
+    public ICommand AddChoiceOptionCommand { get; }
+    public ICommand DeleteChoiceOptionCommand { get; }
     public bool ShowUnitSection
     {
         get => this.showUnitSection;
@@ -83,5 +94,25 @@ public sealed class VmCut : ObservableObject
         }
 
         this.Cut.Unit = result.Unit;
+    }
+
+    private void OnAddChoiceOption()
+    {
+        long newUid = this.choiceUidGenerator.GenerateNewUid();
+        var newChoice = new ChoiceOption();
+        newChoice.InitializeUid(this.Cut.Uid, newUid);
+        newChoice.Text.Korean = newChoice.UidString;
+
+        this.Cut.Choices.Add(newChoice);
+    }
+
+    private void OnDeleteChoiceOption(ChoiceOption? target)
+    {
+        if (target is null)
+        {
+            throw new Exception($"remove target is null");
+        }
+
+        this.Cut.Choices.Remove(target);
     }
 }

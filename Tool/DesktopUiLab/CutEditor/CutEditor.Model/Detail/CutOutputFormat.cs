@@ -1,7 +1,7 @@
 ﻿namespace CutEditor.Model.Detail;
 
 using NKM;
-using static NKM.NKMCutsceneEnums;
+using static CutEditor.Model.NKMCutsceneEnums;
 
 internal class CutOutputFormat
 {
