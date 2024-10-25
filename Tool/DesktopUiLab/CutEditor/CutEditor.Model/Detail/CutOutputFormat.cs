@@ -8,6 +8,8 @@ internal class CutOutputFormat
     public long Uid { get; set; }
     public string? ContentsTag { get; set; }
     public string? CutsceneStrId { get; set; }
+    public DestAnchorType? JumpAnchorInfo { get; set; }
+    public DestAnchorType? RewardAnchor { get; set; }
     public bool WaitClick { get; set; }
     public float WaitTime { get; set; }
     public int[]? BgFadeInStartCol { get; set; }
@@ -25,10 +27,11 @@ internal class CutOutputFormat
     public string? CutsceneClear { get; set; }
     public string? UnitStrId { get; set; }
     public string[]? UnitNameString { get; set; }
-    public bool? UnitQuickSet { get; set; }
-    public CutsceneUnitPos? UnitPos { get; set; }
     public string? CameraOffset { get; set; }
     public string? CameraOffsetTime { get; set; }
+    public string? UnitMotion { get; set; }
+    public bool? UnitQuickSet { get; set; }
+    public CutsceneUnitPos? UnitPos { get; set; }
     public string? EmotionEffect { get; set; }
     public string? UnitTalk_KOR { get; set; }
     public string? UnitTalk_ENG { get; set; }
@@ -38,6 +41,6 @@ internal class CutOutputFormat
     public int[]? TalkPositionControl { get; set; }
     public ChoiceOutputFormat[]? JumpAnchorData { get; set; }
     public bool? TalkAppend { get; set; }
-    public DestAnchorType? JumpAnchorInfo { get; set; }
-    public DestAnchorType? RewardAnchor { get; set; }
+    public TransitionEffect? TransitionEffect { get; set; }
+    public TransitionControl? TransitionControl { get; set; }
 }

@@ -19,6 +19,7 @@
         <KeyBinding Key="Delete" Command="{Binding DeleteCommand}"/>
         <KeyBinding Key="Z" Modifiers="Control" Command="{Binding UndoCommand}"/>
         <KeyBinding Key="Y" Modifiers="Control" Command="{Binding RedoCommand}"/>
+        <KeyBinding Key="S" Modifiers="Ctrl" Command="{Binding SaveCommand}"/>
     </Page.InputBindings>
     <b:Interaction.Behaviors>
         <behaviors:PageBehavior HandleClipboard="True"/>

@@ -48,6 +48,9 @@ public sealed class Cut : ObservableObject
     private Color? talkPositionControl; // enum
     private bool talkAppend;
     private DestAnchorType jumpAnchor;
+    private string? unitMotion;
+    private TransitionEffect? transitionEffect;
+    private TransitionControl? transitionControl;
 
     public Cut(JToken token, long uid) : this(uid)
     {
@@ -81,6 +84,17 @@ public sealed class Cut : ObservableObject
         token.TryGetArray("JumpAnchorData", this.choices, ChoiceOption.Load);
         token.TryGetArray("UnitNameString", this.unitNames);
         this.talkAppend = token.GetBool("TalkAppend", false);
+        this.unitMotion = token.GetString("UnitMotion", null!);
+        if (token.TryGetEnum<TransitionEffect>("TransitionEffect", out var transitionEffect))
+        {
+            this.transitionEffect = transitionEffect;
+        }
+
+        if (token.TryGetEnum<TransitionControl>("TransitionControl", out var transitionControl))
+        {
+            this.transitionControl = transitionControl;
+        }
+
         if (token.TryGetString("JumpAnchorInfo", out var anchorStr))
         {
             this.jumpAnchor = Enum.Parse<DestAnchorType>(anchorStr);
@@ -140,6 +154,24 @@ public sealed class Cut : ObservableObject
         set => this.SetProperty(ref this.jumpAnchor, value);
     }
 
+    public string? UnitMotion
+    {
+        get => this.unitMotion;
+        set => this.SetProperty(ref this.unitMotion, value);
+    }
+
+    public TransitionEffect? TransitionEffect
+    {
+        get => this.transitionEffect;
+        set => this.SetProperty(ref this.transitionEffect, value);
+    }
+
+    public TransitionControl? TransitionControl
+    {
+        get => this.transitionControl;
+        set => this.SetProperty(ref this.transitionControl, value);
+    }
+
     public object ToOutputType()
     {
         var result = new CutOutputFormat
@@ -175,6 +207,9 @@ public sealed class Cut : ObservableObject
             TalkTime = EliminateZero(this.talkTime),
             TalkPositionControl = ConvertColor(this.talkPositionControl),
             TalkAppend = EliminateFalse(this.talkAppend),
+            UnitMotion = this.unitMotion,
+            TransitionEffect = this.transitionEffect,
+            TransitionControl = this.transitionControl,
         };
 
         if (this.jumpAnchor != DestAnchorType.None)

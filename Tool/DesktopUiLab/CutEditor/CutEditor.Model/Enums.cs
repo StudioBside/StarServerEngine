@@ -70,6 +70,13 @@ public static class Enums
         REWARD_ANCHOR_1,
     }
 
+    public enum TransitionControl
+    {
+        NONE,
+        IN,
+        OUT,
+    }
+
     public static string ToJsonKey(this L10nType self, string prefix)
     {
         var suffix = self switch
