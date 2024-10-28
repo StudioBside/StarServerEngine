@@ -56,6 +56,9 @@
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Text.Korean}">
+                                                <!--<TextBlock.Effect>
+                                                    <DropShadowEffect Color="Black" Direction="315" ShadowDepth="1" BlurRadius="0"/>
+                                                </TextBlock.Effect>-->
                                                 <b:Interaction.Behaviors>
                                                     <behaviors:TextBlockColorBehavior />
                                                 </b:Interaction.Behaviors>

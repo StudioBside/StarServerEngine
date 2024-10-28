@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 using Microsoft.Xaml.Behaviors;
 
 public sealed class TextBlockColorBehavior : Behavior<TextBlock>
@@ -64,7 +65,18 @@ public sealed class TextBlockColorBehavior : Behavior<TextBlock>
             {
                 Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString($"#{colorCode}")),
             };
-            textBlock.Inlines.Add(run);
+
+            var shadowedTextBlock = new TextBlock(run)
+            {
+                Effect = new DropShadowEffect
+                {
+                    Color = Colors.Black,
+                    Direction = 315,
+                    ShadowDepth = 1,
+                    BlurRadius = 0,
+                },
+            };
+            textBlock.Inlines.Add(new InlineUIContainer(shadowedTextBlock));
 
             lastIndex = match.Index + match.Length;
         }

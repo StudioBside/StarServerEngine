@@ -4,7 +4,6 @@
 - 컷 추가할 때 스크롤 내리기
 - listview item 간의 여백 더 좁게 조정
 - color picker 알아보기
-- UnitMotion, TransitionEffect, TransitionControl
 - 텍스트에 부분선택해서 색상 쉽게 입히기
 ```csharp
 using System.Text.RegularExpressions;
@@ -70,6 +69,7 @@ namespace WpfApp
 
 ## done
 
+- UnitMotion, TransitionEffect, TransitionControl
 - 브랜치컷 표현방식 구상
 - jump anchor 처리
 - talk append 처리방식 구상
