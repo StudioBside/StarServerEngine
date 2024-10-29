@@ -6,6 +6,7 @@
     xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
     xmlns:models="clr-namespace:CutEditor.Model;assembly=CutEditor.Model"
     xmlns:viewmodels="clr-namespace:CutEditor.ViewModel;assembly=CutEditor.ViewModel"
+    xmlns:nkm="clr-namespace:NKM;assembly=CutEditor.Model"
     xmlns:extensions="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
     >
 
@@ -203,7 +204,19 @@
 
                             <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Horizontal">
                                 <ui:Button Content="UnitMotion" Margin="0,0,10,0"/>
-                                <ui:Button Content="EmotionEffect" Margin="0,0,10,0"/>
+                                <ui:DropDownButton Margin="0,0,10,0" Content="{Binding EmotionEffectBtn}">
+                                    <ui:DropDownButton.Flyout>
+                                        <ContextMenu ItemsSource="{Binding Source={extensions:EnumValues {x:Type nkm:EmotionEffect}}}">
+                                            <ContextMenu.ItemTemplate>
+                                                <DataTemplate>
+                                                    <MenuItem Header="{Binding .}"
+                                                  Command="{Binding DataContext.SetEmotionEffectCommand, RelativeSource={RelativeSource AncestorType=ListViewItem}}"
+                                                  CommandParameter="{Binding .}"/>
+                                                </DataTemplate>
+                                            </ContextMenu.ItemTemplate>
+                                        </ContextMenu>
+                                    </ui:DropDownButton.Flyout>
+                                </ui:DropDownButton>
                             </StackPanel>
                         </Grid>
 
@@ -221,8 +234,8 @@
                             </Grid.ColumnDefinitions>
 
                             <ui:Button Grid.Column="0" Grid.Row="0" Background="{StaticResource SoundBoxBrush}"
-                                           Visibility="{Binding ShowSoundASection, Converter={converters:BoolToVisibilityConverter}}"
-                                           Margin="0,0,0,5">
+                                       Visibility="{Binding ShowSoundASection, Converter={converters:BoolToVisibilityConverter}}"
+                                       Margin="0,0,0,5">
                                 <TextBlock TextAlignment="Center" FontSize="10">
                                     <Run>BGM</Run>
                                     <LineBreak/>
@@ -231,7 +244,7 @@
                             </ui:Button>
 
                             <ui:Button Grid.Column="0" Grid.Row="1" Background="{StaticResource SoundBoxBrush}"
-                                           Visibility="{Binding ShowSoundASection, Converter={converters:BoolToVisibilityConverter}}">
+                                       Visibility="{Binding ShowSoundASection, Converter={converters:BoolToVisibilityConverter}}">
                                 <TextBlock TextAlignment="Center" FontSize="10">
                                     <Run>FX</Run>
                                     <LineBreak/>

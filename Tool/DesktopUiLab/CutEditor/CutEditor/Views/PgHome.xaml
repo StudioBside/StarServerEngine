@@ -43,9 +43,13 @@
                 Margin="0,0,10,0"
                 PlaceholderText="검색어 입력.."
                 Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}"
-                Icon="Search12"
-                ext:FocusExtension.IsFocused="True"
-                BorderThickness="0"/>
+                ext:FocusExtension.IsFocused="True">
+                <ui:TextBox.Icon>
+                    <ui:IconSourceElement>
+                        <ui:SymbolIconSource Symbol="Search12"/>
+                    </ui:IconSourceElement>
+                </ui:TextBox.Icon>
+            </ui:TextBox>
         </Grid>
 
         <!--좌하단 파일 리스트 영역-->

@@ -14,7 +14,7 @@
     </ResourceDictionary.MergedDictionaries>
 
     <DataTemplate x:Key="CutSummaryTemplet">
-        <Border Style="{StaticResource ChangeSelectedBgStyle}" BorderThickness="1" BorderBrush="LightGray"
+        <Border Style="{StaticResource ChangeSelectedBgStyle}" BorderThickness="0" BorderBrush="LightGray"
                     CornerRadius="3">
             <Grid Margin="1">
                 <Grid.RowDefinitions>

@@ -38,7 +38,7 @@ public sealed class Cut : ObservableObject
     private string? bgFileName;
     private string? startBgmFileName;
     private string? startFxSoundName;
-    private string? emotionEffect; // enum
+    private EmotionEffect emotionEffect;
     private string? unitStrId;
     private Unit? unit;
     private bool unitQuickSet;
@@ -78,7 +78,7 @@ public sealed class Cut : ObservableObject
         this.cameraOffset = token.GetString("CameraOffset", null!);
         this.cameraOffsetTime = token.GetString("CameraOffsetTime", null!);
 
-        this.emotionEffect = token.GetString("EmotionEffect", null!);
+        this.emotionEffect = token.GetEnum("EmotionEffect", EmotionEffect.NONE);
         this.unitTalk.Load(token, "UnitTalk");
         this.talkTime = token.GetFloat("TalkTime", 0f);
         this.unitStrId = token.GetString("UnitStrId", null!);
@@ -198,6 +198,12 @@ public sealed class Cut : ObservableObject
         set => this.SetProperty(ref this.endFxSoundName, value);
     }
 
+    public EmotionEffect EmotionEffect
+    {
+        get => this.emotionEffect;
+        set => this.SetProperty(ref this.emotionEffect, value);
+    }
+
     public object ToOutputType()
     {
         var result = new CutOutputFormat
@@ -225,7 +231,7 @@ public sealed class Cut : ObservableObject
             UnitPos = EliminateEnum(this.unitPos, CutsceneUnitPos.NONE),
             CameraOffset = this.cameraOffset,
             CameraOffsetTime = this.cameraOffsetTime,
-            EmotionEffect = this.emotionEffect,
+            EmotionEffect = EliminateEnum(this.emotionEffect, EmotionEffect.NONE),
             UnitTalk_KOR = this.unitTalk.AsNullable(L10nType.Korean),
             UnitTalk_ENG = this.unitTalk.AsNullable(L10nType.English),
             UnitTalk_JPN = this.unitTalk.AsNullable(L10nType.Japanese),

@@ -32,7 +32,7 @@ internal class CutOutputFormat
     public string? UnitMotion { get; set; }
     public bool? UnitQuickSet { get; set; }
     public CutsceneUnitPos? UnitPos { get; set; }
-    public string? EmotionEffect { get; set; }
+    public EmotionEffect? EmotionEffect { get; set; }
     public string? UnitTalk_KOR { get; set; }
     public string? UnitTalk_ENG { get; set; }
     public string? UnitTalk_JPN { get; set; }
