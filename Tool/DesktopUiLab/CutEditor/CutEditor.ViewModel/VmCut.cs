@@ -37,6 +37,17 @@ public sealed class VmCut : ObservableObject
         this.SetAnchorCommand = new RelayCommand<DestAnchorType>(this.OnSetAnchor);
 
         this.showUnitSection = true;
+        if (string.IsNullOrEmpty(cut.StartBgmFileName) == false ||
+            string.IsNullOrEmpty(cut.StartFxSoundName) == false)
+        {
+            this.showSoundASection = true;
+        }
+
+        if (string.IsNullOrEmpty(cut.EndBgmFileName) == false ||
+            string.IsNullOrEmpty(cut.EndFxSoundName) == false)
+        {
+            this.showSoundBSection = true;
+        }
 
         this.choiceUidGenerator = new(cut.Uid);
         this.choiceUidGenerator.Initialize(cut.Choices);

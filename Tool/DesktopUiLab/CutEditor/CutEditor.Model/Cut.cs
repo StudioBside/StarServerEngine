@@ -33,6 +33,7 @@ public sealed class Cut : ObservableObject
     private float bgCrash;
     private float bgCrashTime;
     private string? endBgmFileName;
+    private string? endFxSoundName;
     private string? cutsceneClear; // enum
     private string? bgFileName;
     private string? startBgmFileName;
@@ -67,6 +68,7 @@ public sealed class Cut : ObservableObject
         this.bgCrash = token.GetFloat("BgCrash", 0f);
         this.bgCrashTime = token.GetFloat("BgCrashTime", 0f);
         this.endBgmFileName = token.GetString("EndBgmFileName", null!);
+        this.endFxSoundName = token.GetString("EndFxSoundName", null!);
         this.cutsceneClear = token.GetString("CutsceneClear", null!);
         this.bgFileName = token.GetString("BgFileName", null!);
         this.startBgmFileName = token.GetString("StartBgmFileName", null!);
@@ -170,6 +172,30 @@ public sealed class Cut : ObservableObject
     {
         get => this.transitionControl;
         set => this.SetProperty(ref this.transitionControl, value);
+    }
+
+    public string? StartBgmFileName
+    {
+        get => this.startBgmFileName;
+        set => this.SetProperty(ref this.startBgmFileName, value);
+    }
+
+    public string? StartFxSoundName
+    {
+        get => this.startFxSoundName;
+        set => this.SetProperty(ref this.startFxSoundName, value);
+    }
+
+    public string? EndBgmFileName
+    {
+        get => this.endBgmFileName;
+        set => this.SetProperty(ref this.endBgmFileName, value);
+    }
+
+    public string? EndFxSoundName
+    {
+        get => this.endFxSoundName;
+        set => this.SetProperty(ref this.endFxSoundName, value);
     }
 
     public object ToOutputType()
