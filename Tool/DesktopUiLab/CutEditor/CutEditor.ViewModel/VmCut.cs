@@ -39,6 +39,7 @@ public sealed class VmCut : ObservableObject
         this.DeleteChoiceOptionCommand = new RelayCommand<ChoiceOption>(this.OnDeleteChoiceOption);
         this.SetAnchorCommand = new RelayCommand<DestAnchorType>(this.OnSetAnchor);
         this.SetEmotionEffectCommand = new RelayCommand<EmotionEffect>(this.OnSetEmotionEffect);
+        this.SetUnitMotionCommand = new RelayCommand<string>(this.OnSetUnitMotion);
 
         this.showUnitSection = true;
         if (string.IsNullOrEmpty(cut.StartBgmFileName) == false ||
@@ -63,6 +64,7 @@ public sealed class VmCut : ObservableObject
     public ICommand DeleteChoiceOptionCommand { get; }
     public ICommand SetAnchorCommand { get; }
     public ICommand SetEmotionEffectCommand { get; }
+    public ICommand SetUnitMotionCommand { get; }
     public bool ShowUnitSection
     {
         get => this.showUnitSection;
@@ -96,6 +98,8 @@ public sealed class VmCut : ObservableObject
     public string SummaryText => this.Cut.GetSummaryText();
     public string EmotionEffectBtn => this.Cut.EmotionEffect == EmotionEffect.NONE
         ? "EmotionEffect" : this.Cut.EmotionEffect.ToString();
+    public string UnitMotionBtn => string.IsNullOrEmpty(this.Cut.UnitMotion)
+        ? "UnitMotion" : this.Cut.UnitMotion;
 
     public CutDataType DataType
     {
@@ -155,5 +159,10 @@ public sealed class VmCut : ObservableObject
     private void OnSetEmotionEffect(EmotionEffect emotionEffect)
     {
         this.Cut.EmotionEffect = emotionEffect;
+    }
+
+    private void OnSetUnitMotion(string? unitMotion)
+    {
+        this.Cut.UnitMotion = unitMotion;
     }
 }

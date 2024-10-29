@@ -6,6 +6,7 @@ using System.Windows;
 using Cs.Logging;
 using Cs.Logging.Providers;
 using CutEditor.Dialogs;
+using CutEditor.Model;
 using CutEditor.Model.Interfaces;
 using CutEditor.Services;
 using CutEditor.ViewModel;
@@ -47,6 +48,7 @@ public partial class App : Application
 
         services.AddTransient<VmMain>();
         services.AddSingleton<VmHome>();
+        services.AddSingleton<AssetList>();
         services.AddTransient<VmCuts>();
         services.AddTransient<FileLoader>();
         services.AddTransient<FileAndSnackbarLog>();
@@ -94,5 +96,9 @@ public partial class App : Application
 
         var loader = this.Services.GetRequiredService<FileLoader>();
         loader.Load();
+
+        var assetList = this.Services.GetRequiredService<AssetList>();
+        Log.Debug($"#BgmFiles : {assetList.BgmFiles.Count}");
+        Log.Debug($"#SfxFiles : {assetList.SfxFiles.Count}");
     }
 }

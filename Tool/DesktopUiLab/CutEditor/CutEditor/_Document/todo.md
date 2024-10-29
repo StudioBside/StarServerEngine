@@ -3,6 +3,10 @@
 - 다중 선택해서 값 변경하기
 - 컷 추가할 때 스크롤 내리기
 - listview item 간의 여백 더 좁게 조정
+- bgm picker
+- fx picker
+- voice picker
+- 새 컷 추가버튼 분할. 선택지컷 넣는 기능 추가. (maybe split button)
 - color picker 알아보기
 - 텍스트에 부분선택해서 색상 쉽게 입히기
 ```csharp

@@ -14,6 +14,9 @@
         <ResourceDictionary Source="CutCommon.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
+    <!-- AssetList.Instance를 정적 리소스로 등록 -->
+    <ObjectDataProvider x:Key="AssetListInstance" ObjectType="{x:Type models:AssetList}" MethodName="get_Instance" />
+
     <DataTemplate x:Key="CutNormalTemplet">
         <Border Style="{StaticResource ChangeSelectedBgStyle}" BorderThickness="1" BorderBrush="LightGray"
                     CornerRadius="3">
@@ -203,7 +206,23 @@
                             </StackPanel>
 
                             <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Horizontal">
-                                <ui:Button Content="UnitMotion" Margin="0,0,10,0"/>
+                                
+                                <!--UnitMotion 설정 버튼-->
+                                <ui:DropDownButton Margin="0,0,10,0" Content="{Binding UnitMotionBtn}">
+                                    <ui:DropDownButton.Flyout>
+                                        <ContextMenu ItemsSource="{Binding Source={StaticResource AssetListInstance}, Path=UnitMotions}">
+                                            <ContextMenu.ItemTemplate>
+                                                <DataTemplate>
+                                                    <MenuItem Header="{Binding .}"
+                                                  Command="{Binding DataContext.SetUnitMotionCommand, RelativeSource={RelativeSource AncestorType=ListViewItem}}"
+                                                  CommandParameter="{Binding .}"/>
+                                                </DataTemplate>
+                                            </ContextMenu.ItemTemplate>
+                                        </ContextMenu>
+                                    </ui:DropDownButton.Flyout>
+                                </ui:DropDownButton>
+                                
+                                <!--EmotionEffect 설정 버튼-->
                                 <ui:DropDownButton Margin="0,0,10,0" Content="{Binding EmotionEffectBtn}">
                                     <ui:DropDownButton.Flyout>
                                         <ContextMenu ItemsSource="{Binding Source={extensions:EnumValues {x:Type nkm:EmotionEffect}}}">
