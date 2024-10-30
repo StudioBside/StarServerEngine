@@ -81,11 +81,25 @@
                 <ui:Button Margin="3" Icon="{ui:SymbolIcon ArrowRedo16}"
                            Command="{Binding RedoCommand}"/>
 
-                <ui:Button Margin="3" Content="새로운 컷"
+                <ui:SplitButton Margin="3" Content="새로운 컷"
                            Icon="{ui:SymbolIcon Add16}"
-                           Command="{Binding NewCutCommand}"/>
+                           Command="{Binding NewCutCommand}"
+                           CommandParameter="{x:Static viewmodels:Enums+CutDataType.Normal}">
+                    <ui:SplitButton.Flyout>
+                        <ContextMenu ItemsSource="{Binding Source={extensions:EnumValues {x:Type viewmodels:Enums+CutDataType}}}">
+                            <ContextMenu.ItemTemplate>
+                                <DataTemplate>
+                                    <MenuItem Header="{Binding ., Converter={converters:EnumDescriptionConverter}}"
+                                          Command="{Binding DataContext.NewCutCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                          CommandParameter="{Binding .}"/>
+                                </DataTemplate>
+                            </ContextMenu.ItemTemplate>
+                        </ContextMenu>
+                    </ui:SplitButton.Flyout>
+                </ui:SplitButton>
                 <ui:Button Margin="3" Content="선택 컷 삭제"
-                           Icon="{ui:SymbolIcon Subtract16}"/>
+                           Icon="{ui:SymbolIcon Subtract16}"
+                           Command="{Binding DeleteCommand}"/>
 
                 <ui:Button Margin="3" Content="목록으로"
                            Icon="{ui:SymbolIcon ArrowStepBack16}"

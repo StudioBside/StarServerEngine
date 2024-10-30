@@ -22,6 +22,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
+using static CutEditor.ViewModel.Enums;
 
 public sealed class VmCuts : VmPageBase,
     IClipboardHandler
@@ -45,8 +46,8 @@ public sealed class VmCuts : VmPageBase,
         this.services = services;
         this.BackCommand = new RelayCommand(this.OnBack);
         this.SaveCommand = new RelayCommand(this.OnSave);
-        this.DeleteCommand = new RelayCommand(this.OnDelete);
-        this.NewCutCommand = new RelayCommand(this.OnNewCut);
+        this.DeleteCommand = new RelayCommand(this.OnDelete, () => this.selectedCuts.Count > 0);
+        this.NewCutCommand = new RelayCommand<CutDataType>(this.OnNewCut);
         this.DeletePickCommand = new RelayCommand<VmCut>(this.OnDeletePick);
 
         if (VmGlobalState.Instance.PopVmCuts(out var param) == false)
@@ -83,6 +84,11 @@ public sealed class VmCuts : VmPageBase,
             return new VmCut(cut, this.services);
         });
 
+        this.selectedCuts.CollectionChanged += (s, e) =>
+        {
+            this.DeleteCommand.NotifyCanExecuteChanged();
+        };
+
         Log.Info($"{this.name} 파일 로딩 완료. 총 컷의 개수:{this.cuts.Count}");
     }
 
@@ -92,7 +98,7 @@ public sealed class VmCuts : VmPageBase,
     public ICommand RedoCommand => this.undoController.RedoCommand;
     public ICommand BackCommand { get; }
     public ICommand SaveCommand { get; }
-    public ICommand DeleteCommand { get; } // 현재 (멀티)선택한 대상을 모두 삭제
+    public IRelayCommand DeleteCommand { get; } // 현재 (멀티)선택한 대상을 모두 삭제
     public ICommand NewCutCommand { get; }
     public ICommand DeletePickCommand { get; } // 인자로 넘어오는 1개의 cut을 삭제
     public bool ShowSummary
@@ -159,12 +165,8 @@ public sealed class VmCuts : VmPageBase,
 
         //switch (e.PropertyName)
         //{
-        //    case nameof(this.SearchKeyword):
-        //        this.filteredList.Refresh(this.searchKeyword);
-        //        break;
-
-        //    case nameof(this.SelectedCutScene):
-        //        this.StartEditCommand.NotifyCanExecuteChanged();
+        //    case nameof(this.SelectedCuts):
+        //        this.DeleteCommand.NotifyCanExecuteChanged();
         //        break;
         //}
     }
@@ -301,9 +303,9 @@ public sealed class VmCuts : VmPageBase,
         this.undoController.Add(command);
     }
 
-    private void OnNewCut()
+    private void OnNewCut(CutDataType cutDataType)
     {
-        var command = NewCut.Create(this);
+        var command = NewCut.Create(this, cutDataType);
         command.Redo();
         this.undoController.Add(command);
     }
