@@ -6,14 +6,14 @@ using CutEditor.Model;
 using CutEditor.Model.Interfaces;
 using Wpf.Ui;
 
-internal sealed class SfxPicker(IContentDialogService contentDialogService)
+internal sealed class VoicePicker(IContentDialogService contentDialogService)
     : IAssetPicker
 {
     public async Task<IAssetPicker.PickResult> PickAsset()
     {
         var dialog = new AssetPickerDialog(
-            "Sfx 파일 선택",
-            AssetList.Instance.SfxFiles,
+            "voice 파일 선택",
+            AssetList.Instance.VoiceFiles,
             contentDialogService.GetDialogHost());
         var result = await dialog.ShowAsync();
         return result switch

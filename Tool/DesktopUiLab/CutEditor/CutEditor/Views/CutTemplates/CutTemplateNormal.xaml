@@ -276,7 +276,8 @@
 
                             <ui:Button Grid.Column="0" Grid.Row="0"
                                        Margin="0,0,0,5"
-                                       Command="{Binding PickBgmACommand}">
+                                       Command="{Binding PickBgmACommand}"
+                                       ToolTip="{Binding Cut.StartBgmFileName}">
                                 <!--값이 있을때는 배경색을 다르게 표기-->
                                 <ui:Button.Style>
                                     <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
@@ -296,7 +297,8 @@
                             </ui:Button>
 
                             <ui:Button Grid.Column="0" Grid.Row="1"
-                                       Command="{Binding PickSfxACommand}">
+                                       Command="{Binding PickSfxACommand}"
+                                       ToolTip="{Binding Cut.StartFxSoundName}">
                                 <!--값이 있을때는 배경색을 다르게 표기-->
                                 <ui:Button.Style>
                                     <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
@@ -327,7 +329,8 @@
 
                             <ui:Button Grid.Column="2" Grid.Row="0"
                                        Margin="0,0,0,5"
-                                       Command="{Binding PickBgmBCommand}">
+                                       Command="{Binding PickBgmBCommand}"
+                                       ToolTip="{Binding Cut.EndBgmFileName}">
                                 <!--값이 있을때는 배경색을 다르게 표기-->
                                 <ui:Button.Style>
                                     <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
@@ -347,7 +350,8 @@
                             </ui:Button>
 
                             <ui:Button Grid.Column="2" Grid.Row="1"
-                                       Command="{Binding PickSfxBCommand}">
+                                       Command="{Binding PickSfxBCommand}"
+                                       ToolTip="{Binding Cut.EndFxSoundName}">
                                 <!--값이 있을때는 배경색을 다르게 표기-->
                                 <ui:Button.Style>
                                     <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
@@ -375,7 +379,22 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
 
-                            <ui:Button Content="TalkVoice" Margin="0,0,10,0"/>
+                            <ui:Button Content="TalkVoice" Margin="0,0,10,0"
+                                       Command="{Binding PickVoiceCommand}"
+                                       ToolTip="{Binding Cut.TalkVoice}">
+                                <!--값이 없을 때는 한글 표기. 값이 있을때는 배경색을 다르게 표기-->
+                                <ui:Button.Style>
+                                    <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+                                        <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Cut.TalkVoice}" Value="{x:Null}">
+                                                <Setter Property="Background" Value="White"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ui:Button.Style>
+                            </ui:Button>
+                            
                             <ui:Button Grid.Column="2" Content="삭제"
                                            Appearance="Transparent"
                                            Command="{Binding DataContext.DeletePickCommand, RelativeSource={RelativeSource AncestorType=ListView}}"

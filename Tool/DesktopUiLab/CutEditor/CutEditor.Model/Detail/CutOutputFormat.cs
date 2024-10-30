@@ -43,4 +43,5 @@ internal class CutOutputFormat
     public bool? TalkAppend { get; set; }
     public TransitionEffect? TransitionEffect { get; set; }
     public TransitionControl? TransitionControl { get; set; }
+    public string? TalkVoice { get; internal set; }
 }

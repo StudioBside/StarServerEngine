@@ -67,11 +67,10 @@ public partial class AssetPickerDialog : ContentDialog
         public ElementType(string fileName)
         {
             this.fullPath = Path.GetFullPath(fileName);
-            this.FileName = fileName;
             this.FileNameOnly = Path.GetFileName(fileName);
             this.OpenFileCommand = new RelayCommand(() =>
             {
-                Process.Start(new ProcessStartInfo(this.FileName) { UseShellExecute = true });
+                Process.Start(new ProcessStartInfo(fileName) { UseShellExecute = true });
             });
             this.OpenInExplorerCommand = new RelayCommand(() =>
             {
@@ -79,11 +78,10 @@ public partial class AssetPickerDialog : ContentDialog
             });
         }
 
-        public string FileName { get; }
         public string FileNameOnly { get; }
         public ICommand OpenFileCommand { get; }
         public ICommand OpenInExplorerCommand { get; }
 
-        public bool IsTarget(string keyword) => this.FileName.Contains(keyword, StringComparison.OrdinalIgnoreCase);
+        public bool IsTarget(string keyword) => this.FileNameOnly.Contains(keyword, StringComparison.OrdinalIgnoreCase);
     }
 }

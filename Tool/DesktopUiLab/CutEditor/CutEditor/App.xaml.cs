@@ -56,6 +56,7 @@ public partial class App : Application
         services.AddTransient<IUnitPicker, UnitPicker>();
         services.AddKeyedTransient<IAssetPicker, BgmPicker>("bgm");
         services.AddKeyedTransient<IAssetPicker, SfxPicker>("sfx");
+        services.AddKeyedTransient<IAssetPicker, VoicePicker>("voice");
         services.AddScoped<UndoController>();
 
         services.AddTransient<IUserInputProvider<string>, StringInputProvider>();
@@ -102,5 +103,6 @@ public partial class App : Application
         var assetList = this.Services.GetRequiredService<AssetList>();
         Log.Debug($"#BgmFiles : {assetList.BgmFiles.Count}");
         Log.Debug($"#SfxFiles : {assetList.SfxFiles.Count}");
+        Log.Debug($"#VoiceFiles : {assetList.VoiceFiles.Count}");
     }
 }

@@ -18,7 +18,7 @@ internal sealed class BgmPicker(IContentDialogService contentDialogService)
         var result = await dialog.ShowAsync();
         return result switch
         {
-            Wpf.Ui.Controls.ContentDialogResult.Primary => new IAssetPicker.PickResult(dialog.Selected!.FileName, false),
+            Wpf.Ui.Controls.ContentDialogResult.Primary => new IAssetPicker.PickResult(dialog.Selected!.FileNameOnly, false),
             Wpf.Ui.Controls.ContentDialogResult.Secondary => new IAssetPicker.PickResult(null, false),
             _ => new IAssetPicker.PickResult(null, true),
         };

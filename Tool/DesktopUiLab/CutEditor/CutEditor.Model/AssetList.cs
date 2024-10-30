@@ -43,6 +43,11 @@ public sealed class AssetList
 
             this.sfxFiles.Add(file);
         }
+
+        foreach (var file in Directory.GetFiles(voiceRoot, "*.ogg", SearchOption.AllDirectories))
+        {
+            this.voiceFils.Add(file);
+        }
     }
 
     public static AssetList Instance { get; private set; } = null!;

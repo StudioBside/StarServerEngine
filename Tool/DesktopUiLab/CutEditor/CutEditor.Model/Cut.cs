@@ -52,6 +52,7 @@ public sealed class Cut : ObservableObject
     private string? unitMotion;
     private TransitionEffect? transitionEffect;
     private TransitionControl? transitionControl;
+    private string? talkVoice;
 
     public Cut(JToken token, long uid) : this(uid)
     {
@@ -87,6 +88,7 @@ public sealed class Cut : ObservableObject
         token.TryGetArray("UnitNameString", this.unitNames);
         this.talkAppend = token.GetBool("TalkAppend", false);
         this.unitMotion = token.GetString("UnitMotion", null!);
+        this.talkVoice = token.GetString("TalkVoice", null!);
         if (token.TryGetEnum<TransitionEffect>("TransitionEffect", out var transitionEffect))
         {
             this.transitionEffect = transitionEffect;
@@ -204,6 +206,12 @@ public sealed class Cut : ObservableObject
         set => this.SetProperty(ref this.emotionEffect, value);
     }
 
+    public string? TalkVoice
+    {
+        get => this.talkVoice;
+        set => this.SetProperty(ref this.talkVoice, value);
+    }
+
     public object ToOutputType()
     {
         var result = new CutOutputFormat
@@ -242,6 +250,7 @@ public sealed class Cut : ObservableObject
             UnitMotion = this.unitMotion,
             TransitionEffect = this.transitionEffect,
             TransitionControl = this.transitionControl,
+            TalkVoice = this.talkVoice,
         };
 
         if (this.jumpAnchor != DestAnchorType.None)

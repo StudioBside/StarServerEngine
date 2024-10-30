@@ -40,6 +40,7 @@ public sealed class VmCut : ObservableObject
         this.PickBgmBCommand = new AsyncRelayCommand(this.OnPickBgmB);
         this.PickSfxACommand = new AsyncRelayCommand(this.OnPickSfxA);
         this.PickSfxBCommand = new AsyncRelayCommand(this.OnPickSfxB);
+        this.PickVoiceCommand = new AsyncRelayCommand(this.OnPickVoice);
         this.AddChoiceOptionCommand = new RelayCommand(this.OnAddChoiceOption, () => this.Cut.Choices.Count < 5);
         this.DeleteChoiceOptionCommand = new RelayCommand<ChoiceOption>(this.OnDeleteChoiceOption, _ => this.Cut.Choices.Count > 1);
         this.SetAnchorCommand = new RelayCommand<DestAnchorType>(this.OnSetAnchor);
@@ -67,6 +68,7 @@ public sealed class VmCut : ObservableObject
     public ICommand PickBgmBCommand { get; }
     public ICommand PickSfxACommand { get; }
     public ICommand PickSfxBCommand { get; }
+    public ICommand PickVoiceCommand { get; }
     public IRelayCommand AddChoiceOptionCommand { get; }
     public IRelayCommand DeleteChoiceOptionCommand { get; }
     public ICommand SetAnchorCommand { get; }
@@ -167,6 +169,18 @@ public sealed class VmCut : ObservableObject
         }
 
         this.Cut.EndFxSoundName = result.AssetFile;
+    }
+
+    private async Task OnPickVoice()
+    {
+        var voicePicker = this.services.GetRequiredKeyedService<IAssetPicker>("voice");
+        var result = await voicePicker.PickAsset();
+        if (result.IsCanceled)
+        {
+            return;
+        }
+
+        this.Cut.TalkVoice = result.AssetFile;
     }
 
     private void OnAddChoiceOption()
