@@ -54,6 +54,7 @@ public partial class App : Application
         services.AddTransient<FileAndSnackbarLog>();
         services.AddTransient<UnitPickerDialog>();
         services.AddTransient<IUnitPicker, UnitPicker>();
+        services.AddKeyedTransient<IAssetPicker, BgmPicker>("bgm");
         services.AddScoped<UndoController>();
 
         services.AddTransient<IUserInputProvider<string>, StringInputProvider>();

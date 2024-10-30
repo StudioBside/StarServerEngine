@@ -209,8 +209,8 @@
                                 
                                 <!--UnitMotion 설정 버튼-->
                                 <ui:DropDownButton Margin="0,0,10,0">
+                                    <!--값이 없을 때는 한글 표기. 값이 있을때는 배경색을 다르게 표기-->
                                     <ui:DropDownButton.Style>
-                                        <!--값이 없을 때는 'UnitMotion'으로 표기. 값이 있을때는 Border를 검게 표기-->
                                         <Style TargetType="ui:DropDownButton" BasedOn="{StaticResource {x:Type ui:DropDownButton}}">
                                             <Setter Property="Content" Value="{Binding Cut.UnitMotion}"/>
                                             <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
@@ -237,8 +237,8 @@
                                 
                                 <!--EmotionEffect 설정 버튼-->
                                 <ui:DropDownButton Margin="0,0,10,0">
+                                    <!--값이 없을 때는 한글 표기. 값이 있을때는 배경색을 다르게 표기-->
                                     <ui:DropDownButton.Style>
-                                        <!--값이 없을 때는 'UnitMotion'으로 표기. 값이 있을때는 Border를 검게 표기-->
                                         <Style TargetType="ui:DropDownButton" BasedOn="{StaticResource {x:Type ui:DropDownButton}}">
                                             <Setter Property="Content" Value="{Binding Cut.EmotionEffect}"/>
                                             <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
@@ -278,9 +278,20 @@
                                 <ColumnDefinition Width="60"/>
                             </Grid.ColumnDefinitions>
 
-                            <ui:Button Grid.Column="0" Grid.Row="0" Background="{StaticResource SoundBoxBrush}"
-                                       Visibility="{Binding ShowSoundASection, Converter={converters:BoolToVisibilityConverter}}"
-                                       Margin="0,0,0,5">
+                            <ui:Button Grid.Column="0" Grid.Row="0"
+                                       Margin="0,0,0,5"
+                                       Command="{Binding PickBgmACommand}">
+                                <!--값이 있을때는 배경색을 다르게 표기-->
+                                <ui:Button.Style>
+                                    <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+                                        <Setter Property="Background" Value="{StaticResource SoundBoxBrush}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Cut.StartBgmFileName}" Value="{x:Null}">
+                                                <Setter Property="Background" Value="White"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ui:Button.Style>
                                 <TextBlock TextAlignment="Center" FontSize="10">
                                     <Run>BGM</Run>
                                     <LineBreak/>
@@ -288,8 +299,7 @@
                                 </TextBlock>
                             </ui:Button>
 
-                            <ui:Button Grid.Column="0" Grid.Row="1" Background="{StaticResource SoundBoxBrush}"
-                                       Visibility="{Binding ShowSoundASection, Converter={converters:BoolToVisibilityConverter}}">
+                            <ui:Button Grid.Column="0" Grid.Row="1" Background="{StaticResource SoundBoxBrush}">
                                 <TextBlock TextAlignment="Center" FontSize="10">
                                     <Run>FX</Run>
                                     <LineBreak/>
@@ -307,9 +317,20 @@
                                                 AcceptsReturn="True"/>
                             </StackPanel>
 
-                            <ui:Button Grid.Column="2" Grid.Row="0" Background="{StaticResource SoundBoxBrush}"
-                                           Visibility="{Binding ShowSoundBSection, Converter={converters:BoolToVisibilityConverter}}"
-                                           Margin="0,0,0,5">
+                            <ui:Button Grid.Column="2" Grid.Row="0"
+                                       Margin="0,0,0,5"
+                                       Command="{Binding PickBgmBCommand}">
+                                <!--값이 있을때는 배경색을 다르게 표기-->
+                                <ui:Button.Style>
+                                    <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+                                        <Setter Property="Background" Value="{StaticResource SoundBoxBrush}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Cut.EndBgmFileName}" Value="{x:Null}">
+                                                <Setter Property="Background" Value="White"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ui:Button.Style>
                                 <TextBlock TextAlignment="Center" FontSize="10">
                                     <Run>BGM</Run>
                                     <LineBreak/>
@@ -317,8 +338,7 @@
                                 </TextBlock>
                             </ui:Button>
 
-                            <ui:Button Grid.Column="2" Grid.Row="1" Background="{StaticResource SoundBoxBrush}"
-                                           Visibility="{Binding ShowSoundBSection, Converter={converters:BoolToVisibilityConverter}}">
+                            <ui:Button Grid.Column="2" Grid.Row="1" Background="{StaticResource SoundBoxBrush}">
                                 <TextBlock TextAlignment="Center" FontSize="10">
                                     <Run>FX</Run>
                                     <LineBreak/>

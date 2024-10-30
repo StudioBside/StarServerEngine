@@ -2,8 +2,8 @@
 
 - 다중 선택해서 값 변경하기
 - 컷 추가할 때 스크롤 내리기
-- listview item 간의 여백 더 좁게 조정
 - bgm picker
+- 컷템플릿 엑셀 앞에 있던 컬럼... 뭐였더라. 연동하기 (in header)
 - fx picker
 - voice picker
 - 새 컷 추가버튼 분할. 선택지컷 넣는 기능 추가. (maybe split button)
@@ -73,6 +73,7 @@ namespace WpfApp
 
 ## done
 
+- listview item 간의 여백 더 좁게 조정
 - UnitMotion, TransitionEffect, TransitionControl
 - 브랜치컷 표현방식 구상
 - jump anchor 처리

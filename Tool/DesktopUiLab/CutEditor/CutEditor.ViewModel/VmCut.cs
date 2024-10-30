@@ -38,6 +38,8 @@ public sealed class VmCut : ObservableObject
 
         this.services = services;
         this.PickUnitCommand = new AsyncRelayCommand(this.OnPickUnit);
+        this.PickBgmACommand = new AsyncRelayCommand(this.OnPickBgmA);
+        this.PickBgmBCommand = new AsyncRelayCommand(this.OnPickBgmB);
         this.AddChoiceOptionCommand = new RelayCommand(this.OnAddChoiceOption, () => this.Cut.Choices.Count < 5);
         this.DeleteChoiceOptionCommand = new RelayCommand<ChoiceOption>(this.OnDeleteChoiceOption, _ => this.Cut.Choices.Count > 1);
         this.SetAnchorCommand = new RelayCommand<DestAnchorType>(this.OnSetAnchor);
@@ -72,6 +74,8 @@ public sealed class VmCut : ObservableObject
 
     public Cut Cut { get; }
     public IRelayCommand PickUnitCommand { get; }
+    public ICommand PickBgmACommand { get; }
+    public ICommand PickBgmBCommand { get; }
     public IRelayCommand AddChoiceOptionCommand { get; }
     public IRelayCommand DeleteChoiceOptionCommand { get; }
     public ICommand SetAnchorCommand { get; }
@@ -136,6 +140,30 @@ public sealed class VmCut : ObservableObject
         }
 
         this.Cut.Unit = result.Unit;
+    }
+
+    private async Task OnPickBgmA()
+    {
+        var bgmpicker = this.services.GetRequiredKeyedService<IAssetPicker>("bgm");
+        var result = await bgmpicker.PickAsset();
+        if (result.IsCanceled)
+        {
+            return;
+        }
+
+        this.Cut.StartBgmFileName = result.AssetFile;
+    }
+
+    private async Task OnPickBgmB()
+    {
+        var bgmpicker = this.services.GetRequiredKeyedService<IAssetPicker>("bgm");
+        var result = await bgmpicker.PickAsset();
+        if (result.IsCanceled)
+        {
+            return;
+        }
+
+        this.Cut.EndBgmFileName = result.AssetFile;
     }
 
     private void OnAddChoiceOption()

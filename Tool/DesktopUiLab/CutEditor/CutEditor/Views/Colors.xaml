@@ -12,7 +12,7 @@
     <Color x:Key="SelectedItemColor">#F4E9CD</Color>
     
     <!--컷 아이템 내부 버튼에 값이 설정되었음을 나타내는 배경색 변경-->
-    <Color x:Key="HasValueColor">#F4E9CD</Color>
+    <Color x:Key="HasValueColor">#f0f0dd</Color>
 
     <!--컷 아이템 타입 : 브랜치 컷-->
     <Color x:Key="BranchCutColor">#E8F1F2</Color>
