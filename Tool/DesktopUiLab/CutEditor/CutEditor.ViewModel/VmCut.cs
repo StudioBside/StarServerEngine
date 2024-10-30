@@ -46,6 +46,7 @@ public sealed class VmCut : ObservableObject
         this.SetAnchorCommand = new RelayCommand<DestAnchorType>(this.OnSetAnchor);
         this.SetEmotionEffectCommand = new RelayCommand<EmotionEffect>(this.OnSetEmotionEffect);
         this.SetUnitMotionCommand = new RelayCommand<string>(this.OnSetUnitMotion);
+        this.SetUnitNameStringCommand = new AsyncRelayCommand(this.OnSetUnitNameString);
 
         this.showUnitSection = true;
 
@@ -74,6 +75,7 @@ public sealed class VmCut : ObservableObject
     public ICommand SetAnchorCommand { get; }
     public ICommand SetEmotionEffectCommand { get; }
     public ICommand SetUnitMotionCommand { get; }
+    public ICommand SetUnitNameStringCommand { get; }
     public bool ShowUnitSection
     {
         get => this.showUnitSection;
@@ -216,5 +218,23 @@ public sealed class VmCut : ObservableObject
     private void OnSetUnitMotion(string? unitMotion)
     {
         this.Cut.UnitMotion = unitMotion;
+    }
+
+    private async Task OnSetUnitNameString()
+    {
+        var defaultValue = string.Join(", ", this.Cut.UnitNames);
+        var userInputProvider = this.services.GetRequiredService<IUserInputProvider<string>>();
+        var list = await userInputProvider.PromptAsync("유닛 이름을 입력하세요", "유닛 이름", defaultValue);
+
+        this.Cut.UnitNames.Clear();
+        if (string.IsNullOrWhiteSpace(list))
+        {
+            return;
+        }
+
+        foreach (var token in list.Split(','))
+        {
+            this.Cut.UnitNames.Add(token.Trim());
+        }
     }
 }

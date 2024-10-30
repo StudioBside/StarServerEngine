@@ -173,8 +173,9 @@ public sealed class ListViewBehavior : Behavior<ListView>
         ////handler.HandleDrop(this.AssociatedObject.DataContext, this.AssociatedObject.SelectedItems, dragStopItem.DataContext);
 
         var list = this.AssociatedObject.ItemsSource as IList ?? throw new Exception("DataContext is not IList.");
-        var selected = new object[this.AssociatedObject.SelectedItems.Count];
-        this.AssociatedObject.SelectedItems.CopyTo(selected, 0);
+        var selected = this.AssociatedObject.SelectedItems
+            .Cast<object>()
+            .ToArray();
 
         var dropIndex = list.IndexOf(dragStopItem.DataContext);
         var itemsIndex = selected.Select(list.IndexOf).OrderByDescending(i => i).ToList();
