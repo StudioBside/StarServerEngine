@@ -43,10 +43,6 @@
                                 IsChecked="{Binding ShowScreenSection}" MinWidth="70"/>
                     <CheckBox Content="카메라" Background="{StaticResource CameraBoxBrush}"
                                 IsChecked="{Binding ShowCameraSection}" MinWidth="80"/>
-                    <CheckBox Content="사운드(앞)" Background="{StaticResource SoundBoxBrush}"
-                                IsChecked="{Binding ShowSoundASection}" MinWidth="100"/>
-                    <CheckBox Content="사운드(뒤)" Background="{StaticResource SoundBoxBrush}"
-                                IsChecked="{Binding ShowSoundBSection}" MinWidth="100"/>
 
                     <ui:DropDownButton Margin="20,0,10,0" Content="앵커 설정">
                         <ui:DropDownButton.Flyout>

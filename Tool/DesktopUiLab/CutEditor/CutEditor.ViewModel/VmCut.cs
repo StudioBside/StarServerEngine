@@ -24,8 +24,6 @@ public sealed class VmCut : ObservableObject
     private bool showUnitSection;
     private bool showScreenSection;
     private bool showCameraSection;
-    private bool showSoundASection;
-    private bool showSoundBSection;
     private CutDataType dataType;
 
     public VmCut(Cut cut, IServiceProvider services)
@@ -49,17 +47,6 @@ public sealed class VmCut : ObservableObject
         this.SetUnitMotionCommand = new RelayCommand<string>(this.OnSetUnitMotion);
 
         this.showUnitSection = true;
-        if (string.IsNullOrEmpty(cut.StartBgmFileName) == false ||
-            string.IsNullOrEmpty(cut.StartFxSoundName) == false)
-        {
-            this.showSoundASection = true;
-        }
-
-        if (string.IsNullOrEmpty(cut.EndBgmFileName) == false ||
-            string.IsNullOrEmpty(cut.EndFxSoundName) == false)
-        {
-            this.showSoundBSection = true;
-        }
 
         this.choiceUidGenerator = new(cut.Uid);
         this.choiceUidGenerator.Initialize(cut.Choices);
@@ -101,18 +88,6 @@ public sealed class VmCut : ObservableObject
     {
         get => this.showCameraSection;
         set => this.SetProperty(ref this.showCameraSection, value);
-    }
-
-    public bool ShowSoundASection
-    {
-        get => this.showSoundASection;
-        set => this.SetProperty(ref this.showSoundASection, value);
-    }
-
-    public bool ShowSoundBSection
-    {
-        get => this.showSoundBSection;
-        set => this.SetProperty(ref this.showSoundBSection, value);
     }
 
     public string SummaryText => this.Cut.GetSummaryText();

@@ -70,16 +70,9 @@
         <WrapPanel Grid.Row="0" Orientation="Horizontal">
 
             <!--일괄 제어-->
-            <Border BorderThickness="1" BorderBrush="LightGray"
-                    CornerRadius="8"
-                    Margin="5">
-                <StackPanel Orientation="Horizontal" Margin="5">
-                    <ui:TextBlock FontTypography="BodyStrong" Text="일괄 제어" VerticalAlignment="Center" />
-                    <Border HorizontalAlignment="Stretch" BorderThickness=".7" BorderBrush="LightGray"
-                            Margin="10,0,10,0"/>
-                    <CheckBox Content="요약" MinWidth="80" IsChecked="{Binding ShowSummary}"/>
-                </StackPanel>
-            </Border>
+            <StackPanel Orientation="Horizontal" Margin="15,5,5,5">
+                <ui:ToggleSwitch OffContent="기본" OnContent="요약" IsChecked="{Binding ShowSummary}"/>
+            </StackPanel>
 
             <!--버튼 배열-->
             <StackPanel Orientation="Horizontal" Margin="5">
