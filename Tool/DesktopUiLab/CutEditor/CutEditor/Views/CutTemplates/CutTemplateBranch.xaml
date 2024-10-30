@@ -97,16 +97,9 @@
                                 </GridViewColumn>
                             </GridView>
                         </ListView.View>
-                        <!--<ListView.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <ui:Button Content="삭제" Margin="10,0"/>
-                                    <ui:Button Content="수정" Margin="0,0,10,0"/>
-                                    <TextBlock VerticalAlignment="Center" Text="{Binding Text.Korean}" />
-                                    <TextBlock VerticalAlignment="Center" Text="{Binding JumpAnchorId}" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>-->
+                        <b:Interaction.Behaviors>
+                            <behaviors:ListViewBehavior ReorderByDragDrop="True"/>
+                        </b:Interaction.Behaviors>
                     </ui:ListView>
                 </Border>
 

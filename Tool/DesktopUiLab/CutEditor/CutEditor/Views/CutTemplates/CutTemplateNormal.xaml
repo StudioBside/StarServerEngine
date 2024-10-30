@@ -213,11 +213,11 @@
                                         <!--값이 없을 때는 'UnitMotion'으로 표기. 값이 있을때는 Border를 검게 표기-->
                                         <Style TargetType="ui:DropDownButton" BasedOn="{StaticResource {x:Type ui:DropDownButton}}">
                                             <Setter Property="Content" Value="{Binding Cut.UnitMotion}"/>
-                                            <Setter Property="BorderBrush" Value="Black"/>
+                                            <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding Cut.UnitMotion}" Value="{x:Null}">
-                                                    <Setter Property="BorderBrush" Value="Transparent"/>
                                                     <Setter Property="Content" Value="유닛모션"/>
+                                                    <Setter Property="Background" Value="White"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -241,11 +241,11 @@
                                         <!--값이 없을 때는 'UnitMotion'으로 표기. 값이 있을때는 Border를 검게 표기-->
                                         <Style TargetType="ui:DropDownButton" BasedOn="{StaticResource {x:Type ui:DropDownButton}}">
                                             <Setter Property="Content" Value="{Binding Cut.EmotionEffect}"/>
-                                            <Setter Property="BorderBrush" Value="Black"/>
+                                            <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding Cut.EmotionEffect}" Value="{x:Static nkm:EmotionEffect.NONE}">
-                                                    <Setter Property="BorderBrush" Value="Transparent"/>
                                                     <Setter Property="Content" Value="감정이펙트"/>
+                                                    <Setter Property="Background" Value="White"/>
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>

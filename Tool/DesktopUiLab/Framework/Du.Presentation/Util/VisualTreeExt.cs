@@ -45,4 +45,28 @@ public static class VisualTreeExt
         ancestor = dependencyObject.FindAncestor<T>();
         return ancestor != null;
     }
+
+    public static bool FindAncestorDataContext<T>(this object current, [NotNullWhen(true)] out T? dataContext) where T : class
+    {
+        if (current is not DependencyObject dependencyObject)
+        {
+            dataContext = null;
+            return false;
+        }
+
+        DependencyObject? currentObject = dependencyObject;
+        while (currentObject != null)
+        {
+            if (currentObject is FrameworkElement fe && fe.DataContext is T result)
+            {
+                dataContext = result;
+                return true;
+            }
+
+            currentObject = VisualTreeHelper.GetParent(currentObject);
+        }
+
+        dataContext = null;
+        return false;
+    }
 }

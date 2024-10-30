@@ -10,9 +10,11 @@
 
     <!--컷 아이템 선택된 상태일 때 시인성 높이기 위해 배경색 변경-->
     <Color x:Key="SelectedItemColor">#F4E9CD</Color>
+    
+    <!--컷 아이템 내부 버튼에 값이 설정되었음을 나타내는 배경색 변경-->
+    <Color x:Key="HasValueColor">#F4E9CD</Color>
 
     <!--컷 아이템 타입 : 브랜치 컷-->
-    <Color x:Key="BranchCutColor1">#a0a0a0</Color>
     <Color x:Key="BranchCutColor">#E8F1F2</Color>
 
     <!--(점프/리워드)앵커 정보-->
@@ -24,6 +26,7 @@
     <SolidColorBrush x:Key="CameraBoxBrush" Color="{StaticResource CameraBoxColor}"/>
     <SolidColorBrush x:Key="SoundBoxBrush" Color="{StaticResource SoundBoxColor}"/>
     <SolidColorBrush x:Key="SelectedItemBrush" Color="{StaticResource SelectedItemColor}"/>
+    <SolidColorBrush x:Key="HasValueBrush" Color="{StaticResource HasValueColor}"/>
     <SolidColorBrush x:Key="BranchCutBrush" Color="{StaticResource BranchCutColor}"/>
     <SolidColorBrush x:Key="AnchorBrush" Color="{StaticResource AnchorColor}"/>
 

@@ -1,6 +1,7 @@
 ﻿namespace CutEditor.ViewModel;
 
 using System;
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
@@ -10,6 +11,7 @@ using Cs.Logging;
 using CutEditor.Model;
 using CutEditor.Model.Interfaces;
 using CutEditor.ViewModel.Detail;
+using Du.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using NKM;
 using static CutEditor.Model.Enums;

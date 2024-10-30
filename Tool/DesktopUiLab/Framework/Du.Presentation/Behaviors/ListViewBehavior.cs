@@ -1,6 +1,7 @@
 ﻿namespace Du.Presentation.Behaviors;
 
 using System;
+using System.Collections;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -159,13 +160,6 @@ public sealed class ListViewBehavior : Behavior<ListView>
 
     private void AssociatedObject_Drop(object sender, DragEventArgs e)
     {
-        if (this.AssociatedObject.FindAncestor<Page>(out var page) == false ||
-            page.DataContext is not IDragDropHandler handler)
-        {
-            Log.Warn($"DataContext is not IDragDropHandler. dataContext:{this.AssociatedObject.DataContext}");
-            return;
-        }
-
         if (this.toolTip is not null && this.toolTip.IsOpen)
         {
             this.toolTip.IsOpen = false;
@@ -176,7 +170,68 @@ public sealed class ListViewBehavior : Behavior<ListView>
             return;
         }
 
-        handler.HandleDrop(this.AssociatedObject.DataContext, this.AssociatedObject.SelectedItems, dragStopItem.DataContext);
+        ////handler.HandleDrop(this.AssociatedObject.DataContext, this.AssociatedObject.SelectedItems, dragStopItem.DataContext);
+
+        var list = this.AssociatedObject.ItemsSource as IList ?? throw new Exception("DataContext is not IList.");
+        var selected = new object[this.AssociatedObject.SelectedItems.Count];
+        this.AssociatedObject.SelectedItems.CopyTo(selected, 0);
+
+        var dropIndex = list.IndexOf(dragStopItem.DataContext);
+        var itemsIndex = selected.Select(list.IndexOf).OrderByDescending(i => i).ToList();
+        if (itemsIndex.Count == 0)
+        {
+            return;
+        }
+
+        // drop 대상이 items에 속해있으면 에러
+        if (itemsIndex.Contains(dropIndex))
+        {
+            //Log.Error("drop target is in the moving items.");
+            return;
+        }
+
+        var indices = itemsIndex.Count == 1
+            ? itemsIndex[0].ToString()
+            : string.Join(", ", itemsIndex.OrderBy(e => e));
+
+        // itemsIndex가 연속적이지 않으면 에러
+        if (itemsIndex.Count > 1)
+        {
+            var min = itemsIndex.Min();
+            var max = itemsIndex.Max();
+            if (max - min + 1 != itemsIndex.Count)
+            {
+                Log.Warn($"위치를 이동할 아이템은 연속적으로 선택해야 합니다. 현재 선택 인덱스:{indices}");
+                return;
+            }
+        }
+
+        Log.Info($"위치 조정: {indices} -> {dropIndex}");
+
+        var movingItems = new List<object>();
+        foreach (var i in itemsIndex)
+        {
+            var movingItem = list[i];
+            if (movingItem == null)
+            {
+                continue;
+            }
+
+            movingItems.Add(movingItem);
+            list.RemoveAt(i);
+        }
+
+        // 더 아래로 내리는 경우는 목적지 인덱스가 바뀔테니 재계산 필요
+        if (dropIndex > itemsIndex.Max())
+        {
+            dropIndex -= itemsIndex.Count - 1;
+        }
+
+        foreach (var item in movingItems)
+        {
+            list.Insert(dropIndex, item);
+        }
+
         e.Handled = true;
     }
 }

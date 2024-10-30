@@ -24,7 +24,6 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 
 public sealed class VmCuts : VmPageBase,
-    IDragDropHandler,
     IClipboardHandler
 {
     private readonly ObservableCollection<VmCut> cuts = new();
@@ -105,69 +104,6 @@ public sealed class VmCuts : VmPageBase,
     internal TempUidGenerator UidGenerator => this.uidGenerator;
     internal IServiceProvider Services => this.services;
     private string DebugName => $"[{this.name}]";
-
-    bool IDragDropHandler.HandleDrop(object listViewContext, IList selectedItems, object targetContext)
-    {
-        if (targetContext is not VmCut dropTarget)
-        {
-            Log.Error("targetContext is not VmCut.");
-            return false;
-        }
-
-        var items = selectedItems.Cast<VmCut>().ToList();
-
-        var dropIndex = this.cuts.IndexOf(dropTarget);
-        var itemsIndex = items.Select(this.cuts.IndexOf).OrderByDescending(i => i).ToList();
-        if (itemsIndex.Count == 0)
-        {
-            return false;
-        }
-
-        // drop 대상이 items에 속해있으면 에러
-        if (itemsIndex.Contains(dropIndex))
-        {
-            //Log.Error("drop target is in the moving items.");
-            return false;
-        }
-
-        var indices = itemsIndex.Count == 1
-            ? itemsIndex[0].ToString()
-            : string.Join(", ", itemsIndex.OrderBy(e => e));
-
-        // itemsIndex가 연속적이지 않으면 에러
-        if (itemsIndex.Count > 1)
-        {
-            var min = itemsIndex.Min();
-            var max = itemsIndex.Max();
-            if (max - min + 1 != itemsIndex.Count)
-            {
-                Log.Warn($"위치를 이동할 아이템은 연속적으로 선택해야 합니다. 현재 선택 인덱스:{indices}");
-                return false;
-            }
-        }
-
-        Log.Info($"위치 조정: {indices} -> {dropIndex}");
-
-        var movingItems = new List<VmCut>();
-        foreach (var i in itemsIndex)
-        {
-            movingItems.Add(this.cuts[i]);
-            this.cuts.RemoveAt(i);
-        }
-
-        // 더 아래로 내리는 경우는 목적지 인덱스가 바뀔테니 재계산 필요
-        if (dropIndex > itemsIndex.Max())
-        {
-            dropIndex -= itemsIndex.Count - 1;
-        }
-
-        foreach (var item in movingItems)
-        {
-            this.cuts.Insert(dropIndex, item);
-        }
-
-        return true;
-    }
 
     async Task<bool> IClipboardHandler.HandlePastedTextAsync(string text)
     {
