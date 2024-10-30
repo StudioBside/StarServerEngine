@@ -299,7 +299,19 @@
                                 </TextBlock>
                             </ui:Button>
 
-                            <ui:Button Grid.Column="0" Grid.Row="1" Background="{StaticResource SoundBoxBrush}">
+                            <ui:Button Grid.Column="0" Grid.Row="1"
+                                       Command="{Binding PickSfxACommand}">
+                                <!--값이 있을때는 배경색을 다르게 표기-->
+                                <ui:Button.Style>
+                                    <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+                                        <Setter Property="Background" Value="{StaticResource SoundBoxBrush}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Cut.StartFxSoundName}" Value="{x:Null}">
+                                                <Setter Property="Background" Value="White"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ui:Button.Style>
                                 <TextBlock TextAlignment="Center" FontSize="10">
                                     <Run>FX</Run>
                                     <LineBreak/>
@@ -338,7 +350,19 @@
                                 </TextBlock>
                             </ui:Button>
 
-                            <ui:Button Grid.Column="2" Grid.Row="1" Background="{StaticResource SoundBoxBrush}">
+                            <ui:Button Grid.Column="2" Grid.Row="1"
+                                       Command="{Binding PickSfxBCommand}">
+                                <!--값이 있을때는 배경색을 다르게 표기-->
+                                <ui:Button.Style>
+                                    <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+                                        <Setter Property="Background" Value="{StaticResource SoundBoxBrush}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Cut.EndFxSoundName}" Value="{x:Null}">
+                                                <Setter Property="Background" Value="White"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ui:Button.Style>
                                 <TextBlock TextAlignment="Center" FontSize="10">
                                     <Run>FX</Run>
                                     <LineBreak/>

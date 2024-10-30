@@ -35,6 +35,12 @@ public sealed class AssetList
 
         foreach (var file in Directory.GetFiles(sfxRoot, "*.wav", SearchOption.AllDirectories))
         {
+            var fileName = Path.GetFileName(file);
+            if (fileName.StartsWith("SFX_CUTSCENE_") == false)
+            {
+                continue;
+            }
+
             this.sfxFiles.Add(file);
         }
     }

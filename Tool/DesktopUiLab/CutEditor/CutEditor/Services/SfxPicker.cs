@@ -6,14 +6,14 @@ using CutEditor.Model;
 using CutEditor.Model.Interfaces;
 using Wpf.Ui;
 
-internal sealed class BgmPicker(IContentDialogService contentDialogService)
+internal sealed class SfxPicker(IContentDialogService contentDialogService)
     : IAssetPicker
 {
     public async Task<IAssetPicker.PickResult> PickAsset()
     {
         var dialog = new AssetPickerDialog(
-            "BGM 파일 선택",
-            AssetList.Instance.BgmFiles,
+            "Sfx 파일 선택",
+            AssetList.Instance.SfxFiles,
             contentDialogService.GetDialogHost());
         var result = await dialog.ShowAsync();
         return result switch

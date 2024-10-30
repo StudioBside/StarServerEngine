@@ -55,6 +55,7 @@ public partial class App : Application
         services.AddTransient<UnitPickerDialog>();
         services.AddTransient<IUnitPicker, UnitPicker>();
         services.AddKeyedTransient<IAssetPicker, BgmPicker>("bgm");
+        services.AddKeyedTransient<IAssetPicker, SfxPicker>("sfx");
         services.AddScoped<UndoController>();
 
         services.AddTransient<IUserInputProvider<string>, StringInputProvider>();

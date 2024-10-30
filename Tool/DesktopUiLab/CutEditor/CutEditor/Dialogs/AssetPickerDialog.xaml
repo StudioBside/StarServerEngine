@@ -23,7 +23,7 @@
         <Style BasedOn="{StaticResource {x:Type ui:ContentDialog}}" TargetType="{x:Type local:AssetPickerDialog}" />
     </ui:ContentDialog.Resources>
     
-    <Grid Width="700">
+    <Grid Width="600">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="400"/>
@@ -47,8 +47,18 @@
                      SelectionMode="Single" BorderBrush="LightGray">
             <ListView.View>
                 <GridView>
+                    <GridViewColumn Header="Control" Width="Auto">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <ui:Button Content="실행" Command="{Binding OpenFileCommand}" CommandParameter="{Binding}"/>
+                                    <ui:Button Content="탐색기" Command="{Binding OpenInExplorerCommand}" CommandParameter="{Binding}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                     <GridViewColumn Header="File" Width="Auto"
-                                    DisplayMemberBinding="{Binding FileName}"/>
+                                    DisplayMemberBinding="{Binding FileNameOnly}"/>
                 </GridView>
             </ListView.View>
         </ui:ListView>

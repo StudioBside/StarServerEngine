@@ -40,6 +40,8 @@ public sealed class VmCut : ObservableObject
         this.PickUnitCommand = new AsyncRelayCommand(this.OnPickUnit);
         this.PickBgmACommand = new AsyncRelayCommand(this.OnPickBgmA);
         this.PickBgmBCommand = new AsyncRelayCommand(this.OnPickBgmB);
+        this.PickSfxACommand = new AsyncRelayCommand(this.OnPickSfxA);
+        this.PickSfxBCommand = new AsyncRelayCommand(this.OnPickSfxB);
         this.AddChoiceOptionCommand = new RelayCommand(this.OnAddChoiceOption, () => this.Cut.Choices.Count < 5);
         this.DeleteChoiceOptionCommand = new RelayCommand<ChoiceOption>(this.OnDeleteChoiceOption, _ => this.Cut.Choices.Count > 1);
         this.SetAnchorCommand = new RelayCommand<DestAnchorType>(this.OnSetAnchor);
@@ -76,6 +78,8 @@ public sealed class VmCut : ObservableObject
     public IRelayCommand PickUnitCommand { get; }
     public ICommand PickBgmACommand { get; }
     public ICommand PickBgmBCommand { get; }
+    public ICommand PickSfxACommand { get; }
+    public ICommand PickSfxBCommand { get; }
     public IRelayCommand AddChoiceOptionCommand { get; }
     public IRelayCommand DeleteChoiceOptionCommand { get; }
     public ICommand SetAnchorCommand { get; }
@@ -164,6 +168,30 @@ public sealed class VmCut : ObservableObject
         }
 
         this.Cut.EndBgmFileName = result.AssetFile;
+    }
+
+    private async Task OnPickSfxA()
+    {
+        var sfxPicker = this.services.GetRequiredKeyedService<IAssetPicker>("sfx");
+        var result = await sfxPicker.PickAsset();
+        if (result.IsCanceled)
+        {
+            return;
+        }
+
+        this.Cut.StartFxSoundName = result.AssetFile;
+    }
+
+    private async Task OnPickSfxB()
+    {
+        var sfxPicker = this.services.GetRequiredKeyedService<IAssetPicker>("sfx");
+        var result = await sfxPicker.PickAsset();
+        if (result.IsCanceled)
+        {
+            return;
+        }
+
+        this.Cut.EndFxSoundName = result.AssetFile;
     }
 
     private void OnAddChoiceOption()
