@@ -28,25 +28,34 @@ public sealed class AssetList
             }
         }
 
-        foreach (var file in Directory.GetFiles(bgmRoot, "*.mp3", SearchOption.AllDirectories))
+        if (Directory.Exists(bgmRoot))
         {
-            this.bgmFiles.Add(file);
-        }
-
-        foreach (var file in Directory.GetFiles(sfxRoot, "*.wav", SearchOption.AllDirectories))
-        {
-            var fileName = Path.GetFileName(file);
-            if (fileName.StartsWith("SFX_CUTSCENE_") == false)
+            foreach (var file in Directory.GetFiles(bgmRoot, "*.mp3", SearchOption.AllDirectories))
             {
-                continue;
+                this.bgmFiles.Add(file);
             }
-
-            this.sfxFiles.Add(file);
         }
 
-        foreach (var file in Directory.GetFiles(voiceRoot, "*.ogg", SearchOption.AllDirectories))
+        if (Directory.Exists(sfxRoot))
         {
-            this.voiceFils.Add(file);
+            foreach (var file in Directory.GetFiles(sfxRoot, "*.wav", SearchOption.AllDirectories))
+            {
+                var fileName = Path.GetFileName(file);
+                if (fileName.StartsWith("SFX_CUTSCENE_") == false)
+                {
+                    continue;
+                }
+
+                this.sfxFiles.Add(file);
+            }
+        }
+
+        if (Directory.Exists(voiceRoot))
+        {
+            foreach (var file in Directory.GetFiles(voiceRoot, "*.ogg", SearchOption.AllDirectories))
+            {
+                this.voiceFils.Add(file);
+            }
         }
     }
 
