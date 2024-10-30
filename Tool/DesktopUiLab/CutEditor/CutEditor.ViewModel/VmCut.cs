@@ -1,6 +1,7 @@
 ﻿namespace CutEditor.ViewModel;
 
 using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -35,8 +36,8 @@ public sealed class VmCut : ObservableObject
 
         this.services = services;
         this.PickUnitCommand = new AsyncRelayCommand(this.OnPickUnit);
-        this.AddChoiceOptionCommand = new RelayCommand(this.OnAddChoiceOption);
-        this.DeleteChoiceOptionCommand = new RelayCommand<ChoiceOption>(this.OnDeleteChoiceOption);
+        this.AddChoiceOptionCommand = new RelayCommand(this.OnAddChoiceOption, () => this.Cut.Choices.Count < 5);
+        this.DeleteChoiceOptionCommand = new RelayCommand<ChoiceOption>(this.OnDeleteChoiceOption, _ => this.Cut.Choices.Count > 1);
         this.SetAnchorCommand = new RelayCommand<DestAnchorType>(this.OnSetAnchor);
         this.SetEmotionEffectCommand = new RelayCommand<EmotionEffect>(this.OnSetEmotionEffect);
         this.SetUnitMotionCommand = new RelayCommand<string>(this.OnSetUnitMotion);
@@ -56,12 +57,21 @@ public sealed class VmCut : ObservableObject
 
         this.choiceUidGenerator = new(cut.Uid);
         this.choiceUidGenerator.Initialize(cut.Choices);
+
+        if (this.Cut.Choices is ObservableCollection<ChoiceOption> choices)
+        {
+            choices.CollectionChanged += (s, e) =>
+            {
+                this.AddChoiceOptionCommand.NotifyCanExecuteChanged();
+                this.DeleteChoiceOptionCommand.NotifyCanExecuteChanged();
+            };
+        }
     }
 
     public Cut Cut { get; }
     public IRelayCommand PickUnitCommand { get; }
-    public ICommand AddChoiceOptionCommand { get; }
-    public ICommand DeleteChoiceOptionCommand { get; }
+    public IRelayCommand AddChoiceOptionCommand { get; }
+    public IRelayCommand DeleteChoiceOptionCommand { get; }
     public ICommand SetAnchorCommand { get; }
     public ICommand SetEmotionEffectCommand { get; }
     public ICommand SetUnitMotionCommand { get; }
