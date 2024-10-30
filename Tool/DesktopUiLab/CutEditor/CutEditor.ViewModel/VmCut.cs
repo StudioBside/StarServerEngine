@@ -96,10 +96,6 @@ public sealed class VmCut : ObservableObject
     }
 
     public string SummaryText => this.Cut.GetSummaryText();
-    public string EmotionEffectBtn => this.Cut.EmotionEffect == EmotionEffect.NONE
-        ? "EmotionEffect" : this.Cut.EmotionEffect.ToString();
-    public string UnitMotionBtn => string.IsNullOrEmpty(this.Cut.UnitMotion)
-        ? "UnitMotion" : this.Cut.UnitMotion;
 
     public CutDataType DataType
     {
@@ -114,7 +110,6 @@ public sealed class VmCut : ObservableObject
         switch (e.PropertyName)
         {
             case nameof(Model.Cut.EmotionEffect):
-                this.OnPropertyChanged(nameof(this.EmotionEffectBtn));
                 break;
         }
     }

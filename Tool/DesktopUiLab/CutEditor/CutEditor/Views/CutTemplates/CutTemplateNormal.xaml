@@ -208,7 +208,20 @@
                             <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Horizontal">
                                 
                                 <!--UnitMotion 설정 버튼-->
-                                <ui:DropDownButton Margin="0,0,10,0" Content="{Binding UnitMotionBtn}">
+                                <ui:DropDownButton Margin="0,0,10,0">
+                                    <ui:DropDownButton.Style>
+                                        <!--값이 없을 때는 'UnitMotion'으로 표기. 값이 있을때는 Border를 검게 표기-->
+                                        <Style TargetType="ui:DropDownButton" BasedOn="{StaticResource {x:Type ui:DropDownButton}}">
+                                            <Setter Property="Content" Value="{Binding Cut.UnitMotion}"/>
+                                            <Setter Property="BorderBrush" Value="Black"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Cut.UnitMotion}" Value="{x:Null}">
+                                                    <Setter Property="BorderBrush" Value="Transparent"/>
+                                                    <Setter Property="Content" Value="유닛모션"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ui:DropDownButton.Style>
                                     <ui:DropDownButton.Flyout>
                                         <ContextMenu ItemsSource="{Binding Source={StaticResource AssetListInstance}, Path=UnitMotions}">
                                             <ContextMenu.ItemTemplate>
@@ -223,7 +236,20 @@
                                 </ui:DropDownButton>
                                 
                                 <!--EmotionEffect 설정 버튼-->
-                                <ui:DropDownButton Margin="0,0,10,0" Content="{Binding EmotionEffectBtn}">
+                                <ui:DropDownButton Margin="0,0,10,0">
+                                    <ui:DropDownButton.Style>
+                                        <!--값이 없을 때는 'UnitMotion'으로 표기. 값이 있을때는 Border를 검게 표기-->
+                                        <Style TargetType="ui:DropDownButton" BasedOn="{StaticResource {x:Type ui:DropDownButton}}">
+                                            <Setter Property="Content" Value="{Binding Cut.EmotionEffect}"/>
+                                            <Setter Property="BorderBrush" Value="Black"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Cut.EmotionEffect}" Value="{x:Static nkm:EmotionEffect.NONE}">
+                                                    <Setter Property="BorderBrush" Value="Transparent"/>
+                                                    <Setter Property="Content" Value="감정이펙트"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ui:DropDownButton.Style>
                                     <ui:DropDownButton.Flyout>
                                         <ContextMenu ItemsSource="{Binding Source={extensions:EnumValues {x:Type nkm:EmotionEffect}}}">
                                             <ContextMenu.ItemTemplate>

@@ -3,7 +3,6 @@
 using System.Threading.Tasks;
 using CutEditor.Dialogs;
 using CutEditor.Model.Interfaces;
-using Shared.Templet.TempletTypes;
 using Wpf.Ui;
 
 internal sealed class UnitPicker(UnitPickerDialog dialog, IContentDialogService contentDialogService)

@@ -18,6 +18,8 @@ public sealed class AssetList
         var bgmRoot = config["BgmRoot"] ?? throw new Exception($"BgmRoot is not defined in the configuration file.");
         var sfxRoot = config["SfxRoot"] ?? throw new Exception($"SfxRoot is not defined in the configuration file.");
         var voiceRoot = config["VoiceRoot"] ?? throw new Exception($"VoiceRoot is not defined in the configuration file.");
+
+        this.unitMotions.Add(null!);
         foreach (var data in config.GetSection("UnitMotionList").GetChildren())
         {
             if (data.Value is not null)
