@@ -1,0 +1,297 @@
+﻿<UserControl
+    x:Class="CutEditor.Views.CutBoxes.BoxUnit"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:local="clr-namespace:CutEditor.Views.CutBoxes"
+    mc:Ignorable="d" 
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:lcvt="clr-namespace:CutEditor.Converters"
+    xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
+    xmlns:nkm="clr-namespace:NKM;assembly=CutEditor.Model"
+    xmlns:extensions="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
+    xmlns:models="clr-namespace:CutEditor.Model;assembly=CutEditor.Model"
+    d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ObjectDataProvider x:Key="AssetListInstance" ObjectType="{x:Type models:AssetList}" MethodName="get_Instance" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <!--컨트롤 : 유닛-->
+    <Border Background="{StaticResource UnitBoxBrush}"
+            Visibility="{Binding ShowUnitSection, Converter={converters:BoolToVisibilityConverter}}">
+        <!--컨트롤이 많으니까 3덩어리 정도로 나눠서 별도의 Grid로 묶어줍니다.-->
+        <StackPanel Orientation="Horizontal">
+
+            <!-- Grid 1 : 좌측 버튼 배치 영역-->
+            <Grid Margin="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!--<TextBlock Grid.Column="0" Grid.Row="0"
+                                       Text="{Binding Cut.JumpAnchor}"/>-->
+
+                <ui:Button Grid.Column="0" Grid.Row="1" Margin="0,0,10,0"
+                                       Content="UnitNameString"
+                                       ToolTip="{Binding Cut.UnitNames, Converter={converters:ListToStringConverter}}"
+                                       Command="{Binding SetUnitNameStringCommand}">
+                    <!--값이 없을 때는 한글 표기. 값이 있을때는 배경색을 다르게 표기-->
+                    <ui:Button.Style>
+                        <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+                            <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Cut.UnitNames, Converter={converters:ListToCountConverter}}" Value="0">
+                                    <Setter Property="Background" Value="White"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ui:Button.Style>
+
+                </ui:Button>
+
+                <ui:Button Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Margin="0,0,10,0"
+                                           Command="{Binding PickUnitCommand}" Padding="0" CornerRadius="8"
+                                           Width="80" Height="80"
+                                           VerticalAlignment="Stretch">
+                    <MultiBinding Converter="{lcvt:PathToImageConverter}">
+                        <Binding Path="Cut.Unit.ImageFullPath" />
+                        <Binding Source="유닛 선택"/>
+                        <Binding Source="CornerRadius:8;BorderBrush:Black;BorderThickness:1"/>
+                    </MultiBinding>
+                </ui:Button>
+
+                <StackPanel Grid.Column="2" Grid.Row="0" Orientation="Horizontal">
+                    <RadioButton MinWidth="20" VerticalAlignment="Bottom"
+                                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS1}"/>
+                    <RadioButton MinWidth="20" VerticalAlignment="Top"
+                                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS2}"/>
+                    <RadioButton MinWidth="20" VerticalAlignment="Bottom"
+                                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS3}"/>
+                    <RadioButton MinWidth="20" VerticalAlignment="Top"
+                                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS4}"/>
+                    <RadioButton MinWidth="20" VerticalAlignment="Bottom"
+                                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS5}"/>
+                    <RadioButton MinWidth="20" VerticalAlignment="Top"
+                                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS6}"/>
+                    <RadioButton MinWidth="20" VerticalAlignment="Bottom"
+                                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS7}"/>
+                    <RadioButton MinWidth="20" VerticalAlignment="Top"
+                                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS8}"/>
+                    <RadioButton MinWidth="20" VerticalAlignment="Bottom"
+                                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS9}"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Horizontal">
+
+                    <!--UnitMotion 설정 버튼-->
+                    <ui:DropDownButton Margin="0,0,10,0">
+                        <!--값이 없을 때는 한글 표기. 값이 있을때는 배경색을 다르게 표기-->
+                        <ui:DropDownButton.Style>
+                            <Style TargetType="ui:DropDownButton" BasedOn="{StaticResource {x:Type ui:DropDownButton}}">
+                                <Setter Property="Content" Value="{Binding Cut.UnitMotion}"/>
+                                <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Cut.UnitMotion}" Value="{x:Null}">
+                                        <Setter Property="Content" Value="유닛모션"/>
+                                        <Setter Property="Background" Value="White"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ui:DropDownButton.Style>
+                        <ui:DropDownButton.Flyout>
+                            <ContextMenu ItemsSource="{Binding Source={StaticResource AssetListInstance}, Path=UnitMotions}">
+                                <ContextMenu.ItemTemplate>
+                                    <DataTemplate>
+                                        <MenuItem Header="{Binding .}"
+                                                  Command="{Binding DataContext.SetUnitMotionCommand, RelativeSource={RelativeSource AncestorType=ListViewItem}}"
+                                                  CommandParameter="{Binding .}"/>
+                                    </DataTemplate>
+                                </ContextMenu.ItemTemplate>
+                            </ContextMenu>
+                        </ui:DropDownButton.Flyout>
+                    </ui:DropDownButton>
+
+                    <!--EmotionEffect 설정 버튼-->
+                    <ui:DropDownButton Margin="0,0,10,0">
+                        <!--값이 없을 때는 한글 표기. 값이 있을때는 배경색을 다르게 표기-->
+                        <ui:DropDownButton.Style>
+                            <Style TargetType="ui:DropDownButton" BasedOn="{StaticResource {x:Type ui:DropDownButton}}">
+                                <Setter Property="Content" Value="{Binding Cut.EmotionEffect}"/>
+                                <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Cut.EmotionEffect}" Value="{x:Static nkm:EmotionEffect.NONE}">
+                                        <Setter Property="Content" Value="감정이펙트"/>
+                                        <Setter Property="Background" Value="White"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ui:DropDownButton.Style>
+                        <ui:DropDownButton.Flyout>
+                            <ContextMenu ItemsSource="{Binding Source={extensions:EnumValues {x:Type nkm:EmotionEffect}}}">
+                                <ContextMenu.ItemTemplate>
+                                    <DataTemplate>
+                                        <MenuItem Header="{Binding .}"
+                                                  Command="{Binding DataContext.SetEmotionEffectCommand, RelativeSource={RelativeSource AncestorType=ListViewItem}}"
+                                                  CommandParameter="{Binding .}"/>
+                                    </DataTemplate>
+                                </ContextMenu.ItemTemplate>
+                            </ContextMenu>
+                        </ui:DropDownButton.Flyout>
+                    </ui:DropDownButton>
+                </StackPanel>
+            </Grid>
+
+            <!--Grid 2 : 중앙 텍스트 편집 영역-->
+            <Grid Margin="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="60"/>
+                </Grid.ColumnDefinitions>
+
+                <ui:Button Grid.Column="0" Grid.Row="0"
+                                       Margin="0,0,0,5"
+                                       Command="{Binding PickBgmACommand}"
+                                       ToolTip="{Binding Cut.StartBgmFileName}">
+                    <!--값이 있을때는 배경색을 다르게 표기-->
+                    <ui:Button.Style>
+                        <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+                            <Setter Property="Background" Value="{StaticResource SoundBoxBrush}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Cut.StartBgmFileName}" Value="{x:Null}">
+                                    <Setter Property="Background" Value="White"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ui:Button.Style>
+                    <TextBlock TextAlignment="Center" FontSize="10">
+                                    <Run>BGM</Run>
+                                    <LineBreak/>
+                                    <Run>제어</Run>
+                    </TextBlock>
+                </ui:Button>
+
+                <ui:Button Grid.Column="0" Grid.Row="1"
+                                       Command="{Binding PickSfxACommand}"
+                                       ToolTip="{Binding Cut.StartFxSoundName}">
+                    <!--값이 있을때는 배경색을 다르게 표기-->
+                    <ui:Button.Style>
+                        <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+                            <Setter Property="Background" Value="{StaticResource SoundBoxBrush}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Cut.StartFxSoundName}" Value="{x:Null}">
+                                    <Setter Property="Background" Value="White"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ui:Button.Style>
+                    <TextBlock TextAlignment="Center" FontSize="10">
+                                    <Run>FX</Run>
+                                    <LineBreak/>
+                                    <Run>제어</Run>
+                    </TextBlock>
+                </ui:Button>
+
+                <StackPanel Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"
+                                            Orientation="Horizontal"
+                                            Margin="0,0,10,0">
+                    <!--WrapWithOverflow : 단어의 잘림을 허용하는 설정-->
+                    <ui:TextBox Text="{Binding Cut.UnitTalk.Korean}"
+                                                MinLines="2" Width="500"
+                                                TextWrapping="WrapWithOverflow"
+                                                AcceptsReturn="True"/>
+                </StackPanel>
+
+                <ui:Button Grid.Column="2" Grid.Row="0"
+                                       Margin="0,0,0,5"
+                                       Command="{Binding PickBgmBCommand}"
+                                       ToolTip="{Binding Cut.EndBgmFileName}">
+                    <!--값이 있을때는 배경색을 다르게 표기-->
+                    <ui:Button.Style>
+                        <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+                            <Setter Property="Background" Value="{StaticResource SoundBoxBrush}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Cut.EndBgmFileName}" Value="{x:Null}">
+                                    <Setter Property="Background" Value="White"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ui:Button.Style>
+                    <TextBlock TextAlignment="Center" FontSize="10">
+                                    <Run>BGM</Run>
+                                    <LineBreak/>
+                                    <Run>제어</Run>
+                    </TextBlock>
+                </ui:Button>
+
+                <ui:Button Grid.Column="2" Grid.Row="1"
+                                       Command="{Binding PickSfxBCommand}"
+                                       ToolTip="{Binding Cut.EndFxSoundName}">
+                    <!--값이 있을때는 배경색을 다르게 표기-->
+                    <ui:Button.Style>
+                        <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+                            <Setter Property="Background" Value="{StaticResource SoundBoxBrush}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Cut.EndFxSoundName}" Value="{x:Null}">
+                                    <Setter Property="Background" Value="White"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ui:Button.Style>
+                    <TextBlock TextAlignment="Center" FontSize="10">
+                                    <Run>FX</Run>
+                                    <LineBreak/>
+                                    <Run>제어</Run>
+                    </TextBlock>
+                </ui:Button>
+            </Grid>
+
+            <!-- Grid 3 : 우측 버튼 배치 영역-->
+            <Grid VerticalAlignment="Top" Margin="10" HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <ui:Button Content="TalkVoice" Margin="0,0,10,0"
+                                       Command="{Binding PickVoiceCommand}"
+                                       ToolTip="{Binding Cut.TalkVoice}">
+                    <!--값이 없을 때는 한글 표기. 값이 있을때는 배경색을 다르게 표기-->
+                    <ui:Button.Style>
+                        <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+                            <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Cut.TalkVoice}" Value="{x:Null}">
+                                    <Setter Property="Background" Value="White"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ui:Button.Style>
+                </ui:Button>
+
+                <ui:Button Grid.Column="2" Content="삭제"
+                                           Appearance="Transparent"
+                                           Command="{Binding DataContext.DeletePickCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                           CommandParameter="{Binding .}"/>
+            </Grid>
+
+        </StackPanel>
+    </Border>
+</UserControl>
