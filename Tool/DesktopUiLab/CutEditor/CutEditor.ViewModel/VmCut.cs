@@ -187,7 +187,7 @@ public sealed class VmCut : ObservableObject
 
     private void OnAddChoiceOption()
     {
-        long newUid = this.choiceUidGenerator.GenerateNewUid();
+        long newUid = this.choiceUidGenerator.Generate();
         var newChoice = new ChoiceOption();
         newChoice.InitializeUid(this.Cut.Uid, newUid);
         newChoice.Text.Korean = newChoice.UidString;

@@ -32,7 +32,7 @@ public sealed class VmCuts : VmPageBase,
     private readonly string textFilePath;
     private readonly string binFilePath;
     private readonly string name;
-    private readonly TempUidGenerator uidGenerator = new();
+    private readonly CutUidGenerator uidGenerator = new();
     private readonly IServiceProvider services;
     private readonly UndoController undoController;
     private readonly string packetExeFile;
@@ -80,9 +80,11 @@ public sealed class VmCuts : VmPageBase,
         var json = JsonUtil.Load(textFilePath);
         json.GetArray("Data", this.cuts, (e, i) =>
         {
-            var cut = new Cut(e, this.uidGenerator.Generate());
+            var cut = new Cut(e);
             return new VmCut(cut, this.services);
         });
+
+        this.uidGenerator.Initialize(this.cuts);
 
         this.selectedCuts.CollectionChanged += (s, e) =>
         {
@@ -107,7 +109,7 @@ public sealed class VmCuts : VmPageBase,
         set => this.SetProperty(ref this.showSummary, value);
     }
 
-    internal TempUidGenerator UidGenerator => this.uidGenerator;
+    internal CutUidGenerator UidGenerator => this.uidGenerator;
     internal IServiceProvider Services => this.services;
     private string DebugName => $"[{this.name}]";
 

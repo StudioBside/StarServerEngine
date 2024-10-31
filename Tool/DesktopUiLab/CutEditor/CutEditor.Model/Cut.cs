@@ -55,8 +55,14 @@ public sealed class Cut : ObservableObject
     private TransitionControl? transitionControl;
     private string? talkVoice;
 
-    public Cut(JToken token, long uid) : this(uid)
+    public Cut(long uid)
     {
+        this.Uid = uid;
+    }
+
+    public Cut(JToken token)
+    {
+        this.Uid = token.GetInt64("Uid", 0);
         this.contentsTag = token.GetString("ContentsTag", null!);
         this.cutsceneStrId = token.GetString("CutsceneStrId", null!);
         this.waitClick = token.GetBool("WaitClick", false);
@@ -122,12 +128,7 @@ public sealed class Cut : ObservableObject
         this.unitNames.CollectionChanged += (s, e) => this.OnPropertyChanged(nameof(this.UnitNames));
     }
 
-    public Cut(long uid)
-    {
-        this.Uid = uid;
-    }
-
-    public long Uid { get; }
+    public long Uid { get; private set; }
     public L10nText UnitTalk => this.unitTalk;
     public IList<ChoiceOption> Choices => this.choices;
     public IList<string> UnitNames => this.unitNames;
@@ -335,6 +336,16 @@ public sealed class Cut : ObservableObject
         }
 
         return this.unitTalk.Korean;
+    }
+
+    public void SetUid(long uid)
+    {
+        if (this.Uid != 0)
+        {
+            Log.Warn($"기존 uid가 새로운 값으로 변경됩니다. uid:{this.Uid} -> {uid}");
+        }
+
+        this.Uid = uid;
     }
 
     //// --------------------------------------------------------------------------------

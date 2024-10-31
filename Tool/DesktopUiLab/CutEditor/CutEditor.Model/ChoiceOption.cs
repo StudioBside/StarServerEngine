@@ -33,6 +33,7 @@ public sealed class ChoiceOption : ObservableObject
     internal static ChoiceOption? Load(JToken token, int index)
     {
         var result = new ChoiceOption();
+        result.ChoiceUid = token.GetInt64("Uid", 0);
         result.text.Load(token, "JumpAnchorStringId");
         result.jumpAnchor = token.GetEnum("JumpAnchorId", StartAnchorType.None);
 
@@ -43,6 +44,7 @@ public sealed class ChoiceOption : ObservableObject
     {
         var result = new ChoiceOutputFormat
         {
+            Uid = this.ChoiceUid,
             JumpAnchorStringId_KOR = this.text.AsNullable(L10nType.Korean),
             JumpAnchorStringId_ENG = this.text.AsNullable(L10nType.English),
             JumpAnchorStringId_JPN = this.text.AsNullable(L10nType.Japanese),

@@ -3,20 +3,30 @@
 using System.Collections.Generic;
 using CutEditor.Model;
 
-/// <summary>
-/// 우선은 로딩할 때마다 신규 발급. 차후에는 파일에 확정된 uid를 적고 로딩해야 한다. 
-/// </summary>
 internal sealed class ChoiceUidGenerator(long cutUid)
 {
     private long uidSeed = 0;
 
     public void Initialize(IEnumerable<ChoiceOption> choices)
     {
+        if (choices.Any() == false)
+        {
+            return;
+        }
+
+        bool newFormat = choices.First().ChoiceUid > 0;
+        if (newFormat)
+        {
+            // 이미 로딩한 데이터에 uid가 있는 경우 (=신규 포맷) : seed를 조정.
+            this.uidSeed = choices.Max(x => x.ChoiceUid);
+        }
+
         foreach (var choice in choices)
         {
-            choice.InitializeUid(cutUid, this.GenerateNewUid());
+            var choiceUid = newFormat ? choice.ChoiceUid : this.Generate();
+            choice.InitializeUid(cutUid, choiceUid);
         }
     }
 
-    public long GenerateNewUid() => ++this.uidSeed;
+    public long Generate() => ++this.uidSeed;
 }
