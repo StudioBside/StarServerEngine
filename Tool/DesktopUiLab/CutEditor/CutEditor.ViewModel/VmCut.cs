@@ -195,7 +195,7 @@ public sealed class VmCut : ObservableObject
     private async Task OnPickBgFileName()
     {
         var bgFilePicker = this.services.GetRequiredKeyedService<IAssetPicker>("bgFile");
-        var result = await bgFilePicker.PickAsset();
+        var result = await bgFilePicker.PickAsset(this.Cut.BgFileName);
         if (result.IsCanceled)
         {
             return;

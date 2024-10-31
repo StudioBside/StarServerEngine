@@ -9,7 +9,7 @@ using Wpf.Ui;
 internal sealed class VoicePicker(IContentDialogService contentDialogService)
     : IAssetPicker
 {
-    public async Task<IAssetPicker.PickResult> PickAsset()
+    public async Task<IAssetPicker.PickResult> PickAsset(string? defaultValue)
     {
         var dialog = new AssetPickerDialog(
             "voice 파일 선택",

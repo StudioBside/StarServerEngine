@@ -8,9 +8,7 @@ public partial class BgFilePickerDialog : ContentDialog
 {
     private readonly BgFilePickerDialogVm viewModel;
 
-    public BgFilePickerDialog(
-        string title,
-        ContentPresenter? contentPresenter)
+    public BgFilePickerDialog(string title, string? defaultValue, ContentPresenter? contentPresenter)
         : base(contentPresenter)
     {
         this.viewModel = new BgFilePickerDialogVm();
@@ -18,6 +16,9 @@ public partial class BgFilePickerDialog : ContentDialog
 
         this.Title = title;
         this.InitializeComponent();
+
+        // initializeComponent 호출 후에 기본값을 설정해준다.
+        this.viewModel.Selected = new BgFilePickerDialogVm.ElementType(defaultValue ?? string.Empty);
     }
 
     public string? SelectedFileName => this.viewModel.Selected?.FileNameOnly;

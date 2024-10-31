@@ -77,8 +77,17 @@ public partial class BgFilePickerDialogVm : ObservableObject
 
         public ElementType(string fileName)
         {
-            this.fullPath = Path.GetFullPath(fileName);
-            this.FileNameOnly = Path.GetFileName(fileName);
+            if (string.IsNullOrWhiteSpace(fileName))
+            {
+                this.fullPath = string.Empty;
+                this.FileNameOnly = string.Empty;
+            }
+            else
+            {
+                this.fullPath = Path.GetFullPath(fileName);
+                this.FileNameOnly = Path.GetFileName(fileName);
+            }
+
             this.OpenFileCommand = new RelayCommand(() =>
             {
                 Process.Start(new ProcessStartInfo(fileName) { UseShellExecute = true });

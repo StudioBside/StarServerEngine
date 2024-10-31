@@ -9,7 +9,7 @@ using Wpf.Ui;
 internal sealed class SfxPicker(IContentDialogService contentDialogService)
     : IAssetPicker
 {
-    public async Task<IAssetPicker.PickResult> PickAsset()
+    public async Task<IAssetPicker.PickResult> PickAsset(string? defaultValue)
     {
         var dialog = new AssetPickerDialog(
             "Sfx 파일 선택",

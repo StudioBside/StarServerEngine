@@ -8,11 +8,10 @@ using Wpf.Ui;
 internal sealed class BgFilePicker(IContentDialogService contentDialogService)
     : IAssetPicker
 {
-    public async Task<IAssetPicker.PickResult> PickAsset()
+    public async Task<IAssetPicker.PickResult> PickAsset(string? defaultValue)
     {
-        var dialog = new BgFilePickerDialog(
-            "배경 파일 선택",
-            contentDialogService.GetDialogHost());
+        var dialog = new BgFilePickerDialog("배경 파일 선택", defaultValue, contentDialogService.GetDialogHost());
+
         var result = await dialog.ShowAsync();
         return result switch
         {

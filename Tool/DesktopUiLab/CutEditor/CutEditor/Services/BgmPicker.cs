@@ -9,7 +9,7 @@ using Wpf.Ui;
 internal sealed class BgmPicker(IContentDialogService contentDialogService)
     : IAssetPicker
 {
-    public async Task<IAssetPicker.PickResult> PickAsset()
+    public async Task<IAssetPicker.PickResult> PickAsset(string? defaultValue)
     {
         var dialog = new AssetPickerDialog(
             "BGM 파일 선택",

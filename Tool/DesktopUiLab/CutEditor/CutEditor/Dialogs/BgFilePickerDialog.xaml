@@ -45,7 +45,7 @@
                 </TabItem.Header>
                 <Grid>
                     <ui:ListView ItemsSource="{Binding ImageFiles}"
-                                 SelectedItem="{Binding Selected, Mode=TwoWay}"
+                                 SelectedItem="{Binding Selected}"
                                  SelectionMode="Single" BorderBrush="LightGray">
                         <ListView.View>
                             <GridView>
@@ -98,7 +98,7 @@
                 </TabItem.Header>
                 <Grid>
                     <ui:ListView Grid.Row="1" ItemsSource="{Binding SlateFiles}"
-                                 SelectedItem="{Binding Selected, Mode=TwoWay}"
+                                 SelectedItem="{Binding Selected}"
                                  SelectionMode="Single" BorderBrush="LightGray">
                         <ListView.View>
                             <GridView>
@@ -130,7 +130,7 @@
                 </TabItem.Header>
                 <Grid>
                     <ui:ListView Grid.Row="1" ItemsSource="{Binding SpineFiles}"
-                                 SelectedItem="{Binding Selected, Mode=TwoWay}"
+                                 SelectedItem="{Binding Selected}"
                                  SelectionMode="Single" BorderBrush="LightGray">
                         <ListView.View>
                             <GridView>
@@ -162,8 +162,7 @@
                 </TabItem.Header>
                 <Grid>
                     <ui:ListView Grid.Row="1" ItemsSource="{Binding MovFiles}"
-                                 SelectedItem="{Binding Selected, Mode=TwoWay}"
-                                 SelectedValue=""
+                                 SelectedItem="{Binding Selected, Mode=OneWayToSource}"
                                  SelectionMode="Single" BorderBrush="LightGray">
                         <ListView.View>
                             <GridView>
