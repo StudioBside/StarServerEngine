@@ -23,7 +23,7 @@ public sealed class Cut : ObservableObject
     private readonly ObservableCollection<string> unitNames = new();
     private string? contentsTag;
     private string? cutsceneStrId;
-    private bool waitClick;
+    private bool waitClick = true;
     private float waitTime;
     private Color? bgFadeInStartCol;
     private Color? bgFadeInCol;
@@ -47,7 +47,7 @@ public sealed class Cut : ObservableObject
     private string? cameraOffset; // enum
     private string? cameraOffsetTime; // enum
     private float talkTime;
-    private Color? talkPositionControl; // enum
+    private Color? talkPositionControl;
     private bool talkAppend;
     private DestAnchorType jumpAnchor;
     private string? unitMotion;
@@ -65,7 +65,7 @@ public sealed class Cut : ObservableObject
         this.Uid = token.GetInt64("Uid", 0);
         this.contentsTag = token.GetString("ContentsTag", null!);
         this.cutsceneStrId = token.GetString("CutsceneStrId", null!);
-        this.waitClick = token.GetBool("WaitClick", false);
+        this.waitClick = token.GetBool("WaitClick", true);
         this.waitTime = token.GetFloat("WaitTime", 0f);
         this.bgFadeInStartCol = LoadColor(token, "BgFadeInStartCol");
         this.bgFadeInCol = LoadColor(token, "BgFadeInCol");
@@ -229,6 +229,12 @@ public sealed class Cut : ObservableObject
         set => this.SetProperty(ref this.waitTime, value);
     }
 
+    public string? BgFileName
+    {
+        get => this.bgFileName;
+        set => this.SetProperty(ref this.bgFileName, value);
+    }
+
     public object ToOutputType()
     {
         var result = new CutOutputFormat
@@ -346,6 +352,13 @@ public sealed class Cut : ObservableObject
         }
 
         this.Uid = uid;
+    }
+
+    public bool HasScreenBoxData()
+    {
+        return this.transitionControl is not null ||
+            this.TransitionEffect is not null ||
+            this.bgFileName is not null;
     }
 
     //// --------------------------------------------------------------------------------

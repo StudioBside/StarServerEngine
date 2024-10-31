@@ -95,7 +95,22 @@
 
             <ui:Button Margin="0,0,10,0" Content="Crash"/>
             <ui:Button Margin="0,0,10,0" Content="Flash"/>
-            <ui:Button Margin="0,0,10,0" Content="BG"/>
+
+            <ui:Button Margin="0,0,10,0" Content="BG"
+                       Command="{Binding PickBgFileNameCommand}"
+                       ToolTip="{Binding Cut.BgFileName}">
+                <!--값이 있을때는 배경색을 다르게 표기-->
+                <ui:Button.Style>
+                    <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+                        <Setter Property="Background" Value="{StaticResource SoundBoxBrush}"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Cut.BgFileName}" Value="{x:Null}">
+                                <Setter Property="Background" Value="White"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ui:Button.Style>
+            </ui:Button>
 
             <ui:Button Margin="0,0,10,0">
                 <TextBlock TextAlignment="Center">

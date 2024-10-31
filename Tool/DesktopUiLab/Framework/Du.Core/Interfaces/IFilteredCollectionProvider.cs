@@ -10,5 +10,5 @@ using Shared.Interfaces;
 /// </summary>
 public interface IFilteredCollectionProvider
 {
-    IFilteredCollection Build<T>(IList<T> collection) where T : ISearchable;
+    IFilteredCollection Build<T>(IEnumerable<T> collection) where T : ISearchable;
 }

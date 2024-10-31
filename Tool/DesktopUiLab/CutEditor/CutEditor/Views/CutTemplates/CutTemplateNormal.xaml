@@ -34,13 +34,11 @@
 
                     <ui:ToggleSwitch Content="WaitClick" Margin="0,0,10,0"
                                      IsChecked="{Binding Cut.WaitClick}"/>
-                    <Border Width="80" Margin="0,0,10,0">
-                        <ui:NumberBox PlaceholderText="대기시간"
-                                      SpinButtonPlacementMode="Hidden"
-                                      Value="{Binding Cut.WaitTime}"
-                                      Visibility="{Binding Cut.WaitClick, Converter={converters:BoolToVisibilityConverter}}"
-                                      FontSize="11"/>
-                    </Border>
+                    <ui:NumberBox PlaceholderText="대기시간"
+                                  Width="70" Margin="0,0,10,0"
+                                  SpinButtonPlacementMode="Hidden"
+                                  Value="{Binding Cut.WaitTime}"
+                                  FontSize="11"/>
 
 
                     <CheckBox Content="화면" Background="{StaticResource ScreenBoxBrush}"

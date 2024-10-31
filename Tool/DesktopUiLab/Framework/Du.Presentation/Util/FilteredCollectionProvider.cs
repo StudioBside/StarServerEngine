@@ -10,17 +10,19 @@ using Shared.Interfaces;
 /// </summary>
 public sealed class FilteredCollectionProvider : IFilteredCollectionProvider
 {
-    IFilteredCollection IFilteredCollectionProvider.Build<T>(IList<T> collection)
+    IFilteredCollection IFilteredCollectionProvider.Build<T>(IEnumerable<T> collection)
     {
-        return new FilteredCollection<T>(collection);
+        IList listType = collection as IList ?? collection.ToArray();
+        return new FilteredCollection<T>(listType);
     }
 
-    private sealed class FilteredCollection<T>(IList<T> collection) : IFilteredCollection
+    private sealed class FilteredCollection<T>(IList collection) : IFilteredCollection
         where T : ISearchable
     {
-        private readonly ListCollectionView view = new(collection as IList);
+        private readonly ListCollectionView view = new(collection);
 
         public IEnumerable List => this.view;
+        public int SourceCount => collection.Count;
 
         public void Refresh(string searchKeyword)
         {

@@ -11,6 +11,7 @@ using System.Collections;
 public interface IFilteredCollection
 {
     IEnumerable List { get; }
+    int SourceCount { get; }
 
     void Refresh(string searchKeyword);
 }

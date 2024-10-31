@@ -10,6 +10,10 @@ public sealed class AssetList
     private readonly List<string> sfxFiles = new();
     private readonly List<string> voiceFils = new();
     private readonly List<string> unitMotions = new();
+    private readonly List<string> bgImageFiles = new();
+    private readonly List<string> movFiles = new();
+    private readonly List<string> slateFiles = new();
+    private readonly List<string> spineFiles = new();
 
     public AssetList(IConfiguration config)
     {
@@ -18,6 +22,11 @@ public sealed class AssetList
         var bgmRoot = config["BgmRoot"] ?? throw new Exception($"BgmRoot is not defined in the configuration file.");
         var sfxRoot = config["SfxRoot"] ?? throw new Exception($"SfxRoot is not defined in the configuration file.");
         var voiceRoot = config["VoiceRoot"] ?? throw new Exception($"VoiceRoot is not defined in the configuration file.");
+        var bgImageRoot = config["BgImageRoot"] ?? throw new Exception($"BgImageRoot is not defined in the configuration file.");
+        var bgImage2Root = config["BgImage2Root"] ?? throw new Exception($"BgImage2Root is not defined in the configuration file.");
+        var movRoot = config["MovRoot"] ?? throw new Exception($"MovRoot is not defined in the configuration file.");
+        var slateRoot = config["SlateRoot"] ?? throw new Exception($"SlateRoot is not defined in the configuration file.");
+        var spineRoot = config["SpineRoot"] ?? throw new Exception($"SpineRoot is not defined in the configuration file.");
 
         this.unitMotions.Add(null!);
         foreach (var data in config.GetSection("UnitMotionList").GetChildren())
@@ -57,6 +66,46 @@ public sealed class AssetList
                 this.voiceFils.Add(file);
             }
         }
+
+        if (Directory.Exists(bgImageRoot))
+        {
+            foreach (var file in Directory.GetFiles(bgImageRoot, "*.png", SearchOption.AllDirectories))
+            {
+                this.bgImageFiles.Add(file);
+            }
+        }
+
+        if (Directory.Exists(bgImage2Root))
+        {
+            foreach (var file in Directory.GetFiles(bgImage2Root, "*.png", SearchOption.AllDirectories))
+            {
+                this.bgImageFiles.Add(file);
+            }
+        }
+
+        if (Directory.Exists(movRoot))
+        {
+            foreach (var file in Directory.GetFiles(movRoot, "*.mp4", SearchOption.AllDirectories))
+            {
+                this.movFiles.Add(file);
+            }
+        }
+
+        if (Directory.Exists(slateRoot))
+        {
+            foreach (var file in Directory.GetFiles(slateRoot, "*.prefab", SearchOption.AllDirectories))
+            {
+                this.slateFiles.Add(file);
+            }
+        }
+
+        if (Directory.Exists(spineRoot))
+        {
+            foreach (var file in Directory.GetFiles(spineRoot, "*.prefab", SearchOption.AllDirectories))
+            {
+                this.spineFiles.Add(file);
+            }
+        }
     }
 
     public static AssetList Instance { get; private set; } = null!;
@@ -65,4 +114,8 @@ public sealed class AssetList
     public IReadOnlyList<string> SfxFiles => this.sfxFiles;
     public IReadOnlyList<string> VoiceFiles => this.voiceFils;
     public IReadOnlyList<string> UnitMotions => this.unitMotions;
+    public IReadOnlyList<string> BgImageFiles => this.bgImageFiles;
+    public IReadOnlyList<string> MovFiles => this.movFiles;
+    public IReadOnlyList<string> SlateFiles => this.slateFiles;
+    public IReadOnlyList<string> SpineFiles => this.spineFiles;
 }

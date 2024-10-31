@@ -41,6 +41,7 @@ public sealed class VmCut : ObservableObject
         this.PickSfxACommand = new AsyncRelayCommand(this.OnPickSfxA);
         this.PickSfxBCommand = new AsyncRelayCommand(this.OnPickSfxB);
         this.PickVoiceCommand = new AsyncRelayCommand(this.OnPickVoice);
+        this.PickBgFileNameCommand = new AsyncRelayCommand(this.OnPickBgFileName);
         this.AddChoiceOptionCommand = new RelayCommand(this.OnAddChoiceOption, () => this.Cut.Choices.Count < 5);
         this.DeleteChoiceOptionCommand = new RelayCommand<ChoiceOption>(this.OnDeleteChoiceOption, _ => this.Cut.Choices.Count > 1);
         this.SetAnchorCommand = new RelayCommand<DestAnchorType>(this.OnSetAnchor);
@@ -51,11 +52,7 @@ public sealed class VmCut : ObservableObject
         this.SetTransitionControlCommand = new RelayCommand<TransitionControl>(this.OnSetTransitionControl);
 
         this.showUnitSection = true;
-        if (cut.TransitionControl is not null ||
-            cut.TransitionEffect is not null)
-        {
-            this.showScreenSection = true;
-        }
+        this.showScreenSection = cut.HasScreenBoxData();
 
         this.choiceUidGenerator = new(cut.Uid);
         this.choiceUidGenerator.Initialize(cut.Choices);
@@ -77,6 +74,7 @@ public sealed class VmCut : ObservableObject
     public ICommand PickSfxACommand { get; }
     public ICommand PickSfxBCommand { get; }
     public ICommand PickVoiceCommand { get; }
+    public ICommand PickBgFileNameCommand { get; }
     public IRelayCommand AddChoiceOptionCommand { get; }
     public IRelayCommand DeleteChoiceOptionCommand { get; }
     public ICommand SetAnchorCommand { get; }
@@ -192,6 +190,18 @@ public sealed class VmCut : ObservableObject
         }
 
         this.Cut.TalkVoice = result.AssetFile;
+    }
+
+    private async Task OnPickBgFileName()
+    {
+        var bgFilePicker = this.services.GetRequiredKeyedService<IAssetPicker>("bgFile");
+        var result = await bgFilePicker.PickAsset();
+        if (result.IsCanceled)
+        {
+            return;
+        }
+
+        this.Cut.BgFileName = result.AssetFile;
     }
 
     private void OnAddChoiceOption()
