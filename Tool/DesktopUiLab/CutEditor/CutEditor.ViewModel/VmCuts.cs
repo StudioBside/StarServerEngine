@@ -45,7 +45,7 @@ public sealed class VmCuts : VmPageBase,
         this.undoController = this.serviceScope.ServiceProvider.GetServiceNotNull<UndoController>();
         this.services = services;
         this.BackCommand = new RelayCommand(this.OnBack);
-        this.SaveCommand = new RelayCommand(this.OnSave);
+        this.SaveCommand = new AsyncRelayCommand(this.OnSave);
         this.DeleteCommand = new RelayCommand(this.OnDelete, () => this.selectedCuts.Count > 0);
         this.NewCutCommand = new RelayCommand<CutDataType>(this.OnNewCut);
         this.DeletePickCommand = new RelayCommand<VmCut>(this.OnDeletePick);
@@ -176,8 +176,13 @@ public sealed class VmCuts : VmPageBase,
         WeakReferenceMessenger.Default.Send(new NavigationMessage("GoBack"));
     }
 
-    private void OnSave()
+    private async Task OnSave()
     {
+        ////var waitingNotifier = this.services.GetRequiredService<IUserWaitingNotifier>();
+        ////using var waiting = await waitingNotifier.StartWait($"{this.DebugName} 저장 중...");
+        ////await Task.Delay(3000);
+        await Task.Delay(0);
+
         var textFilePath = this.GetTextFilePath();
         if (P4Commander.TryCreate(out var p4Commander) == false)
         {
