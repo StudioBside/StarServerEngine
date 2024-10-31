@@ -216,6 +216,18 @@ public sealed class Cut : ObservableObject
         set => this.SetProperty(ref this.talkVoice, value);
     }
 
+    public bool WaitClick
+    {
+        get => this.waitClick;
+        set => this.SetProperty(ref this.waitClick, value);
+    }
+
+    public float WaitTime
+    {
+        get => this.waitTime;
+        set => this.SetProperty(ref this.waitTime, value);
+    }
+
     public object ToOutputType()
     {
         var result = new CutOutputFormat
