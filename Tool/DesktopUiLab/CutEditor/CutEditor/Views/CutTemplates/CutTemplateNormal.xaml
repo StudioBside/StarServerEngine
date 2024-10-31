@@ -43,12 +43,12 @@
                     </Border>
 
 
-                    <CheckBox Content="유닛" Background="{StaticResource UnitBoxBrush}"
-                                IsChecked="{Binding ShowUnitSection}" MinWidth="70"/>
                     <CheckBox Content="화면" Background="{StaticResource ScreenBoxBrush}"
                                 IsChecked="{Binding ShowScreenSection}" MinWidth="70"/>
                     <CheckBox Content="카메라" Background="{StaticResource CameraBoxBrush}"
                                 IsChecked="{Binding ShowCameraSection}" MinWidth="80"/>
+                    <CheckBox Content="유닛" Background="{StaticResource UnitBoxBrush}"
+                                IsChecked="{Binding ShowUnitSection}" MinWidth="70"/>
 
                     <ui:DropDownButton Margin="20,0,10,0" Content="앵커 설정">
                         <ui:DropDownButton.Flyout>
@@ -82,52 +82,7 @@
                 </DockPanel>
 
                 <!--컨트롤 : 화면-->
-                <Border Grid.Row="1" Margin="0,10,0,0" Background="{StaticResource ScreenBoxBrush}"
-                            Visibility="{Binding ShowScreenSection, Converter={converters:BoolToVisibilityConverter}}">
-                    <StackPanel Orientation="Horizontal" Margin="5">
-                        <ui:Button Margin="0,0,10,0">
-                            <TextBlock TextAlignment="Center">
-                                    <Run>Filter</Run>
-                                    <LineBreak/>
-                                    <Run>Type</Run>
-                            </TextBlock>
-                        </ui:Button>
-
-                        <ui:Button Margin="0,0,10,0">
-                            <TextBlock TextAlignment="Center">
-                                    <Run>Transition</Run>
-                                    <LineBreak/>
-                                    <Run>제어</Run>
-                            </TextBlock>
-                        </ui:Button>
-
-                        <ui:Button Margin="0,0,10,0">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock TextAlignment="Center" Text="Fade 제어"
-                                               Margin="0,0,20,0"/>
-                                <Rectangle Width="20" Height="20" Margin="0,0,10,0"
-                                               Fill="White"/>
-                                <TextBlock TextAlignment="Center" Text="->"  Margin="0,0,10,0"
-                                               VerticalAlignment="Center"/>
-                                <Rectangle Width="20" Height="20"
-                                               Fill="Black"/>
-                            </StackPanel>
-                        </ui:Button>
-
-                        <ui:Button Margin="0,0,10,0" Content="Crash"/>
-                        <ui:Button Margin="0,0,10,0" Content="Flash"/>
-                        <ui:Button Margin="0,0,10,0" Content="BG"/>
-
-                        <ui:Button Margin="0,0,10,0">
-                            <TextBlock TextAlignment="Center">
-                                    <Run>BG</Run>
-                                    <LineBreak/>
-                                    <Run>제어</Run>
-                            </TextBlock>
-                        </ui:Button>
-
-                    </StackPanel>
-                </Border>
+                <boxes:BoxScreen Grid.Row="1"/>
 
                 <!--컨트롤 : 카메라-->
                 <Border Grid.Row="2" Margin="0,1,0,0" Background="{StaticResource CameraBoxBrush}"

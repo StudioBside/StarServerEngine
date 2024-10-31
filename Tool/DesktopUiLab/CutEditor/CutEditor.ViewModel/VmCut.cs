@@ -47,8 +47,15 @@ public sealed class VmCut : ObservableObject
         this.SetEmotionEffectCommand = new RelayCommand<EmotionEffect>(this.OnSetEmotionEffect);
         this.SetUnitMotionCommand = new RelayCommand<string>(this.OnSetUnitMotion);
         this.SetUnitNameStringCommand = new AsyncRelayCommand(this.OnSetUnitNameString);
+        this.SetTransitionEffectCommand = new RelayCommand<TransitionEffect>(this.OnSetTransitionEffect);
+        this.SetTransitionControlCommand = new RelayCommand<TransitionControl>(this.OnSetTransitionControl);
 
         this.showUnitSection = true;
+        if (cut.TransitionControl is not null ||
+            cut.TransitionEffect is not null)
+        {
+            this.showScreenSection = true;
+        }
 
         this.choiceUidGenerator = new(cut.Uid);
         this.choiceUidGenerator.Initialize(cut.Choices);
@@ -76,6 +83,8 @@ public sealed class VmCut : ObservableObject
     public ICommand SetEmotionEffectCommand { get; }
     public ICommand SetUnitMotionCommand { get; }
     public ICommand SetUnitNameStringCommand { get; }
+    public ICommand SetTransitionEffectCommand { get; }
+    public ICommand SetTransitionControlCommand { get; }
     public bool ShowUnitSection
     {
         get => this.showUnitSection;
@@ -236,5 +245,22 @@ public sealed class VmCut : ObservableObject
         {
             this.Cut.UnitNames.Add(token.Trim());
         }
+    }
+
+    private void OnSetTransitionEffect(TransitionEffect transitionEffect)
+    {
+        this.Cut.TransitionEffect = transitionEffect;
+    }
+
+    private void OnSetTransitionControl(TransitionControl transitionControl)
+    {
+        if (transitionControl == TransitionControl.NONE)
+        {
+            this.Cut.TransitionEffect = null;
+            this.Cut.TransitionControl = null;
+            return;
+        }
+
+        this.Cut.TransitionControl = transitionControl;
     }
 }
