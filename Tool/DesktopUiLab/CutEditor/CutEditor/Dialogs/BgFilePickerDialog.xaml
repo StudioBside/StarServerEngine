@@ -163,6 +163,7 @@
                 <Grid>
                     <ui:ListView Grid.Row="1" ItemsSource="{Binding MovFiles}"
                                  SelectedItem="{Binding Selected, Mode=TwoWay}"
+                                 SelectedValue=""
                                  SelectionMode="Single" BorderBrush="LightGray">
                         <ListView.View>
                             <GridView>
