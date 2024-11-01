@@ -216,7 +216,7 @@
                                 MinLines="2" Width="500"
                                 TextWrapping="WrapWithOverflow"
                                 AcceptsReturn="True"/>
-                    <ui:NumberBox Width="80" Height="35"
+                    <ui:NumberBox Width="60" Height="35"
                                   Margin="5"
                                   VerticalAlignment="Bottom"
                                   HorizontalAlignment="Right"
