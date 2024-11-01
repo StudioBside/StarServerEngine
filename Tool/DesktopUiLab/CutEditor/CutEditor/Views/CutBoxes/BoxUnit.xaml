@@ -209,15 +209,21 @@
                     </TextBlock>
                 </ui:Button>
 
-                <StackPanel Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"
-                                            Orientation="Horizontal"
+                <Grid Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"
                                             Margin="0,0,10,0">
                     <!--WrapWithOverflow : 단어의 잘림을 허용하는 설정-->
                     <ui:TextBox Text="{Binding Cut.UnitTalk.Korean}"
-                                                MinLines="2" Width="500"
-                                                TextWrapping="WrapWithOverflow"
-                                                AcceptsReturn="True"/>
-                </StackPanel>
+                                MinLines="2" Width="500"
+                                TextWrapping="WrapWithOverflow"
+                                AcceptsReturn="True"/>
+                    <ui:NumberBox Width="80" Height="35"
+                                  Margin="5"
+                                  VerticalAlignment="Bottom"
+                                  HorizontalAlignment="Right"
+                                  SpinButtonPlacementMode="Hidden"
+                                  ClearButtonEnabled="False"
+                                  Text="{Binding Cut.TalkTime}"/>
+                </Grid>
 
                 <ui:Button Grid.Column="2" Grid.Row="0"
                                        Margin="0,0,0,5"
