@@ -17,7 +17,12 @@ public sealed class BgFileToPreviewConverter : ConverterMarkupExtension<BgFileTo
 
         if (strValue.EndsWith(".png"))
         {
-            var source = ImageHelper.CreateThumbnail(strValue, thumbnailWidth: 100);
+            var source = ImageHelper.GetThumbnail(strValue, thumbnailWidth: 100);
+            if (source is null)
+            {
+                return "no cache";
+            }
+
             return new Wpf.Ui.Controls.Image
             {
                 Source = source,

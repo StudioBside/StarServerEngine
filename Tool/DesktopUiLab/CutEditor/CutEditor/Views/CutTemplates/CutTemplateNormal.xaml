@@ -6,6 +6,7 @@
     xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
     xmlns:models="clr-namespace:CutEditor.Model;assembly=CutEditor.Model"
     xmlns:extensions="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
+    xmlns:nkm="clr-namespace:NKM;assembly=CutEditor.Model"
     >
 
     <ResourceDictionary.MergedDictionaries>
@@ -48,25 +49,60 @@
                     <CheckBox Content="유닛" Background="{StaticResource UnitBoxBrush}"
                                 IsChecked="{Binding ShowUnitSection}" MinWidth="70"/>
 
-                    <ui:DropDownButton Margin="20,0,10,0" Content="앵커 설정">
+                    <ui:DropDownButton Margin="0,0,10,0">
+                        <!--값이 없을 때는 한글 표기. 값이 있을때는 배경색을 다르게 표기-->
+                        <ui:DropDownButton.Style>
+                            <Style TargetType="ui:DropDownButton" BasedOn="{StaticResource {x:Type ui:DropDownButton}}">
+                                <Setter Property="Content" Value="{Binding Cut.JumpAnchor}"/>
+                                <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Cut.JumpAnchor}" Value="{x:Static models:Enums+DestAnchorType.None}">
+                                        <Setter Property="Content" Value="도착 앵커"/>
+                                        <Setter Property="Background" Value="White"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ui:DropDownButton.Style>
                         <ui:DropDownButton.Flyout>
                             <ContextMenu ItemsSource="{Binding Source={extensions:EnumValues {x:Type models:Enums+DestAnchorType}}}">
                                 <ContextMenu.ItemTemplate>
                                     <DataTemplate>
                                         <MenuItem Header="{Binding .}"
-                                                  Command="{Binding DataContext.SetAnchorCommand, RelativeSource={RelativeSource AncestorType=ListViewItem}}"
-                                                  CommandParameter="{Binding .}"/>
+                                      Command="{Binding DataContext.SetAnchorCommand, RelativeSource={RelativeSource AncestorType=ListViewItem}}"
+                                      CommandParameter="{Binding .}"/>
                                     </DataTemplate>
                                 </ContextMenu.ItemTemplate>
                             </ContextMenu>
                         </ui:DropDownButton.Flyout>
                     </ui:DropDownButton>
-                    <Border BorderBrush="{StaticResource AnchorBrush}" BorderThickness="1" Margin="5" Padding="5"
-                            CornerRadius="10"
-                            Visibility="{Binding Cut.JumpAnchor, Converter={converters:EnumToCollapsedConverter}, ConverterParameter=None}">
-                        <TextBlock VerticalAlignment="Center" Text="{Binding Cut.JumpAnchor}" />
-                    </Border>
 
+                    <ui:DropDownButton Margin="0,0,10,0">
+                        <!--값이 없을 때는 한글 표기. 값이 있을때는 배경색을 다르게 표기-->
+                        <ui:DropDownButton.Style>
+                            <Style TargetType="ui:DropDownButton" BasedOn="{StaticResource {x:Type ui:DropDownButton}}">
+                                <Setter Property="Content" Value="{Binding Cut.CutsceneClear}"/>
+                                <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Cut.CutsceneClear}" Value="{x:Static nkm:CutsceneClearType.NONE}">
+                                        <Setter Property="Content" Value="컷신 클리어"/>
+                                        <Setter Property="Background" Value="White"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ui:DropDownButton.Style>
+                        <ui:DropDownButton.Flyout>
+                            <ContextMenu ItemsSource="{Binding Source={extensions:EnumValues {x:Type nkm:CutsceneClearType}}}">
+                                <ContextMenu.ItemTemplate>
+                                    <DataTemplate>
+                                        <MenuItem Header="{Binding .}"
+                                      Command="{Binding DataContext.SetCutsceneClearCommand, RelativeSource={RelativeSource AncestorType=ListViewItem}}"
+                                      CommandParameter="{Binding .}"/>
+                                    </DataTemplate>
+                                </ContextMenu.ItemTemplate>
+                            </ContextMenu>
+                        </ui:DropDownButton.Flyout>
+                    </ui:DropDownButton>
+                    
                     <StackPanel DockPanel.Dock="Right" Orientation="Horizontal"
                                 HorizontalAlignment="Right">
                         <Canvas Width="30">

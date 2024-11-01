@@ -46,18 +46,6 @@ public sealed class ElementType : ISearchable
 
     public void LoadImage()
     {
-        if (this.ImageSource is not null)
-        {
-            return;
-        }
-
-        try
-        {
-            this.ImageSource = ImageHelper.CreateThumbnail(this.fullPath, thumbnailWidth: 100);
-        }
-        catch (Exception)
-        {
-            this.ImageSource = null;
-        }
+        this.ImageSource = ImageHelper.GetThumbnail(this.fullPath, thumbnailWidth: 100);
     }
 }

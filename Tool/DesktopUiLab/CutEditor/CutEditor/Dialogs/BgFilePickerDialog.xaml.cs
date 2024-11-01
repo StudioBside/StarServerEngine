@@ -1,21 +1,18 @@
 ﻿namespace CutEditor.Dialogs;
 
-using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 using CutEditor.Dialogs.BgFilePicker;
 using Wpf.Ui.Controls;
 
 public partial class BgFilePickerDialog : ContentDialog
 {
-    private readonly BgFilePickerDialogVm viewModel;
+    private readonly BgFilePickerDialogVm viewModel = new BgFilePickerDialogVm();
 
     public BgFilePickerDialog(string title, string? defaultValue, ContentPresenter? contentPresenter)
         : base(contentPresenter)
     {
-        this.viewModel = new BgFilePickerDialogVm();
         this.DataContext = this.viewModel;
 
         this.PreviewKeyDown += this.BgFilePickerDialog_PreviewKeyDown;

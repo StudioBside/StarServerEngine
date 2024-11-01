@@ -18,13 +18,33 @@
     <Border Background="{StaticResource ScreenBoxBrush}"
              Visibility="{Binding ShowScreenSection, Converter={converters:BoolToVisibilityConverter}}">
         <StackPanel Orientation="Horizontal" Margin="5">
-            <ui:Button Margin="0,0,10,0">
-                <TextBlock TextAlignment="Center">
-                     <Run>Filter</Run>
-                     <LineBreak/>
-                     <Run>Type</Run>
-                </TextBlock>
-            </ui:Button>
+
+            <ui:DropDownButton Margin="0,0,10,0">
+                <!--값이 없을 때는 한글 표기. 값이 있을때는 배경색을 다르게 표기-->
+                <ui:DropDownButton.Style>
+                    <Style TargetType="ui:DropDownButton" BasedOn="{StaticResource {x:Type ui:DropDownButton}}">
+                        <Setter Property="Content" Value="{Binding Cut.FilterType}"/>
+                        <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Cut.FilterType}" Value="{x:Static nkm:CutsceneFilterType.NONE}">
+                                <Setter Property="Content" Value="필터 타입"/>
+                                <Setter Property="Background" Value="White"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ui:DropDownButton.Style>
+                <ui:DropDownButton.Flyout>
+                    <ContextMenu ItemsSource="{Binding Source={extensions:EnumValues {x:Type nkm:CutsceneFilterType}}}">
+                        <ContextMenu.ItemTemplate>
+                            <DataTemplate>
+                                <MenuItem Header="{Binding .}"
+                                      Command="{Binding DataContext.SetFilterTypeCommand, RelativeSource={RelativeSource AncestorType=ListViewItem}}"
+                                      CommandParameter="{Binding .}"/>
+                            </DataTemplate>
+                        </ContextMenu.ItemTemplate>
+                    </ContextMenu>
+                </ui:DropDownButton.Flyout>
+            </ui:DropDownButton>
 
             <ui:DropDownButton Margin="0,0,10,0">
                 <!--값이 없을 때는 한글 표기. 값이 있을때는 배경색을 다르게 표기-->
@@ -120,9 +140,20 @@
                 </TextBlock>
             </ui:Button>
 
+            <!--선택된 배경 파일 프리뷰-->
             <ContentPresenter Width="90"
                               VerticalAlignment="Center"
+                              Margin="0,0,10,0"
                               Content="{Binding Cut.BgFileName, Converter={lcvt:BgFileToPreviewConverter}}"/>
+
+            <!--BgChangeTime-->
+            <StackPanel VerticalAlignment="Center"
+                        Orientation="Horizontal"
+                        Visibility="{Binding Cut.BgFileName, Converter={converters:NullToVisibilityConverter}}">
+                <ui:TextBlock VerticalAlignment="Center" Text="전환시간 : "/>
+                <ui:TextBox Width="50"
+                            Text="{Binding Cut.BgChangeTime}"/>
+            </StackPanel>
 
         </StackPanel>
     </Border>

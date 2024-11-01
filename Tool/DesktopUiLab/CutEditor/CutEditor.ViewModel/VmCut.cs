@@ -44,12 +44,15 @@ public sealed class VmCut : ObservableObject
         this.PickBgFileNameCommand = new AsyncRelayCommand(this.OnPickBgFileName);
         this.AddChoiceOptionCommand = new RelayCommand(this.OnAddChoiceOption, () => this.Cut.Choices.Count < 5);
         this.DeleteChoiceOptionCommand = new RelayCommand<ChoiceOption>(this.OnDeleteChoiceOption, _ => this.Cut.Choices.Count > 1);
-        this.SetAnchorCommand = new RelayCommand<DestAnchorType>(this.OnSetAnchor);
-        this.SetEmotionEffectCommand = new RelayCommand<EmotionEffect>(this.OnSetEmotionEffect);
+        this.SetAnchorCommand = new RelayCommand<DestAnchorType>(e => this.Cut.JumpAnchor = e);
+        this.SetEmotionEffectCommand = new RelayCommand<EmotionEffect>(e => this.Cut.EmotionEffect = e);
         this.SetUnitMotionCommand = new RelayCommand<string>(this.OnSetUnitMotion);
         this.SetUnitNameStringCommand = new AsyncRelayCommand(this.OnSetUnitNameString);
-        this.SetTransitionEffectCommand = new RelayCommand<TransitionEffect>(this.OnSetTransitionEffect);
+        this.SetTransitionEffectCommand = new RelayCommand<TransitionEffect>(e => this.Cut.TransitionEffect = e);
         this.SetTransitionControlCommand = new RelayCommand<TransitionControl>(this.OnSetTransitionControl);
+        this.SetAutoHighlightCommand = new RelayCommand<CutsceneAutoHighlight>(e => this.Cut.AutoHighlight = e);
+        this.SetFilterTypeCommand = new RelayCommand<CutsceneFilterType>(e => this.Cut.FilterType = e);
+        this.SetCutsceneClearCommand = new RelayCommand<CutsceneClearType>(e => this.Cut.CutsceneClear = e);
 
         this.showUnitSection = true;
         this.showScreenSection = cut.HasScreenBoxData();
@@ -83,6 +86,9 @@ public sealed class VmCut : ObservableObject
     public ICommand SetUnitNameStringCommand { get; }
     public ICommand SetTransitionEffectCommand { get; }
     public ICommand SetTransitionControlCommand { get; }
+    public ICommand SetAutoHighlightCommand { get; }
+    public ICommand SetFilterTypeCommand { get; }
+    public ICommand SetCutsceneClearCommand { get; }
     public bool ShowUnitSection
     {
         get => this.showUnitSection;
@@ -224,16 +230,6 @@ public sealed class VmCut : ObservableObject
         this.Cut.Choices.Remove(target);
     }
 
-    private void OnSetAnchor(DestAnchorType type)
-    {
-        this.Cut.JumpAnchor = type;
-    }
-
-    private void OnSetEmotionEffect(EmotionEffect emotionEffect)
-    {
-        this.Cut.EmotionEffect = emotionEffect;
-    }
-
     private void OnSetUnitMotion(string? unitMotion)
     {
         this.Cut.UnitMotion = unitMotion;
@@ -255,11 +251,6 @@ public sealed class VmCut : ObservableObject
         {
             this.Cut.UnitNames.Add(token.Trim());
         }
-    }
-
-    private void OnSetTransitionEffect(TransitionEffect transitionEffect)
-    {
-        this.Cut.TransitionEffect = transitionEffect;
     }
 
     private void OnSetTransitionControl(TransitionControl transitionControl)

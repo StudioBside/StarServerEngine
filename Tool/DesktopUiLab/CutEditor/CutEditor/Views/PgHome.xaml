@@ -101,20 +101,34 @@
             </b:Interaction.Triggers>
         </ui:ListView>
 
-        <StackPanel Grid.Row="4"
-                    Margin="10"
-                    Orientation="Horizontal"
-                    HorizontalAlignment="Right">
+        <Grid Grid.Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-            <ui:Button Margin="0,0,10,0"
+            <StackPanel Grid.Column="0" Margin="10"
+                        Orientation="Horizontal">
+                <ui:Button Margin="0,0,10,0"
+                           Content="전체 검색"
+                           IsEnabled="False"/>
+            </StackPanel>
+
+            
+            <StackPanel Grid.Column="1" Margin="10"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right">
+
+                <ui:Button Margin="0,0,10,0"
                 Content="편집"
                 Command="{Binding StartEditCommand}"/>
 
-            <ui:Button Margin="0,0,10,0"
+                <ui:Button Margin="0,0,10,0"
                 Content="새 파일..."
                 Appearance="Primary"
                 Command="{Binding NewFileCommand}"/>
 
-        </StackPanel>
+            </StackPanel>
+        </Grid>
     </Grid>
 </Page>

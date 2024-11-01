@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
 using System.Text;
@@ -35,7 +34,7 @@ public sealed class Cut : ObservableObject
     private float bgCrashTime;
     private string? endBgmFileName;
     private string? endFxSoundName;
-    private string? cutsceneClear; // enum
+    private CutsceneClearType cutsceneClear;
     private string? bgFileName;
     private string? startBgmFileName;
     private string? startFxSoundName;
@@ -54,6 +53,9 @@ public sealed class Cut : ObservableObject
     private TransitionEffect? transitionEffect;
     private TransitionControl? transitionControl;
     private string? talkVoice;
+    private float bgChangeTime;
+    private CutsceneAutoHighlight autoHighlight;
+    private CutsceneFilterType filterType;
 
     public Cut(long uid)
     {
@@ -77,7 +79,7 @@ public sealed class Cut : ObservableObject
         this.bgCrashTime = token.GetFloat("BgCrashTime", 0f);
         this.endBgmFileName = token.GetString("EndBgmFileName", null!);
         this.endFxSoundName = token.GetString("EndFxSoundName", null!);
-        this.cutsceneClear = token.GetString("CutsceneClear", null!);
+        this.cutsceneClear = token.GetEnum("CutsceneClear", CutsceneClearType.NONE);
         this.bgFileName = token.GetString("BgFileName", null!);
         this.startBgmFileName = token.GetString("StartBgmFileName", null!);
         this.startFxSoundName = token.GetString("StartFxSoundName", null!);
@@ -96,6 +98,9 @@ public sealed class Cut : ObservableObject
         this.talkAppend = token.GetBool("TalkAppend", false);
         this.unitMotion = token.GetString("UnitMotion", null!);
         this.talkVoice = token.GetString("TalkVoice", null!);
+        this.bgChangeTime = token.GetFloat("BgChangeTime", 0f);
+        this.autoHighlight = token.GetEnum("AutoHighlight", CutsceneAutoHighlight.NONE);
+        this.filterType = token.GetEnum("FilterType", CutsceneFilterType.NONE);
         if (token.TryGetEnum<TransitionEffect>("TransitionEffect", out var transitionEffect))
         {
             this.transitionEffect = transitionEffect;
@@ -235,6 +240,36 @@ public sealed class Cut : ObservableObject
         set => this.SetProperty(ref this.bgFileName, value);
     }
 
+    public float BgChangeTime
+    {
+        get => this.bgChangeTime;
+        set => this.SetProperty(ref this.bgChangeTime, value);
+    }
+
+    public bool UnitQuickSet
+    {
+        get => this.unitQuickSet;
+        set => this.SetProperty(ref this.unitQuickSet, value);
+    }
+
+    public CutsceneAutoHighlight AutoHighlight
+    {
+        get => this.autoHighlight;
+        set => this.SetProperty(ref this.autoHighlight, value);
+    }
+
+    public CutsceneFilterType FilterType
+    {
+        get => this.filterType;
+        set => this.SetProperty(ref this.filterType, value);
+    }
+
+    public CutsceneClearType CutsceneClear
+    {
+        get => this.cutsceneClear;
+        set => this.SetProperty(ref this.cutsceneClear, value);
+    }
+
     public object ToOutputType()
     {
         var result = new CutOutputFormat
@@ -256,7 +291,7 @@ public sealed class Cut : ObservableObject
             BgFileName = this.bgFileName,
             StartBgmFileName = this.startBgmFileName,
             StartFxSoundName = this.startFxSoundName,
-            CutsceneClear = this.cutsceneClear,
+            CutsceneClear = EliminateEnum(this.cutsceneClear, CutsceneClearType.NONE),
             UnitStrId = this.unitStrId,
             UnitQuickSet = EliminateFalse(this.unitQuickSet),
             UnitPos = EliminateEnum(this.unitPos, CutsceneUnitPos.NONE),
@@ -274,6 +309,9 @@ public sealed class Cut : ObservableObject
             TransitionEffect = this.transitionEffect,
             TransitionControl = this.transitionControl,
             TalkVoice = this.talkVoice,
+            BgChangeTime = EliminateZero(this.bgChangeTime),
+            AutoHighlight = EliminateEnum(this.autoHighlight, CutsceneAutoHighlight.NONE),
+            FilterType = EliminateEnum(this.filterType, CutsceneFilterType.NONE),
         };
 
         if (this.jumpAnchor != DestAnchorType.None)
@@ -358,7 +396,8 @@ public sealed class Cut : ObservableObject
     {
         return this.transitionControl is not null ||
             this.TransitionEffect is not null ||
-            this.bgFileName is not null;
+            this.bgFileName is not null ||
+            this.filterType != CutsceneFilterType.NONE;
     }
 
     //// --------------------------------------------------------------------------------

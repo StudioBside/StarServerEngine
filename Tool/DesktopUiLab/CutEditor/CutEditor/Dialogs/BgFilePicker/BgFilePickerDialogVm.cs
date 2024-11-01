@@ -4,6 +4,7 @@ using System.Collections;
 using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CutEditor.Model;
+using CutEditor.Services;
 using Du.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -20,6 +21,7 @@ public partial class BgFilePickerDialogVm : ObservableObject
     {
         var filteredCollectionProvider = App.Current.Services.GetRequiredService<IFilteredCollectionProvider>();
 
+        ThumbnailMaker.UpdateAll();
         var imageList = AssetList.Instance.BgImageFiles.Select(e =>
         {
             var element = new ElementType(e) { Category = "Background" };

@@ -39,8 +39,9 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <!--<TextBlock Grid.Column="0" Grid.Row="0"
-                                       Text="{Binding Cut.JumpAnchor}"/>-->
+                <CheckBox Grid.Column="0" Grid.Row="0"
+                          Content="Quick" FlowDirection="RightToLeft"
+                          IsChecked="{Binding Cut.UnitQuickSet}"/>
 
                 <ui:Button Grid.Column="0" Grid.Row="1" Margin="0,0,10,0"
                                        Content="UnitNameString"
@@ -263,33 +264,65 @@
             </Grid>
 
             <!-- Grid 3 : 우측 버튼 배치 영역-->
-            <Grid VerticalAlignment="Top" Margin="10" HorizontalAlignment="Stretch">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+            <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-                <ui:Button Content="TalkVoice" Margin="0,0,10,0"
-                                       Command="{Binding PickVoiceCommand}"
-                                       ToolTip="{Binding Cut.TalkVoice}">
-                    <!--값이 없을 때는 한글 표기. 값이 있을때는 배경색을 다르게 표기-->
-                    <ui:Button.Style>
-                        <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
-                            <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Cut.TalkVoice}" Value="{x:Null}">
-                                    <Setter Property="Background" Value="White"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ui:Button.Style>
-                </ui:Button>
+                <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <ui:Button Content="TalkVoice" Margin="0,0,10,0"
+                               Command="{Binding PickVoiceCommand}"
+                               ToolTip="{Binding Cut.TalkVoice}">
+                        <!--값이 없을 때는 한글 표기. 값이 있을때는 배경색을 다르게 표기-->
+                        <ui:Button.Style>
+                            <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+                                <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Cut.TalkVoice}" Value="{x:Null}">
+                                        <Setter Property="Background" Value="White"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ui:Button.Style>
+                    </ui:Button>
 
-                <ui:Button Grid.Column="2" Content="삭제"
-                                           Appearance="Transparent"
-                                           Command="{Binding DataContext.DeletePickCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
-                                           CommandParameter="{Binding .}"/>
+                    <ui:Button Grid.Column="1" 
+                           Content="삭제"
+                           Appearance="Transparent"
+                           Command="{Binding DataContext.DeletePickCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                           CommandParameter="{Binding .}"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <!--AutoHighlight 설정 버튼-->
+                    <ui:DropDownButton>
+                        <!--값이 없을 때는 한글 표기. 값이 있을때는 배경색을 다르게 표기-->
+                        <ui:DropDownButton.Style>
+                            <Style TargetType="ui:DropDownButton" BasedOn="{StaticResource {x:Type ui:DropDownButton}}">
+                                <Setter Property="Content" Value="{Binding Cut.AutoHighlight}"/>
+                                <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Cut.AutoHighlight}" Value="{x:Static nkm:CutsceneAutoHighlight.NONE}">
+                                        <Setter Property="Content" Value="하이라이트"/>
+                                        <Setter Property="Background" Value="White"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ui:DropDownButton.Style>
+                        <ui:DropDownButton.Flyout>
+                            <ContextMenu ItemsSource="{Binding Source={extensions:EnumValues {x:Type nkm:CutsceneAutoHighlight}}}">
+                                <ContextMenu.ItemTemplate>
+                                    <DataTemplate>
+                                        <MenuItem Header="{Binding .}"
+                                                  Command="{Binding DataContext.SetAutoHighlightCommand, RelativeSource={RelativeSource AncestorType=ListViewItem}}"
+                                                  CommandParameter="{Binding .}"/>
+                                    </DataTemplate>
+                                </ContextMenu.ItemTemplate>
+                            </ContextMenu>
+                        </ui:DropDownButton.Flyout>
+                    </ui:DropDownButton>
+                </StackPanel>
             </Grid>
 
         </StackPanel>

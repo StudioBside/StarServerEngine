@@ -6,6 +6,7 @@ using System.Windows;
 using Cs.Logging;
 using Cs.Logging.Providers;
 using CutEditor.Dialogs;
+using CutEditor.Dialogs.BgFilePicker;
 using CutEditor.Model;
 using CutEditor.Model.Interfaces;
 using CutEditor.Services;
@@ -102,9 +103,10 @@ public partial class App : Application
         loader.Load();
 
         var assetList = this.Services.GetRequiredService<AssetList>();
-        Log.Debug($"#BgmFiles : {assetList.BgmFiles.Count}");
-        Log.Debug($"#SfxFiles : {assetList.SfxFiles.Count}");
-        Log.Debug($"#VoiceFiles : {assetList.VoiceFiles.Count}");
-        Log.Debug($"#BgImgFiles : {assetList.BgImageFiles.Count}");
+        if (Directory.Exists(ImageHelper.ThumbnailRoot) == false)
+        {
+            Log.Debug($"Creating thumbnail directory: {ImageHelper.ThumbnailRoot}");
+            ThumbnailMaker.UpdateAll();
+        }
     }
 }

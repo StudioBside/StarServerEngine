@@ -24,7 +24,7 @@ internal class CutOutputFormat
     public string? BgFileName { get; set; }
     public string? StartBgmFileName { get; set; }
     public string? StartFxSoundName { get; set; }
-    public string? CutsceneClear { get; set; }
+    public CutsceneClearType? CutsceneClear { get; set; }
     public string? UnitStrId { get; set; }
     public string[]? UnitNameString { get; set; }
     public string? CameraOffset { get; set; }
@@ -43,5 +43,8 @@ internal class CutOutputFormat
     public bool? TalkAppend { get; set; }
     public TransitionEffect? TransitionEffect { get; set; }
     public TransitionControl? TransitionControl { get; set; }
-    public string? TalkVoice { get; internal set; }
+    public string? TalkVoice { get; set; }
+    public float? BgChangeTime { get; set; }
+    public CutsceneAutoHighlight? AutoHighlight { get; set; }
+    public CutsceneFilterType? FilterType { get; set; }
 }
