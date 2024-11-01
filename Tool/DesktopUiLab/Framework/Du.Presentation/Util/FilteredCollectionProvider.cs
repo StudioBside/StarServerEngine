@@ -23,6 +23,7 @@ public sealed class FilteredCollectionProvider : IFilteredCollectionProvider
 
         public IEnumerable List => this.view;
         public int SourceCount => collection.Count;
+        public int FilteredCount => this.view.Count;
 
         public void Refresh(string searchKeyword)
         {

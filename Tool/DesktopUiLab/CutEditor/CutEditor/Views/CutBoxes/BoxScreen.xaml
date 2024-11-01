@@ -120,6 +120,10 @@
                 </TextBlock>
             </ui:Button>
 
+            <ContentPresenter Width="90"
+                              VerticalAlignment="Center"
+                              Content="{Binding Cut.BgFileName, Converter={lcvt:BgFileToPreviewConverter}}"/>
+
         </StackPanel>
     </Border>
     

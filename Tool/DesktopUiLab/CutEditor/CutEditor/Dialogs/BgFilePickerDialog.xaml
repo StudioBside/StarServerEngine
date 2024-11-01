@@ -5,12 +5,13 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    mc:Ignorable="d" 
     xmlns:local="clr-namespace:CutEditor.Dialogs"
+    xmlns:detail="clr-namespace:CutEditor.Dialogs.BgFilePicker"
     xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
     xmlns:ext="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
     xmlns:nkm="clr-namespace:NKM;assembly=CutEditor.Model"
     xmlns:extensions="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
-    mc:Ignorable="d" 
     d:DataContext="{d:DesignInstance Type=local:BgFilePickerDialog}"
     d:DesignHeight="450" d:DesignWidth="800"
     ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
@@ -27,12 +28,25 @@
     
     <Grid Width="900">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TabControl Grid.Row="0" Height="500">
+        <ui:TextBox Grid.Row="0"
+                    PlaceholderText="검색어 입력.."
+                    Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}"
+                    ext:FocusExtension.IsFocused="True"
+                    x:Name="SearchBox">
+            <ui:TextBox.Icon>
+                <ui:IconSourceElement>
+                    <ui:SymbolIconSource Symbol="Search12"/>
+                </ui:IconSourceElement>
+            </ui:TextBox.Icon>
+        </ui:TextBox>
+
+        <TabControl Grid.Row="1" Height="500">
 
             <!--png 이미지-->
             <TabItem>
@@ -45,7 +59,7 @@
                 </TabItem.Header>
                 <Grid>
                     <ui:ListView ItemsSource="{Binding ImageFiles}"
-                                 SelectedItem="{Binding Selected}"
+                                 SelectedItem="{Binding Selected, Converter={detail:SelectedToStringConverter}}"
                                  SelectionMode="Single" BorderBrush="LightGray">
                         <ListView.View>
                             <GridView>
@@ -56,6 +70,16 @@
                                                 <ui:Button Content="열기" Command="{Binding OpenFileCommand}" CommandParameter="{Binding}"/>
                                                 <ui:Button Content="탐색기" Command="{Binding OpenInExplorerCommand}" CommandParameter="{Binding}"/>
                                             </StackPanel>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Category" Width="Auto"
+                                    DisplayMemberBinding="{Binding Category}"/>
+                                <GridViewColumn Header="Thumbnail" Width="Auto">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ui:Image Source="{Binding ImageSource}"
+                                                      CornerRadius="5"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
@@ -76,7 +100,7 @@
                     </StackPanel>
                 </TabItem.Header>
                     <ui:ListView ItemsSource="{Binding Source={extensions:EnumValues {x:Type nkm:CURRENTTOWN}}}"
-                                 SelectedItem="{Binding Selected, Mode=TwoWay}"
+                                 SelectedItem="{Binding Selected, Converter={detail:SelectedToStringConverter}}"
                                  SelectionMode="Single" BorderBrush="LightGray">
                     <ListView.View>
                         <GridView>
@@ -98,7 +122,7 @@
                 </TabItem.Header>
                 <Grid>
                     <ui:ListView Grid.Row="1" ItemsSource="{Binding SlateFiles}"
-                                 SelectedItem="{Binding Selected}"
+                                 SelectedItem="{Binding Selected, Converter={detail:SelectedToStringConverter}}"
                                  SelectionMode="Single" BorderBrush="LightGray">
                         <ListView.View>
                             <GridView>
@@ -130,7 +154,7 @@
                 </TabItem.Header>
                 <Grid>
                     <ui:ListView Grid.Row="1" ItemsSource="{Binding SpineFiles}"
-                                 SelectedItem="{Binding Selected}"
+                                 SelectedItem="{Binding Selected, Converter={detail:SelectedToStringConverter}}"
                                  SelectionMode="Single" BorderBrush="LightGray">
                         <ListView.View>
                             <GridView>
@@ -162,7 +186,7 @@
                 </TabItem.Header>
                 <Grid>
                     <ui:ListView Grid.Row="1" ItemsSource="{Binding MovFiles}"
-                                 SelectedItem="{Binding Selected, Mode=OneWayToSource}"
+                                 SelectedItem="{Binding Selected, Converter={detail:SelectedToStringConverter}}"
                                  SelectionMode="Single" BorderBrush="LightGray">
                         <ListView.View>
                             <GridView>
@@ -186,19 +210,21 @@
 
         </TabControl>
 
-        <ui:InfoBar Grid.Row="1" Margin="0,10,0,0"
+        <ui:InfoBar Grid.Row="2" Margin="0,10,0,0"
                     x:Name="InfoBarWarning"
                     Severity="Warning"
                     Title="Note"
                     Message="에셋을 선택해야 합니다."
                     IsOpen="True"
-                    Visibility="Visible"/>
+                    Visibility="Collapsed"/>
 
-        <DockPanel Grid.Row="2" LastChildFill="True">
+        <!--선택된 값 미리 보여주는 영역-->
+        <DockPanel Grid.Row="3" LastChildFill="True">
             <ui:TextBlock Text="선택한 리소스 파일 이름 : "
                           VerticalAlignment="Center"
                           Margin="0,0,10,0"/>
-            <ui:TextBox Text="{Binding Selected, Mode=OneWay}"/>
+            <ui:TextBox IsReadOnly="True" 
+                        Text="{Binding Selected}" />
         </DockPanel>
 
     </Grid>

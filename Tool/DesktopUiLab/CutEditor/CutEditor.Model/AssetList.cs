@@ -11,6 +11,7 @@ public sealed class AssetList
     private readonly List<string> voiceFils = new();
     private readonly List<string> unitMotions = new();
     private readonly List<string> bgImageFiles = new();
+    private readonly List<string> storyImageFiles = new();
     private readonly List<string> movFiles = new();
     private readonly List<string> slateFiles = new();
     private readonly List<string> spineFiles = new();
@@ -79,7 +80,7 @@ public sealed class AssetList
         {
             foreach (var file in Directory.GetFiles(bgImage2Root, "*.png", SearchOption.AllDirectories))
             {
-                this.bgImageFiles.Add(file);
+                this.storyImageFiles.Add(file);
             }
         }
 
@@ -115,6 +116,7 @@ public sealed class AssetList
     public IReadOnlyList<string> VoiceFiles => this.voiceFils;
     public IReadOnlyList<string> UnitMotions => this.unitMotions;
     public IReadOnlyList<string> BgImageFiles => this.bgImageFiles;
+    public IReadOnlyList<string> StoryImageFiles => this.storyImageFiles;
     public IReadOnlyList<string> MovFiles => this.movFiles;
     public IReadOnlyList<string> SlateFiles => this.slateFiles;
     public IReadOnlyList<string> SpineFiles => this.spineFiles;
