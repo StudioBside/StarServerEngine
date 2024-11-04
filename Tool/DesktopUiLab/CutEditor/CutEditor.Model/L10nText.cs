@@ -1,10 +1,12 @@
 ﻿namespace CutEditor.Model;
 
+using System.Runtime.CompilerServices;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Cs.Core.Util;
 using Newtonsoft.Json.Linq;
 using Shared.Interfaces;
 using static CutEditor.Model.Enums;
+using static Shared.Templet.Enums;
 
 public sealed class L10nText : ObservableObject, ISearchable
 {
@@ -13,32 +15,34 @@ public sealed class L10nText : ObservableObject, ISearchable
     public string Korean
     {
         get => this.values[(int)L10nType.Korean];
-        set => this.values[(int)L10nType.Korean] = value;
+        set => this.SetAndNotify(L10nType.Korean, value);
     }
 
     public string English
     {
         get => this.values[(int)L10nType.English];
-        set => this.values[(int)L10nType.English] = value;
+        set => this.SetAndNotify(L10nType.English, value);
     }
 
     public string Japanese
     {
         get => this.values[(int)L10nType.Japanese];
-        set => this.values[(int)L10nType.Japanese] = value;
+        set => this.SetAndNotify(L10nType.Japanese, value);
     }
 
     public string ChineseSimplified
     {
         get => this.values[(int)L10nType.ChineseSimplified];
-        set => this.values[(int)L10nType.ChineseSimplified] = value;
+        set => this.SetAndNotify(L10nType.ChineseSimplified, value);
     }
 
     public string ChineseTraditional
     {
         get => this.values[(int)L10nType.ChineseTraditional];
-        set => this.values[(int)L10nType.ChineseTraditional] = value;
+        set => this.SetAndNotify(L10nType.ChineseTraditional, value);
     }
+
+    public bool HasData => this.values.Any(e => string.IsNullOrEmpty(e) == false);
 
     public bool IsTarget(string keyword)
     {
@@ -68,5 +72,13 @@ public sealed class L10nText : ObservableObject, ISearchable
     {
         return string.IsNullOrEmpty(this.values[(int)l10nType])
             ? null : this.values[(int)l10nType];
+    }
+
+    //// --------------------------------------------------------------------------------------------
+
+    private void SetAndNotify(L10nType l10nType, string value, [CallerMemberName] string? propertyName = null)
+    {
+        this.values[(int)l10nType] = value;
+        this.OnPropertyChanged(propertyName);
     }
 }

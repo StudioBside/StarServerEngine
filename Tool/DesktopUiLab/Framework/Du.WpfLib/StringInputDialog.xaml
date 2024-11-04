@@ -17,7 +17,7 @@
         <Style BasedOn="{StaticResource {x:Type ui:ContentDialog}}" TargetType="{x:Type local:StringInputDialog}" />
     </ui:ContentDialog.Resources>
 
-    <Grid>
+    <Grid MinWidth="500">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />

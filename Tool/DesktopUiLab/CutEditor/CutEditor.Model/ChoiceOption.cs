@@ -6,6 +6,7 @@ using Cs.Core.Util;
 using CutEditor.Model.Detail;
 using Newtonsoft.Json.Linq;
 using static CutEditor.Model.Enums;
+using static Shared.Templet.Enums;
 
 public sealed class ChoiceOption : ObservableObject
 {

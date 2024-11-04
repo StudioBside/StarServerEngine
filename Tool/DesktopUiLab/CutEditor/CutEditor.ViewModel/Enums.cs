@@ -11,9 +11,9 @@ public static class Enums
 {
     public enum CutDataType
     {
-        [Description("일반형")]
+        [Description("일반형 (Ctrl+1)")]
         Normal,
-        [Description("브랜치컷")]
+        [Description("브랜치컷 (Ctrl+2)")]
         Branch,
     }
 }

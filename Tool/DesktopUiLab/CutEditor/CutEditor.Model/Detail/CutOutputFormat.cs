@@ -47,4 +47,7 @@ internal class CutOutputFormat
     public float? BgChangeTime { get; set; }
     public CutsceneAutoHighlight? AutoHighlight { get; set; }
     public CutsceneFilterType? FilterType { get; set; }
+    public int? ArcpointId { get; set; }
+    public CutsceneSoundLoopControl? StartFxSoundLoopControl { get; set; }
+    public CutsceneSoundLoopControl? EndFxLoopControl { get; set; }
 }

@@ -9,7 +9,7 @@
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:lcvt="clr-namespace:CutEditor.Converters"
     xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
-    xmlns:nkm="clr-namespace:NKM;assembly=CutEditor.Model"
+    xmlns:nkm="clr-namespace:NKM;assembly=Shared.Templet"
     xmlns:extensions="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
     xmlns:models="clr-namespace:CutEditor.Model;assembly=CutEditor.Model"
     d:DesignHeight="450" d:DesignWidth="800">
@@ -113,8 +113,66 @@
                 </StackPanel>
             </ui:Button>
 
-            <ui:Button Margin="0,0,10,0" Content="Crash"/>
-            <ui:Button Margin="0,0,10,0" Content="Flash"/>
+            <ui:Flyout Placement="Top"
+                       VerticalAlignment="Top"
+                       IsOpen="{Binding ScreenCrashFlyoutOpen, Mode=TwoWay}">
+                <StackPanel Width="250">
+                    <Border BorderThickness="0.5" BorderBrush="Gray"
+                            CornerRadius="5" Padding="5" Margin="0,0,0,10">
+                        <StackPanel Orientation="Horizontal" Margin="5,0">
+                            <TextBlock Text="Flash : " VerticalAlignment="Center"
+                                       Width="50"/>
+                            <ui:NumberBox Width="50" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False"
+                                          Text="{Binding Cut.BgFlashBang}"/>
+                            <TextBlock Text=" Sec" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border BorderThickness="0.5" BorderBrush="Gray"
+                            CornerRadius="5" Padding="5" Margin="0,0,0,10">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <DockPanel Grid.Row="0" Margin="5,0,0,5" LastChildFill="True">
+                                <TextBlock Text="Crash : " VerticalAlignment="Center"
+                                           Width="50"/>
+                                <ui:NumberBox Width="50" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False"
+                                          Text="{Binding Cut.BgCrashTime}"/>
+                                <TextBlock Text=" Sec" VerticalAlignment="Center"/>
+
+                                <ui:NumberBox Width="50" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False"
+                                              HorizontalAlignment="Right"
+                                              Text="{Binding Cut.BgCrash}"/>
+                            </DockPanel>
+
+                            <Slider Grid.Row="1"
+                                    Value="{Binding Cut.BgCrash}" Maximum="1"/>
+                        </Grid>
+                    </Border>
+
+                    <ui:Button Appearance="Caution" Content="Clear"
+                               HorizontalAlignment="Right"
+                               Command="{Binding ClearScreenFlashCrashCommand}"/>
+                </StackPanel>
+            </ui:Flyout>
+
+            <ui:Button Margin="0,0,10,0" Content="Crash/Flash"
+                       Command="{Binding OpenScreenCrashFlyoutCommand}">
+                <!--값이 있을때는 배경색을 다르게 표기-->
+                <ui:Button.Style>
+                    <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+                        <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Cut.HasBgFlashCrashData}" Value="False">
+                                <Setter Property="Background" Value="White"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ui:Button.Style>
+            </ui:Button>
 
             <ui:Button Margin="0,0,10,0" Content="BG"
                        Command="{Binding PickBgFileNameCommand}"
@@ -122,7 +180,7 @@
                 <!--값이 있을때는 배경색을 다르게 표기-->
                 <ui:Button.Style>
                     <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
-                        <Setter Property="Background" Value="{StaticResource SoundBoxBrush}"/>
+                        <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Cut.BgFileName}" Value="{x:Null}">
                                 <Setter Property="Background" Value="White"/>
@@ -132,14 +190,6 @@
                 </ui:Button.Style>
             </ui:Button>
 
-            <ui:Button Margin="0,0,10,0">
-                <TextBlock TextAlignment="Center">
-                     <Run>BG</Run>
-                     <LineBreak/>
-                     <Run>제어</Run>
-                </TextBlock>
-            </ui:Button>
-
             <!--선택된 배경 파일 프리뷰-->
             <ContentPresenter Width="90"
                               VerticalAlignment="Center"
@@ -147,13 +197,40 @@
                               Content="{Binding Cut.BgFileName, Converter={lcvt:BgFileToPreviewConverter}}"/>
 
             <!--BgChangeTime-->
-            <StackPanel VerticalAlignment="Center"
+            <StackPanel VerticalAlignment="Center" Margin="0,0,10,0"
                         Orientation="Horizontal"
                         Visibility="{Binding Cut.BgFileName, Converter={converters:NullToVisibilityConverter}}">
                 <ui:TextBlock VerticalAlignment="Center" Text="전환시간 : "/>
                 <ui:TextBox Width="50"
                             Text="{Binding Cut.BgChangeTime}"/>
             </StackPanel>
+
+            <ui:Button Margin="0,0,10,0" Content="아크포인트"
+                       ToolTip="{Binding Cut.Arcpoint.Name}"
+                       Command="{Binding PickArcpointCommand}">
+                <!--값이 있을때는 배경색을 다르게 표기-->
+                <ui:Button.Style>
+                    <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+                        <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Cut.Arcpoint}" Value="{x:Null}">
+                                <Setter Property="Background" Value="White"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ui:Button.Style>
+            </ui:Button>
+
+            <ui:Button Margin="0,0,10,0" Content="슬레이트">
+            </ui:Button>
+
+            <ui:Button Margin="0,0,10,0">
+                <TextBlock TextAlignment="Center">
+                     <Run>BG</Run>
+                     <LineBreak/>
+                     <Run>제어</Run>
+                </TextBlock>
+            </ui:Button>
 
         </StackPanel>
     </Border>

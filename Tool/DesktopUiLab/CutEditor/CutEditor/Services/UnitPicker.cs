@@ -5,12 +5,12 @@ using CutEditor.Dialogs;
 using CutEditor.Model.Interfaces;
 using Wpf.Ui;
 
-internal sealed class UnitPicker(UnitPickerDialog dialog, IContentDialogService contentDialogService)
+internal sealed class UnitPicker(IContentDialogService contentDialogService)
     : IUnitPicker
 {
     public async Task<IUnitPicker.PickResult> PickUnit()
     {
-        dialog.DialogHost = contentDialogService.GetDialogHost();
+        var dialog = new UnitPickerDialog(contentDialogService.GetDialogHost());
         var result = await dialog.ShowAsync();
         return result switch
         {

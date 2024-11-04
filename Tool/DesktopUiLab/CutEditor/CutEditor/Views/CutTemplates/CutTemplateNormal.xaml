@@ -6,7 +6,7 @@
     xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
     xmlns:models="clr-namespace:CutEditor.Model;assembly=CutEditor.Model"
     xmlns:extensions="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
-    xmlns:nkm="clr-namespace:NKM;assembly=CutEditor.Model"
+    xmlns:nkm="clr-namespace:NKM;assembly=Shared.Templet"
     >
 
     <ResourceDictionary.MergedDictionaries>

@@ -9,7 +9,7 @@
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:lcvt="clr-namespace:CutEditor.Converters"
     xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
-    xmlns:nkm="clr-namespace:NKM;assembly=CutEditor.Model"
+    xmlns:nkm="clr-namespace:NKM;assembly=Shared.Templet"
     xmlns:extensions="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
     xmlns:models="clr-namespace:CutEditor.Model;assembly=CutEditor.Model"
     d:DesignHeight="450" d:DesignWidth="800">
@@ -161,13 +161,13 @@
                 </Grid.RowDefinitions>
 
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="120"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="120"/>
                 </Grid.ColumnDefinitions>
 
-                <ui:Button Grid.Column="0" Grid.Row="0"
-                                       Margin="0,0,0,5"
+                <ui:Button Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" 
+                                       Margin="0,0,5,5"
                                        Command="{Binding PickBgmACommand}"
                                        ToolTip="{Binding Cut.StartBgmFileName}">
                     <!--값이 있을때는 배경색을 다르게 표기-->
@@ -181,33 +181,67 @@
                             </Style.Triggers>
                         </Style>
                     </ui:Button.Style>
-                    <TextBlock TextAlignment="Center" FontSize="10">
-                                    <Run>BGM</Run>
-                                    <LineBreak/>
-                                    <Run>제어</Run>
-                    </TextBlock>
+                    <TextBlock TextAlignment="Center" Text="BGM 제어" />
                 </ui:Button>
 
-                <ui:Button Grid.Column="0" Grid.Row="1"
-                                       Command="{Binding PickSfxACommand}"
-                                       ToolTip="{Binding Cut.StartFxSoundName}">
-                    <!--값이 있을때는 배경색을 다르게 표기-->
-                    <ui:Button.Style>
-                        <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
-                            <Setter Property="Background" Value="{StaticResource SoundBoxBrush}"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Cut.StartFxSoundName}" Value="{x:Null}">
-                                    <Setter Property="Background" Value="White"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ui:Button.Style>
-                    <TextBlock TextAlignment="Center" FontSize="10">
-                                    <Run>FX</Run>
-                                    <LineBreak/>
-                                    <Run>제어</Run>
-                    </TextBlock>
-                </ui:Button>
+                <StackPanel Orientation="Horizontal"
+                            Grid.Column="0" Grid.Row="1">
+                    <ui:Button Margin="0,0,5,0"
+                               Command="{Binding PickSfxACommand}"
+                               ToolTip="{Binding Cut.StartFxSoundName}">
+                        <!--값이 있을때는 배경색을 다르게 표기-->
+                        <ui:Button.Style>
+                            <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+                                <Setter Property="Background" Value="{StaticResource SoundBoxBrush}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Cut.StartFxSoundName}" Value="{x:Null}">
+                                        <Setter Property="Background" Value="White"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ui:Button.Style>
+                        <TextBlock TextAlignment="Center" FontSize="10">
+                            <Run>FX</Run>
+                            <LineBreak/>
+                            <Run>제어</Run>
+                        </TextBlock>
+                    </ui:Button>
+                    
+                    <ui:DropDownButton ToolTip="{Binding Cut.StartFxLoopControl}">
+                        <!--값이 없을 때는 한글 표기. 값이 있을때는 배경색을 다르게 표기-->
+                        <ui:DropDownButton.Style>
+                            <Style TargetType="ui:DropDownButton" BasedOn="{StaticResource {x:Type ui:DropDownButton}}">
+                                <Setter Property="Content" Value="{Binding Cut.StartFxLoopControl, Converter={converters:EnumToParamConverter}, ConverterParameter=-.반복.정지}"/>
+                                <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Cut.StartFxLoopControl}" Value="{x:Static nkm:CutsceneSoundLoopControl.NONE}">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <TextBlock TextAlignment="Center" FontSize="10">
+                                                    <Run>FX</Run>
+                                                    <LineBreak/>
+                                                    <Run>반복</Run>                                   
+                                                </TextBlock>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="Background" Value="White"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ui:DropDownButton.Style>
+                        <ui:DropDownButton.Flyout>
+                            <ContextMenu ItemsSource="{Binding Source={extensions:EnumValues {x:Type nkm:CutsceneSoundLoopControl}}}">
+                                <ContextMenu.ItemTemplate>
+                                    <DataTemplate>
+                                        <MenuItem Header="{Binding .}"
+                                                  Command="{Binding DataContext.SetStartFxLoopCommand, RelativeSource={RelativeSource AncestorType=ListViewItem}}"
+                                                  CommandParameter="{Binding .}"/>
+                                    </DataTemplate>
+                                </ContextMenu.ItemTemplate>
+                            </ContextMenu>
+                        </ui:DropDownButton.Flyout>
+                    </ui:DropDownButton>
+                </StackPanel>
 
                 <Grid Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"
                                             Margin="0,0,10,0">
@@ -225,7 +259,7 @@
                                   Text="{Binding Cut.TalkTime}"/>
                 </Grid>
 
-                <ui:Button Grid.Column="2" Grid.Row="0"
+                <ui:Button Grid.Column="2" Grid.Row="0" HorizontalAlignment="Stretch"
                                        Margin="0,0,0,5"
                                        Command="{Binding PickBgmBCommand}"
                                        ToolTip="{Binding Cut.EndBgmFileName}">
@@ -240,33 +274,67 @@
                             </Style.Triggers>
                         </Style>
                     </ui:Button.Style>
-                    <TextBlock TextAlignment="Center" FontSize="10">
-                                    <Run>BGM</Run>
-                                    <LineBreak/>
-                                    <Run>제어</Run>
-                    </TextBlock>
+                    <TextBlock TextAlignment="Center" Text="BGM 제어" />
                 </ui:Button>
 
-                <ui:Button Grid.Column="2" Grid.Row="1"
-                                       Command="{Binding PickSfxBCommand}"
-                                       ToolTip="{Binding Cut.EndFxSoundName}">
-                    <!--값이 있을때는 배경색을 다르게 표기-->
-                    <ui:Button.Style>
-                        <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
-                            <Setter Property="Background" Value="{StaticResource SoundBoxBrush}"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Cut.EndFxSoundName}" Value="{x:Null}">
-                                    <Setter Property="Background" Value="White"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ui:Button.Style>
-                    <TextBlock TextAlignment="Center" FontSize="10">
+
+                <StackPanel Orientation="Horizontal"
+                            Grid.Column="2" Grid.Row="1">
+                    <ui:Button Margin="0,0,5,0" Command="{Binding PickSfxBCommand}"
+                               ToolTip="{Binding Cut.EndFxSoundName}">
+                        <!--값이 있을때는 배경색을 다르게 표기-->
+                        <ui:Button.Style>
+                            <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+                                <Setter Property="Background" Value="{StaticResource SoundBoxBrush}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Cut.EndFxSoundName}" Value="{x:Null}">
+                                        <Setter Property="Background" Value="White"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ui:Button.Style>
+                        <TextBlock TextAlignment="Center" FontSize="10">
                                     <Run>FX</Run>
                                     <LineBreak/>
                                     <Run>제어</Run>
-                    </TextBlock>
-                </ui:Button>
+                        </TextBlock>
+                    </ui:Button>
+
+                    <ui:DropDownButton ToolTip="{Binding Cut.EndFxLoopControl}">
+                        <!--값이 없을 때는 한글 표기. 값이 있을때는 배경색을 다르게 표기-->
+                        <ui:DropDownButton.Style>
+                            <Style TargetType="ui:DropDownButton" BasedOn="{StaticResource {x:Type ui:DropDownButton}}">
+                                <Setter Property="Content" Value="{Binding Cut.EndFxLoopControl, Converter={converters:EnumToParamConverter}, ConverterParameter=-.반복.정지}"/>
+                                <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Cut.EndFxLoopControl}" Value="{x:Static nkm:CutsceneSoundLoopControl.NONE}">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <TextBlock TextAlignment="Center" FontSize="10">
+                                        <Run>FX</Run>
+                                        <LineBreak/>
+                                        <Run>반복</Run>
+                                                </TextBlock>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="Background" Value="White"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ui:DropDownButton.Style>
+                        <ui:DropDownButton.Flyout>
+                            <ContextMenu ItemsSource="{Binding Source={extensions:EnumValues {x:Type nkm:CutsceneSoundLoopControl}}}">
+                                <ContextMenu.ItemTemplate>
+                                    <DataTemplate>
+                                        <MenuItem Header="{Binding .}"
+                                      Command="{Binding DataContext.SetEndFxLoopCommand, RelativeSource={RelativeSource AncestorType=ListViewItem}}"
+                                      CommandParameter="{Binding .}"/>
+                                    </DataTemplate>
+                                </ContextMenu.ItemTemplate>
+                            </ContextMenu>
+                        </ui:DropDownButton.Flyout>
+                    </ui:DropDownButton>
+                </StackPanel>
             </Grid>
 
             <!-- Grid 3 : 우측 버튼 배치 영역-->

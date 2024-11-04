@@ -19,14 +19,10 @@
             <Grid Margin="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
-                    <!--헤더. uid 및 체크박스 목록-->
                     <RowDefinition Height="Auto"/>
-                    <!--화면 박스-->
                     <RowDefinition Height="Auto"/>
-                    <!--유닛 박스-->
                 </Grid.RowDefinitions>
 
-                <!--컨트롤 표시 제어하는 체크박스 목록-->
                 <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5,0">
                     <TextBlock DockPanel.Dock="Left" Grid.Row="0" Grid.Column="0"
                                    VerticalAlignment="Center"
@@ -35,18 +31,26 @@
                             <Run Text="{Binding Cut.Uid, Mode=OneWay}" />
                     </TextBlock>
 
-                    <TextBlock Text="{Binding SummaryText}">
-                        <b:Interaction.Behaviors>
-                            <behaviors:TextBlockColorBehavior />
-                        </b:Interaction.Behaviors>
-                    </TextBlock>
-
-                    <Border BorderBrush="{StaticResource AnchorBrush}" BorderThickness="1" Margin="0" Padding="5"
+                    <Border BorderBrush="{StaticResource AnchorBrush}" BorderThickness="1"
+                            Margin="0,0,10,0" Padding="5"
                             CornerRadius="10"
                             Visibility="{Binding Cut.JumpAnchor, Converter={converters:EnumToCollapsedConverter}, ConverterParameter=None}">
                         <TextBlock VerticalAlignment="Center"
                                Text="{Binding Cut.JumpAnchor}" />
                     </Border>
+
+                    <TextBlock Margin="0,0,10,0"
+                               Foreground="Red"
+                               VerticalAlignment="Center"
+                               Text="{Binding Cut.CutsceneClear}"
+                               Visibility="{Binding Cut.CutsceneClear, Converter={converters:EnumToCollapsedConverter}, ConverterParameter=NONE}"/>
+
+                    <TextBlock VerticalAlignment="Center" 
+                               Text="{Binding SummaryText}">
+                        <b:Interaction.Behaviors>
+                            <behaviors:TextBlockColorBehavior />
+                        </b:Interaction.Behaviors>
+                    </TextBlock>
 
                 </StackPanel>
             </Grid>

@@ -1,12 +1,10 @@
 namespace Du.Presentation.Converters;
 
 using System;
-using System.ComponentModel;
 using System.Globalization;
-using System.Reflection;
 using System.Windows;
 
-public sealed class EnumDescriptionConverter : ConverterMarkupExtension<EnumDescriptionConverter>
+public sealed class EnumToParamConverter : ConverterMarkupExtension<EnumToParamConverter>
 {
     public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
@@ -15,15 +13,14 @@ public sealed class EnumDescriptionConverter : ConverterMarkupExtension<EnumDesc
             return DependencyProperty.UnsetValue;
         }
 
-        var field = value.GetType().GetField(value.ToString()!);
-        if (field is null)
+        var enumValue = (int)value;
+        var tokens = parameter?.ToString()?.Split('.');
+        if (tokens is null || tokens.Length < enumValue)
         {
             return DependencyProperty.UnsetValue;
         }
 
-        var attribute = field.GetCustomAttribute<DescriptionAttribute>();
-
-        return attribute == null ? value : attribute.Description;
+        return tokens[enumValue];
     }
 
     public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

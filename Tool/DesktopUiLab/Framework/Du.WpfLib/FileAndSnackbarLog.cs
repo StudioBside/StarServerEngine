@@ -59,7 +59,7 @@ public sealed class FileAndSnackbarLog : ILogProvider, IDisposable
     [DoesNotReturn]
     public void ErrorAndExit(string message)
     {
-        Console.WriteLine(message);
+        this.WriteLine($"[ERROR] {message}");
         Process.GetCurrentProcess().Kill();
         throw new Exception(message);
     }

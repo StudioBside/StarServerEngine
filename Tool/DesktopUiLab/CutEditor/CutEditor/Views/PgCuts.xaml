@@ -20,6 +20,10 @@
         <KeyBinding Key="Z" Modifiers="Control" Command="{Binding UndoCommand}"/>
         <KeyBinding Key="Y" Modifiers="Control" Command="{Binding RedoCommand}"/>
         <KeyBinding Key="S" Modifiers="Ctrl" Command="{Binding SaveCommand}"/>
+        <KeyBinding Key="D1" Modifiers="Ctrl" Command="{Binding NewCutCommand}"
+                    CommandParameter="{x:Static viewmodels:Enums+CutDataType.Normal}"/>
+        <KeyBinding Key="D2" Modifiers="Ctrl" Command="{Binding NewCutCommand}"
+                    CommandParameter="{x:Static viewmodels:Enums+CutDataType.Branch}"/>
     </Page.InputBindings>
     <b:Interaction.Behaviors>
         <behaviors:PageBehavior HandleClipboard="True"/>

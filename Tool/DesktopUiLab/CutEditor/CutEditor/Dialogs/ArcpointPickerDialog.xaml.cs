@@ -5,26 +5,27 @@ using System.Windows;
 using System.Windows.Controls;
 using Du.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+using NKM;
 using Shared.Templet.Base;
 using Shared.Templet.TempletTypes;
 using Wpf.Ui.Controls;
 
-public partial class UnitPickerDialog : ContentDialog
+public partial class ArcpointPickerDialog : ContentDialog
 {
     private readonly IFilteredCollection filteredList;
     private string searchKeyword = string.Empty;
 
-    public UnitPickerDialog(ContentPresenter? dialogHost) : base(dialogHost)
+    public ArcpointPickerDialog(ContentPresenter? dialogHost) : base(dialogHost)
     {
         this.DataContext = this;
 
-        var units = TempletContainer<Unit>.Values.Where(e => e.EnableForCutscene()).ToArray();
-        this.filteredList = App.Current.Services.GetRequiredService<IFilteredCollectionProvider>().Build(units);
+        var list = TempletContainer<LobbyItem>.Values.Where(e => e.SubType == NormalItemSubType.STN_ARCPOINT).ToArray();
+        this.filteredList = App.Current.Services.GetRequiredService<IFilteredCollectionProvider>().Build(list);
         this.InitializeComponent();
     }
 
     public IEnumerable FilteredFiles => this.filteredList.List;
-    public Unit? SelectedUnit { get; set; }
+    public LobbyItem? Selected { get; set; }
     public string SearchKeyword
     {
         get => this.searchKeyword;
@@ -35,7 +36,7 @@ public partial class UnitPickerDialog : ContentDialog
 
     protected override void OnButtonClick(ContentDialogButton button)
     {
-        if (button == ContentDialogButton.Primary && this.SelectedUnit is null)
+        if (button == ContentDialogButton.Primary && this.Selected is null)
         {
             this.InfoBarWarning.Visibility = Visibility.Visible;
             return;

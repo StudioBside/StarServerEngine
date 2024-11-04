@@ -25,6 +25,7 @@ public sealed class VmCut : ObservableObject
     private bool showScreenSection;
     private bool showCameraSection;
     private CutDataType dataType;
+    private bool screenCrashFlyoutOpen;
 
     public VmCut(Cut cut, IServiceProvider services)
     {
@@ -36,6 +37,7 @@ public sealed class VmCut : ObservableObject
 
         this.services = services;
         this.PickUnitCommand = new AsyncRelayCommand(this.OnPickUnit);
+        this.PickArcpointCommand = new AsyncRelayCommand(this.OnPickArcpoint);
         this.PickBgmACommand = new AsyncRelayCommand(this.OnPickBgmA);
         this.PickBgmBCommand = new AsyncRelayCommand(this.OnPickBgmB);
         this.PickSfxACommand = new AsyncRelayCommand(this.OnPickSfxA);
@@ -43,6 +45,7 @@ public sealed class VmCut : ObservableObject
         this.PickVoiceCommand = new AsyncRelayCommand(this.OnPickVoice);
         this.PickBgFileNameCommand = new AsyncRelayCommand(this.OnPickBgFileName);
         this.AddChoiceOptionCommand = new RelayCommand(this.OnAddChoiceOption, () => this.Cut.Choices.Count < 5);
+        this.EditChoiceOptionCommand = new AsyncRelayCommand<ChoiceOption>(this.OnEditchoiceOption);
         this.DeleteChoiceOptionCommand = new RelayCommand<ChoiceOption>(this.OnDeleteChoiceOption, _ => this.Cut.Choices.Count > 1);
         this.SetAnchorCommand = new RelayCommand<DestAnchorType>(e => this.Cut.JumpAnchor = e);
         this.SetEmotionEffectCommand = new RelayCommand<EmotionEffect>(e => this.Cut.EmotionEffect = e);
@@ -53,8 +56,12 @@ public sealed class VmCut : ObservableObject
         this.SetAutoHighlightCommand = new RelayCommand<CutsceneAutoHighlight>(e => this.Cut.AutoHighlight = e);
         this.SetFilterTypeCommand = new RelayCommand<CutsceneFilterType>(e => this.Cut.FilterType = e);
         this.SetCutsceneClearCommand = new RelayCommand<CutsceneClearType>(e => this.Cut.CutsceneClear = e);
+        this.OpenScreenCrashFlyoutCommand = new RelayCommand(() => this.ScreenCrashFlyoutOpen = true);
+        this.ClearScreenFlashCrashCommand = new RelayCommand(this.OnClearScreenFlashCrash);
+        this.SetStartFxLoopCommand = new RelayCommand<CutsceneSoundLoopControl>(e => this.Cut.StartFxLoopControl = e);
+        this.SetEndFxLoopCommand = new RelayCommand<CutsceneSoundLoopControl>(e => this.Cut.EndFxLoopControl = e);
 
-        this.showUnitSection = true;
+        this.showUnitSection = cut.HasUnitData();
         this.showScreenSection = cut.HasScreenBoxData();
 
         this.choiceUidGenerator = new(cut.Uid);
@@ -72,6 +79,7 @@ public sealed class VmCut : ObservableObject
 
     public Cut Cut { get; }
     public IRelayCommand PickUnitCommand { get; }
+    public ICommand PickArcpointCommand { get; }
     public ICommand PickBgmACommand { get; }
     public ICommand PickBgmBCommand { get; }
     public ICommand PickSfxACommand { get; }
@@ -79,6 +87,7 @@ public sealed class VmCut : ObservableObject
     public ICommand PickVoiceCommand { get; }
     public ICommand PickBgFileNameCommand { get; }
     public IRelayCommand AddChoiceOptionCommand { get; }
+    public ICommand EditChoiceOptionCommand { get; }
     public IRelayCommand DeleteChoiceOptionCommand { get; }
     public ICommand SetAnchorCommand { get; }
     public ICommand SetEmotionEffectCommand { get; }
@@ -89,6 +98,10 @@ public sealed class VmCut : ObservableObject
     public ICommand SetAutoHighlightCommand { get; }
     public ICommand SetFilterTypeCommand { get; }
     public ICommand SetCutsceneClearCommand { get; }
+    public ICommand OpenScreenCrashFlyoutCommand { get; }
+    public ICommand ClearScreenFlashCrashCommand { get; }
+    public ICommand SetStartFxLoopCommand { get; }
+    public ICommand SetEndFxLoopCommand { get; }
     public bool ShowUnitSection
     {
         get => this.showUnitSection;
@@ -115,6 +128,12 @@ public sealed class VmCut : ObservableObject
         set => this.SetProperty(ref this.dataType, value);
     }
 
+    public bool ScreenCrashFlyoutOpen
+    {
+        get => this.screenCrashFlyoutOpen;
+        set => this.SetProperty(ref this.screenCrashFlyoutOpen, value);
+    }
+
     //// --------------------------------------------------------------------------------------------
 
     private void Cut_PropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -136,6 +155,18 @@ public sealed class VmCut : ObservableObject
         }
 
         this.Cut.Unit = result.Unit;
+    }
+
+    private async Task OnPickArcpoint()
+    {
+        var picker = this.services.GetRequiredService<IArcpointPicker>();
+        var result = await picker.Pick();
+        if (result.IsCanceled)
+        {
+            return;
+        }
+
+        this.Cut.Arcpoint = result.Data;
     }
 
     private async Task OnPickBgmA()
@@ -263,5 +294,30 @@ public sealed class VmCut : ObservableObject
         }
 
         this.Cut.TransitionControl = transitionControl;
+    }
+
+    private async Task OnEditchoiceOption(ChoiceOption? target)
+    {
+        if (target is null)
+        {
+            throw new Exception($"remove target is null");
+        }
+
+        IUserInputProvider<string> userInputProvider = this.services.GetRequiredService<IUserInputProvider<string>>();
+        string defaultValue = target.Text.Korean;
+        var result = await userInputProvider.PromptAsync("선택지 텍스트를 입력하세요", "선택지 텍스트", defaultValue);
+        if (string.IsNullOrWhiteSpace(result))
+        {
+            return;
+        }
+
+        target.Text.Korean = result;
+    }
+
+    private void OnClearScreenFlashCrash()
+    {
+        this.Cut.BgFlashBang = 0f;
+        this.Cut.BgCrash = 0f;
+        this.Cut.BgCrashTime = 0f;
     }
 }

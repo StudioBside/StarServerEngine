@@ -10,7 +10,7 @@
     xmlns:detail="clr-namespace:CutEditor.Dialogs.BgFilePicker"
     xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
     xmlns:ext="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
-    xmlns:nkm="clr-namespace:NKM;assembly=CutEditor.Model"
+    xmlns:nkm="clr-namespace:NKM;assembly=Shared.Templet"
     xmlns:extensions="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
     d:DataContext="{d:DesignInstance Type=local:BgFilePickerDialog}"
     d:DesignHeight="450" d:DesignWidth="800"

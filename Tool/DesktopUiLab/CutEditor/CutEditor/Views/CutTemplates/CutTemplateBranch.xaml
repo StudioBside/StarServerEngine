@@ -52,10 +52,10 @@
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn Header="Uid" DisplayMemberBinding="{Binding UidString}" Width="Auto"/>
-                                <GridViewColumn Header="텍스트(Korean)" Width="Auto">
+                                <GridViewColumn Header="텍스트(Korean)" Width="500">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <TextBlock Text="{Binding Text.Korean}">
+                                            <TextBlock Text="{Binding Text.Korean, Mode=TwoWay}">
                                                 <!--<TextBlock.Effect>
                                                     <DropShadowEffect Color="Black" Direction="315" ShadowDepth="1" BlurRadius="0"/>
                                                 </TextBlock.Effect>-->
@@ -67,7 +67,7 @@
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>
                                 <!--<GridViewColumn Header="점프" DisplayMemberBinding="{Binding JumpAnchor}" Width="Auto"/>-->
-                                <GridViewColumn Header="앵커" Width="Auto">
+                                <GridViewColumn Header="앵커" Width="200">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <ComboBox 
@@ -87,7 +87,9 @@
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal">
-                                                <ui:Button Content="수정" Margin="10,0"/>
+                                                <ui:Button Content="수정" Margin="10,0"
+                                                           Command="{Binding DataContext.EditChoiceOptionCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                                           CommandParameter="{Binding .}"/>
                                                 <ui:Button Content="삭제"
                                                            Command="{Binding DataContext.DeleteChoiceOptionCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
                                                            CommandParameter="{Binding .}"/>

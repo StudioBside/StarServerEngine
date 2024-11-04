@@ -14,6 +14,7 @@ using NKM;
 using Shared.Templet.Base;
 using Shared.Templet.TempletTypes;
 using static CutEditor.Model.Enums;
+using static Shared.Templet.Enums;
 
 public sealed class Cut : ObservableObject
 {
@@ -39,7 +40,7 @@ public sealed class Cut : ObservableObject
     private string? startBgmFileName;
     private string? startFxSoundName;
     private EmotionEffect emotionEffect;
-    private string? unitStrId;
+    private string? unitStrId; // 로딩할 때만 쓰고, 변경이 있을 땐 쓰지 않음. 
     private Unit? unit;
     private bool unitQuickSet;
     private CutsceneUnitPos unitPos;
@@ -56,6 +57,10 @@ public sealed class Cut : ObservableObject
     private float bgChangeTime;
     private CutsceneAutoHighlight autoHighlight;
     private CutsceneFilterType filterType;
+    private int arcpointId; // 로딩할 때만 쓰고, 변경이 있을 땐 쓰지 않음.
+    private LobbyItem? arcpoint;
+    private CutsceneSoundLoopControl startFxLoopControl;
+    private CutsceneSoundLoopControl endFxLoopControl;
 
     public Cut(long uid)
     {
@@ -101,6 +106,9 @@ public sealed class Cut : ObservableObject
         this.bgChangeTime = token.GetFloat("BgChangeTime", 0f);
         this.autoHighlight = token.GetEnum("AutoHighlight", CutsceneAutoHighlight.NONE);
         this.filterType = token.GetEnum("FilterType", CutsceneFilterType.NONE);
+        this.arcpointId = token.GetInt32("ArcpointId", 0);
+        this.startFxLoopControl = token.GetEnum("StartFxLoopControl", CutsceneSoundLoopControl.NONE);
+        this.endFxLoopControl = token.GetEnum("EndFxLoopControl", CutsceneSoundLoopControl.NONE);
         if (token.TryGetEnum<TransitionEffect>("TransitionEffect", out var transitionEffect))
         {
             this.transitionEffect = transitionEffect;
@@ -129,6 +137,15 @@ public sealed class Cut : ObservableObject
             }
         }
 
+        if (this.arcpointId > 0)
+        {
+            this.arcpoint = TempletContainer<LobbyItem>.Find(this.arcpointId);
+            if (this.arcpoint is null)
+            {
+                Log.Error($"로비 아이템 템플릿을 찾을 수 없습니다. ArcpointId:{this.arcpointId}");
+            }
+        }
+
         // 컬렉션의 요소들이 변경될 때 UnitNames로 바인딩한 값들도 새로고침 하도록 알림 추가.
         this.unitNames.CollectionChanged += (s, e) => this.OnPropertyChanged(nameof(this.UnitNames));
     }
@@ -148,6 +165,12 @@ public sealed class Cut : ObservableObject
     {
         get => this.unit;
         set => this.SetProperty(ref this.unit, value);
+    }
+
+    public LobbyItem? Arcpoint
+    {
+        get => this.arcpoint;
+        set => this.SetProperty(ref this.arcpoint, value);
     }
 
     public CutsceneUnitPos UnitPos
@@ -270,6 +293,41 @@ public sealed class Cut : ObservableObject
         set => this.SetProperty(ref this.cutsceneClear, value);
     }
 
+    public float BgFlashBang
+    {
+        get => this.bgFlashBang;
+        set => this.SetProperty(ref this.bgFlashBang, value);
+    }
+
+    public float BgCrash
+    {
+        get => this.bgCrash;
+        set => this.SetProperty(ref this.bgCrash, value);
+    }
+
+    public float BgCrashTime
+    {
+        get => this.bgCrashTime;
+        set => this.SetProperty(ref this.bgCrashTime, value);
+    }
+
+    public bool HasBgFlashCrashData =>
+        this.bgFlashBang > 0f ||
+        this.bgCrash > 0f ||
+        this.bgCrashTime > 0f;
+
+    public CutsceneSoundLoopControl StartFxLoopControl
+    {
+        get => this.startFxLoopControl;
+        set => this.SetProperty(ref this.startFxLoopControl, value);
+    }
+
+    public CutsceneSoundLoopControl EndFxLoopControl
+    {
+        get => this.endFxLoopControl;
+        set => this.SetProperty(ref this.endFxLoopControl, value);
+    }
+
     public object ToOutputType()
     {
         var result = new CutOutputFormat
@@ -292,7 +350,7 @@ public sealed class Cut : ObservableObject
             StartBgmFileName = this.startBgmFileName,
             StartFxSoundName = this.startFxSoundName,
             CutsceneClear = EliminateEnum(this.cutsceneClear, CutsceneClearType.NONE),
-            UnitStrId = this.unitStrId,
+            UnitStrId = this.unit?.StrId,
             UnitQuickSet = EliminateFalse(this.unitQuickSet),
             UnitPos = EliminateEnum(this.unitPos, CutsceneUnitPos.NONE),
             CameraOffset = this.cameraOffset,
@@ -312,6 +370,9 @@ public sealed class Cut : ObservableObject
             BgChangeTime = EliminateZero(this.bgChangeTime),
             AutoHighlight = EliminateEnum(this.autoHighlight, CutsceneAutoHighlight.NONE),
             FilterType = EliminateEnum(this.filterType, CutsceneFilterType.NONE),
+            ArcpointId = this.arcpoint?.Id,
+            StartFxSoundLoopControl = EliminateEnum(this.startFxLoopControl, CutsceneSoundLoopControl.NONE),
+            EndFxLoopControl = EliminateEnum(this.endFxLoopControl, CutsceneSoundLoopControl.NONE),
         };
 
         if (this.jumpAnchor != DestAnchorType.None)
@@ -397,7 +458,24 @@ public sealed class Cut : ObservableObject
         return this.transitionControl is not null ||
             this.TransitionEffect is not null ||
             this.bgFileName is not null ||
-            this.filterType != CutsceneFilterType.NONE;
+            this.filterType != CutsceneFilterType.NONE ||
+            this.HasBgFlashCrashData;
+    }
+
+    public bool HasUnitData()
+    {
+        return this.UnitTalk.HasData ||
+            this.unitNames.Count > 0 ||
+            string.IsNullOrEmpty(this.StartBgmFileName) == false ||
+            string.IsNullOrEmpty(this.StartFxSoundName) == false ||
+            string.IsNullOrEmpty(this.EndBgmFileName) == false ||
+            string.IsNullOrEmpty(this.EndFxSoundName) == false ||
+            this.emotionEffect != EmotionEffect.NONE ||
+            this.unit is not null ||
+            this.unitPos != CutsceneUnitPos.NONE ||
+            string.IsNullOrEmpty(this.UnitMotion) == false ||
+            string.IsNullOrEmpty(this.TalkVoice) == false ||
+            this.autoHighlight != CutsceneAutoHighlight.NONE;
     }
 
     //// --------------------------------------------------------------------------------
@@ -408,8 +486,10 @@ public sealed class Cut : ObservableObject
 
         switch (e.PropertyName)
         {
-            case nameof(this.Unit):
-                this.ResetUnitStrId();
+            case nameof(this.BgFlashBang):
+            case nameof(this.BgCrash):
+            case nameof(this.BgCrashTime):
+                this.OnPropertyChanged(nameof(this.HasBgFlashCrashData));
                 break;
         }
     }
@@ -429,16 +509,5 @@ public sealed class Cut : ObservableObject
 
         // 데이터에는 RGBA 순서로 들어있고, 아래 생성자는 ARGB 순서로 받습니다.
         return Color.FromArgb(buffer[3], buffer[0], buffer[1], buffer[2]);
-    }
-
-    private void ResetUnitStrId()
-    {
-        if (this.unit is null)
-        {
-            this.unitStrId = string.Empty;
-            return;
-        }
-
-        this.unitStrId = this.unit.StrId;
     }
 }
