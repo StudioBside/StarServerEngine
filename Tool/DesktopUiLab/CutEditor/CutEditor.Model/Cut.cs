@@ -468,8 +468,10 @@ public sealed class Cut : ObservableObject
             this.unitNames.Count > 0 ||
             string.IsNullOrEmpty(this.StartBgmFileName) == false ||
             string.IsNullOrEmpty(this.StartFxSoundName) == false ||
+            this.startFxLoopControl != CutsceneSoundLoopControl.NONE ||
             string.IsNullOrEmpty(this.EndBgmFileName) == false ||
             string.IsNullOrEmpty(this.EndFxSoundName) == false ||
+            this.endFxLoopControl != CutsceneSoundLoopControl.NONE ||
             this.emotionEffect != EmotionEffect.NONE ||
             this.unit is not null ||
             this.unitPos != CutsceneUnitPos.NONE ||

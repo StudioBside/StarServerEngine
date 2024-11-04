@@ -221,7 +221,51 @@
                 </ui:Button.Style>
             </ui:Button>
 
-            <ui:Button Margin="0,0,10,0" Content="슬레이트">
+            <ui:Flyout Placement="Top"
+                       VerticalAlignment="Top"
+                       IsOpen="{Binding SlateFlyoutOpen, Mode=TwoWay}">
+                <StackPanel Width="320">
+                    <Border BorderThickness="0.5" BorderBrush="Gray" Padding="10" CornerRadius="5"
+                            Margin="0,0,0,10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="50"/>
+                                <RowDefinition Height="50"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"
+                                       Margin="0,0,10,0"
+                                       Text="ControlType :"/>
+                            <ComboBox Grid.Row="0" Grid.Column="1"
+                                      ItemsSource="{Binding Source={extensions:EnumValues {x:Type nkm:SlateControlType}}}"
+                                      SelectedItem="{Binding aa}"/>
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"
+                                       Text="Section No. :"/>
+                            <ui:NumberBox Grid.Row="1" Grid.Column="1" Width="100"
+                                          HorizontalAlignment="Left"
+                                          SpinButtonPlacementMode="Hidden"
+                                          ClearButtonEnabled="False"
+                                          Text="10"/>
+                        </Grid>
+                    </Border>
+
+                    <ui:Button HorizontalAlignment="Right"
+                               Appearance="Caution" Content="Clear" />
+                </StackPanel>
+            </ui:Flyout>
+            <ui:Button Margin="0,0,10,0"
+                       Command="{Binding OpenSlateFlyoutCommand}">
+                <TextBlock TextAlignment="Center">
+                    <Run>Slate</Run>
+                     <LineBreak/>
+                    <Run>제어</Run>
+                </TextBlock>
             </ui:Button>
 
             <ui:Button Margin="0,0,10,0">

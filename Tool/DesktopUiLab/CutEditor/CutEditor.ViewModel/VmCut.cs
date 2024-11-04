@@ -1,13 +1,11 @@
 ﻿namespace CutEditor.ViewModel;
 
 using System;
-using System.Collections;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Cs.Logging;
 using CutEditor.Model;
 using CutEditor.Model.Interfaces;
 using CutEditor.ViewModel.Detail;
@@ -26,6 +24,7 @@ public sealed class VmCut : ObservableObject
     private bool showCameraSection;
     private CutDataType dataType;
     private bool screenCrashFlyoutOpen;
+    private bool slateFlyoutOpen;
 
     public VmCut(Cut cut, IServiceProvider services)
     {
@@ -58,6 +57,8 @@ public sealed class VmCut : ObservableObject
         this.SetCutsceneClearCommand = new RelayCommand<CutsceneClearType>(e => this.Cut.CutsceneClear = e);
         this.OpenScreenCrashFlyoutCommand = new RelayCommand(() => this.ScreenCrashFlyoutOpen = true);
         this.ClearScreenFlashCrashCommand = new RelayCommand(this.OnClearScreenFlashCrash);
+        this.OpenSlateFlyoutCommand = new RelayCommand(() => this.SlateFlyoutOpen = true);
+        this.ClearSlateFlyoutCommand = new RelayCommand(this.OnClearSlateControl);
         this.SetStartFxLoopCommand = new RelayCommand<CutsceneSoundLoopControl>(e => this.Cut.StartFxLoopControl = e);
         this.SetEndFxLoopCommand = new RelayCommand<CutsceneSoundLoopControl>(e => this.Cut.EndFxLoopControl = e);
 
@@ -100,6 +101,8 @@ public sealed class VmCut : ObservableObject
     public ICommand SetCutsceneClearCommand { get; }
     public ICommand OpenScreenCrashFlyoutCommand { get; }
     public ICommand ClearScreenFlashCrashCommand { get; }
+    public ICommand OpenSlateFlyoutCommand { get; }
+    public ICommand ClearSlateFlyoutCommand { get; }
     public ICommand SetStartFxLoopCommand { get; }
     public ICommand SetEndFxLoopCommand { get; }
     public bool ShowUnitSection
@@ -132,6 +135,12 @@ public sealed class VmCut : ObservableObject
     {
         get => this.screenCrashFlyoutOpen;
         set => this.SetProperty(ref this.screenCrashFlyoutOpen, value);
+    }
+
+    public bool SlateFlyoutOpen
+    {
+        get => this.slateFlyoutOpen;
+        set => this.SetProperty(ref this.slateFlyoutOpen, value);
     }
 
     //// --------------------------------------------------------------------------------------------
@@ -319,5 +328,9 @@ public sealed class VmCut : ObservableObject
         this.Cut.BgFlashBang = 0f;
         this.Cut.BgCrash = 0f;
         this.Cut.BgCrashTime = 0f;
+    }
+
+    private void OnClearSlateControl()
+    {
     }
 }
