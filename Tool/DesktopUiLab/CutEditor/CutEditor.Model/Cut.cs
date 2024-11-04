@@ -61,6 +61,8 @@ public sealed class Cut : ObservableObject
     private LobbyItem? arcpoint;
     private CutsceneSoundLoopControl startFxLoopControl;
     private CutsceneSoundLoopControl endFxLoopControl;
+    private SlateControlType slateControlType;
+    private int slateSectionNo;
 
     public Cut(long uid)
     {
@@ -109,6 +111,8 @@ public sealed class Cut : ObservableObject
         this.arcpointId = token.GetInt32("ArcpointId", 0);
         this.startFxLoopControl = token.GetEnum("StartFxLoopControl", CutsceneSoundLoopControl.NONE);
         this.endFxLoopControl = token.GetEnum("EndFxLoopControl", CutsceneSoundLoopControl.NONE);
+        this.slateControlType = token.GetEnum("SlateControlType", SlateControlType.NONE);
+        this.slateSectionNo = token.GetInt32("SlateSectionNo", 0);
         if (token.TryGetEnum<TransitionEffect>("TransitionEffect", out var transitionEffect))
         {
             this.transitionEffect = transitionEffect;
@@ -328,6 +332,22 @@ public sealed class Cut : ObservableObject
         set => this.SetProperty(ref this.endFxLoopControl, value);
     }
 
+    public SlateControlType SlateControlType
+    {
+        get => this.slateControlType;
+        set => this.SetProperty(ref this.slateControlType, value);
+    }
+
+    public int SlateSectionNo
+    {
+        get => this.slateSectionNo;
+        set => this.SetProperty(ref this.slateSectionNo, value);
+    }
+
+    public bool HasSlateControlData =>
+        this.slateControlType != SlateControlType.NONE ||
+        this.slateSectionNo > 0;
+
     public object ToOutputType()
     {
         var result = new CutOutputFormat
@@ -373,6 +393,8 @@ public sealed class Cut : ObservableObject
             ArcpointId = this.arcpoint?.Id,
             StartFxSoundLoopControl = EliminateEnum(this.startFxLoopControl, CutsceneSoundLoopControl.NONE),
             EndFxLoopControl = EliminateEnum(this.endFxLoopControl, CutsceneSoundLoopControl.NONE),
+            SlateControlType = EliminateEnum(this.slateControlType, SlateControlType.NONE),
+            SlateSectionNo = EliminateZeroInt(this.slateSectionNo),
         };
 
         if (this.jumpAnchor != DestAnchorType.None)
@@ -404,6 +426,11 @@ public sealed class Cut : ObservableObject
             return Math.Abs(source) < 0.0001f
                 ? null
                 : source;
+        }
+
+        static int? EliminateZeroInt(int source)
+        {
+            return source > 0 ? source : null;
         }
 
         static bool? EliminateFalse(bool source)
@@ -492,6 +519,11 @@ public sealed class Cut : ObservableObject
             case nameof(this.BgCrash):
             case nameof(this.BgCrashTime):
                 this.OnPropertyChanged(nameof(this.HasBgFlashCrashData));
+                break;
+
+            case nameof(this.SlateControlType):
+            case nameof(this.SlateSectionNo):
+                this.OnPropertyChanged(nameof(this.HasSlateControlData));
                 break;
         }
     }

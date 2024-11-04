@@ -50,4 +50,7 @@ internal class CutOutputFormat
     public int? ArcpointId { get; set; }
     public CutsceneSoundLoopControl? StartFxSoundLoopControl { get; set; }
     public CutsceneSoundLoopControl? EndFxLoopControl { get; set; }
+
+    public SlateControlType? SlateControlType { get; set; }
+    public int? SlateSectionNo { get; set; }
 }

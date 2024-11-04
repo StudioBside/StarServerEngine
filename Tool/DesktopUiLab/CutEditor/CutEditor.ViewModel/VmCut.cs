@@ -332,5 +332,7 @@ public sealed class VmCut : ObservableObject
 
     private void OnClearSlateControl()
     {
+        this.Cut.SlateControlType = SlateControlType.NONE;
+        this.Cut.SlateSectionNo = 0;
     }
 }

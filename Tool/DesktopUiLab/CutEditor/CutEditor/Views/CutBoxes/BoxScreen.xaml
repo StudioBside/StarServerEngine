@@ -243,7 +243,7 @@
                                        Text="ControlType :"/>
                             <ComboBox Grid.Row="0" Grid.Column="1"
                                       ItemsSource="{Binding Source={extensions:EnumValues {x:Type nkm:SlateControlType}}}"
-                                      SelectedItem="{Binding aa}"/>
+                                      SelectedItem="{Binding Cut.SlateControlType, Mode=TwoWay}"/>
 
                             <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"
                                        Text="Section No. :"/>
@@ -251,16 +251,28 @@
                                           HorizontalAlignment="Left"
                                           SpinButtonPlacementMode="Hidden"
                                           ClearButtonEnabled="False"
-                                          Text="10"/>
+                                          Text="{Binding Cut.SlateSectionNo, Mode=TwoWay}"/>
                         </Grid>
                     </Border>
 
                     <ui:Button HorizontalAlignment="Right"
-                               Appearance="Caution" Content="Clear" />
+                               Appearance="Caution" Content="Clear" 
+                               Command="{Binding ClearSlateFlyoutCommand}"/>
                 </StackPanel>
             </ui:Flyout>
             <ui:Button Margin="0,0,10,0"
                        Command="{Binding OpenSlateFlyoutCommand}">
+                <!--값이 있을때는 배경색을 다르게 표기-->
+                <ui:Button.Style>
+                    <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+                        <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Cut.HasSlateControlData}" Value="False">
+                                <Setter Property="Background" Value="White"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ui:Button.Style>
                 <TextBlock TextAlignment="Center">
                     <Run>Slate</Run>
                      <LineBreak/>
