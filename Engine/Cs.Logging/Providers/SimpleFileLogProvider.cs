@@ -75,6 +75,12 @@ public sealed class SimpleFileLogProvider : ILogProvider, IDisposable
     public void ErrorAndExit(string message)
     {
         Console.WriteLine(message);
+
+        if (string.IsNullOrEmpty(this.fileStream.Name) == false && Console.IsInputRedirected == false)
+        {
+            Process.Start("notepad", this.fileStream.Name);
+        }
+
         Process.GetCurrentProcess().Kill();
         throw new Exception(message);
     }
