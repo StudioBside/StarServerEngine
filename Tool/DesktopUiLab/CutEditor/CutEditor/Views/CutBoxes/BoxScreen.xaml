@@ -100,17 +100,52 @@
                 </ui:DropDownButton.Flyout>
             </ui:DropDownButton>
 
-            <ui:Button Margin="0,0,10,0">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock TextAlignment="Center" Text="Fade 제어"
-                                Margin="0,0,20,0"/>
-                    <Rectangle Width="20" Height="20" Margin="0,0,10,0"
-                                Fill="White"/>
-                    <TextBlock TextAlignment="Center" Text="->"  Margin="0,0,10,0"
-                                VerticalAlignment="Center"/>
-                    <Rectangle Width="20" Height="20"
-                                Fill="Black"/>
-                </StackPanel>
+            <ui:Button Margin="0,0,10,0" Command="{Binding EditBgFadeCommand}"
+                       ToolTip="{Binding Cut.BgFadeInOut}">
+                <ui:Button.Style>
+                    <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+                        <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
+                        <Setter Property="Content">
+                            <Setter.Value>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock VerticalAlignment="Center" Margin="0,0,10,0"
+                                               Text="{Binding Cut.BgFadeInOut.FadeType}" />
+
+                                    <!--fadeout일 때 색상 하나를 숨기기 위해서 대상 그룸을 하나로 묶어줌-->
+                                    <StackPanel Orientation="Horizontal">
+                                        <StackPanel.Style>
+                                            <Style TargetType="StackPanel">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Cut.BgFadeInOut.FadeType}" Value="FadeOut">
+                                                        <Setter Property="Visibility" Value="Hidden"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Style>
+
+                                        <Rectangle Width="20" Height="20" Margin="0,0,10,0"
+                                               Fill="{Binding Cut.BgFadeInOut.StartColor,
+                                        Converter={converters:DrawingColorToBrushConverter}}"
+                                               StrokeThickness="0.5" Stroke="Black" />
+                                        <TextBlock VerticalAlignment="Center" Margin="0,0,10,0" Text="->" />
+                                    </StackPanel>
+                                    
+                                    <Rectangle Width="20" Height="20"
+                                               Fill="{Binding Cut.BgFadeInOut.EndColor,
+                                        Converter={converters:DrawingColorToBrushConverter}}"
+                                               StrokeThickness="0.5" Stroke="Black"/>
+                                </StackPanel>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Cut.BgFadeInOut}" Value="{x:Null}">
+                                <Setter Property="Background" Value="White"/>
+                                <Setter Property="Content" Value="Fade 효과 설정" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ui:Button.Style>
             </ui:Button>
 
             <ui:Flyout Placement="Top"

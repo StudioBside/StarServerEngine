@@ -25,11 +25,7 @@ public sealed class Cut : ObservableObject
     private string? cutsceneStrId;
     private bool waitClick = true;
     private float waitTime;
-    private Color? bgFadeInStartCol;
-    private Color? bgFadeInCol;
-    private float bgFadeInTime;
-    private Color? bgFadeOutCol;
-    private float bgFadeOutTime;
+    private BgFadeInOut? bgFadeInOut;
     private float bgFlashBang;
     private float bgCrash;
     private float bgCrashTime;
@@ -76,11 +72,7 @@ public sealed class Cut : ObservableObject
         this.cutsceneStrId = token.GetString("CutsceneStrId", null!);
         this.waitClick = token.GetBool("WaitClick", true);
         this.waitTime = token.GetFloat("WaitTime", 0f);
-        this.bgFadeInStartCol = LoadColor(token, "BgFadeInStartCol");
-        this.bgFadeInCol = LoadColor(token, "BgFadeInCol");
-        this.bgFadeInTime = token.GetFloat("BgFadeInTime", 0f);
-        this.bgFadeOutCol = LoadColor(token, "BgFadeOutCol");
-        this.bgFadeOutTime = token.GetFloat("BgFadeOutTime", 0f);
+        this.bgFadeInOut = BgFadeInOut.Create(token);
         this.bgFlashBang = token.GetFloat("BgFlashBang", 0f);
         this.bgCrash = token.GetFloat("BgCrash", 0f);
         this.bgCrashTime = token.GetFloat("BgCrashTime", 0f);
@@ -99,7 +91,7 @@ public sealed class Cut : ObservableObject
         this.unitTalk.Load(token, "UnitTalk");
         this.talkTime = token.GetFloat("TalkTime", 0f);
         this.unitStrId = token.GetString("UnitStrId", null!);
-        this.talkPositionControl = LoadColor(token, "TalkPositionControl");
+        this.talkPositionControl = JsonLoadHelper.LoadColor(token, "TalkPositionControl");
         token.TryGetArray("JumpAnchorData", this.choices, ChoiceOption.Load);
         token.TryGetArray("UnitNameString", this.unitNames);
         this.talkAppend = token.GetBool("TalkAppend", false);
@@ -348,6 +340,12 @@ public sealed class Cut : ObservableObject
         this.slateControlType != SlateControlType.NONE ||
         this.slateSectionNo > 0;
 
+    public BgFadeInOut? BgFadeInOut
+    {
+        get => this.bgFadeInOut;
+        set => this.SetProperty(ref this.bgFadeInOut, value);
+    }
+
     public object ToOutputType()
     {
         var result = new CutOutputFormat
@@ -357,14 +355,9 @@ public sealed class Cut : ObservableObject
             CutsceneStrId = this.cutsceneStrId,
             WaitClick = this.waitClick,
             WaitTime = this.waitTime,
-            BgFadeInStartCol = ConvertColor(this.bgFadeInStartCol),
-            BgFadeInCol = ConvertColor(this.bgFadeInCol),
-            BgFadeInTime = EliminateZero(this.bgFadeInTime),
-            BgFadeOutCol = ConvertColor(this.bgFadeOutCol),
-            BgFadeOutTime = EliminateZero(this.bgFadeOutTime),
-            BgFlashBang = EliminateZero(this.bgFlashBang),
-            BgCrash = EliminateZero(this.bgCrash),
-            BgCrashTime = EliminateZero(this.bgCrashTime),
+            BgFlashBang = CutOutputFormat.EliminateZero(this.bgFlashBang),
+            BgCrash = CutOutputFormat.EliminateZero(this.bgCrash),
+            BgCrashTime = CutOutputFormat.EliminateZero(this.bgCrashTime),
             EndBgmFileName = this.endBgmFileName,
             BgFileName = this.bgFileName,
             StartBgmFileName = this.startBgmFileName,
@@ -380,14 +373,14 @@ public sealed class Cut : ObservableObject
             UnitTalk_ENG = this.unitTalk.AsNullable(L10nType.English),
             UnitTalk_JPN = this.unitTalk.AsNullable(L10nType.Japanese),
             UnitTalk_CHN = this.unitTalk.AsNullable(L10nType.ChineseSimplified),
-            TalkTime = EliminateZero(this.talkTime),
-            TalkPositionControl = ConvertColor(this.talkPositionControl),
+            TalkTime = CutOutputFormat.EliminateZero(this.talkTime),
+            TalkPositionControl = CutOutputFormat.ConvertColor(this.talkPositionControl),
             TalkAppend = EliminateFalse(this.talkAppend),
             UnitMotion = this.unitMotion,
             TransitionEffect = this.transitionEffect,
             TransitionControl = this.transitionControl,
             TalkVoice = this.talkVoice,
-            BgChangeTime = EliminateZero(this.bgChangeTime),
+            BgChangeTime = CutOutputFormat.EliminateZero(this.bgChangeTime),
             AutoHighlight = EliminateEnum(this.autoHighlight, CutsceneAutoHighlight.NONE),
             FilterType = EliminateEnum(this.filterType, CutsceneFilterType.NONE),
             ArcpointId = this.arcpoint?.Id,
@@ -396,6 +389,8 @@ public sealed class Cut : ObservableObject
             SlateControlType = EliminateEnum(this.slateControlType, SlateControlType.NONE),
             SlateSectionNo = EliminateZeroInt(this.slateSectionNo),
         };
+
+        this.bgFadeInOut?.WriteTo(result);
 
         if (this.jumpAnchor != DestAnchorType.None)
         {
@@ -421,13 +416,6 @@ public sealed class Cut : ObservableObject
 
         return result;
 
-        static float? EliminateZero(float source)
-        {
-            return Math.Abs(source) < 0.0001f
-                ? null
-                : source;
-        }
-
         static int? EliminateZeroInt(int source)
         {
             return source > 0 ? source : null;
@@ -441,21 +429,6 @@ public sealed class Cut : ObservableObject
         static T? EliminateEnum<T>(T source, T defaultValue) where T : struct, Enum
         {
             return source.Equals(defaultValue) ? null : source;
-        }
-
-        static int[]? ConvertColor(Color? color)
-        {
-            if (color is null)
-            {
-                return null;
-            }
-
-            return [
-                color.Value.R,
-                color.Value.G,
-                color.Value.B,
-                color.Value.A
-            ];
         }
     }
 
@@ -526,22 +499,5 @@ public sealed class Cut : ObservableObject
                 this.OnPropertyChanged(nameof(this.HasSlateControlData));
                 break;
         }
-    }
-
-    private static Color? LoadColor(JToken token, string key)
-    {
-        var buffer = new List<int>();
-        if (token.TryGetArray(key, buffer) == false)
-        {
-            return null;
-        }
-
-        if (buffer.Count != 4)
-        {
-            return null;
-        }
-
-        // 데이터에는 RGBA 순서로 들어있고, 아래 생성자는 ARGB 순서로 받습니다.
-        return Color.FromArgb(buffer[3], buffer[0], buffer[1], buffer[2]);
     }
 }

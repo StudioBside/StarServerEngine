@@ -61,6 +61,7 @@ public sealed class VmCut : ObservableObject
         this.ClearSlateFlyoutCommand = new RelayCommand(this.OnClearSlateControl);
         this.SetStartFxLoopCommand = new RelayCommand<CutsceneSoundLoopControl>(e => this.Cut.StartFxLoopControl = e);
         this.SetEndFxLoopCommand = new RelayCommand<CutsceneSoundLoopControl>(e => this.Cut.EndFxLoopControl = e);
+        this.EditBgFadeCommand = new AsyncRelayCommand(this.OnEditBgFade);
 
         this.showUnitSection = cut.HasUnitData();
         this.showScreenSection = cut.HasScreenBoxData();
@@ -105,6 +106,7 @@ public sealed class VmCut : ObservableObject
     public ICommand ClearSlateFlyoutCommand { get; }
     public ICommand SetStartFxLoopCommand { get; }
     public ICommand SetEndFxLoopCommand { get; }
+    public ICommand EditBgFadeCommand { get; }
     public bool ShowUnitSection
     {
         get => this.showUnitSection;
@@ -334,5 +336,18 @@ public sealed class VmCut : ObservableObject
     {
         this.Cut.SlateControlType = SlateControlType.NONE;
         this.Cut.SlateSectionNo = 0;
+    }
+
+    private async Task OnEditBgFade()
+    {
+        var editor = this.services.GetRequiredService<IModelEditor<BgFadeInOut>>();
+        var result = await editor.EditAsync(this.Cut.BgFadeInOut);
+
+        if (result.IsCanceled)
+        {
+            return;
+        }
+
+        this.Cut.BgFadeInOut = result.Data;
     }
 }

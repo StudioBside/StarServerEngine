@@ -1,5 +1,6 @@
 ﻿namespace CutEditor.Model.Detail;
 
+using System.Drawing;
 using NKM;
 using static CutEditor.Model.Enums;
 
@@ -53,4 +54,26 @@ internal class CutOutputFormat
 
     public SlateControlType? SlateControlType { get; set; }
     public int? SlateSectionNo { get; set; }
+    
+    internal static float? EliminateZero(float source)
+    {
+        return Math.Abs(source) < 0.0001f
+            ? null
+            : source;
+    }
+
+    internal static int[]? ConvertColor(Color? color)
+    {
+        if (color is null)
+        {
+            return null;
+        }
+
+        return [
+            color.Value.R,
+            color.Value.G,
+            color.Value.B,
+            color.Value.A
+        ];
+    }
 }

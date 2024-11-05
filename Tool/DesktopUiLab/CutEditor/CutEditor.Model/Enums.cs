@@ -62,4 +62,10 @@ public static class Enums
         IN,
         OUT,
     }
+
+    public enum BgFadeType
+    {
+        FadeIn,
+        FadeOut,
+    }
 }

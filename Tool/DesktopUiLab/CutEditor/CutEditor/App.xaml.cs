@@ -59,6 +59,7 @@ public partial class App : Application
         services.AddKeyedTransient<IAssetPicker, SfxPicker>("sfx");
         services.AddKeyedTransient<IAssetPicker, VoicePicker>("voice");
         services.AddKeyedTransient<IAssetPicker, BgFilePicker>("bgFile");
+        services.AddTransient<IModelEditor<BgFadeInOut>, BgFadeEditor>();
         services.AddScoped<UndoController>();
 
         services.AddTransient<IUserInputProvider<string>, StringInputProvider>();
