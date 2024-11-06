@@ -10,31 +10,6 @@
     mc:Ignorable="d" 
     d:DesignHeight="450" d:DesignWidth="800">
 
-    <UserControl.Resources>
-        <!-- 바둑판 무늬 DrawingBrush 정의 -->
-        <DrawingBrush x:Key="CheckerboardBrush" TileMode="Tile" Viewport="0,0,15,15" ViewportUnits="Absolute">
-            <DrawingBrush.Drawing>
-                <DrawingGroup>
-                    <GeometryDrawing Brush="LightGray">
-                        <GeometryDrawing.Geometry>
-                            <RectangleGeometry Rect="0,0,10,10" />
-                        </GeometryDrawing.Geometry>
-                    </GeometryDrawing>
-                    <GeometryDrawing Brush="White">
-                        <GeometryDrawing.Geometry>
-                            <RectangleGeometry Rect="0,0,5,5" />
-                        </GeometryDrawing.Geometry>
-                    </GeometryDrawing>
-                    <GeometryDrawing Brush="White">
-                        <GeometryDrawing.Geometry>
-                            <RectangleGeometry Rect="5,5,5,5" />
-                        </GeometryDrawing.Geometry>
-                    </GeometryDrawing>
-                </DrawingGroup>
-            </DrawingBrush.Drawing>
-        </DrawingBrush>
-    </UserControl.Resources>
-
     <StackPanel HorizontalAlignment="Center"
                 Visibility="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=local:ColorEditor},
         Converter={converters:BoolToVisibilityConverter}}">
@@ -45,7 +20,7 @@
                     Stroke="Gray"/>
 
             <Ellipse Width="180" Height="180"
-                     Fill="{Binding Rgb, Converter={converters:ColorToBrushConverter}}"
+                     Fill="{Binding Color, Converter={converters:ColorToBrushConverter}}"
                      Opacity="{Binding Alpha}"
                      StrokeThickness="1"
                      Stroke="Gray"/>
@@ -53,8 +28,30 @@
 
         <StackPanel Orientation="Horizontal"
                     Margin="0,0,0,10">
-            <TextBlock VerticalAlignment="Center" Width="50" Text="Preset : "/>
-            <ui:DropDownButton/>
+            <ui:DropDownButton Width="190" Content="Preset">
+                <ui:DropDownButton.Flyout>
+                    <ContextMenu ItemsSource="{Binding Palette}">
+                        <ContextMenu.ItemTemplate>
+                            <DataTemplate>
+                                <MenuItem
+                                    Command="{Binding DataContext.SetColorCommand, RelativeSource={RelativeSource AncestorType=local:ColorEditor}}"
+                                    CommandParameter="{Binding .}">
+                                    <MenuItem.Header>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock VerticalAlignment="Center"
+                                                       Margin="0,0,10,0"
+                                                       Text="{Binding .}"/>
+                                            <Border Width="60" Height="25"
+                                                CornerRadius="4"
+                                                Background="{Binding ., Converter={converters:ColorToBrushConverter}}"/>
+                                        </StackPanel>
+                                    </MenuItem.Header>
+                                </MenuItem>
+                            </DataTemplate>
+                        </ContextMenu.ItemTemplate>
+                    </ContextMenu>
+                </ui:DropDownButton.Flyout>
+            </ui:DropDownButton>
         </StackPanel>
 
 
@@ -62,8 +59,8 @@
                     Margin="0,0,0,10">
             <TextBlock VerticalAlignment="Center" Width="50" Text="Alpha : "/>
             <ui:NumberBox SpinButtonPlacementMode="Hidden"
-                            ClearButtonEnabled="False"
-                            Width="80"
+                          ClearButtonEnabled="False"
+                          Width="80"
                           Text="{Binding Alpha, StringFormat=F2}"/>
         </StackPanel>
 

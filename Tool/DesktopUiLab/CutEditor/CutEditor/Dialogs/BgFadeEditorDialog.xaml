@@ -12,14 +12,16 @@
     xmlns:ext="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
     mc:Ignorable="d" 
     xmlns:extensions="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
-    d:DataContext="{d:DesignInstance Type=local:BgFadeEditorDialog}"
+    d:DataContext="{d:DesignInstance Type=models:BgFadeInOut}"
     d:DesignHeight="450" d:DesignWidth="800"
     ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
     ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     Title="배경 Fade In / Out 설정"
     PrimaryButtonText="결정"
+    SecondaryButtonText="비우기"
     CloseButtonText="취소"
-    IsPrimaryButtonEnabled="True">
+    IsPrimaryButtonEnabled="True"
+    IsSecondaryButtonEnabled="True">
 
     <ui:ContentDialog.Resources>
         <Style BasedOn="{StaticResource {x:Type ui:ContentDialog}}" TargetType="{x:Type local:BgFadeEditorDialog}" />
@@ -49,17 +51,12 @@
             <TextBlock VerticalAlignment="Center" Text="Type : "/>
             <ComboBox Width="150" Margin="0,0,30,0"
                       ItemsSource="{Binding Source={extensions:EnumValues {x:Type models:Enums+BgFadeType}}}"
-                      SelectedItem="{Binding Data.FadeType}">
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding .}"/>
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
+                      SelectedItem="{Binding FadeType}">
             </ComboBox>
 
             <TextBlock VerticalAlignment="Center" Text="Time : "/>
-            <ui:NumberBox Width="100" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False"
-                          Text="{Binding Data.Time}"/>
+            <TextBox Width="90"
+                          Text="{Binding Time, Mode=TwoWay}"/>
         </StackPanel>
         
 

@@ -2,8 +2,13 @@
 
 using System.ComponentModel;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Cs.Logging;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using DrawingColor = System.Drawing.Color;
 
 public partial class ColorEditor : UserControl
@@ -18,14 +23,13 @@ public partial class ColorEditor : UserControl
 
     public void Initialize(DrawingColor modelColor, bool isEnabled)
     {
-        var color = Color.FromArgb(modelColor.A, modelColor.R, modelColor.G, modelColor.B);
-        this.viewModel.SetColor(color);
+        this.viewModel.Color = Color.FromArgb(modelColor.A, modelColor.R, modelColor.G, modelColor.B);
         this.IsEnabled = isEnabled;
     }
 
     public DrawingColor GetDrawingColor()
     {
-        var color = this.viewModel.GetColor();
+        var color = this.viewModel.Color;
         return DrawingColor.FromArgb(color.A, color.R, color.G, color.B);
     }
 
@@ -33,42 +37,59 @@ public partial class ColorEditor : UserControl
 
     private sealed class Vm : ObservableObject
     {
-        private Color rgb;
-        private float alpha;
+        private readonly List<Color> palette = new();
+        private Color color;
         private bool guardReEnter;
 
-        public Color Rgb => this.rgb;
+        public Vm()
+        {
+            var config = App.Current.Services.GetRequiredService<IConfiguration>();
+            foreach (var data in config.GetSection("ColorPalette").GetChildren())
+            {
+                if (data.Value is not null)
+                {
+                    var color = (Color)ColorConverter.ConvertFromString(data.Value);
+                    this.palette.Add(color);
+                }
+            }
+
+            this.SetColorCommand = new RelayCommand<Color>(color => this.Color = color);
+        }
+
+        public IList<Color> Palette => this.palette;
+
+        public Color Color
+        {
+            get => this.color;
+            set => this.SetProperty(ref this.color, value);
+        }
 
         public float Alpha
         {
-            get => this.alpha;
-            set => this.SetProperty(ref this.alpha, value);
+            get => this.color.ScA;
+            set
+            {
+                this.color = Color.FromArgb((byte)(value * 255), this.color.R, this.color.G, this.color.B);
+                this.OnPropertyChanged();
+            }
         }
+
+        public ICommand SetColorCommand { get; }
 
         public string ColorKey
         {
-            get => this.GetColor().ToString().Substring(startIndex: 1);
-            set => this.SetColor((Color)ColorConverter.ConvertFromString("#" + value));
-        }
-
-        public void SetColor(Color color)
-        {
-            this.rgb = color;
-            color.A = 255;
-
-            this.alpha = color.A / 255f;
-            this.OnPropertyChanged(nameof(this.ColorKey));
-        }
-
-        public Color GetColor()
-        {
-            return new Color
+            get => this.color.ToString().Substring(startIndex: 1);
+            set
             {
-                R = this.rgb.R,
-                G = this.rgb.G,
-                B = this.rgb.B,
-                A = (byte)(this.alpha * 255),
-            };
+                try
+                {
+                    this.Color = (Color)ColorConverter.ConvertFromString("#" + value);
+                }
+                catch (Exception ex)
+                {
+                    Log.Warn(ex.Message);
+                }
+            }
         }
 
         //// --------------------------------------------------------------------------------------------
@@ -86,14 +107,19 @@ public partial class ColorEditor : UserControl
 
             switch (e.PropertyName)
             {
+                case nameof(this.Color):
+                    this.OnPropertyChanged(nameof(this.Alpha));
+                    this.OnPropertyChanged(nameof(this.ColorKey));
+                    break;
+
                 case nameof(this.ColorKey):
                     this.OnPropertyChanged(nameof(this.Alpha));
-                    this.OnPropertyChanged(nameof(this.Rgb));
+                    this.OnPropertyChanged(nameof(this.Color));
                     break;
 
                 case nameof(this.Alpha):
                     this.OnPropertyChanged(nameof(this.ColorKey));
-                    this.OnPropertyChanged(nameof(this.Rgb));
+                    this.OnPropertyChanged(nameof(this.Color));
                     break;
             }
 

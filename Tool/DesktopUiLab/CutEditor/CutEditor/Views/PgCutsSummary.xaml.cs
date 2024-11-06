@@ -2,11 +2,12 @@
 
 using System.Windows.Controls;
 using CutEditor.ViewModel;
+using Du.Core.Util;
 using Microsoft.Extensions.DependencyInjection;
 
-public sealed partial class PgCuts : Page
+public sealed partial class PgCutsSummary : Page
 {
-    public PgCuts()
+    public PgCutsSummary()
     {
         this.InitializeComponent();
         this.DataContext = App.Current.Services.GetRequiredService<VmCuts>();

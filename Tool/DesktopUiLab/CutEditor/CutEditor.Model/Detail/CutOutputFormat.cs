@@ -13,10 +13,10 @@ internal class CutOutputFormat
     public DestAnchorType? RewardAnchor { get; set; }
     public bool WaitClick { get; set; }
     public float WaitTime { get; set; }
-    public int[]? BgFadeInStartCol { get; set; }
-    public int[]? BgFadeInCol { get; set; }
+    public float[]? BgFadeInStartCol { get; set; }
+    public float[]? BgFadeInCol { get; set; }
     public float? BgFadeInTime { get; set; }
-    public int[]? BgFadeOutCol { get; set; }
+    public float[]? BgFadeOutCol { get; set; }
     public float? BgFadeOutTime { get; set; }
     public float? BgFlashBang { get; set; }
     public float? BgCrash { get; set; }
@@ -39,7 +39,7 @@ internal class CutOutputFormat
     public string? UnitTalk_JPN { get; set; }
     public string? UnitTalk_CHN { get; set; }
     public float? TalkTime { get; set; }
-    public int[]? TalkPositionControl { get; set; }
+    public float[]? TalkPositionControl { get; set; }
     public ChoiceOutputFormat[]? JumpAnchorData { get; set; }
     public bool? TalkAppend { get; set; }
     public TransitionEffect? TransitionEffect { get; set; }
@@ -62,7 +62,7 @@ internal class CutOutputFormat
             : source;
     }
 
-    internal static int[]? ConvertColor(Color? color)
+    internal static float[]? ConvertColor(Color? color)
     {
         if (color is null)
         {
@@ -70,10 +70,10 @@ internal class CutOutputFormat
         }
 
         return [
-            color.Value.R,
-            color.Value.G,
-            color.Value.B,
-            color.Value.A
+            color.Value.R / 255f,
+            color.Value.G / 255f,
+            color.Value.B / 255f,
+            color.Value.A / 255f
         ];
     }
 }

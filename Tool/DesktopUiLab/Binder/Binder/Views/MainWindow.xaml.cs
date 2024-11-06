@@ -3,6 +3,7 @@
 using System.ComponentModel;
 using System.Windows;
 using Binder.ViewModel;
+using Microsoft.Extensions.DependencyInjection;
 using Wpf.Ui;
 
 public partial class MainWindow : Window
@@ -13,9 +14,9 @@ public partial class MainWindow : Window
         this.LoadWindowState();
 
         var services = App.Current.Services;
-        this.DataContext = services.GetServiceNotNull<VmMain>();
+        this.DataContext = services.GetRequiredService<VmMain>();
 
-        var dialogservice = services.GetServiceNotNull<IContentDialogService>();
+        var dialogservice = services.GetRequiredService<IContentDialogService>();
         dialogservice.SetDialogHost(this.RootContentDialog);
     }
 

@@ -3,7 +3,7 @@
 using System.ComponentModel;
 using System.Windows;
 using CutEditor.ViewModel;
-using Du.Core.Util;
+using Microsoft.Extensions.DependencyInjection;
 using Wpf.Ui;
 
 public partial class MainWindow : Window
@@ -14,12 +14,12 @@ public partial class MainWindow : Window
         this.LoadWindowState();
 
         var services = App.Current.Services;
-        this.DataContext = services.GetServiceNotNull<VmMain>();
+        this.DataContext = services.GetRequiredService<VmMain>();
 
-        var dialogService = services.GetServiceNotNull<IContentDialogService>();
+        var dialogService = services.GetRequiredService<IContentDialogService>();
         dialogService.SetDialogHost(this.RootContentDialog);
 
-        var snackbarService = services.GetServiceNotNull<ISnackbarService>();
+        var snackbarService = services.GetRequiredService<ISnackbarService>();
         snackbarService.SetSnackbarPresenter(this.SnackbarPresenter);
     }
 

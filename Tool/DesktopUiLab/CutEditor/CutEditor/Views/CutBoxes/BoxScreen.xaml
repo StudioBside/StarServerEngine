@@ -109,7 +109,7 @@
                             <Setter.Value>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock VerticalAlignment="Center" Margin="0,0,10,0"
-                                               Text="{Binding Cut.BgFadeInOut.FadeType}" />
+                                               Text="{Binding Cut.BgFadeInOut.ButtonText}" />
 
                                     <!--fadeout일 때 색상 하나를 숨기기 위해서 대상 그룸을 하나로 묶어줌-->
                                     <StackPanel Orientation="Horizontal">

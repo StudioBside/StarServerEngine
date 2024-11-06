@@ -1,6 +1,5 @@
 ﻿namespace CutEditor.ViewModel;
 
-using System.Collections;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
@@ -42,7 +41,7 @@ public sealed class VmCuts : VmPageBase,
     public VmCuts(IConfiguration config, IServiceProvider services)
     {
         this.serviceScope = services.CreateScope();
-        this.undoController = this.serviceScope.ServiceProvider.GetServiceNotNull<UndoController>();
+        this.undoController = this.serviceScope.ServiceProvider.GetRequiredService<UndoController>();
         this.services = services;
         this.BackCommand = new RelayCommand(this.OnBack);
         this.SaveCommand = new AsyncRelayCommand(this.OnSave);

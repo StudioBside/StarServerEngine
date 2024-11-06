@@ -40,6 +40,8 @@ public sealed class BgFadeInOut : ObservableObject
         set => this.SetProperty(ref this.time, value);
     }
 
+    public string ButtonText => $"{this.fadeType.ToString().Substring(4)} {this.time:0.##}";
+
     public static BgFadeInOut? Create(JToken token)
     {
         var time = token.GetFloat("BgFadeInTime", 0f);
@@ -76,7 +78,16 @@ public sealed class BgFadeInOut : ObservableObject
 
     public override string ToString()
     {
-        return $"{this.FadeType} {this.Time} {this.StartColor} {this.EndColor}";
+        // color to hex
+        var startColor = this.StartColor.ToArgb().ToString("X");
+        var endColor = this.EndColor.ToArgb().ToString("X");
+
+        return this.fadeType switch
+        {
+            BgFadeType.FadeIn => $"{this.FadeType} {this.Time}초 {startColor} -> {endColor}",
+            BgFadeType.FadeOut => $"{this.FadeType} {this.Time}초 {endColor}",
+            _ => $"invalid type:{this.FadeType}",
+        };
     }
 
     internal void WriteTo(CutOutputFormat output)
@@ -103,11 +114,8 @@ public sealed class BgFadeInOut : ObservableObject
         switch (e.PropertyName)
         {
             case nameof(this.FadeType):
-                if (this.FadeType == BgFadeType.FadeIn)
-                {
-                    this.StartColor = Color.White;
-                }
-
+            case nameof(this.Time):
+                this.OnPropertyChanged(nameof(this.ButtonText));
                 break;
         }
     }
