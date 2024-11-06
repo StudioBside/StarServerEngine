@@ -459,7 +459,10 @@ public sealed class Cut : ObservableObject
             this.TransitionEffect is not null ||
             this.bgFileName is not null ||
             this.filterType != CutsceneFilterType.NONE ||
-            this.HasBgFlashCrashData;
+            this.HasBgFlashCrashData ||
+            this.HasSlateControlData ||
+            this.bgFadeInOut is not null ||
+            this.bgChangeTime > 0f;
     }
 
     public bool HasUnitData()

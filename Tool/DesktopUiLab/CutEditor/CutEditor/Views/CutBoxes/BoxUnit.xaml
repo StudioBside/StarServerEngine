@@ -361,11 +361,6 @@
                         </ui:Button.Style>
                     </ui:Button>
 
-                    <ui:Button Grid.Column="1" 
-                           Content="삭제"
-                           Appearance="Transparent"
-                           Command="{Binding DataContext.DeletePickCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
-                           CommandParameter="{Binding .}"/>
                 </StackPanel>
 
                 <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center">

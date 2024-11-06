@@ -14,16 +14,8 @@ public sealed class ElementType : ISearchable
 
     public ElementType(string fileName)
     {
-        if (string.IsNullOrWhiteSpace(fileName))
-        {
-            this.fullPath = string.Empty;
-            this.FileNameOnly = string.Empty;
-        }
-        else
-        {
-            this.fullPath = Path.GetFullPath(fileName);
-            this.FileNameOnly = Path.GetFileName(fileName);
-        }
+        this.fullPath = Path.GetFullPath(fileName);
+        this.FileNameOnly = Path.GetFileName(fileName);
 
         this.OpenFileCommand = new RelayCommand(() =>
         {

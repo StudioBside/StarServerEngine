@@ -108,6 +108,9 @@
                 <ui:Button Margin="3" Content="목록으로"
                            Icon="{ui:SymbolIcon ArrowStepBack16}"
                            Command="{Binding BackCommand}"/>
+                <ui:Button Margin="3" Content="파일 열기"
+                           Icon="{ui:SymbolIcon Code16}"
+                           Command="{Binding OpenFileCommand}"/>
                 <ui:Button Margin="3" Content="저장하기" Appearance="Primary"
                            Icon="{ui:SymbolIcon Save16}"
                            Command="{Binding SaveCommand}"/>

@@ -2,6 +2,7 @@
 
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Text;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
@@ -45,6 +46,7 @@ public sealed class VmCuts : VmPageBase,
         this.services = services;
         this.BackCommand = new RelayCommand(this.OnBack);
         this.SaveCommand = new AsyncRelayCommand(this.OnSave);
+        this.OpenFileCommand = new RelayCommand(this.OnOpenFile);
         this.DeleteCommand = new RelayCommand(this.OnDelete, () => this.selectedCuts.Count > 0);
         this.NewCutCommand = new RelayCommand<CutDataType>(this.OnNewCut);
         this.DeletePickCommand = new RelayCommand<VmCut>(this.OnDeletePick);
@@ -69,14 +71,14 @@ public sealed class VmCuts : VmPageBase,
             this.Title = $"{param.CutScene.Title} - {this.name}";
         }
 
-        var textFilePath = this.GetTextFilePath();
-        if (File.Exists(textFilePath) == false)
+        var textFileName = this.GetTextFileName();
+        if (File.Exists(textFileName) == false)
         {
-            Log.Debug($"cutscene file not found: {textFilePath}");
+            Log.Debug($"cutscene file not found: {textFileName}");
             return;
         }
 
-        var json = JsonUtil.Load(textFilePath);
+        var json = JsonUtil.Load(textFileName);
         json.GetArray("Data", this.cuts, (e, i) =>
         {
             var cut = new Cut(e);
@@ -99,6 +101,7 @@ public sealed class VmCuts : VmPageBase,
     public ICommand RedoCommand => this.undoController.RedoCommand;
     public ICommand BackCommand { get; }
     public ICommand SaveCommand { get; }
+    public ICommand OpenFileCommand { get; }
     public IRelayCommand DeleteCommand { get; } // 현재 (멀티)선택한 대상을 모두 삭제
     public ICommand NewCutCommand { get; }
     public ICommand DeletePickCommand { get; } // 인자로 넘어오는 1개의 cut을 삭제
@@ -184,7 +187,7 @@ public sealed class VmCuts : VmPageBase,
         ////await Task.Delay(3000);
         await Task.Delay(0);
 
-        var textFilePath = this.GetTextFilePath();
+        var textFilePath = this.GetTextFileName();
         if (P4Commander.TryCreate(out var p4Commander) == false)
         {
             Log.Error($"{this.DebugName} P4Commander 객체 생성 실패");
@@ -243,7 +246,7 @@ public sealed class VmCuts : VmPageBase,
         }
 
         // -------------------------- save binary file --------------------------
-        var binFilePath = this.GetBinFilePath();
+        var binFilePath = this.GetBinFileName();
         if (OutProcess.Run(this.packetExeFile, $"\"{textFilePath}\" \"{binFilePath}\"", out string result) == false)
         {
             Log.Error($"{this.DebugName} binary 파일 생성 실패.\result:{result}");
@@ -334,8 +337,21 @@ public sealed class VmCuts : VmPageBase,
         this.undoController.Add(command);
     }
 
-    private string GetTextFilePath() => Path.Combine(this.textFilePath, $"CLIENT_{this.name}.exported");
-    private string GetBinFilePath() => Path.Combine(this.binFilePath, $"CLIENT_{this.name}.bytes");
+    private string GetTextFileName() => Path.Combine(this.textFilePath, $"CLIENT_{this.name}.exported");
+    private string GetBinFileName() => Path.Combine(this.binFilePath, $"CLIENT_{this.name}.bytes");
+
+    private void OnOpenFile()
+    {
+        var fileName = this.GetTextFileName();
+        if (File.Exists(fileName) == false)
+        {
+            Log.Error($"{this.DebugName} 파일이 존재하지 않습니다.\n{fileName}");
+            return;
+        }
+
+        var fullPath = Path.GetFullPath(fileName);
+        Process.Start(new ProcessStartInfo(fullPath) { UseShellExecute = true });
+    }
 
     public sealed record CrateParam
     {

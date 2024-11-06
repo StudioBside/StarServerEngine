@@ -112,6 +112,10 @@
                                    Visibility="{Binding Cut.TalkAppend, Converter={converters:BoolToVisibilityConverter}}"/>
                         </Canvas>
                         <CheckBox Content="TalkAppend" IsChecked="{Binding Cut.TalkAppend}"/>
+
+                        <Button Content="X"
+                                Command="{Binding DataContext.DeletePickCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                CommandParameter="{Binding .}"/>
                     </StackPanel>
                 </DockPanel>
 
