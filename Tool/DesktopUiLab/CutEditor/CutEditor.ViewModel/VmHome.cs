@@ -26,7 +26,8 @@ public sealed class VmHome : VmPageBase
         this.Title = "컷신 목록";
         this.services = services;
         this.filteredList = services.GetRequiredService<IFilteredCollectionProvider>().Build(this.cutScenes);
-        this.StartEditCommand = new RelayCommand(this.OnStartEdit, () => this.selectedCutScene is not null);
+        this.EditSelectedCommand = new RelayCommand(this.OnEditSelected, () => this.selectedCutScene is not null);
+        this.EditPickedCommand = new RelayCommand<CutScene>(this.OnEditPicked);
         this.NewFileCommand = new AsyncRelayCommand(this.OnNewFile);
     }
 
@@ -45,7 +46,8 @@ public sealed class VmHome : VmPageBase
         set => this.SetProperty(ref this.searchKeyword, value);
     }
 
-    public IRelayCommand StartEditCommand { get; }
+    public IRelayCommand EditSelectedCommand { get; }
+    public IRelayCommand EditPickedCommand { get; }
     public ICommand NewFileCommand { get; }
 
     public void AddCutScenes(IEnumerable<CutScene> cutScenes)
@@ -72,20 +74,32 @@ public sealed class VmHome : VmPageBase
                 break;
 
             case nameof(this.SelectedCutScene):
-                this.StartEditCommand.NotifyCanExecuteChanged();
+                this.EditSelectedCommand.NotifyCanExecuteChanged();
                 break;
         }
     }
 
-    private void OnStartEdit()
+    private void OnEditSelected()
     {
         if (this.selectedCutScene is null)
         {
-            Log.Error($"{nameof(this.OnStartEdit)}: SelectedCutScene is null");
+            Log.Error($"{nameof(this.OnEditSelected)}: SelectedCutScene is null");
             return;
         }
    
         VmGlobalState.Instance.ReserveVmCuts(new VmCuts.CrateParam { CutScene = this.selectedCutScene });
+        WeakReferenceMessenger.Default.Send(new NavigationMessage("Views/PgCuts.xaml"));
+    }
+
+    private void OnEditPicked(CutScene? scene)
+    {
+        if (scene is null)
+        {
+            Log.Error($"argument is null");
+            return;
+        }
+
+        VmGlobalState.Instance.ReserveVmCuts(new VmCuts.CrateParam { CutScene = scene });
         WeakReferenceMessenger.Default.Send(new NavigationMessage("Views/PgCuts.xaml"));
     }
 

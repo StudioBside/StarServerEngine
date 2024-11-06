@@ -111,6 +111,9 @@
                 <ui:Button Margin="3" Content="파일 열기"
                            Icon="{ui:SymbolIcon Code16}"
                            Command="{Binding OpenFileCommand}"/>
+                <ui:Button Margin="3" Content="이름 복사"
+                           Icon="{ui:SymbolIcon Copy16}"
+                           Command="{Binding CopyFileNameCommand}"/>
                 <ui:Button Margin="3" Content="저장하기" Appearance="Primary"
                            Icon="{ui:SymbolIcon Save16}"
                            Command="{Binding SaveCommand}"/>
@@ -123,6 +126,7 @@
         <!--메인 영역 : 컷 리스트-->
         <ui:ListView Grid.Row="2" ItemsSource="{Binding Cuts}"
                      AllowDrop="True"
+                     VirtualizingPanel.VirtualizationMode="Recycling"
                      ItemTemplate="{StaticResource SwitchableTemplet}"
                      SelectionMode="Extended"
                      extensions:ListViewExtensions.SelectedValues="{Binding SelectedCuts}">

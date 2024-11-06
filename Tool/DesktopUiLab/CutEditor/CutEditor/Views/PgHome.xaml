@@ -17,7 +17,7 @@
     d:DesignWidth="800"
     mc:Ignorable="d">
     <Page.InputBindings>
-        <KeyBinding Key="Return" Command="{Binding StartEditCommand}"/>
+        <KeyBinding Key="Return" Command="{Binding EditSelectedCommand}"/>
     </Page.InputBindings>
 
     <Grid Margin="10">
@@ -90,12 +90,25 @@
                         Header="필터"
                         Width="Auto"
                         DisplayMemberBinding="{Binding CutsceneFilter}"/>
+                    <GridViewColumn Header="작업" Width="Auto">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <ui:Button Content="편집" Margin="10,0"
+                                               Command="{Binding DataContext.EditPickedCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                               CommandParameter="{Binding .}"/>
+                                    <ui:Button Content="읽기" Margin="10,0"
+                                               />
+                                </StackPanel>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                 </GridView>
             </ListView.View>
             <b:Interaction.Triggers>
                 <b:EventTrigger EventName="MouseDoubleClick">
                     <b:InvokeCommandAction 
-                        Command="{Binding StartEditCommand}"
+                        Command="{Binding EditSelectedCommand}"
                         CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=ListView}}"/>
                 </b:EventTrigger>
             </b:Interaction.Triggers>
@@ -121,7 +134,7 @@
 
                 <ui:Button Margin="0,0,10,0"
                 Content="편집"
-                Command="{Binding StartEditCommand}"/>
+                Command="{Binding EditSelectedCommand}"/>
 
                 <ui:Button Margin="0,0,10,0"
                 Content="새 파일..."

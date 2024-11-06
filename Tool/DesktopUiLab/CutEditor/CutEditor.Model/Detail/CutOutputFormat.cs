@@ -39,7 +39,7 @@ internal class CutOutputFormat
     public string? UnitTalk_JPN { get; set; }
     public string? UnitTalk_CHN { get; set; }
     public float? TalkTime { get; set; }
-    public string[]? TalkPositionControl { get; set; }
+    public TalkPositionControlType? TalkPositionControl { get; set; }
     public ChoiceOutputFormat[]? JumpAnchorData { get; set; }
     public bool? TalkAppend { get; set; }
     public TransitionEffect? TransitionEffect { get; set; }
@@ -54,6 +54,7 @@ internal class CutOutputFormat
 
     public SlateControlType? SlateControlType { get; set; }
     public int? SlateSectionNo { get; set; }
+    public string? AmbientSound { get; set; }
 
     internal static float? EliminateZero(float source)
     {

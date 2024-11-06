@@ -70,6 +70,7 @@ public partial class App : Application
         services.AddTransient<ICollectionEditor, CollectionEditor>();
         services.AddTransient<IFilteredCollectionProvider, FilteredCollectionProvider>();
         services.AddTransient<IUserWaitingNotifier, WaitingNotifierDialog>();
+        services.AddTransient<IClipboardWriter, ClipboardWriter>();
 
         return services.BuildServiceProvider();
     }

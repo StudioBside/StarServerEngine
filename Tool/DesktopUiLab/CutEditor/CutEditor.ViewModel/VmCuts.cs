@@ -47,6 +47,7 @@ public sealed class VmCuts : VmPageBase,
         this.BackCommand = new RelayCommand(this.OnBack);
         this.SaveCommand = new AsyncRelayCommand(this.OnSave);
         this.OpenFileCommand = new RelayCommand(this.OnOpenFile);
+        this.CopyFileNameCommand = new RelayCommand(this.OnCopyFileName);
         this.DeleteCommand = new RelayCommand(this.OnDelete, () => this.selectedCuts.Count > 0);
         this.NewCutCommand = new RelayCommand<CutDataType>(this.OnNewCut);
         this.DeletePickCommand = new RelayCommand<VmCut>(this.OnDeletePick);
@@ -102,6 +103,7 @@ public sealed class VmCuts : VmPageBase,
     public ICommand BackCommand { get; }
     public ICommand SaveCommand { get; }
     public ICommand OpenFileCommand { get; }
+    public ICommand CopyFileNameCommand { get; }
     public IRelayCommand DeleteCommand { get; } // 현재 (멀티)선택한 대상을 모두 삭제
     public ICommand NewCutCommand { get; }
     public ICommand DeletePickCommand { get; } // 인자로 넘어오는 1개의 cut을 삭제
@@ -351,6 +353,14 @@ public sealed class VmCuts : VmPageBase,
 
         var fullPath = Path.GetFullPath(fileName);
         Process.Start(new ProcessStartInfo(fullPath) { UseShellExecute = true });
+    }
+
+    private void OnCopyFileName()
+    {
+        var clipboardWriter = this.services.GetRequiredService<IClipboardWriter>();
+        clipboardWriter.SetText(this.name);
+
+        Log.Info($"{this.DebugName} 파일명을 클립보드에 복사했습니다.");
     }
 
     public sealed record CrateParam

@@ -42,6 +42,7 @@ public sealed class VmCut : ObservableObject
         this.PickSfxACommand = new AsyncRelayCommand(this.OnPickSfxA);
         this.PickSfxBCommand = new AsyncRelayCommand(this.OnPickSfxB);
         this.PickVoiceCommand = new AsyncRelayCommand(this.OnPickVoice);
+        this.PickAmbientSoundCommand = new AsyncRelayCommand(this.OnPickAmbientSound);
         this.PickBgFileNameCommand = new AsyncRelayCommand(this.OnPickBgFileName);
         this.AddChoiceOptionCommand = new RelayCommand(this.OnAddChoiceOption, () => this.Cut.Choices.Count < 5);
         this.EditChoiceOptionCommand = new AsyncRelayCommand<ChoiceOption>(this.OnEditchoiceOption);
@@ -62,6 +63,7 @@ public sealed class VmCut : ObservableObject
         this.SetStartFxLoopCommand = new RelayCommand<CutsceneSoundLoopControl>(e => this.Cut.StartFxLoopControl = e);
         this.SetEndFxLoopCommand = new RelayCommand<CutsceneSoundLoopControl>(e => this.Cut.EndFxLoopControl = e);
         this.EditBgFadeCommand = new AsyncRelayCommand(this.OnEditBgFade);
+        this.SetTalkPositionControlCommand = new RelayCommand<TalkPositionControlType>(e => this.Cut.TalkPositionControl = e);
 
         this.showUnitSection = cut.HasUnitData();
         this.showScreenSection = cut.HasScreenBoxData();
@@ -87,6 +89,7 @@ public sealed class VmCut : ObservableObject
     public ICommand PickSfxACommand { get; }
     public ICommand PickSfxBCommand { get; }
     public ICommand PickVoiceCommand { get; }
+    public ICommand PickAmbientSoundCommand { get; }
     public ICommand PickBgFileNameCommand { get; }
     public IRelayCommand AddChoiceOptionCommand { get; }
     public ICommand EditChoiceOptionCommand { get; }
@@ -107,6 +110,7 @@ public sealed class VmCut : ObservableObject
     public ICommand SetStartFxLoopCommand { get; }
     public ICommand SetEndFxLoopCommand { get; }
     public ICommand EditBgFadeCommand { get; }
+    public ICommand SetTalkPositionControlCommand { get; }
     public bool ShowUnitSection
     {
         get => this.showUnitSection;
@@ -238,6 +242,18 @@ public sealed class VmCut : ObservableObject
         }
 
         this.Cut.TalkVoice = result.AssetFile;
+    }
+
+    private async Task OnPickAmbientSound()
+    {
+        var sfxPicker = this.services.GetRequiredKeyedService<IAssetPicker>("sfx");
+        var result = await sfxPicker.PickAsset();
+        if (result.IsCanceled)
+        {
+            return;
+        }
+
+        this.Cut.AmbientSound = result.AssetFile;
     }
 
     private async Task OnPickBgFileName()

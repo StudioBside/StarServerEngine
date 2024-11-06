@@ -43,7 +43,7 @@ public sealed class Cut : ObservableObject
     private string? cameraOffset; // enum
     private string? cameraOffsetTime; // enum
     private float talkTime;
-    private Color? talkPositionControl;
+    private TalkPositionControlType talkPositionControl;
     private bool talkAppend;
     private DestAnchorType jumpAnchor;
     private string? unitMotion;
@@ -59,6 +59,7 @@ public sealed class Cut : ObservableObject
     private CutsceneSoundLoopControl endFxLoopControl;
     private SlateControlType slateControlType;
     private int slateSectionNo;
+    private string? ambientSound;
 
     public Cut(long uid)
     {
@@ -91,7 +92,7 @@ public sealed class Cut : ObservableObject
         this.unitTalk.Load(token, "UnitTalk");
         this.talkTime = token.GetFloat("TalkTime", 0f);
         this.unitStrId = token.GetString("UnitStrId", null!);
-        this.talkPositionControl = JsonLoadHelper.LoadColor(token, "TalkPositionControl");
+        this.talkPositionControl = token.GetEnum("TalkPositionControl", TalkPositionControlType.NONE);
         token.TryGetArray("JumpAnchorData", this.choices, ChoiceOption.Load);
         token.TryGetArray("UnitNameString", this.unitNames);
         this.talkAppend = token.GetBool("TalkAppend", false);
@@ -105,6 +106,7 @@ public sealed class Cut : ObservableObject
         this.endFxLoopControl = token.GetEnum("EndFxLoopControl", CutsceneSoundLoopControl.NONE);
         this.slateControlType = token.GetEnum("SlateControlType", SlateControlType.NONE);
         this.slateSectionNo = token.GetInt32("SlateSectionNo", 0);
+        this.ambientSound = token.GetString("AmbientSound", null!);
         if (token.TryGetEnum<TransitionEffect>("TransitionEffect", out var transitionEffect))
         {
             this.transitionEffect = transitionEffect;
@@ -346,6 +348,18 @@ public sealed class Cut : ObservableObject
         set => this.SetProperty(ref this.bgFadeInOut, value);
     }
 
+    public TalkPositionControlType TalkPositionControl
+    {
+        get => this.talkPositionControl;
+        set => this.SetProperty(ref this.talkPositionControl, value);
+    }
+
+    public string? AmbientSound
+    {
+        get => this.ambientSound;
+        set => this.SetProperty(ref this.ambientSound, value);
+    }
+
     public object ToOutputType()
     {
         var result = new CutOutputFormat
@@ -374,7 +388,7 @@ public sealed class Cut : ObservableObject
             UnitTalk_JPN = this.unitTalk.AsNullable(L10nType.Japanese),
             UnitTalk_CHN = this.unitTalk.AsNullable(L10nType.ChineseSimplified),
             TalkTime = CutOutputFormat.EliminateZero(this.talkTime),
-            TalkPositionControl = CutOutputFormat.ConvertColor(this.talkPositionControl),
+            TalkPositionControl = EliminateEnum(this.talkPositionControl, TalkPositionControlType.NONE),
             TalkAppend = EliminateFalse(this.talkAppend),
             UnitMotion = this.unitMotion,
             TransitionEffect = this.transitionEffect,
@@ -388,6 +402,7 @@ public sealed class Cut : ObservableObject
             EndFxLoopControl = EliminateEnum(this.endFxLoopControl, CutsceneSoundLoopControl.NONE),
             SlateControlType = EliminateEnum(this.slateControlType, SlateControlType.NONE),
             SlateSectionNo = EliminateZeroInt(this.slateSectionNo),
+            AmbientSound = this.ambientSound,
         };
 
         this.bgFadeInOut?.WriteTo(result);
@@ -467,19 +482,20 @@ public sealed class Cut : ObservableObject
 
     public bool HasUnitData()
     {
-        return this.UnitTalk.HasData ||
+        return this.unitTalk.HasData ||
             this.unitNames.Count > 0 ||
-            string.IsNullOrEmpty(this.StartBgmFileName) == false ||
-            string.IsNullOrEmpty(this.StartFxSoundName) == false ||
+            string.IsNullOrEmpty(this.startBgmFileName) == false ||
+            string.IsNullOrEmpty(this.startFxSoundName) == false ||
             this.startFxLoopControl != CutsceneSoundLoopControl.NONE ||
-            string.IsNullOrEmpty(this.EndBgmFileName) == false ||
-            string.IsNullOrEmpty(this.EndFxSoundName) == false ||
+            string.IsNullOrEmpty(this.endBgmFileName) == false ||
+            string.IsNullOrEmpty(this.endFxSoundName) == false ||
             this.endFxLoopControl != CutsceneSoundLoopControl.NONE ||
             this.emotionEffect != EmotionEffect.NONE ||
             this.unit is not null ||
             this.unitPos != CutsceneUnitPos.NONE ||
-            string.IsNullOrEmpty(this.UnitMotion) == false ||
-            string.IsNullOrEmpty(this.TalkVoice) == false ||
+            string.IsNullOrEmpty(this.unitMotion) == false ||
+            string.IsNullOrEmpty(this.talkVoice) == false ||
+            string.IsNullOrEmpty(this.ambientSound) == false ||
             this.autoHighlight != CutsceneAutoHighlight.NONE;
     }
 

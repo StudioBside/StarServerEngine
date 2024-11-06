@@ -12,6 +12,8 @@
     xmlns:nkm="clr-namespace:NKM;assembly=Shared.Templet"
     xmlns:extensions="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
     xmlns:models="clr-namespace:CutEditor.Model;assembly=CutEditor.Model"
+    xmlns:viewmodels="clr-namespace:CutEditor.ViewModel;assembly=CutEditor.ViewModel"
+    d:DataContext="{d:DesignInstance Type=viewmodels:VmCut}"
     d:DesignHeight="450" d:DesignWidth="800">
 
     <UserControl.Resources>
@@ -250,13 +252,42 @@
                                 MinLines="2" Width="500"
                                 TextWrapping="WrapWithOverflow"
                                 AcceptsReturn="True"/>
-                    <ui:NumberBox Width="60" Height="35"
+                    <StackPanel Orientation="Horizontal"
+                                VerticalAlignment="Bottom"
+                                HorizontalAlignment="Right">
+                        <ui:DropDownButton>
+                            <ui:DropDownButton.Style>
+                                <Style TargetType="ui:DropDownButton" BasedOn="{StaticResource {x:Type ui:DropDownButton}}">
+                                    <Setter Property="Content" Value="{Binding Cut.TalkPositionControl}"/>
+                                    <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Cut.TalkPositionControl}" Value="{x:Static nkm:TalkPositionControlType.NONE}">
+                                            <Setter Property="Content" Value="위치"/>
+                                            <Setter Property="Background" Value="White"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ui:DropDownButton.Style>
+                            <ui:DropDownButton.Flyout>
+                                <ContextMenu ItemsSource="{Binding Source={extensions:EnumValues {x:Type nkm:TalkPositionControlType}}}">
+                                    <ContextMenu.ItemTemplate>
+                                        <DataTemplate>
+                                            <MenuItem Header="{Binding .}"
+                                                Command="{Binding DataContext.SetTalkPositionControlCommand, RelativeSource={RelativeSource AncestorType=ListViewItem}}"
+                                                CommandParameter="{Binding .}"/>
+                                        </DataTemplate>
+                                    </ContextMenu.ItemTemplate>
+                                </ContextMenu>
+                            </ui:DropDownButton.Flyout>
+                        </ui:DropDownButton>
+                        <ui:NumberBox Width="60" Height="35"
                                   Margin="5"
                                   VerticalAlignment="Bottom"
                                   HorizontalAlignment="Right"
                                   SpinButtonPlacementMode="Hidden"
                                   ClearButtonEnabled="False"
                                   Text="{Binding Cut.TalkTime}"/>
+                    </StackPanel>
                 </Grid>
 
                 <ui:Button Grid.Column="2" Grid.Row="0" HorizontalAlignment="Stretch"
@@ -345,7 +376,7 @@
                 </Grid.RowDefinitions>
 
                 <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center">
-                    <ui:Button Content="TalkVoice" Margin="0,0,10,0"
+                    <ui:Button Content="TalkVoice" Margin="0,0,5,0"
                                Command="{Binding PickVoiceCommand}"
                                ToolTip="{Binding Cut.TalkVoice}">
                         <!--값이 없을 때는 한글 표기. 값이 있을때는 배경색을 다르게 표기-->
@@ -354,6 +385,21 @@
                                 <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding Cut.TalkVoice}" Value="{x:Null}">
+                                        <Setter Property="Background" Value="White"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ui:Button.Style>
+                    </ui:Button>
+
+                    <ui:Button Content="환경음"
+                               Command="{Binding PickAmbientSoundCommand}"
+                               ToolTip="{Binding Cut.AmbientSound}">
+                        <ui:Button.Style>
+                            <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+                                <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Cut.AmbientSound}" Value="{x:Null}">
                                         <Setter Property="Background" Value="White"/>
                                     </DataTrigger>
                                 </Style.Triggers>
