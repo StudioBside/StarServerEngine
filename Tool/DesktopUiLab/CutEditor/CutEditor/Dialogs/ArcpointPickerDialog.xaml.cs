@@ -19,7 +19,7 @@ public partial class ArcpointPickerDialog : ContentDialog
     {
         this.DataContext = this;
 
-        var list = TempletContainer<LobbyItem>.Values.Where(e => e.SubType == NormalItemSubType.STN_ARCPOINT).ToArray();
+        var list = TempletContainer<LobbyItem>.Values.Where(e => e.SubType == NormalItemSubType.STN_ARCPOINT);
         this.filteredList = App.Current.Services.GetRequiredService<IFilteredCollectionProvider>().Build(list);
         this.InitializeComponent();
     }

@@ -78,6 +78,20 @@ public static class ImageHelper
         return thumbnail;
     }
 
+    public static ImageSource Load(string filePath)
+    {
+        var result = new BitmapImage();
+        using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+        {
+            result.BeginInit();
+            result.CacheOption = BitmapCacheOption.OnLoad;
+            result.StreamSource = stream;
+            result.EndInit();
+        }
+
+        return result;
+    }
+
     //// --------------------------------------------------------------------------------------------
 
     public static string GetThumbnailPath(string filePath, int thumbnailWidth)

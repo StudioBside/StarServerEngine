@@ -76,23 +76,23 @@
 
                 <StackPanel Grid.Column="2" Grid.Row="0" Orientation="Horizontal">
                     <RadioButton MinWidth="20" VerticalAlignment="Bottom"
-                                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS1}"/>
+                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS1}"/>
                     <RadioButton MinWidth="20" VerticalAlignment="Top"
-                                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS2}"/>
+                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS6}"/>
                     <RadioButton MinWidth="20" VerticalAlignment="Bottom"
-                                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS3}"/>
+                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS2}"/>
                     <RadioButton MinWidth="20" VerticalAlignment="Top"
-                                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS4}"/>
+                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS7}"/>
                     <RadioButton MinWidth="20" VerticalAlignment="Bottom"
-                                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS5}"/>
+                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS3}"/>
                     <RadioButton MinWidth="20" VerticalAlignment="Top"
-                                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS6}"/>
+                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS8}"/>
                     <RadioButton MinWidth="20" VerticalAlignment="Bottom"
-                                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS7}"/>
+                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS4}"/>
                     <RadioButton MinWidth="20" VerticalAlignment="Top"
-                                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS8}"/>
+                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS9}"/>
                     <RadioButton MinWidth="20" VerticalAlignment="Bottom"
-                                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS9}"/>
+                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS5}"/>
                 </StackPanel>
 
                 <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Horizontal">

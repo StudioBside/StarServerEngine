@@ -28,8 +28,9 @@ internal class CutOutputFormat
     public CutsceneClearType? CutsceneClear { get; set; }
     public string? UnitStrId { get; set; }
     public string[]? UnitNameString { get; set; }
-    public string? CameraOffset { get; set; }
-    public string? CameraOffsetTime { get; set; }
+    public CameraOffset? CameraOffset { get; set; }
+    public Ease? CameraEase { get; set; }
+    public CameraOffsetTime? CameraOffsetTime { get; set; }
     public string? UnitMotion { get; set; }
     public bool? UnitQuickSet { get; set; }
     public CutsceneUnitPos? UnitPos { get; set; }

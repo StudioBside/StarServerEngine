@@ -40,8 +40,6 @@ public sealed class Cut : ObservableObject
     private Unit? unit;
     private bool unitQuickSet;
     private CutsceneUnitPos unitPos;
-    private string? cameraOffset; // enum
-    private string? cameraOffsetTime; // enum
     private float talkTime;
     private TalkPositionControlType talkPositionControl;
     private bool talkAppend;
@@ -63,6 +61,9 @@ public sealed class Cut : ObservableObject
     private string? cutEffect;
     private UnitEffect unitEffect;
     private bool nicknameInput;
+    private CameraOffset cameraOffset;
+    private Ease cameraEase;
+    private CameraOffsetTime cameraOffsetTime;
 
     public Cut(long uid)
     {
@@ -88,8 +89,9 @@ public sealed class Cut : ObservableObject
         this.startFxSoundName = token.GetString("StartFxSoundName", null!);
         this.unitQuickSet = token.GetBool("UnitQuickSet", false);
         this.unitPos = token.GetEnum("UnitPos", CutsceneUnitPos.NONE);
-        this.cameraOffset = token.GetString("CameraOffset", null!);
-        this.cameraOffsetTime = token.GetString("CameraOffsetTime", null!);
+        this.cameraOffset = token.GetEnum("CameraOffset", CameraOffset.NONE);
+        this.cameraEase = token.GetEnum("CameraEase", Ease.Unset);
+        this.cameraOffsetTime = token.GetEnum("CameraOffsetTime", CameraOffsetTime.NONE);
 
         this.emotionEffect = token.GetEnum("EmotionEffect", EmotionEffect.NONE);
         this.unitTalk.Load(token, "UnitTalk");
@@ -389,6 +391,24 @@ public sealed class Cut : ObservableObject
         set => this.SetProperty(ref this.nicknameInput, value);
     }
 
+    public CameraOffset CameraOffset
+    {
+        get => this.cameraOffset;
+        set => this.SetProperty(ref this.cameraOffset, value);
+    }
+
+    public Ease CameraEase
+    {
+        get => this.cameraEase;
+        set => this.SetProperty(ref this.cameraEase, value);
+    }
+
+    public CameraOffsetTime CameraOffsetTime
+    {
+        get => this.cameraOffsetTime;
+        set => this.SetProperty(ref this.cameraOffsetTime, value);
+    }
+
     public object ToOutputType()
     {
         var result = new CutOutputFormat
@@ -409,8 +429,9 @@ public sealed class Cut : ObservableObject
             UnitStrId = this.unit?.StrId,
             UnitQuickSet = EliminateFalse(this.unitQuickSet),
             UnitPos = EliminateEnum(this.unitPos, CutsceneUnitPos.NONE),
-            CameraOffset = this.cameraOffset,
-            CameraOffsetTime = this.cameraOffsetTime,
+            CameraOffset = EliminateEnum(this.cameraOffset, CameraOffset.NONE),
+            CameraEase = EliminateEnum(this.cameraEase, Ease.Unset),
+            CameraOffsetTime = EliminateEnum(this.cameraOffsetTime, CameraOffsetTime.NONE),
             EmotionEffect = EliminateEnum(this.emotionEffect, EmotionEffect.NONE),
             UnitTalk_KOR = this.unitTalk.AsNullable(L10nType.Korean),
             UnitTalk_ENG = this.unitTalk.AsNullable(L10nType.English),
@@ -526,6 +547,13 @@ public sealed class Cut : ObservableObject
             string.IsNullOrEmpty(this.talkVoice) == false ||
             string.IsNullOrEmpty(this.ambientSound) == false ||
             this.autoHighlight != CutsceneAutoHighlight.NONE;
+    }
+
+    public bool HasCameraBoxData()
+    {
+        return this.cameraOffset != CameraOffset.NONE ||
+            this.cameraEase != Ease.Unset ||
+            this.cameraOffsetTime != CameraOffsetTime.NONE;
     }
 
     //// --------------------------------------------------------------------------------

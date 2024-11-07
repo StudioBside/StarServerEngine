@@ -18,7 +18,7 @@ public sealed class EnumBooleanConverter : ConverterMarkupExtension<EnumBooleanC
             return DependencyProperty.UnsetValue;
         }
 
-        if (Enum.IsDefined(value.GetType(), value) == false)
+        if (Enum.IsDefined(value.GetType(), parameterString) == false)
         {
             return DependencyProperty.UnsetValue;
         }

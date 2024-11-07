@@ -68,4 +68,109 @@ public static class Enums
         FadeIn,
         FadeOut,
     }
+
+    public enum Ease
+    {
+        Unset,
+        Linear,
+        InSine,
+        OutSine,
+        InOutSine,
+        InQuad,
+        OutQuad,
+        InOutQuad,
+        InCubic,
+        OutCubic,
+        InOutCubic,
+        InQuart,
+        OutQuart,
+        InOutQuart,
+        InQuint,
+        OutQuint,
+        InOutQuint,
+        InExpo,
+        OutExpo,
+        InOutExpo,
+        InCirc,
+        OutCirc,
+        InOutCirc,
+        InElastic,
+        OutElastic,
+        InOutElastic,
+        InBack,
+        OutBack,
+        InOutBack,
+        InBounce,
+        OutBounce,
+        InOutBounce,
+        Flash,
+        InFlash,
+        OutFlash,
+        InOutFlash,
+    }
+
+    public enum EaseCategory
+    {
+        All,
+        In,
+        Out,
+        InOut,
+    }
+
+    public static bool IsIn(this Ease self)
+    {
+        return self switch
+        {
+            Ease.InSine => true,
+            Ease.InQuad => true,
+            Ease.InCubic => true,
+            Ease.InQuart => true,
+            Ease.InQuint => true,
+            Ease.InExpo => true,
+            Ease.InCirc => true,
+            Ease.InElastic => true,
+            Ease.InBack => true,
+            Ease.InBounce => true,
+            Ease.InFlash => true,
+            _ => false,
+        };
+    }
+
+    public static bool IsOut(this Ease self)
+    {
+        return self switch
+        {
+            Ease.OutSine => true,
+            Ease.OutQuad => true,
+            Ease.OutCubic => true,
+            Ease.OutQuart => true,
+            Ease.OutQuint => true,
+            Ease.OutExpo => true,
+            Ease.OutCirc => true,
+            Ease.OutElastic => true,
+            Ease.OutBack => true,
+            Ease.OutBounce => true,
+            Ease.OutFlash => true,
+            _ => false,
+        };
+    }
+
+    public static bool IsInOut(this Ease self)
+    {
+        return self switch
+        {
+            Ease.InOutSine => true,
+            Ease.InOutQuad => true,
+            Ease.InOutCubic => true,
+            Ease.InOutQuart => true,
+            Ease.InOutQuint => true,
+            Ease.InOutExpo => true,
+            Ease.InOutCirc => true,
+            Ease.InOutElastic => true,
+            Ease.InOutBack => true,
+            Ease.InOutBounce => true,
+            Ease.InOutFlash => true,
+            _ => false,
+        };
+    }
 }

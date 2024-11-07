@@ -122,7 +122,7 @@
                                     <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                                         <TextBlock VerticalAlignment="Center" Text="CutEffect : "/>
                                         <ui:TextBox Width="150"
-                                                    Text="{Binding Cut.CutEffect}"/>
+                                                    Text="{Binding Cut.CutEffect, UpdateSourceTrigger=PropertyChanged}"/>
                                     </StackPanel>
                                     
                                     <!--UnitEffect-->
@@ -154,37 +154,14 @@
                             </ui:Button.Style>
                         </ui:Button>
 
-                        <Button Content="X"
+                        <Button Content="X" Margin="0,0,10,0"
                                 Command="{Binding DataContext.DeletePickCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
                                 CommandParameter="{Binding .}"/>
                     </StackPanel>
                 </DockPanel>
 
-                <!--컨트롤 : 화면-->
                 <boxes:BoxScreen Grid.Row="1"/>
-
-                <!--컨트롤 : 카메라-->
-                <Border Grid.Row="2" Margin="0,1,0,0" Background="{StaticResource CameraBoxBrush}"
-                            Visibility="{Binding ShowCameraSection, Converter={converters:BoolToVisibilityConverter}}">
-                    <StackPanel Orientation="Horizontal" Margin="5">
-                        <ui:Button Margin="0,0,10,0">
-                            <TextBlock TextAlignment="Center">
-                                    <Run>CameraOffset</Run>
-                                    <LineBreak/>
-                                    <Run>종류</Run>
-                            </TextBlock>
-                        </ui:Button>
-
-                        <ui:Button Margin="0,0,10,0"
-                                   Content="CameraOffset 위치"/>
-
-                        <ui:Button Margin="0,0,10,0" Content="CameraOffsetTime"/>
-                        <ui:Button Margin="0,0,10,0" Content="CameraEase"/>
-
-                    </StackPanel>
-                </Border>
-
-                <!--컨트롤 : 유닛-->
+                <boxes:BoxCamera Grid.Row="2"/>
                 <boxes:BoxUnit Grid.Row="3"/>
             </Grid>
         </Border>

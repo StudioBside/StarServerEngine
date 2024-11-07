@@ -1,12 +1,8 @@
 ﻿namespace CutEditor;
 
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Windows;
 using Cs.Logging;
-using Cs.Logging.Providers;
-using CutEditor.Dialogs;
-using CutEditor.Dialogs.BgFilePicker;
 using CutEditor.Model;
 using CutEditor.Model.Interfaces;
 using CutEditor.Services;
@@ -19,7 +15,9 @@ using Du.WpfLib;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Templet;
+using Shared.Templet.TempletTypes;
 using Wpf.Ui;
+using static CutEditor.Model.Enums;
 
 public partial class App : Application
 {
@@ -53,8 +51,9 @@ public partial class App : Application
         services.AddTransient<VmCuts>();
         services.AddTransient<FileLoader>();
         services.AddTransient<FileAndSnackbarLog>();
-        services.AddTransient<IUnitPicker, UnitPicker>();
-        services.AddTransient<IArcpointPicker, ArcpointPicker>();
+        services.AddTransient<ITempletPicker<Unit>, UnitPicker>();
+        services.AddTransient<ITempletPicker<LobbyItem>, ArcpointPicker>();
+        services.AddSingleton<IEnumPicker<Ease>>(EasingGraph.Instance);
         services.AddKeyedTransient<IAssetPicker, BgmPicker>("bgm");
         services.AddKeyedTransient<IAssetPicker, SfxPicker>("sfx");
         services.AddKeyedTransient<IAssetPicker, VoicePicker>("voice");
@@ -98,6 +97,7 @@ public partial class App : Application
     {
         Log.Initialize(this.Services.GetService<FileAndSnackbarLog>(), LogLevelConfig.All);
 
+        EasingGraph.Instance.Initialize(this.Services.GetRequiredService<AssetList>());
         VmGlobalState.Instance.Initialize();
         TempletLoad.Execute(this.Services.GetRequiredService<IConfiguration>());
 

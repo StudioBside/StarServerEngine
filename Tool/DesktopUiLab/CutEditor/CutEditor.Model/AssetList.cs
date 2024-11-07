@@ -15,6 +15,7 @@ public sealed class AssetList
     private readonly List<string> movFiles = new();
     private readonly List<string> slateFiles = new();
     private readonly List<string> spineFiles = new();
+    private readonly List<string> easingGraphFiles = new();
 
     public AssetList(IConfiguration config)
     {
@@ -107,6 +108,15 @@ public sealed class AssetList
                 this.spineFiles.Add(file);
             }
         }
+
+        var graphRoot = "./Assets/EasingGraph";
+        if (Directory.Exists(graphRoot))
+        {
+            foreach (var file in Directory.GetFiles(graphRoot, "*.png", SearchOption.AllDirectories))
+            {
+                this.easingGraphFiles.Add(file);
+            }
+        }
     }
 
     public static AssetList Instance { get; private set; } = null!;
@@ -120,4 +130,5 @@ public sealed class AssetList
     public IReadOnlyList<string> MovFiles => this.movFiles;
     public IReadOnlyList<string> SlateFiles => this.slateFiles;
     public IReadOnlyList<string> SpineFiles => this.spineFiles;
+    public IReadOnlyList<string> EasingGraphFiles => this.easingGraphFiles;
 }
