@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -39,6 +40,11 @@ public sealed class EasingGraph : IEnumPicker<Ease>
         }
     }
 
+    public bool TryGetValue(Ease ease, [MaybeNullWhen(false)] out Graph graph)
+    {
+        return this.graphs.TryGetValue(ease, out graph);
+    }
+
     async Task<IEnumPicker<Ease>.PickResult> IEnumPicker<Ease>.Pick(Ease defaultValue)
     {
         var dialogService = App.Current.Services.GetRequiredService<IContentDialogService>();
@@ -52,7 +58,7 @@ public sealed class EasingGraph : IEnumPicker<Ease>
         };
     }
 
-    public sealed class Graph : ISearchable
+    public sealed class Graph
     {
         public Ease Ease { get; init; }
         public int VisualOrder { get; init; }
@@ -82,11 +88,6 @@ public sealed class EasingGraph : IEnumPicker<Ease>
                 FileName = fileName,
                 ImageSource = ImageHelper.Load(fileName),
             };
-        }
-
-        bool ISearchable.IsTarget(string keyword)
-        {
-            return this.Ease.ToString().Contains(keyword, StringComparison.OrdinalIgnoreCase);
         }
 
         public bool IsInCategory(EaseCategory category)

@@ -20,16 +20,23 @@
     <Border Background="{StaticResource CameraBoxBrush}"
                             Visibility="{Binding ShowCameraSection, Converter={converters:BoolToVisibilityConverter}}">
         <StackPanel Orientation="Horizontal" Margin="5">
-            <ui:Button Margin="0,0,10,0">
-                <TextBlock TextAlignment="Center">
-                    <Run>CameraOffset</Run>
-                    <LineBreak/>
-                    <Run>종류</Run>
-                </TextBlock>
-            </ui:Button>
 
             <ui:Button Margin="0,0,10,0"
-                       Content="CameraOffset 위치"/>
+                       Command="{Binding PickCameraOffsetCommand}"
+                       ToolTip="{Binding Cut.CameraOffset}">
+                <ui:Button.Style>
+                    <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+                        <Setter Property="Content" Value="{Binding Cut.CameraOffset}"/>
+                        <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Cut.CameraEase}" Value="NONE">
+                                <Setter Property="Content" Value="Camera Offset"/>
+                                <Setter Property="Background" Value="White"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </ui:Button.Style>
+            </ui:Button>
 
             <!--CameraOffsetTime-->
             <ui:DropDownButton Margin="0,0,10,0">
@@ -62,35 +69,25 @@
             </ui:DropDownButton>
             
             <!--CameraEase-->
-            <ui:Flyout Placement="Top" VerticalAlignment="Top" IsOpen="{Binding CameraEaseFlyoutOpen, Mode=TwoWay}">
-                <ui:ListView Width="600" Height="400"
-                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                             ItemsSource="{Binding Source={extensions:EnumValues {x:Type models:Enums+Ease}}}"
-                             SelectedItem="{Binding Cut.CameraEase}">
-                    <ui:ListView.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel/>
-                        </ItemsPanelTemplate>
-                    </ui:ListView.ItemsPanel>
-                    <ui:ListView.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Vertical" Margin="5">
-                                <Border Background="Black" Width="160" Height="130"/>
-                                <TextBlock Text="{Binding .}" HorizontalAlignment="Center"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ui:ListView.ItemTemplate>
-                </ui:ListView>
-            </ui:Flyout>
-            <ui:Button Margin="0,0,10,0" Content="CameraEase"
+            <ui:Button Margin="0,0,10,0"
                        Command="{Binding PickCameraEaseCommand}"
                        ToolTip="{Binding Cut.CameraEase}">
                 <ui:Button.Style>
                     <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
-                        <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
+                        <Setter Property="Content">
+                            <Setter.Value>
+                                <ui:Image Width="80"
+                                    Source="{Binding Cut.CameraEase, Converter={lcvt:EaseToImageConverter}}"/>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="Padding" Value="0"/>
+                        <Setter Property="CornerRadius" Value="8"/>
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Cut.CameraEase}" Value="Unset">
+                                <Setter Property="Content" Value="Camera Ease"/>
                                 <Setter Property="Background" Value="White"/>
+                                <Setter Property="Padding" Value="6"/>
+                                <Setter Property="CornerRadius" Value="4"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>

@@ -27,7 +27,6 @@ public sealed class VmCut : ObservableObject
     private bool screenCrashFlyoutOpen;
     private bool slateFlyoutOpen;
     private bool minorityFlyoutOpen;
-    private bool cameraEaseFlyoutOpen;
 
     public VmCut(Cut cut, IServiceProvider services)
     {
@@ -48,6 +47,7 @@ public sealed class VmCut : ObservableObject
         this.PickAmbientSoundCommand = new AsyncRelayCommand(this.OnPickAmbientSound);
         this.PickBgFileNameCommand = new AsyncRelayCommand(this.OnPickBgFileName);
         this.PickCameraEaseCommand = new AsyncRelayCommand(this.OnPickCameraEase);
+        this.PickCameraOffsetCommand = new AsyncRelayCommand(this.OnPickCameraOffset);
         this.AddChoiceOptionCommand = new RelayCommand(this.OnAddChoiceOption, () => this.Cut.Choices.Count < 5);
         this.EditChoiceOptionCommand = new AsyncRelayCommand<ChoiceOption>(this.OnEditchoiceOption);
         this.DeleteChoiceOptionCommand = new RelayCommand<ChoiceOption>(this.OnDeleteChoiceOption, _ => this.Cut.Choices.Count > 1);
@@ -64,7 +64,6 @@ public sealed class VmCut : ObservableObject
         this.ClearScreenFlashCrashCommand = new RelayCommand(this.OnClearScreenFlashCrash);
         this.OpenSlateFlyoutCommand = new RelayCommand(() => this.SlateFlyoutOpen = true);
         this.OpenMinorityFlyoutCommand = new RelayCommand(() => this.MinorityFlyoutOpen = true);
-        this.OpenCameraEaseFlyoutCommand = new RelayCommand(() => this.CameraEaseFlyoutOpen = true);
         this.ClearSlateFlyoutCommand = new RelayCommand(this.OnClearSlateControl);
         this.SetStartFxLoopCommand = new RelayCommand<CutsceneSoundLoopControl>(e => this.Cut.StartFxLoopControl = e);
         this.SetEndFxLoopCommand = new RelayCommand<CutsceneSoundLoopControl>(e => this.Cut.EndFxLoopControl = e);
@@ -100,6 +99,7 @@ public sealed class VmCut : ObservableObject
     public ICommand PickAmbientSoundCommand { get; }
     public ICommand PickBgFileNameCommand { get; }
     public ICommand PickCameraEaseCommand { get; }
+    public ICommand PickCameraOffsetCommand { get; }
     public IRelayCommand AddChoiceOptionCommand { get; }
     public ICommand EditChoiceOptionCommand { get; }
     public IRelayCommand DeleteChoiceOptionCommand { get; }
@@ -116,7 +116,6 @@ public sealed class VmCut : ObservableObject
     public ICommand ClearScreenFlashCrashCommand { get; }
     public ICommand OpenSlateFlyoutCommand { get; }
     public ICommand OpenMinorityFlyoutCommand { get; }
-    public ICommand OpenCameraEaseFlyoutCommand { get; }
     public ICommand ClearSlateFlyoutCommand { get; }
     public ICommand SetStartFxLoopCommand { get; }
     public ICommand SetEndFxLoopCommand { get; }
@@ -165,12 +164,6 @@ public sealed class VmCut : ObservableObject
     {
         get => this.minorityFlyoutOpen;
         set => this.SetProperty(ref this.minorityFlyoutOpen, value);
-    }
-
-    public bool CameraEaseFlyoutOpen
-    {
-        get => this.cameraEaseFlyoutOpen;
-        set => this.SetProperty(ref this.cameraEaseFlyoutOpen, value);
     }
 
     //// --------------------------------------------------------------------------------------------
@@ -302,6 +295,18 @@ public sealed class VmCut : ObservableObject
         }
 
         this.Cut.CameraEase = result.Data;
+    }
+
+    private async Task OnPickCameraOffset()
+    {
+        var picker = this.services.GetRequiredService<IEnumPicker<CameraOffset>>();
+        var result = await picker.Pick(this.Cut.CameraOffset);
+        if (result.IsCanceled)
+        {
+            return;
+        }
+
+        this.Cut.CameraOffset = result.Data;
     }
 
     private void OnAddChoiceOption()

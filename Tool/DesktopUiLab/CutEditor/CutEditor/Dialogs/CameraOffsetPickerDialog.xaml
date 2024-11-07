@@ -1,0 +1,137 @@
+﻿<ui:ContentDialog 
+    x:Class="CutEditor.Dialogs.CameraOffsetPickerDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:local="clr-namespace:CutEditor.Dialogs"
+    xmlns:detail="clr-namespace:CutEditor.Dialogs.CameraOffsetPicker"
+    xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
+    xmlns:ext="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
+    mc:Ignorable="d" 
+    xmlns:extensions="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
+    d:DataContext="{d:DesignInstance Type=local:CameraOffsetPickerDialog}"
+    d:DesignHeight="450" d:DesignWidth="800"
+    ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
+    ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    Title="Select CameraOffset Type"
+    PrimaryButtonText="선택"
+    SecondaryButtonText="비우기"
+    CloseButtonText="취소"
+    IsPrimaryButtonEnabled="True"
+    IsSecondaryButtonEnabled="True">
+
+    <ui:ContentDialog.Resources>
+        <Style BasedOn="{StaticResource {x:Type ui:ContentDialog}}" TargetType="{x:Type local:CameraOffsetPickerDialog}" />
+        <Style x:Key="CategoryToggleButtonStyle" TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+            <Setter Property="Width" Value="70"/>
+            <Setter Property="Command" Value="{Binding SetCategoryCommand}"/>
+            <Setter Property="CommandParameter" Value="{Binding Content, RelativeSource={RelativeSource Self}}"/>
+        </Style>
+        <Style x:Key="PositionToggleButtonStyle" TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
+            <Setter Property="Width" Value="55"/>
+            <Setter Property="Command" Value="{Binding SetPositionCommand}"/>
+            <Setter Property="CommandParameter" Value="{Binding Content, RelativeSource={RelativeSource Self}}"/>
+        </Style>
+    </ui:ContentDialog.Resources>
+    
+    <StackPanel Margin="5">
+
+        <TextBlock Margin="0,0,0,10" Text="Preview :"/>
+        <ui:Image Margin="0,0,0,30" Source="{Binding ResultPreview}" Width="400" />
+
+        <TextBlock Margin="0,0,0,10" Text="Category :"/>
+        <StackPanel Margin="0,0,0,30" 
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center">
+            <ToggleButton 
+                Content="None" 
+                Style="{StaticResource CategoryToggleButtonStyle}"
+                IsChecked="{Binding Category, Mode=OneWay, Converter={detail:DataToCheckedConverter}, ConverterParameter=None}" />
+            <ToggleButton 
+                Content="Default"
+                Style="{StaticResource CategoryToggleButtonStyle}"
+                IsChecked="{Binding Category, Mode=OneWay, Converter={detail:DataToCheckedConverter}, ConverterParameter=Default}" />
+            <ToggleButton
+                Content="All"
+                Style="{StaticResource CategoryToggleButtonStyle}"
+                IsChecked="{Binding Category, Mode=OneWay, Converter={detail:DataToCheckedConverter}, ConverterParameter=All}" />
+
+            <ToggleButton 
+                Content="One"
+                Style="{StaticResource CategoryToggleButtonStyle}"
+                IsChecked="{Binding Category, Mode=OneWay, Converter={detail:DataToCheckedConverter}, ConverterParameter=One}" />
+            <ToggleButton 
+                Content="Twin"
+                Style="{StaticResource CategoryToggleButtonStyle}"
+                IsChecked="{Binding Category, Mode=OneWay, Converter={detail:DataToCheckedConverter}, ConverterParameter=Twin}" />
+            <ToggleButton 
+                Content="Triple"
+                Style="{StaticResource CategoryToggleButtonStyle}"
+                IsChecked="{Binding Category, Mode=OneWay, Converter={detail:DataToCheckedConverter}, ConverterParameter=Triple}" />
+            <ToggleButton 
+                Content="Pos2x"
+                Style="{StaticResource CategoryToggleButtonStyle}"
+                IsChecked="{Binding Category, Mode=OneWay, Converter={detail:DataToCheckedConverter}, ConverterParameter=Pos2x}" />
+        </StackPanel>
+
+        <TextBlock Margin="0,0,0,10" Text="Position :"/>
+        <StackPanel Margin="0,0,0,30" 
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center">
+            <ToggleButton 
+                Content="1"
+                Style="{StaticResource PositionToggleButtonStyle}"
+                IsChecked="{Binding Position, Mode=OneWay, Converter={detail:DataToCheckedConverter}, ConverterParameter=1}"
+                IsEnabled="{Binding Category, Mode=OneWay, Converter={detail:PositionEnableConverter}, ConverterParameter=1}" />
+            <ToggleButton 
+                Content="2"
+                Style="{StaticResource PositionToggleButtonStyle}"
+                IsChecked="{Binding Position, Mode=OneWay, Converter={detail:DataToCheckedConverter}, ConverterParameter=2}"
+                IsEnabled="{Binding Category, Mode=OneWay, Converter={detail:PositionEnableConverter}, ConverterParameter=2}" />
+            <ToggleButton 
+                Content="3"
+                Style="{StaticResource PositionToggleButtonStyle}"
+                IsChecked="{Binding Position, Mode=OneWay, Converter={detail:DataToCheckedConverter}, ConverterParameter=3}"
+                IsEnabled="{Binding Category, Mode=OneWay, Converter={detail:PositionEnableConverter}, ConverterParameter=3}" />
+            <ToggleButton 
+                Content="4"
+                Style="{StaticResource PositionToggleButtonStyle}"
+                IsChecked="{Binding Position, Mode=OneWay, Converter={detail:DataToCheckedConverter}, ConverterParameter=4}"
+                IsEnabled="{Binding Category, Mode=OneWay, Converter={detail:PositionEnableConverter}, ConverterParameter=4}" />
+            <ToggleButton 
+                Content="5"
+                Style="{StaticResource PositionToggleButtonStyle}"
+                IsChecked="{Binding Position, Mode=OneWay, Converter={detail:DataToCheckedConverter}, ConverterParameter=5}"
+                IsEnabled="{Binding Category, Mode=OneWay, Converter={detail:PositionEnableConverter}, ConverterParameter=5}" />
+            <ToggleButton 
+                Content="6"
+                Style="{StaticResource PositionToggleButtonStyle}"
+                IsChecked="{Binding Position, Mode=OneWay, Converter={detail:DataToCheckedConverter}, ConverterParameter=6}"
+                IsEnabled="{Binding Category, Mode=OneWay, Converter={detail:PositionEnableConverter}, ConverterParameter=6}" />
+            <ToggleButton 
+                Content="7"
+                Style="{StaticResource PositionToggleButtonStyle}"
+                IsChecked="{Binding Position, Mode=OneWay, Converter={detail:DataToCheckedConverter}, ConverterParameter=7}"
+                IsEnabled="{Binding Category, Mode=OneWay, Converter={detail:PositionEnableConverter}, ConverterParameter=7}" />
+            <ToggleButton 
+                Content="8"
+                Style="{StaticResource PositionToggleButtonStyle}"
+                IsChecked="{Binding Position, Mode=OneWay, Converter={detail:DataToCheckedConverter}, ConverterParameter=8}"
+                IsEnabled="{Binding Category, Mode=OneWay, Converter={detail:PositionEnableConverter}, ConverterParameter=8}" />
+            <ToggleButton 
+                Content="9"
+                Style="{StaticResource PositionToggleButtonStyle}"
+                IsChecked="{Binding Position, Mode=OneWay, Converter={detail:DataToCheckedConverter}, ConverterParameter=9}"
+                IsEnabled="{Binding Category, Mode=OneWay, Converter={detail:PositionEnableConverter}, ConverterParameter=9}" />
+        </StackPanel>
+
+        <StackPanel Margin="0,0,0,10" 
+                    Orientation="Horizontal">
+            <TextBlock Margin="0,0,10,0" VerticalAlignment="Center" Text="Result :"/>
+            <ui:TextBlock FontTypography="Subtitle" Text="{Binding Result}" />
+        </StackPanel>
+    </StackPanel>
+
+</ui:ContentDialog>

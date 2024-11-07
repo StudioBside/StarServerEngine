@@ -14,6 +14,7 @@ using Du.Presentation.Util;
 using Du.WpfLib;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NKM;
 using Shared.Templet;
 using Shared.Templet.TempletTypes;
 using Wpf.Ui;
@@ -54,6 +55,7 @@ public partial class App : Application
         services.AddTransient<ITempletPicker<Unit>, UnitPicker>();
         services.AddTransient<ITempletPicker<LobbyItem>, ArcpointPicker>();
         services.AddSingleton<IEnumPicker<Ease>>(EasingGraph.Instance);
+        services.AddSingleton<IEnumPicker<CameraOffset>>(CameraOffsetController.Instance);
         services.AddKeyedTransient<IAssetPicker, BgmPicker>("bgm");
         services.AddKeyedTransient<IAssetPicker, SfxPicker>("sfx");
         services.AddKeyedTransient<IAssetPicker, VoicePicker>("voice");
@@ -97,14 +99,16 @@ public partial class App : Application
     {
         Log.Initialize(this.Services.GetService<FileAndSnackbarLog>(), LogLevelConfig.All);
 
-        EasingGraph.Instance.Initialize(this.Services.GetRequiredService<AssetList>());
+        var assetList = this.Services.GetRequiredService<AssetList>();
+        EasingGraph.Instance.Initialize(assetList);
+        CameraOffsetController.Instance.Initialize(assetList);
+
         VmGlobalState.Instance.Initialize();
         TempletLoad.Execute(this.Services.GetRequiredService<IConfiguration>());
 
         var loader = this.Services.GetRequiredService<FileLoader>();
         loader.Load();
 
-        var assetList = this.Services.GetRequiredService<AssetList>();
         if (Directory.Exists(ImageHelper.ThumbnailRoot) == false)
         {
             Log.Debug($"Creating thumbnail directory: {ImageHelper.ThumbnailRoot}");

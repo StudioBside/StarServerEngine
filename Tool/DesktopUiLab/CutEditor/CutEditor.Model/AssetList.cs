@@ -16,6 +16,7 @@ public sealed class AssetList
     private readonly List<string> slateFiles = new();
     private readonly List<string> spineFiles = new();
     private readonly List<string> easingGraphFiles = new();
+    private readonly List<string> cameraOffsetFiles = new();
 
     public AssetList(IConfiguration config)
     {
@@ -117,6 +118,15 @@ public sealed class AssetList
                 this.easingGraphFiles.Add(file);
             }
         }
+
+        var cameraOffsetRoot = "./Assets/CameraOffset";
+        if (Directory.Exists(cameraOffsetRoot))
+        {
+            foreach (var file in Directory.GetFiles(cameraOffsetRoot, "*.png", SearchOption.AllDirectories))
+            {
+                this.cameraOffsetFiles.Add(file);
+            }
+        }
     }
 
     public static AssetList Instance { get; private set; } = null!;
@@ -131,4 +141,5 @@ public sealed class AssetList
     public IReadOnlyList<string> SlateFiles => this.slateFiles;
     public IReadOnlyList<string> SpineFiles => this.spineFiles;
     public IReadOnlyList<string> EasingGraphFiles => this.easingGraphFiles;
+    public IReadOnlyList<string> CameraOffsetFiles => this.cameraOffsetFiles;
 }

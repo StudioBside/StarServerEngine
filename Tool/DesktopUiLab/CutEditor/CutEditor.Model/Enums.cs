@@ -117,6 +117,17 @@ public static class Enums
         InOut,
     }
 
+    public enum CameraOffsetCategory
+    {
+        None,
+        Default,
+        All,
+        One,
+        Twin,
+        Triple,
+        Pos2x,
+    }
+
     public static bool IsIn(this Ease self)
     {
         return self switch
