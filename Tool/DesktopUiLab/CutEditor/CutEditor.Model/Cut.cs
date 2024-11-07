@@ -60,6 +60,9 @@ public sealed class Cut : ObservableObject
     private SlateControlType slateControlType;
     private int slateSectionNo;
     private string? ambientSound;
+    private string? cutEffect;
+    private UnitEffect unitEffect;
+    private bool nicknameInput;
 
     public Cut(long uid)
     {
@@ -107,6 +110,9 @@ public sealed class Cut : ObservableObject
         this.slateControlType = token.GetEnum("SlateControlType", SlateControlType.NONE);
         this.slateSectionNo = token.GetInt32("SlateSectionNo", 0);
         this.ambientSound = token.GetString("AmbientSound", null!);
+        this.cutEffect = token.GetString("CutEffect", null!);
+        this.unitEffect = token.GetEnum("UnitEffect", UnitEffect.NONE);
+        this.nicknameInput = token.GetBool("NicknameInput", false);
         if (token.TryGetEnum<TransitionEffect>("TransitionEffect", out var transitionEffect))
         {
             this.transitionEffect = transitionEffect;
@@ -360,6 +366,29 @@ public sealed class Cut : ObservableObject
         set => this.SetProperty(ref this.ambientSound, value);
     }
 
+    public bool HasMinorityData =>
+        string.IsNullOrEmpty(this.cutEffect) == false ||
+        this.unitEffect != UnitEffect.NONE ||
+        this.nicknameInput;
+
+    public string? CutEffect
+    {
+        get => this.cutEffect;
+        set => this.SetProperty(ref this.cutEffect, value);
+    }
+
+    public UnitEffect UnitEffect
+    {
+        get => this.unitEffect;
+        set => this.SetProperty(ref this.unitEffect, value);
+    }
+
+    public bool NicknameInput
+    {
+        get => this.nicknameInput;
+        set => this.SetProperty(ref this.nicknameInput, value);
+    }
+
     public object ToOutputType()
     {
         var result = new CutOutputFormat
@@ -516,6 +545,12 @@ public sealed class Cut : ObservableObject
             case nameof(this.SlateControlType):
             case nameof(this.SlateSectionNo):
                 this.OnPropertyChanged(nameof(this.HasSlateControlData));
+                break;
+
+            case nameof(this.CutEffect):
+            case nameof(this.UnitEffect):
+            case nameof(this.NicknameInput):
+                this.OnPropertyChanged(nameof(this.HasMinorityData));
                 break;
         }
     }

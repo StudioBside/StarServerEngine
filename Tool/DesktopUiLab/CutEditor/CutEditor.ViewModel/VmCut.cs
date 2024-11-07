@@ -25,6 +25,7 @@ public sealed class VmCut : ObservableObject
     private CutDataType dataType;
     private bool screenCrashFlyoutOpen;
     private bool slateFlyoutOpen;
+    private bool minorityFlyoutOpen;
 
     public VmCut(Cut cut, IServiceProvider services)
     {
@@ -59,6 +60,7 @@ public sealed class VmCut : ObservableObject
         this.OpenScreenCrashFlyoutCommand = new RelayCommand(() => this.ScreenCrashFlyoutOpen = true);
         this.ClearScreenFlashCrashCommand = new RelayCommand(this.OnClearScreenFlashCrash);
         this.OpenSlateFlyoutCommand = new RelayCommand(() => this.SlateFlyoutOpen = true);
+        this.OpenMinorityFlyoutCommand = new RelayCommand(() => this.MinorityFlyoutOpen = true);
         this.ClearSlateFlyoutCommand = new RelayCommand(this.OnClearSlateControl);
         this.SetStartFxLoopCommand = new RelayCommand<CutsceneSoundLoopControl>(e => this.Cut.StartFxLoopControl = e);
         this.SetEndFxLoopCommand = new RelayCommand<CutsceneSoundLoopControl>(e => this.Cut.EndFxLoopControl = e);
@@ -106,6 +108,7 @@ public sealed class VmCut : ObservableObject
     public ICommand OpenScreenCrashFlyoutCommand { get; }
     public ICommand ClearScreenFlashCrashCommand { get; }
     public ICommand OpenSlateFlyoutCommand { get; }
+    public ICommand OpenMinorityFlyoutCommand { get; }
     public ICommand ClearSlateFlyoutCommand { get; }
     public ICommand SetStartFxLoopCommand { get; }
     public ICommand SetEndFxLoopCommand { get; }
@@ -147,6 +150,12 @@ public sealed class VmCut : ObservableObject
     {
         get => this.slateFlyoutOpen;
         set => this.SetProperty(ref this.slateFlyoutOpen, value);
+    }
+
+    public bool MinorityFlyoutOpen
+    {
+        get => this.minorityFlyoutOpen;
+        set => this.SetProperty(ref this.minorityFlyoutOpen, value);
     }
 
     //// --------------------------------------------------------------------------------------------

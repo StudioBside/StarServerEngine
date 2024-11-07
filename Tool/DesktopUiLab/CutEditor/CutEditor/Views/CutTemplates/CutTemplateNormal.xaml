@@ -113,6 +113,47 @@
                         </Canvas>
                         <CheckBox Content="TalkAppend" IsChecked="{Binding Cut.TalkAppend}"/>
 
+                        <ui:Flyout Placement="Top" VerticalAlignment="Top"
+                                   IsOpen="{Binding MinorityFlyoutOpen, Mode=TwoWay}">
+                            <Border BorderThickness="0.5" BorderBrush="Gray"
+                                    CornerRadius="5" Padding="5" Margin="0,0,0,10">
+                                <StackPanel Width="250">
+                                    <!--CutEffectg-->
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                        <TextBlock VerticalAlignment="Center" Text="CutEffect : "/>
+                                        <ui:TextBox Width="150"
+                                                    Text="{Binding Cut.CutEffect}"/>
+                                    </StackPanel>
+                                    
+                                    <!--UnitEffect-->
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                        <TextBlock VerticalAlignment="Center" Text="UnitEffect : "/>
+                                        <ComboBox Width="150"
+                                                  ItemsSource="{Binding Source={extensions:EnumValues {x:Type nkm:UnitEffect}}}"
+                                                  SelectedItem="{Binding Cut.UnitEffect}"
+                                                  IsEditable="False"/>
+                                    </StackPanel>
+                                    
+                                    <!--NicknameInput-->
+                                    <CheckBox Content=" : NicknameInput" FlowDirection="RightToLeft"
+                                              IsChecked="{Binding Cut.NicknameInput}"/>
+                                </StackPanel>
+                            </Border>
+                        </ui:Flyout>
+                        <ui:Button Content="잡동사니" Margin="0,0,10,0"
+                                   Command="{Binding OpenMinorityFlyoutCommand}">
+                            <ui:Button.Style>
+                                <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+                                    <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Cut.HasMinorityData}" Value="False">
+                                            <Setter Property="Background" Value="White"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ui:Button.Style>
+                        </ui:Button>
+
                         <Button Content="X"
                                 Command="{Binding DataContext.DeletePickCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
                                 CommandParameter="{Binding .}"/>
