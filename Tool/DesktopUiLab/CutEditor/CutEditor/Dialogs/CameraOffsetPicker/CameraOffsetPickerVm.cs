@@ -46,7 +46,7 @@ public sealed class CameraOffsetPickerVm : ObservableObject
         set => this.SetProperty(ref this.result, value);
     }
 
-    public ImageSource ResultPreview => CameraOffsetController.Instance.None.ImageSource;
+    public ImageSource ResultPreview => CameraOffsetController.Instance.GetImageSource(this.result);
 
     //// --------------------------------------------------------------------------------------------
 

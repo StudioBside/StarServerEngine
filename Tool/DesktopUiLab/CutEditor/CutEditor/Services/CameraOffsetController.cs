@@ -72,9 +72,15 @@ public sealed class CameraOffsetController : IEnumPicker<CameraOffset>
         }
     }
 
-    public bool TryGetValue(CameraOffset offset, [MaybeNullWhen(false)] out Node node)
+    public ImageSource GetImageSource(CameraOffset offset)
     {
-        return this.nodes.TryGetValue(offset, out node);
+        if (this.nodes.TryGetValue(offset, out var node) == false)
+        {
+            Log.Error($"{offset} is not a valid CameraOffset enum literal.");
+            return this.None.ImageSource;
+        }
+
+        return node.ImageSource;
     }
 
     async Task<IEnumPicker<CameraOffset>.PickResult> IEnumPicker<CameraOffset>.Pick(CameraOffset defaultValue)
