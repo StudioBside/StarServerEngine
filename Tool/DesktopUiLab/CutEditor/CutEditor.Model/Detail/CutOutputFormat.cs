@@ -56,6 +56,16 @@ internal class CutOutputFormat
     public SlateControlType? SlateControlType { get; set; }
     public int? SlateSectionNo { get; set; }
     public string? AmbientSound { get; set; }
+    public ImageNameFadeEffect? ImageNameFadeIn { get; set; }
+    public ImageNameFadeEffect? ImageNameFadeOut { get; set; }
+    public string? ImageName { get; set; }
+    public bool? BgAniScale { get; set; }
+    public string[]? BgOffsetScale { get; set; }
+    public float? BgOffsetScaleTime { get; set; }
+    public bool? BgAniPos { get; set; }
+    public string[]? BgPos { get; set; }
+    public Ease? BgEase { get; set; }
+    public float? BgPosTime { get; set; }
 
     internal static float? EliminateZero(float source)
     {

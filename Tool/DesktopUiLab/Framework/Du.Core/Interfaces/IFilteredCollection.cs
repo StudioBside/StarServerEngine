@@ -8,11 +8,14 @@ using System.Collections;
 /// ICollectionView : WindowsBase.dll / in namespace System.ComponentModel
 /// CollectionViewSource : PresentationFramework.dll / in namespace System.Windows.Data.
 /// </summary>
-public interface IFilteredCollection
+/// <typeparam name="T">필터링할 대상의 타입입니다.</typeparam>
+public interface IFilteredCollection<T>
 {
     IEnumerable List { get; }
+    IEnumerable<T> TypedList { get; }
     int SourceCount { get; }
     int FilteredCount { get; }
 
-    void Refresh(string searchKeyword);
+    void Refresh(string searchKeyword) => this.Refresh(searchKeyword, filter: null);
+    void Refresh(string searchKeyword, Predicate<T>? filter);
 }

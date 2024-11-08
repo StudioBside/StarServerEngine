@@ -28,14 +28,15 @@
             <RowDefinition Height="Auto" /> <!--버튼 패널-->
         </Grid.RowDefinitions>
 
-        <!--좌상단 타이틀 영역-->
+        <!--타이틀 영역-->
         <TextBlock Grid.Row="0" Margin="0,0,0,10" FontSize="20" Text="{Binding Title}" />
 
-        <!--좌중단 검색 필터 영역-->
+        <!--검색 필터 영역-->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <ui:SymbolIcon Symbol="Search12"
@@ -53,9 +54,24 @@
                     </ui:IconSourceElement>
                 </ui:TextBox.Icon>
             </ui:TextBox>
+
+            <StackPanel Grid.Column="2"  Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" Text="필터 : "/>
+                <ComboBox MinWidth="200"
+                      ItemsSource="{Binding Filters}"
+                      SelectedItem="{Binding SelectedFilter}"/>
+
+                <TextBlock VerticalAlignment="Center"
+                           Margin="10,0">
+                    <Run>Count : </Run>
+                    <Run Text="{Binding FilteredCount, Mode=OneWay}"/>
+                    <Run> / </Run>
+                    <Run Text="{Binding TotalCount, Mode=OneWay}"/>
+                </TextBlock>
+            </StackPanel>
         </Grid>
 
-        <!--좌하단 파일 리스트 영역-->
+        <!--파일 리스트-->
         <ui:ListView
             Grid.Row="2"
             ItemsSource="{Binding FilteredFiles}"
@@ -63,11 +79,6 @@
             ScrollViewer.VerticalScrollBarVisibility="Auto"
             SelectedItem="{Binding SelectedCutScene}"
             SelectionMode="Single">
-            <!--<ListView.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock  Margin="8,4" FontSize="16" Text="{Binding FileName}" />
-                </DataTemplate>
-            </ListView.ItemTemplate>-->
             <ListView.View>
                 <GridView>
                     <GridViewColumn 
@@ -98,7 +109,8 @@
                                                Command="{Binding DataContext.EditPickedCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
                                                CommandParameter="{Binding .}"/>
                                     <ui:Button Content="읽기" Margin="10,0"
-                                               />
+                                               IsEnabled="False"/>
+                                    <ui:DropDownButton Content="번역 파일 추출" Margin="10,0" />
                                 </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>

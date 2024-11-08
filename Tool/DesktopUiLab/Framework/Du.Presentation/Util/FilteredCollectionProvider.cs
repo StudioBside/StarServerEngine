@@ -10,24 +10,25 @@ using Shared.Interfaces;
 /// </summary>
 public sealed class FilteredCollectionProvider : IFilteredCollectionProvider
 {
-    IFilteredCollection IFilteredCollectionProvider.Build<T>(IEnumerable<T> collection)
+    IFilteredCollection<T> IFilteredCollectionProvider.Build<T>(IEnumerable<T> collection)
     {
         IList listType = collection as IList ?? collection.ToArray();
         return new FilteredCollection<T>(listType);
     }
 
-    private sealed class FilteredCollection<T>(IList collection) : IFilteredCollection
+    private sealed class FilteredCollection<T>(IList collection) : IFilteredCollection<T>
         where T : ISearchable
     {
         private readonly ListCollectionView view = new(collection);
 
         public IEnumerable List => this.view;
+        public IEnumerable<T> TypedList => this.view.Cast<T>();
         public int SourceCount => collection.Count;
         public int FilteredCount => this.view.Count;
 
-        public void Refresh(string searchKeyword)
+        public void Refresh(string searchKeyword, Predicate<T>? filter)
         {
-            if (string.IsNullOrEmpty(searchKeyword))
+            if (string.IsNullOrEmpty(searchKeyword) && filter is null)
             {
                 this.view.Filter = null;
                 return;
@@ -36,6 +37,11 @@ public sealed class FilteredCollectionProvider : IFilteredCollectionProvider
             this.view.Filter = e =>
             {
                 if (e is not T item)
+                {
+                    return false;
+                }
+
+                if (filter is not null && filter(item) == false)
                 {
                     return false;
                 }

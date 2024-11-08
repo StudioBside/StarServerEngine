@@ -11,7 +11,7 @@ using Wpf.Ui.Controls;
 
 public partial class UnitPickerDialog : ContentDialog
 {
-    private readonly IFilteredCollection filteredList;
+    private readonly IFilteredCollection<Unit> filteredList;
     private string searchKeyword = string.Empty;
 
     public UnitPickerDialog(ContentPresenter? dialogHost) : base(dialogHost)

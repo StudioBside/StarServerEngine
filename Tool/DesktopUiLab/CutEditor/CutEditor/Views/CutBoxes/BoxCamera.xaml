@@ -18,20 +18,30 @@
 
     <!--컨트롤 : 카메라-->
     <Border Background="{StaticResource CameraBoxBrush}"
-                            Visibility="{Binding ShowCameraSection, Converter={converters:BoolToVisibilityConverter}}">
-        <StackPanel Orientation="Horizontal" Margin="5">
+            Visibility="{Binding ShowCameraSection, Converter={converters:BoolToVisibilityConverter}}">
+        <StackPanel Orientation="Horizontal" Margin="5"
+                    HorizontalAlignment="Center">
 
             <ui:Button Margin="0,0,10,0"
                        Command="{Binding PickCameraOffsetCommand}"
                        ToolTip="{Binding Cut.CameraOffset}">
                 <ui:Button.Style>
                     <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
-                        <Setter Property="Content" Value="{Binding Cut.CameraOffset}"/>
+                        <Setter Property="Content">
+                            <Setter.Value>
+                                <ui:Image Width="160" CornerRadius="8"
+                                          Source="{Binding Cut.CameraOffset, Converter={lcvt:CameraOffsetToImageConverter}}"/>
+                            </Setter.Value>
+                        </Setter>
                         <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
+                        <Setter Property="Padding" Value="0"/>
+                        <Setter Property="CornerRadius" Value="8"/>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding Cut.CameraEase}" Value="NONE">
+                            <DataTrigger Binding="{Binding Cut.CameraOffset}" Value="NONE">
                                 <Setter Property="Content" Value="Camera Offset"/>
                                 <Setter Property="Background" Value="White"/>
+                                <Setter Property="Padding" Value="6"/>
+                                <Setter Property="CornerRadius" Value="4"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -70,6 +80,7 @@
             
             <!--CameraEase-->
             <ui:Button Margin="0,0,10,0"
+                       Height="65"
                        Command="{Binding PickCameraEaseCommand}"
                        ToolTip="{Binding Cut.CameraEase}">
                 <ui:Button.Style>

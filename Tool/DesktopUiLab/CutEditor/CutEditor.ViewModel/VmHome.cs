@@ -15,11 +15,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 public sealed class VmHome : VmPageBase
 {
+    private const string DefaultFilter = "[All]";
     private readonly List<CutScene> cutScenes = new();
+    private readonly HashSet<string> filters = new();
     private readonly IServiceProvider services;
-    private readonly IFilteredCollection filteredList;
+    private readonly IFilteredCollection<CutScene> filteredList;
     private CutScene? selectedCutScene;
     private string searchKeyword = string.Empty;
+    private string selectedFilter = DefaultFilter;
 
     public VmHome(IServiceProvider services)
     {
@@ -29,9 +32,10 @@ public sealed class VmHome : VmPageBase
         this.EditSelectedCommand = new RelayCommand(this.OnEditSelected, () => this.selectedCutScene is not null);
         this.EditPickedCommand = new RelayCommand<CutScene>(this.OnEditPicked);
         this.NewFileCommand = new AsyncRelayCommand(this.OnNewFile);
+
+        this.filters.Add(DefaultFilter);
     }
 
-    public IList<CutScene> CutScenes => this.cutScenes;
     public CutScene? SelectedCutScene
     {
         get => this.selectedCutScene;
@@ -39,11 +43,20 @@ public sealed class VmHome : VmPageBase
     }
 
     public IEnumerable FilteredFiles => this.filteredList.List;
+    public IEnumerable<string> Filters => this.filters;
+    public int FilteredCount => this.filteredList.FilteredCount;
+    public int TotalCount => this.filteredList.SourceCount;
 
     public string SearchKeyword
     {
         get => this.searchKeyword;
         set => this.SetProperty(ref this.searchKeyword, value);
+    }
+
+    public string SelectedFilter
+    {
+        get => this.selectedFilter;
+        set => this.SetProperty(ref this.selectedFilter, value);
     }
 
     public IRelayCommand EditSelectedCommand { get; }
@@ -54,6 +67,11 @@ public sealed class VmHome : VmPageBase
     {
         this.cutScenes.Clear();
         this.cutScenes.AddRange(cutScenes);
+
+        foreach (var filter in cutScenes.Select(e => e.CutsceneFilter).Distinct())
+        {
+            this.filters.Add(filter);
+        }
     }
 
     //// --------------------------------------------------------------------------------------------
@@ -65,12 +83,18 @@ public sealed class VmHome : VmPageBase
         switch (e.PropertyName)
         {
             case nameof(this.SearchKeyword):
+            case nameof(this.SelectedFilter):
                 if (this.selectedCutScene is not null)
                 {
                     this.SelectedCutScene = null;
                 }
 
-                this.filteredList.Refresh(this.searchKeyword);
+                Predicate<CutScene>? subFilter = this.selectedFilter != DefaultFilter
+                    ? e => e.CutsceneFilter == this.selectedFilter
+                    : null;
+
+                this.filteredList.Refresh(this.searchKeyword, subFilter);
+                this.OnPropertyChanged(nameof(this.FilteredCount));
                 break;
 
             case nameof(this.SelectedCutScene):

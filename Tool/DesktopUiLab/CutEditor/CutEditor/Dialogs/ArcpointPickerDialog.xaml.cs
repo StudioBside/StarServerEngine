@@ -12,7 +12,7 @@ using Wpf.Ui.Controls;
 
 public partial class ArcpointPickerDialog : ContentDialog
 {
-    private readonly IFilteredCollection filteredList;
+    private readonly IFilteredCollection<LobbyItem> filteredList;
     private string searchKeyword = string.Empty;
 
     public ArcpointPickerDialog(ContentPresenter? dialogHost) : base(dialogHost)

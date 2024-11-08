@@ -22,6 +22,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
+using Shared.Templet.Base;
+using Shared.Templet.TempletTypes;
 using static CutEditor.ViewModel.Enums;
 
 public sealed class VmCuts : VmPageBase,
@@ -130,9 +132,10 @@ public sealed class VmCuts : VmPageBase,
         var tokens = text.Split('\n', StringSplitOptions.RemoveEmptyEntries);
         sb.AppendLine($"다음의 텍스트를 이용해 {tokens.Length}개의 cut 데이터를 생성합니다.");
         sb.AppendLine();
-        if (text.Length > 10)
+        int previewCharacterCount = 60;
+        if (text.Length > previewCharacterCount)
         {
-            sb.AppendLine($"{text[..10]} ... (and {text.Length - 10} more)");
+            sb.AppendLine($"{text[..previewCharacterCount]} ... (and {text.Length - previewCharacterCount} more)");
         }
         else
         {
@@ -147,8 +150,24 @@ public sealed class VmCuts : VmPageBase,
 
         foreach (var token in tokens)
         {
+            // 유닛이름 : 텍스트 형식인 경우, 이름을 파싱해 유효한 값인지 확인
+            Unit? unit = null;
+            string talkText = token;
+            var idx = token.IndexOf(':');
+            if (idx > 0)
+            {
+                var unitName = token[..idx].Trim();
+                unit = TempletContainer<Unit>.Values.FirstOrDefault(e => e.Name == unitName);
+                if (unit is not null)
+                {
+                    talkText = token[(idx + 1)..].Trim();
+                }
+            }
+
             var cut = new Cut(this.uidGenerator.Generate());
-            cut.UnitTalk.Korean = token;
+            cut.UnitTalk.Korean = talkText;
+            cut.Unit = unit;
+
             this.cuts.Add(new VmCut(cut, this.services));
         }
 

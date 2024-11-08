@@ -10,10 +10,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 public partial class BgFilePickerDialogVm : ObservableObject
 {
-    private readonly IFilteredCollection imageFiles;
-    private readonly IFilteredCollection movFiles;
-    private readonly IFilteredCollection slateFiles;
-    private readonly IFilteredCollection spineFiles;
+    private readonly IFilteredCollection<ElementType> imageFiles;
+    private readonly IFilteredCollection<ElementType> movFiles;
+    private readonly IFilteredCollection<ElementType> slateFiles;
+    private readonly IFilteredCollection<ElementType> spineFiles;
     private string searchKeyword = string.Empty;
     private string? selected;
 

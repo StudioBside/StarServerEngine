@@ -15,7 +15,7 @@ using Wpf.Ui.Controls;
 
 public partial class AssetPickerDialog : ContentDialog
 {
-    private readonly IFilteredCollection filteredList;
+    private readonly IFilteredCollection<ElementType> filteredList;
     private string searchKeyword = string.Empty;
 
     public AssetPickerDialog(

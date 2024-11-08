@@ -64,6 +64,20 @@ public sealed class Cut : ObservableObject
     private CameraOffset cameraOffset;
     private Ease cameraEase;
     private CameraOffsetTime cameraOffsetTime;
+    #region ImageName
+    private ImageNameFadeEffect imageNameFadeIn;
+    private ImageNameFadeEffect imageNameFadeOut;
+    private string? imageName;
+    #endregion
+    #region BgControl
+    private bool bgAniScale;
+    private string[]? bgOffsetScale; // NKMVector3
+    private float bgOffsetScaleTime;
+    private bool bgAniPos;
+    private string[]? bgPos; // NKMVector2
+    private Ease bgEase;
+    private float bgPosTime;
+    #endregion
 
     public Cut(long uid)
     {
@@ -115,6 +129,26 @@ public sealed class Cut : ObservableObject
         this.cutEffect = token.GetString("CutEffect", null!);
         this.unitEffect = token.GetEnum("UnitEffect", UnitEffect.NONE);
         this.nicknameInput = token.GetBool("NicknameInput", false);
+        this.imageNameFadeIn = token.GetEnum("ImageNameFadeIn", ImageNameFadeEffect.NONE);
+        this.imageNameFadeOut = token.GetEnum("ImageNameFadeOut", ImageNameFadeEffect.NONE);
+        this.imageName = token.GetString("ImageName", null!);
+        this.bgAniScale = token.GetBool("BgAniScale", false);
+        this.bgOffsetScaleTime = token.GetFloat("BgOffsetScaleTime", 0f);
+        this.bgAniPos = token.GetBool("BgAniPos", false);
+        this.bgEase = token.GetEnum("BgEase", Ease.Unset);
+        this.bgPosTime = token.GetFloat("BgPosTime", 0f);
+        var buffer = new List<string>();
+
+        if (token.TryGetArray("BgOffsetScale", buffer))
+        {
+            this.bgOffsetScale = buffer.ToArray();
+        }
+
+        if (token.TryGetArray("BgPos", buffer))
+        {
+            this.bgPos = buffer.ToArray();
+        }
+
         if (token.TryGetEnum<TransitionEffect>("TransitionEffect", out var transitionEffect))
         {
             this.transitionEffect = transitionEffect;
@@ -453,6 +487,16 @@ public sealed class Cut : ObservableObject
             SlateControlType = EliminateEnum(this.slateControlType, SlateControlType.NONE),
             SlateSectionNo = EliminateZeroInt(this.slateSectionNo),
             AmbientSound = this.ambientSound,
+            ImageNameFadeIn = EliminateEnum(this.imageNameFadeIn, ImageNameFadeEffect.NONE),
+            ImageNameFadeOut = EliminateEnum(this.imageNameFadeOut, ImageNameFadeEffect.NONE),
+            ImageName = this.imageName,
+            BgAniScale = EliminateFalse(this.bgAniScale),
+            BgOffsetScale = this.bgOffsetScale,
+            BgOffsetScaleTime = CutOutputFormat.EliminateZero(this.bgOffsetScaleTime),
+            BgAniPos = EliminateFalse(this.bgAniPos),
+            BgPos = this.bgPos,
+            BgEase = EliminateEnum(this.bgEase, Ease.Unset),
+            BgPosTime = CutOutputFormat.EliminateZero(this.bgPosTime),
         };
 
         this.bgFadeInOut?.WriteTo(result);

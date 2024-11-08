@@ -15,7 +15,7 @@ public sealed partial class VmHome : VmPageBase
     private readonly IUserInputProvider<string> stringProvider;
     private readonly IUserErrorNotifier errorNotifier;
     private readonly List<BindFile> bindFiles = new();
-    private readonly IFilteredCollection filteredFiles = null!;
+    private readonly IFilteredCollection<BindFile> filteredFiles = null!;
     private string searchKeyword = string.Empty;
 
     public VmHome(
