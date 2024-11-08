@@ -101,6 +101,9 @@
             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Margin="5"
                         HorizontalAlignment="Right">
 
+                <ui:Button Margin="3" Content="찾기 / 바꾸기"
+                           Icon="{ui:SymbolIcon ArrowSwap20}"
+                           Command="{Binding FindAndReplaceCommand}"/>
                 <ui:Button Margin="3" Content="목록으로"
                            Icon="{ui:SymbolIcon ArrowStepBack16}"
                            Command="{Binding GoToListCommand}"/>
