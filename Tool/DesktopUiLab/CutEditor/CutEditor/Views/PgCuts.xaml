@@ -35,7 +35,6 @@
                 <ResourceDictionary Source="CutTemplates/CutCommon.xaml"/>
                 <ResourceDictionary Source="CutTemplates/CutTemplateNormal.xaml"/>
                 <ResourceDictionary Source="CutTemplates/CutTemplateBranch.xaml"/>
-                <ResourceDictionary Source="CutTemplates/CutTemplateSummary.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <DataTemplate x:Key="SwitchableTemplet">
@@ -48,12 +47,9 @@
 
                             <!-- Triggers to change Template -->
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding DataType}" Value="{x:Static viewmodels:Enums+CutDataType.Branch}">
+                                <DataTrigger Binding="{Binding DataType}"
+                                             Value="{x:Static viewmodels:Enums+CutDataType.Branch}">
                                     <Setter Property="ContentTemplate" Value="{StaticResource CutBranchTemplet}" />
-                                </DataTrigger>
-
-                                <DataTrigger Binding="{Binding DataContext.ShowSummary, RelativeSource={RelativeSource AncestorType=ListView}}" Value="True">
-                                    <Setter Property="ContentTemplate" Value="{StaticResource CutSummaryTemplet}" />
                                 </DataTrigger>
                             </Style.Triggers>
 
@@ -73,11 +69,6 @@
 
         <!--상단 패널-->
         <DockPanel Grid.Row="0">
-
-            <!--요약-->
-            <StackPanel Orientation="Horizontal" Margin="15,5,5,5">
-                <ui:ToggleSwitch OffContent="기본" OnContent="요약" IsChecked="{Binding ShowSummary}"/>
-            </StackPanel>
 
             <!--버튼 배열-->
             <StackPanel Orientation="Horizontal" Margin="5">
@@ -112,7 +103,7 @@
 
                 <ui:Button Margin="3" Content="목록으로"
                            Icon="{ui:SymbolIcon ArrowStepBack16}"
-                           Command="{Binding BackCommand}"/>
+                           Command="{Binding GoToListCommand}"/>
                 <ui:Button Margin="3" Content="파일 열기"
                            Icon="{ui:SymbolIcon Code16}"
                            Command="{Binding OpenFileCommand}"/>

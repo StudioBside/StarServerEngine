@@ -8,9 +8,8 @@ using CutEditor.ViewModel.Detail;
 
 public sealed class VmGlobalState
 {
-    private VmCuts.CrateParam? vmCutsCreateParam;
-
     public static VmGlobalState Instance => Singleton<VmGlobalState>.Instance;
+    public VmCuts.CrateParam? VmCutsCreateParam { get; private set; }
 
     public void Initialize()
     {
@@ -20,19 +19,7 @@ public sealed class VmGlobalState
 
     internal void ReserveVmCuts(VmCuts.CrateParam param)
     {
-        this.vmCutsCreateParam = param;
-    }
-
-    internal bool PopVmCuts([MaybeNullWhen(false)] out VmCuts.CrateParam param)
-    {
-        if (this.vmCutsCreateParam is null)
-        {
-            param = default;
-            return false;
-        }
-
-        param = this.vmCutsCreateParam;
-        this.vmCutsCreateParam = null;
-        return true;
+        // 마지막으로 reserve한 param은 계속 유지. history back -> forward 시에 사용
+        this.VmCutsCreateParam = param;
     }
 }

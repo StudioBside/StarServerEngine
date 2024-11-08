@@ -39,14 +39,13 @@ public sealed class VmCuts : VmPageBase,
     private readonly UndoController undoController;
     private readonly string packetExeFile;
     private readonly IServiceScope serviceScope;
-    private bool showSummary;
 
     public VmCuts(IConfiguration config, IServiceProvider services)
     {
         this.serviceScope = services.CreateScope();
         this.undoController = this.serviceScope.ServiceProvider.GetRequiredService<UndoController>();
         this.services = services;
-        this.BackCommand = new RelayCommand(this.OnBack);
+        this.GoToListCommand = new RelayCommand(this.OnGoToList);
         this.SaveCommand = new AsyncRelayCommand(this.OnSave);
         this.OpenFileCommand = new RelayCommand(this.OnOpenFile);
         this.CopyFileNameCommand = new RelayCommand(this.OnCopyFileName);
@@ -54,11 +53,12 @@ public sealed class VmCuts : VmPageBase,
         this.NewCutCommand = new RelayCommand<CutDataType>(this.OnNewCut);
         this.DeletePickCommand = new RelayCommand<VmCut>(this.OnDeletePick);
 
-        if (VmGlobalState.Instance.PopVmCuts(out var param) == false)
+        if (VmGlobalState.Instance.VmCutsCreateParam is null)
         {
             throw new Exception($"VmCuts.CreateParam is not set in the GlobalState.");
         }
 
+        var param = VmGlobalState.Instance.VmCutsCreateParam;
         this.textFilePath = config["CutTextFilePath"] ?? throw new Exception("CutTextFilePath is not set in the configuration file.");
         this.binFilePath = config["CutBinFilePath"] ?? throw new Exception("CutBinFilePath is not set in the configuration file.");
         this.packetExeFile = config["TextFilePacker"] ?? throw new Exception("TextFilePacker is not set in the configuration file.");
@@ -102,18 +102,13 @@ public sealed class VmCuts : VmPageBase,
     public IList<VmCut> SelectedCuts => this.selectedCuts;
     public ICommand UndoCommand => this.undoController.UndoCommand;
     public ICommand RedoCommand => this.undoController.RedoCommand;
-    public ICommand BackCommand { get; }
+    public ICommand GoToListCommand { get; }
     public ICommand SaveCommand { get; }
     public ICommand OpenFileCommand { get; }
     public ICommand CopyFileNameCommand { get; }
     public IRelayCommand DeleteCommand { get; } // 현재 (멀티)선택한 대상을 모두 삭제
     public ICommand NewCutCommand { get; }
     public ICommand DeletePickCommand { get; } // 인자로 넘어오는 1개의 cut을 삭제
-    public bool ShowSummary
-    {
-        get => this.showSummary;
-        set => this.SetProperty(ref this.showSummary, value);
-    }
 
     internal CutUidGenerator UidGenerator => this.uidGenerator;
     internal IServiceProvider Services => this.services;
@@ -165,8 +160,21 @@ public sealed class VmCuts : VmPageBase,
             }
 
             var cut = new Cut(this.uidGenerator.Generate());
-            cut.UnitTalk.Korean = talkText;
             cut.Unit = unit;
+
+            // < ~ > 로 둘러싸인 경우 선택지 포맷으로 인식
+            if (unit is null && talkText.StartsWith("<") && talkText.EndsWith(">"))
+            {
+                var newChoice = new ChoiceOption();
+                newChoice.Text.Korean = talkText[1..^1];
+                cut.Choices.Add(newChoice);
+            }
+            else
+            {
+                // 아닐 땐 일반 unitTalk.
+                cut.UnitTalk.Korean = talkText;
+                cut.TalkTime = Cut.TalkTimeDefault;
+            }
 
             this.cuts.Add(new VmCut(cut, this.services));
         }
@@ -196,9 +204,9 @@ public sealed class VmCuts : VmPageBase,
         //}
     }
 
-    private void OnBack()
+    private void OnGoToList()
     {
-        WeakReferenceMessenger.Default.Send(new NavigationMessage("GoBack"));
+        WeakReferenceMessenger.Default.Send(new NavigationMessage("Views/PgHome.xaml"));
     }
 
     private async Task OnSave()

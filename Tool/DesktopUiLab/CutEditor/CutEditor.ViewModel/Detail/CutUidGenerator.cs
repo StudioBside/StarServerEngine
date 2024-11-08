@@ -25,7 +25,7 @@ internal sealed class CutUidGenerator
             // 기존 포맷이어서 파일에 uid가 없는 경우 : 신규 발급
             foreach (var data in cuts)
             {
-                data.Cut.SetUid(this.Generate());
+                data.Cut.ResetOldDataUid(this.Generate());
             }
         }
     }

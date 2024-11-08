@@ -105,12 +105,17 @@
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
+                                    
                                     <ui:Button Content="편집" Margin="10,0"
                                                Command="{Binding DataContext.EditPickedCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
                                                CommandParameter="{Binding .}"/>
+
                                     <ui:Button Content="읽기" Margin="10,0"
-                                               IsEnabled="False"/>
+                                               Command="{Binding DataContext.ReadPickedCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                               CommandParameter="{Binding .}"/>
+                                    
                                     <ui:DropDownButton Content="번역 파일 추출" Margin="10,0" />
+
                                 </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>

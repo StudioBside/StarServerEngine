@@ -18,6 +18,8 @@ using static Shared.Templet.Enums;
 
 public sealed class Cut : ObservableObject
 {
+    public const float TalkTimeDefault = 0.03f;
+
     private readonly L10nText unitTalk = new();
     private readonly ObservableCollection<ChoiceOption> choices = new();
     private readonly ObservableCollection<string> unitNames = new();
@@ -82,11 +84,16 @@ public sealed class Cut : ObservableObject
     public Cut(long uid)
     {
         this.Uid = uid;
+
+        // 컬렉션의 요소들이 변경될 때 UnitNames로 바인딩한 값들도 새로고침 하도록 알림 추가.
+        this.unitNames.CollectionChanged += (s, e) => this.OnPropertyChanged(nameof(this.UnitNames));
+
+        // unktTalk 변경될 때 talkTime 값을 변경하기 위해 이벤트 수신
+        this.unitTalk.PropertyChanged += this.UnitTalk_PropertyChanged;
     }
 
-    public Cut(JToken token)
+    public Cut(JToken token) : this(token.GetInt64("Uid", 0))
     {
-        this.Uid = token.GetInt64("Uid", 0);
         this.contentsTag = token.GetString("ContentsTag", null!);
         this.cutsceneStrId = token.GetString("CutsceneStrId", null!);
         this.waitClick = token.GetBool("WaitClick", true);
@@ -185,9 +192,6 @@ public sealed class Cut : ObservableObject
                 Log.Error($"로비 아이템 템플릿을 찾을 수 없습니다. ArcpointId:{this.arcpointId}");
             }
         }
-
-        // 컬렉션의 요소들이 변경될 때 UnitNames로 바인딩한 값들도 새로고침 하도록 알림 추가.
-        this.unitNames.CollectionChanged += (s, e) => this.OnPropertyChanged(nameof(this.UnitNames));
     }
 
     public long Uid { get; private set; }
@@ -552,7 +556,7 @@ public sealed class Cut : ObservableObject
         return this.unitTalk.Korean;
     }
 
-    public void SetUid(long uid)
+    public void ResetOldDataUid(long uid)
     {
         if (this.Uid != 0)
         {
@@ -560,6 +564,10 @@ public sealed class Cut : ObservableObject
         }
 
         this.Uid = uid;
+        foreach (var choice in this.choices)
+        {
+            choice.InitializeUid(this.Uid, choice.ChoiceUid);
+        }
     }
 
     public bool HasScreenBoxData()
@@ -623,6 +631,16 @@ public sealed class Cut : ObservableObject
             case nameof(this.UnitEffect):
             case nameof(this.NicknameInput):
                 this.OnPropertyChanged(nameof(this.HasMinorityData));
+                break;
+        }
+    }
+
+    private void UnitTalk_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        switch (e.PropertyName)
+        {
+            case nameof(this.UnitTalk.Korean):
+                this.TalkTime = string.IsNullOrEmpty(this.UnitTalk.Korean) ? 0f : TalkTimeDefault;
                 break;
         }
     }

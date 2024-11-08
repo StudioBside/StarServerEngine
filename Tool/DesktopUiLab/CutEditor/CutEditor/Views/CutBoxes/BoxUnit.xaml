@@ -248,10 +248,12 @@
                 <Grid Grid.Row="0" Grid.Column="1" Grid.RowSpan="2"
                                             Margin="0,0,10,0">
                     <!--WrapWithOverflow : 단어의 잘림을 허용하는 설정-->
-                    <ui:TextBox Text="{Binding Cut.UnitTalk.Korean}"
+                    <ui:TextBox Text="{Binding Cut.UnitTalk.Korean, UpdateSourceTrigger=PropertyChanged}"
                                 MinLines="2" Width="500"
                                 TextWrapping="WrapWithOverflow"
-                                AcceptsReturn="True"/>
+                                PlaceholderText="[ [ 텍스트가 비어있습니다 ] ]"
+                                AcceptsReturn="True">
+                    </ui:TextBox>
                     <StackPanel Orientation="Horizontal"
                                 VerticalAlignment="Bottom"
                                 HorizontalAlignment="Right">

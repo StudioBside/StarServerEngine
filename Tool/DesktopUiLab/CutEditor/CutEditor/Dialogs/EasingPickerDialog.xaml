@@ -71,7 +71,7 @@
             <TextBlock Text="Selected : " Margin="0,0,0,10" HorizontalAlignment="Center"/>
             <ui:Image Source="{Binding Selected.ImageSource}" Width="130"
                       CornerRadius="8"
-                      BorderBrush="{StaticResource AnchorBrush}"
+                      BorderBrush="{StaticResource PickedGraphBrush}"
                       BorderThickness="1"/>
         </StackPanel>
 

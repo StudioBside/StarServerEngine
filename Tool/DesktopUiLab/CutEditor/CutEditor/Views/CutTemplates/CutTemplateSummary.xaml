@@ -14,8 +14,7 @@
     </ResourceDictionary.MergedDictionaries>
 
     <DataTemplate x:Key="CutSummaryTemplet">
-        <Border Style="{StaticResource ChangeSelectedBgStyle}" BorderThickness="0" BorderBrush="LightGray"
-                    CornerRadius="3">
+        <Border Style="{StaticResource ChangeSelectedBgStyle}" CornerRadius="3">
             <Grid Margin="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -35,8 +34,7 @@
                             Margin="0,0,10,0" Padding="5"
                             CornerRadius="10"
                             Visibility="{Binding Cut.JumpAnchor, Converter={converters:EnumToCollapsedConverter}, ConverterParameter=None}">
-                        <TextBlock VerticalAlignment="Center"
-                               Text="{Binding Cut.JumpAnchor}" />
+                        <TextBlock VerticalAlignment="Center" Text="{Binding Cut.JumpAnchor}" />
                     </Border>
 
                     <TextBlock Margin="0,0,10,0"
@@ -45,8 +43,7 @@
                                Text="{Binding Cut.CutsceneClear}"
                                Visibility="{Binding Cut.CutsceneClear, Converter={converters:EnumToCollapsedConverter}, ConverterParameter=NONE}"/>
 
-                    <TextBlock VerticalAlignment="Center" 
-                               Text="{Binding SummaryText}">
+                    <TextBlock VerticalAlignment="Center" Text="{Binding SummaryText}">
                         <b:Interaction.Behaviors>
                             <behaviors:TextBlockColorBehavior />
                         </b:Interaction.Behaviors>

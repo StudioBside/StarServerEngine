@@ -31,6 +31,7 @@ public sealed class VmHome : VmPageBase
         this.filteredList = services.GetRequiredService<IFilteredCollectionProvider>().Build(this.cutScenes);
         this.EditSelectedCommand = new RelayCommand(this.OnEditSelected, () => this.selectedCutScene is not null);
         this.EditPickedCommand = new RelayCommand<CutScene>(this.OnEditPicked);
+        this.ReadPickedCommand = new RelayCommand<CutScene>(this.OnReadPicked);
         this.NewFileCommand = new AsyncRelayCommand(this.OnNewFile);
 
         this.filters.Add(DefaultFilter);
@@ -60,7 +61,8 @@ public sealed class VmHome : VmPageBase
     }
 
     public IRelayCommand EditSelectedCommand { get; }
-    public IRelayCommand EditPickedCommand { get; }
+    public ICommand EditPickedCommand { get; }
+    public ICommand ReadPickedCommand { get; }
     public ICommand NewFileCommand { get; }
 
     public void AddCutScenes(IEnumerable<CutScene> cutScenes)
@@ -139,5 +141,17 @@ public sealed class VmHome : VmPageBase
 
         VmGlobalState.Instance.ReserveVmCuts(new VmCuts.CrateParam { NewFileName = fileName });
         WeakReferenceMessenger.Default.Send(new NavigationMessage("Views/PgCuts.xaml"));
+    }
+
+    private void OnReadPicked(CutScene? scene)
+    {
+        if (scene is null)
+        {
+            Log.Error($"argument is null");
+            return;
+        }
+
+        VmGlobalState.Instance.ReserveVmCuts(new VmCuts.CrateParam { CutScene = scene });
+        WeakReferenceMessenger.Default.Send(new NavigationMessage("Views/PgCutsSummary.xaml"));
     }
 }

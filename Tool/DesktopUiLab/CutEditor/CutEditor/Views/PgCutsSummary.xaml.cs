@@ -10,6 +10,6 @@ public sealed partial class PgCutsSummary : Page
     public PgCutsSummary()
     {
         this.InitializeComponent();
-        this.DataContext = App.Current.Services.GetRequiredService<VmCuts>();
+        this.DataContext = App.Current.Services.GetRequiredService<VmCutsSummary>();
     }
 }
