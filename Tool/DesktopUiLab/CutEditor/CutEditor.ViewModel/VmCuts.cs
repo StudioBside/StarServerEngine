@@ -42,6 +42,7 @@ public sealed class VmCuts : VmPageBase,
 
     public VmCuts(IConfiguration config, IServiceProvider services)
     {
+        this.FindFlyout = new VmFindFlyout(this, this.cuts);
         this.serviceScope = services.CreateScope();
         this.undoController = this.serviceScope.ServiceProvider.GetRequiredService<UndoController>();
         this.services = services;
@@ -100,6 +101,7 @@ public sealed class VmCuts : VmPageBase,
 
     public IList<VmCut> Cuts => this.cuts;
     public IList<VmCut> SelectedCuts => this.selectedCuts;
+    public VmFindFlyout FindFlyout { get; }
     public ICommand UndoCommand => this.undoController.UndoCommand;
     public ICommand RedoCommand => this.undoController.RedoCommand;
     public ICommand GoToListCommand { get; }
@@ -113,7 +115,6 @@ public sealed class VmCuts : VmPageBase,
     internal CutUidGenerator UidGenerator => this.uidGenerator;
     internal IServiceProvider Services => this.services;
     private string DebugName => $"[{this.name}]";
-
     async Task<bool> IClipboardHandler.HandlePastedTextAsync(string text)
     {
         text = text.Trim();

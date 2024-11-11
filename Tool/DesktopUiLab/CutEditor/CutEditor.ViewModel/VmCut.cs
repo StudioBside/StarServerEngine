@@ -69,7 +69,6 @@ public sealed class VmCut : ObservableObject
         this.SetEndFxLoopCommand = new RelayCommand<CutsceneSoundLoopControl>(e => this.Cut.EndFxLoopControl = e);
         this.EditBgFadeCommand = new AsyncRelayCommand(this.OnEditBgFade);
         this.SetTalkPositionControlCommand = new RelayCommand<TalkPositionControlType>(e => this.Cut.TalkPositionControl = e);
-        this.SetCameraOffsetTimeCommand = new RelayCommand<CameraOffsetTime>(e => this.Cut.CameraOffsetTime = e);
 
         this.showUnitSection = cut.HasUnitData();
         this.showScreenSection = cut.HasScreenBoxData();
@@ -121,7 +120,6 @@ public sealed class VmCut : ObservableObject
     public ICommand SetEndFxLoopCommand { get; }
     public ICommand EditBgFadeCommand { get; }
     public ICommand SetTalkPositionControlCommand { get; }
-    public ICommand SetCameraOffsetTimeCommand { get; }
     public bool ShowUnitSection
     {
         get => this.showUnitSection;

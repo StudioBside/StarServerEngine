@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     xmlns:local="clr-namespace:CutEditor.Views"
     xmlns:lcvt="clr-namespace:CutEditor.Converters"
+    xmlns:lbh="clr-namespace:CutEditor.Behaviors"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:behaviors="clr-namespace:Du.Presentation.Behaviors;assembly=Du.Presentation"
     xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
@@ -25,6 +26,7 @@
                     CommandParameter="{x:Static viewmodels:Enums+CutDataType.Normal}"/>
         <KeyBinding Key="D2" Modifiers="Ctrl" Command="{Binding NewCutCommand}"
                     CommandParameter="{x:Static viewmodels:Enums+CutDataType.Branch}"/>
+        <KeyBinding Key="F" Modifiers="Ctrl" Command="{Binding FindFlyout.OpenCommand}"/>
     </Page.InputBindings>
     <b:Interaction.Behaviors>
         <behaviors:PageBehavior HandleClipboard="True"/>
@@ -101,9 +103,41 @@
             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Margin="5"
                         HorizontalAlignment="Right">
 
+                <ui:Flyout Placement="Bottom"
+                           VerticalAlignment="Bottom"
+                           DataContext="{Binding FindFlyout}"
+                           IsOpen="{Binding IsOpen, Mode=TwoWay}">
+                    <ui:Flyout.InputBindings>
+                        <KeyBinding Key="Esc" Command="{Binding CloseCommand}"/>
+                    </ui:Flyout.InputBindings>
+                    <StackPanel Width="300">
+                        <ui:TextBox Margin="0,0,0,10" PlaceholderText="찾기"
+                                    Text="{Binding FindText, UpdateSourceTrigger=PropertyChanged}">
+                            <ui:TextBox.InputBindings>
+                                <KeyBinding Key="Enter" Command="{Binding FindNextCommand}"/>
+                                <KeyBinding Key="Enter" Modifiers="Shift" Command="{Binding FindPrevCommand}"/>
+                                <KeyBinding Key="S" Modifiers="Alt" Command="{Binding ReplaceAllCommand}"/>
+                            </ui:TextBox.InputBindings>
+                            <b:Interaction.Behaviors>
+                                <behaviors:TextBoxBehavior IsFocused="True" />
+                            </b:Interaction.Behaviors>
+                        </ui:TextBox>
+                        <ui:TextBox Margin="0,0,0,10" PlaceholderText="바꾸기"
+                                    Text="{Binding ReplaceText}"/>
+                        <StackPanel Margin="0" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <ui:Button Margin="0,0,10,0" Content="이전"
+                                       Command="{Binding FindPrevCommand}"/>
+                            <ui:Button Margin="0,0,10,0" Content="다음"
+                                       Command="{Binding FindNextCommand}"/>
+                            <ui:Button Content="모두 바꾸기"
+                                       Command="{Binding ReplaceAllCommand}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </ui:Flyout>
                 <ui:Button Margin="3" Content="찾기 / 바꾸기"
+                           ToolTip="Ctrl + F"
                            Icon="{ui:SymbolIcon ArrowSwap20}"
-                           Command="{Binding FindAndReplaceCommand}"/>
+                           Command="{Binding FindFlyout.OpenCommand}"/>
                 <ui:Button Margin="3" Content="목록으로"
                            Icon="{ui:SymbolIcon ArrowStepBack16}"
                            Command="{Binding GoToListCommand}"/>
@@ -114,6 +148,7 @@
                            Icon="{ui:SymbolIcon Copy16}"
                            Command="{Binding CopyFileNameCommand}"/>
                 <ui:Button Margin="3" Content="저장하기" Appearance="Primary"
+                           ToolTip="Ctrl + S"
                            Icon="{ui:SymbolIcon Save16}"
                            Command="{Binding SaveCommand}"/>
             </StackPanel>
@@ -134,7 +169,7 @@
                     <Setter Property="Margin" Value="0"/>
                 </Style>
             </ListView.ItemContainerStyle>
-            <ui:ListView.ContextMenu>
+            <!--<ui:ListView.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="삭제" Command="{Binding DeleteCommand}">
                         <MenuItem.Icon>
@@ -142,9 +177,10 @@
                         </MenuItem.Icon>
                     </MenuItem>
                 </ContextMenu>
-            </ui:ListView.ContextMenu>
+            </ui:ListView.ContextMenu>-->
             <b:Interaction.Behaviors>
                 <behaviors:ListViewBehavior ReorderByDragDrop="True"/>
+                <lbh:CutsListController/>
             </b:Interaction.Behaviors>
         </ui:ListView>
         

@@ -48,36 +48,6 @@
                 </ui:Button.Style>
             </ui:Button>
 
-            <!--CameraOffsetTime-->
-            <ui:DropDownButton Margin="0,0,10,0">
-                <!--값이 없을 때는 한글 표기. 값이 있을때는 배경색을 다르게 표기-->
-                <ui:DropDownButton.Style>
-                    <Style TargetType="ui:DropDownButton" BasedOn="{StaticResource {x:Type ui:DropDownButton}}">
-                        <Setter Property="Content" Value="{Binding Cut.CameraOffsetTime
-                            , Converter={converters:EnumToParamConverter}, ConverterParameter=없음.Slow.Normal.Fast}"/>
-                        <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Cut.CameraOffsetTime}" Value="NONE">
-                                <Setter Property="Content" Value="오프셋 타임"/>
-                                <Setter Property="Background" Value="White"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </ui:DropDownButton.Style>
-                <ui:DropDownButton.Flyout>
-                    <ContextMenu ItemsSource="{Binding Source={extensions:EnumValues {x:Type nkm:CameraOffsetTime}}}">
-                        <ContextMenu.ItemTemplate>
-                            <DataTemplate>
-                                <MenuItem Header="{Binding .
-                                    , Converter={converters:EnumToParamConverter}, ConverterParameter=없음.Slow.Normal.Fast}"
-                       Command="{Binding DataContext.SetCameraOffsetTimeCommand, RelativeSource={RelativeSource AncestorType=ListViewItem}}"
-                       CommandParameter="{Binding .}"/>
-                            </DataTemplate>
-                        </ContextMenu.ItemTemplate>
-                    </ContextMenu>
-                </ui:DropDownButton.Flyout>
-            </ui:DropDownButton>
-            
             <!--CameraEase-->
             <ui:Button Margin="0,0,10,0"
                        Height="65"
@@ -104,6 +74,26 @@
                     </Style>
                 </ui:Button.Style>
             </ui:Button>
+            
+            <!--CameraOffsetTime-->
+            <Grid VerticalAlignment="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" VerticalAlignment="Center" Text="CameraOffsetTime : "/>
+                <StackPanel Grid.Row="1" Orientation="Horizontal">
+                    <RadioButton MinWidth="80" VerticalAlignment="Center" Content="없음"
+                                 IsChecked="{Binding Cut.CameraOffsetTime, Converter={converters:EnumBooleanConverter}, ConverterParameter=NONE}"/>
+                    <RadioButton MinWidth="80" VerticalAlignment="Center" Content="Slow"
+                                 IsChecked="{Binding Cut.CameraOffsetTime, Converter={converters:EnumBooleanConverter}, ConverterParameter=SL}"/>
+                    <RadioButton MinWidth="90" VerticalAlignment="Center" Content="Normal"
+                                 IsChecked="{Binding Cut.CameraOffsetTime, Converter={converters:EnumBooleanConverter}, ConverterParameter=NR}"/>
+                    <RadioButton MinWidth="80" VerticalAlignment="Center" Content="Fast"
+                                 IsChecked="{Binding Cut.CameraOffsetTime, Converter={converters:EnumBooleanConverter}, ConverterParameter=FA}"/>
+                </StackPanel>
+            </Grid>
 
         </StackPanel>
     </Border>

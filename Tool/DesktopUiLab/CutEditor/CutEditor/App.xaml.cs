@@ -3,6 +3,7 @@
 using System.IO;
 using System.Windows;
 using Cs.Logging;
+using CutEditor.Behaviors;
 using CutEditor.Model;
 using CutEditor.Model.Interfaces;
 using CutEditor.Services;
@@ -57,6 +58,7 @@ public partial class App : Application
         services.AddTransient<ITempletPicker<LobbyItem>, ArcpointPicker>();
         services.AddSingleton<IEnumPicker<Ease>>(EasingGraph.Instance);
         services.AddSingleton<IEnumPicker<CameraOffset>>(CameraOffsetController.Instance);
+        services.AddSingleton(_ => CutsListController.LastInstance);
         services.AddKeyedTransient<IAssetPicker, BgmPicker>("bgm");
         services.AddKeyedTransient<IAssetPicker, SfxPicker>("sfx");
         services.AddKeyedTransient<IAssetPicker, VoicePicker>("voice");
@@ -68,7 +70,7 @@ public partial class App : Application
         services.AddTransient<IUserInputProvider<bool>, BooleanInputProvider>();
         services.AddSingleton<IContentDialogService, ContentDialogService>();
         services.AddSingleton<ISnackbarService, SnackbarService>();
-        services.AddTransient<IUserErrorNotifier, ErrorNotifierDialog>();
+        services.AddTransient<IPopupMessageNotifier, PopupMessageNotifier>();
         services.AddTransient<ICollectionEditor, CollectionEditor>();
         services.AddTransient<IFilteredCollectionProvider, FilteredCollectionProvider>();
         services.AddTransient<IUserWaitingNotifier, WaitingNotifierDialog>();

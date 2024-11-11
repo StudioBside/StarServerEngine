@@ -13,14 +13,14 @@ using Du.Core.Models;
 public sealed partial class VmHome : VmPageBase
 {
     private readonly IUserInputProvider<string> stringProvider;
-    private readonly IUserErrorNotifier errorNotifier;
+    private readonly IPopupMessageNotifier errorNotifier;
     private readonly List<BindFile> bindFiles = new();
     private readonly IFilteredCollection<BindFile> filteredFiles = null!;
     private string searchKeyword = string.Empty;
 
     public VmHome(
         IUserInputProvider<string> stringProvider,
-        IUserErrorNotifier errorNotifier,
+        IPopupMessageNotifier errorNotifier,
         IFilteredCollectionProvider collectionViewProvider)
     {
         this.Title = "바인딩 파일 목록";

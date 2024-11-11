@@ -46,7 +46,7 @@ public partial class App : Application
 
         services.AddTransient<IUserInputProvider<string>, StringInputProvider>();
         services.AddSingleton<IContentDialogService, ContentDialogService>();
-        services.AddTransient<IUserErrorNotifier, ErrorNotifierDialog>();
+        services.AddTransient<IPopupMessageNotifier, PopupMessageNotifier>();
         services.AddTransient<ICollectionEditor, CollectionEditor>();
         services.AddTransient<IFilteredCollectionProvider, FilteredCollectionProvider>();
         services.AddTransient<IUserWaitingNotifier, WaitingNotifierDialog>();
