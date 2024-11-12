@@ -8,5 +8,5 @@ public interface IAssetPicker
 
     Task<PickResult> PickAsset() => this.PickAsset(defaultValue: null);
 
-    public readonly record struct PickResult(string? AssetFile, bool IsCanceled);
+    public readonly record struct PickResult(string? Data, bool IsCanceled);
 }

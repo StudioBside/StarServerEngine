@@ -12,9 +12,11 @@ using CutEditor.ViewModel.Detail;
 using Du.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using NKM;
+using Shared.Templet.Strings;
 using Shared.Templet.TempletTypes;
 using static CutEditor.Model.Enums;
 using static CutEditor.ViewModel.Enums;
+using static Shared.Templet.Enums;
 
 public sealed class VmCut : ObservableObject
 {
@@ -138,7 +140,10 @@ public sealed class VmCut : ObservableObject
         set => this.SetProperty(ref this.showCameraSection, value);
     }
 
-    public string SummaryText => this.Cut.GetSummaryText();
+    public string SummaryKorean => this.Cut.GetSummaryText(L10nType.Korean);
+    public string SummaryEnglish => this.Cut.GetSummaryText(L10nType.English);
+    public string SummaryJapanese => this.Cut.GetSummaryText(L10nType.Japanese);
+    public string SummaryChineseSimplified => this.Cut.GetSummaryText(L10nType.ChineseSimplified);
 
     public CutDataType DataType
     {
@@ -208,7 +213,7 @@ public sealed class VmCut : ObservableObject
             return;
         }
 
-        this.Cut.StartBgmFileName = result.AssetFile;
+        this.Cut.StartBgmFileName = result.Data;
     }
 
     private async Task OnPickBgmB()
@@ -220,7 +225,7 @@ public sealed class VmCut : ObservableObject
             return;
         }
 
-        this.Cut.EndBgmFileName = result.AssetFile;
+        this.Cut.EndBgmFileName = result.Data;
     }
 
     private async Task OnPickSfxA()
@@ -232,7 +237,7 @@ public sealed class VmCut : ObservableObject
             return;
         }
 
-        this.Cut.StartFxSoundName = result.AssetFile;
+        this.Cut.StartFxSoundName = result.Data;
     }
 
     private async Task OnPickSfxB()
@@ -244,7 +249,7 @@ public sealed class VmCut : ObservableObject
             return;
         }
 
-        this.Cut.EndFxSoundName = result.AssetFile;
+        this.Cut.EndFxSoundName = result.Data;
     }
 
     private async Task OnPickVoice()
@@ -256,7 +261,7 @@ public sealed class VmCut : ObservableObject
             return;
         }
 
-        this.Cut.TalkVoice = result.AssetFile;
+        this.Cut.TalkVoice = result.Data;
     }
 
     private async Task OnPickAmbientSound()
@@ -268,7 +273,7 @@ public sealed class VmCut : ObservableObject
             return;
         }
 
-        this.Cut.AmbientSound = result.AssetFile;
+        this.Cut.AmbientSound = result.Data;
     }
 
     private async Task OnPickBgFileName()
@@ -280,7 +285,7 @@ public sealed class VmCut : ObservableObject
             return;
         }
 
-        this.Cut.BgFileName = result.AssetFile;
+        this.Cut.BgFileName = result.Data;
     }
 
     private async Task OnPickCameraEase()
@@ -334,19 +339,20 @@ public sealed class VmCut : ObservableObject
 
     private async Task OnSetUnitNameString()
     {
-        var defaultValue = string.Join(", ", this.Cut.UnitNames);
-        var userInputProvider = this.services.GetRequiredService<IUserInputProvider<string>>();
-        var list = await userInputProvider.PromptAsync("유닛 이름을 입력하세요", "유닛 이름", defaultValue);
-
-        this.Cut.UnitNames.Clear();
-        if (string.IsNullOrWhiteSpace(list))
+        var editor = this.services.GetRequiredKeyedService<IModelEditor<IList<StringElement>>>("unitName");
+        var result = await editor.EditAsync(this.Cut.UnitNames);
+        if (result.IsCanceled)
         {
             return;
         }
 
-        foreach (var token in list.Split(','))
+        this.Cut.UnitNames.Clear();
+        if (result.Data is not null)
         {
-            this.Cut.UnitNames.Add(token.Trim());
+            foreach (var data in result.Data!)
+            {
+                this.Cut.UnitNames.Add(data);
+            }
         }
     }
 

@@ -9,48 +9,74 @@
     xmlns:viewmodels="clr-namespace:CutEditor.ViewModel;assembly=CutEditor.ViewModel"
     >
 
-    <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="CutCommon.xaml" />
-    </ResourceDictionary.MergedDictionaries>
-
-    <DataTemplate x:Key="CutSummaryTemplet">
-        <Border Style="{StaticResource ChangeSelectedBgStyle}" CornerRadius="3">
-            <Grid Margin="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-
-                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="5,0">
-                    <TextBlock DockPanel.Dock="Left" Grid.Row="0" Grid.Column="0"
-                                   VerticalAlignment="Center"
-                                   Margin="0,0,50,0">
-                            <Run>Uid : </Run>
-                            <Run Text="{Binding Cut.Uid, Mode=OneWay}" />
-                    </TextBlock>
-
-                    <Border BorderBrush="{StaticResource AnchorBrush}" BorderThickness="1"
-                            Margin="0,0,10,0" Padding="5"
-                            CornerRadius="10"
-                            Visibility="{Binding Cut.JumpAnchor, Converter={converters:EnumToCollapsedConverter}, ConverterParameter=None}">
-                        <TextBlock VerticalAlignment="Center" Text="{Binding Cut.JumpAnchor}" />
-                    </Border>
-
-                    <TextBlock Margin="0,0,10,0"
-                               Foreground="Red"
-                               VerticalAlignment="Center"
-                               Text="{Binding Cut.CutsceneClear}"
-                               Visibility="{Binding Cut.CutsceneClear, Converter={converters:EnumToCollapsedConverter}, ConverterParameter=NONE}"/>
-
-                    <TextBlock VerticalAlignment="Center" Text="{Binding SummaryText}">
-                        <b:Interaction.Behaviors>
-                            <behaviors:TextBlockColorBehavior />
-                        </b:Interaction.Behaviors>
-                    </TextBlock>
-
-                </StackPanel>
-            </Grid>
-        </Border>
+    <DataTemplate x:Key="TalkTextTemplate">
+        <StackPanel>
+            <TextBlock Text="{Binding}">
+              <b:Interaction.Behaviors>
+                  <behaviors:TextBlockColorBehavior />
+              </b:Interaction.Behaviors>
+            </TextBlock>
+        </StackPanel>
     </DataTemplate>
+    
+    <GridView x:Key="CutGridView">
+        <GridViewColumn Header="Anchor" Width="Auto">
+            <GridViewColumn.CellTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Cut.JumpAnchor}"
+                 Visibility="{Binding Cut.JumpAnchor, Converter={converters:EnumToCollapsedConverter}, ConverterParameter=None}"/>
+                </DataTemplate>
+            </GridViewColumn.CellTemplate>
+        </GridViewColumn>
+        <GridViewColumn Header="Uid" Width="Auto" DisplayMemberBinding="{Binding Cut.Uid}"/>
+        <GridViewColumn Header="유닛이름" Width="Auto" DisplayMemberBinding="{Binding Cut.SpeakerName}"/>
+        <GridViewColumn Header="모션" Width="Auto" DisplayMemberBinding="{Binding Cut.UnitMotion}"/>
+        <GridViewColumn Header="감정" Width="Auto">
+            <GridViewColumn.CellTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Cut.EmotionEffect}"
+                            Visibility="{Binding Cut.EmotionEffect, Converter={converters:EnumToCollapsedConverter}, ConverterParameter=NONE}"/>
+                </DataTemplate>
+            </GridViewColumn.CellTemplate>
+        </GridViewColumn>
+        <GridViewColumn Header="Korean" Width="Auto">
+            <GridViewColumn.CellTemplate>
+                <DataTemplate>
+                    <ContentPresenter
+                        Content="{Binding SummaryKorean}"
+                        ContentTemplate="{StaticResource TalkTextTemplate}" />
+                </DataTemplate>
+            </GridViewColumn.CellTemplate>
+        </GridViewColumn>
+
+        <GridViewColumn Header="Japanese" Width="Auto">
+            <GridViewColumn.CellTemplate>
+                <DataTemplate>
+                    <ContentPresenter
+                        Content="{Binding SummaryJapanese}"
+                        ContentTemplate="{StaticResource TalkTextTemplate}" />
+                </DataTemplate>
+            </GridViewColumn.CellTemplate>
+        </GridViewColumn>
+
+        <GridViewColumn Header="English" Width="Auto">
+            <GridViewColumn.CellTemplate>
+                <DataTemplate>
+                    <ContentPresenter
+                        Content="{Binding SummaryEnglish}"
+                        ContentTemplate="{StaticResource TalkTextTemplate}" />
+                </DataTemplate>
+            </GridViewColumn.CellTemplate>
+        </GridViewColumn>
+
+        <GridViewColumn Header="ChineseSimplified" Width="Auto">
+            <GridViewColumn.CellTemplate>
+                <DataTemplate>
+                    <ContentPresenter
+                        Content="{Binding SummaryChineseSimplified}"
+                        ContentTemplate="{StaticResource TalkTextTemplate}" />
+                </DataTemplate>
+            </GridViewColumn.CellTemplate>
+        </GridViewColumn>
+    </GridView>
 </ResourceDictionary>

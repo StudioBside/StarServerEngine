@@ -17,6 +17,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NKM;
 using Shared.Templet;
+using Shared.Templet.Strings;
 using Shared.Templet.TempletTypes;
 using Wpf.Ui;
 using static CutEditor.Model.Enums;
@@ -63,6 +64,7 @@ public partial class App : Application
         services.AddKeyedTransient<IAssetPicker, SfxPicker>("sfx");
         services.AddKeyedTransient<IAssetPicker, VoicePicker>("voice");
         services.AddKeyedTransient<IAssetPicker, BgFilePicker>("bgFile");
+        services.AddKeyedTransient<IModelEditor<IList<StringElement>>, UnitNameEditor>("unitName");
         services.AddTransient<IModelEditor<BgFadeInOut>, BgFadeEditor>();
         services.AddScoped<UndoController>();
 

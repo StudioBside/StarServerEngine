@@ -1,0 +1,90 @@
+﻿<ui:ContentDialog 
+    x:Class="CutEditor.Dialogs.UnitNameEditorDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:local="clr-namespace:CutEditor.Dialogs"
+    xmlns:models="clr-namespace:CutEditor.Model;assembly=CutEditor.Model"
+    xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
+    xmlns:ext="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
+    mc:Ignorable="d" 
+    xmlns:extensions="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
+    d:DataContext="{d:DesignInstance Type=local:UnitNameEditorDialog}"
+    d:DesignHeight="450" d:DesignWidth="800"
+    ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
+    ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+    Title="UnitNameString 설정"
+    PrimaryButtonText="결정"
+    SecondaryButtonText="비우기"
+    CloseButtonText="취소"
+    IsPrimaryButtonEnabled="True"
+    IsSecondaryButtonEnabled="True">
+
+    <ui:ContentDialog.Resources>
+        <Style BasedOn="{StaticResource {x:Type ui:ContentDialog}}" TargetType="{x:Type local:UnitNameEditorDialog}" />
+    </ui:ContentDialog.Resources>
+    
+    <StackPanel Width="700">
+
+        <ui:TextBox Margin="0,0,0,10" PlaceholderText="검색어 입력"
+                    Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}"
+                    ext:FocusExtension.IsFocused="True"/>
+        <ui:ListView Height="200" BorderBrush="Gray" BorderThickness="0.5"
+                     ItemsSource="{Binding FilteredFiles}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Control" Width="70">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <ui:Button Content="선택"
+                                           Command="{Binding DataContext.AddCommand,
+                                    RelativeSource={RelativeSource AncestorType=ListView}}"
+                                           CommandParameter="{Binding}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Key" Width="Auto"
+                                    DisplayMemberBinding="{Binding PrimeKey}"/>
+                    <GridViewColumn Header="Korean" Width="400"
+                                    DisplayMemberBinding="{Binding Korean}"/>
+                </GridView>
+            </ListView.View>
+        </ui:ListView>
+
+        <Border Height="0.5" Margin="20" BorderThickness="1" BorderBrush="LightGray"/>
+
+        <TextBlock Margin="0,0,0,10" Text="Result : "/>
+        <ui:ListView Height="140" BorderBrush="Gray" BorderThickness="0.5"
+                 ItemsSource="{Binding SelectedList}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Control" Width="70">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <ui:Button Content="삭제"
+                                           Command="{Binding DataContext.RemoveCommand,
+                                    RelativeSource={RelativeSource AncestorType=ListView}}"
+                                           CommandParameter="{Binding}"/>
+
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Key" Width="Auto"
+                                DisplayMemberBinding="{Binding PrimeKey}"/>
+                    <GridViewColumn Header="Korean" Width="400"
+                                DisplayMemberBinding="{Binding Korean}"/>
+                </GridView>
+            </ListView.View>
+        </ui:ListView>
+        <ui:InfoBar Grid.Row="2" Margin="0,10,0,0"
+                    x:Name="InfoBarWarning"
+                    Severity="Warning"
+                    Title="Note"
+                    Message="string을 선택해야 합니다."
+                    IsOpen="True"
+                    Visibility="Collapsed"/>
+
+    </StackPanel>
+</ui:ContentDialog>

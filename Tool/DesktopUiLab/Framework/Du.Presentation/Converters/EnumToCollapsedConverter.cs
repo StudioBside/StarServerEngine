@@ -3,6 +3,7 @@
 using System;
 using System.Globalization;
 using System.Windows;
+using Cs.Logging;
 
 public sealed class EnumToCollapsedConverter : ConverterMarkupExtension<EnumToCollapsedConverter>
 {
@@ -19,7 +20,12 @@ public sealed class EnumToCollapsedConverter : ConverterMarkupExtension<EnumToCo
             return DependencyProperty.UnsetValue;
         }
 
-        object parameterValue = Enum.Parse(value.GetType(), parameterString);
+        if (Enum.TryParse(value.GetType(), parameterString, out var parameterValue) == false)
+        {
+            Log.Warn($"Failed to parse parameter value '{parameterString}' as enum '{value.GetType()}'.");
+            return DependencyProperty.UnsetValue;
+        }
+
         return parameterValue.Equals(value) ? Visibility.Collapsed : Visibility.Visible;
     }
 

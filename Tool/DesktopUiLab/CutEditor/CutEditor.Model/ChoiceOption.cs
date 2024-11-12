@@ -60,10 +60,16 @@ public sealed class ChoiceOption : ObservableObject
         return result;
     }
 
-    internal string GetSummaryText()
+    internal string GetSummaryText(L10nType l10nType)
     {
+        var text = this.text.Get(l10nType);
+        if (string.IsNullOrEmpty(text))
+        {
+            return string.Empty;
+        }
+
         var sb = new StringBuilder();
-        sb.Append($"{this.UidString} : {this.text.Korean}");
+        sb.Append($"{this.UidString} : {this.text.Get(l10nType)}");
         if (this.jumpAnchor != StartAnchorType.None)
         {
             sb.Append($" -> {this.jumpAnchor}");

@@ -5,7 +5,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Cs.Core.Util;
 using Newtonsoft.Json.Linq;
 using Shared.Interfaces;
-using static CutEditor.Model.Enums;
 using static Shared.Templet.Enums;
 
 public sealed class L10nText : ObservableObject, ISearchable
@@ -55,6 +54,11 @@ public sealed class L10nText : ObservableObject, ISearchable
         }
 
         return false;
+    }
+
+    public string Get(L10nType l10nType)
+    {
+        return this.values[(int)l10nType];
     }
 
     public override string ToString() => this.values[(int)L10nType.Korean];

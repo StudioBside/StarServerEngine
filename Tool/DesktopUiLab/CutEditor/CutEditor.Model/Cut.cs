@@ -12,6 +12,7 @@ using CutEditor.Model.Detail;
 using Newtonsoft.Json.Linq;
 using NKM;
 using Shared.Templet.Base;
+using Shared.Templet.Strings;
 using Shared.Templet.TempletTypes;
 using static CutEditor.Model.Enums;
 using static Shared.Templet.Enums;
@@ -22,7 +23,7 @@ public sealed class Cut : ObservableObject
 
     private readonly L10nText unitTalk = new();
     private readonly ObservableCollection<ChoiceOption> choices = new();
-    private readonly ObservableCollection<string> unitNames = new();
+    private readonly ObservableCollection<StringElement> unitNames = new();
     private string? contentsTag;
     private string? cutsceneStrId;
     private bool waitClick = true;
@@ -120,7 +121,6 @@ public sealed class Cut : ObservableObject
         this.unitStrId = token.GetString("UnitStrId", null!);
         this.talkPositionControl = token.GetEnum("TalkPositionControl", TalkPositionControlType.NONE);
         token.TryGetArray("JumpAnchorData", this.choices, ChoiceOption.Load);
-        token.TryGetArray("UnitNameString", this.unitNames);
         this.talkAppend = token.GetBool("TalkAppend", false);
         this.unitMotion = token.GetString("UnitMotion", null!);
         this.talkVoice = token.GetString("TalkVoice", null!);
@@ -145,6 +145,20 @@ public sealed class Cut : ObservableObject
         this.bgEase = token.GetEnum("BgEase", Ease.Unset);
         this.bgPosTime = token.GetFloat("BgPosTime", 0f);
         var buffer = new List<string>();
+
+        if (token.TryGetArray("UnitNameString", buffer))
+        {
+            foreach (var data in buffer)
+            {
+                if (StringTable.Instance.TryGetElement(data, out var element) == false)
+                {
+                    Log.Error($"유효하지 않은 unitName 입니다:{data}");
+                    continue;
+                }
+
+                this.unitNames.Add(element);
+            }
+        }
 
         if (token.TryGetArray("BgOffsetScale", buffer))
         {
@@ -197,7 +211,7 @@ public sealed class Cut : ObservableObject
     public long Uid { get; private set; }
     public L10nText UnitTalk => this.unitTalk;
     public IList<ChoiceOption> Choices => this.choices;
-    public IList<string> UnitNames => this.unitNames;
+    public IList<StringElement> UnitNames => this.unitNames;
 
     public float TalkTime
     {
@@ -447,6 +461,8 @@ public sealed class Cut : ObservableObject
         set => this.SetProperty(ref this.cameraOffsetTime, value);
     }
 
+    public string? SpeakerName => this.GetSpeakerName();
+
     public object ToOutputType()
     {
         var result = new CutOutputFormat
@@ -524,7 +540,7 @@ public sealed class Cut : ObservableObject
 
         if (this.unitNames.Count > 0)
         {
-            result.UnitNameString = this.unitNames.ToArray();
+            result.UnitNameString = this.unitNames.Select(e => e.PrimeKey).ToArray();
         }
 
         return result;
@@ -545,15 +561,14 @@ public sealed class Cut : ObservableObject
         }
     }
 
-    public string GetSummaryText()
+    public string GetSummaryText(L10nType l10nType)
     {
         if (this.choices.Count > 0)
         {
-            var list = string.Join(Environment.NewLine, this.choices.Select(e => e.GetSummaryText()));
-            return $"[선택지] {Environment.NewLine}{list}";
+            return string.Join(Environment.NewLine, this.choices.Select(e => e.GetSummaryText(l10nType)));
         }
 
-        return this.unitTalk.Korean;
+        return this.unitTalk.Get(l10nType);
     }
 
     public void ResetOldDataUid(long uid)
@@ -643,5 +658,20 @@ public sealed class Cut : ObservableObject
                 this.TalkTime = string.IsNullOrEmpty(this.UnitTalk.Korean) ? 0f : TalkTimeDefault;
                 break;
         }
+    }
+
+    private string? GetSpeakerName()
+    {
+        if (this.unitNames.Count > 0)
+        {
+            return string.Join(", ", this.unitNames.Select(e => e.Korean));
+        }
+
+        if (this.unit is not null)
+        {
+            return this.unit.Name;
+        }
+
+        return null;
     }
 }

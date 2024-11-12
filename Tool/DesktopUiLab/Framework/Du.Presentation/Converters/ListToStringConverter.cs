@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Globalization;
 using System.Windows.Data;
+using Shared.Templet.Strings;
 
 public sealed class ListToStringConverter : ConverterMarkupExtension<ListToStringConverter>
 {
@@ -19,7 +20,7 @@ public sealed class ListToStringConverter : ConverterMarkupExtension<ListToStrin
             return Binding.DoNothing;
         }
 
-        return string.Join(", ", list.Cast<object>());
+        return string.Join(", ", list.Cast<StringElement>().Select(e => e.Korean));
     }
 
     public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

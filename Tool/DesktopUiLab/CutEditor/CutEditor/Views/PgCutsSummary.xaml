@@ -42,6 +42,12 @@
                 <ui:Button Margin="3" Content="목록으로"
                            Icon="{ui:SymbolIcon ArrowStepBack16}"
                            Command="{Binding GoToListCommand}"/>
+                <ui:Button Margin="3" Content="파일 열기"
+                           Icon="{ui:SymbolIcon Code16}"
+                           Command="{Binding OpenFileCommand}"/>
+                <ui:Button Margin="3" Content="이름 복사"
+                           Icon="{ui:SymbolIcon Copy16}"
+                           Command="{Binding CopyFileNameCommand}"/>
                 <ui:Button Margin="3" Content="수정하기" Appearance="Primary"
                            Icon="{ui:SymbolIcon Edit16}"
                            Command="{Binding EditCommand}"/>
@@ -54,9 +60,11 @@
         <!--메인 영역 : 컷 리스트-->
         <ui:ListView Grid.Row="2" ItemsSource="{Binding Cuts}"
                      AllowDrop="True"
-                     ItemTemplate="{StaticResource CutSummaryTemplet}"
                      SelectionMode="Extended"
                      extensions:ListViewExtensions.SelectedValues="{Binding SelectedCuts}">
+            <ListView.View>
+                <StaticResource ResourceKey="CutGridView"/>
+            </ListView.View>
             <ListView.ItemContainerStyle>
                 <Style TargetType="ui:ListViewItem" BasedOn="{StaticResource {x:Type ui:ListViewItem}}">
                     <Setter Property="Margin" Value="0"/>
