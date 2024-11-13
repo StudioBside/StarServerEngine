@@ -3,11 +3,15 @@
 using System;
 using System.Collections;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Cs.Core.Util;
 using Cs.Logging;
 using CutEditor.Model;
+using CutEditor.Model.Interfaces;
+using CutEditor.ViewModel.Detail;
 using Du.Core.Bases;
 using Du.Core.Interfaces;
 using Du.Core.Models;
@@ -15,6 +19,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 public sealed class VmHome : VmPageBase
 {
+    private const string ExportRoot = "./Export";
     private const string DefaultFilter = "[All]";
     private readonly List<CutScene> cutScenes = new();
     private readonly HashSet<string> filters = new();
@@ -33,6 +38,9 @@ public sealed class VmHome : VmPageBase
         this.EditPickedCommand = new RelayCommand<CutScene>(this.OnEditPicked);
         this.ReadPickedCommand = new RelayCommand<CutScene>(this.OnReadPicked);
         this.NewFileCommand = new AsyncRelayCommand(this.OnNewFile);
+        this.ExportCommand = new RelayCommand<CutScene>(this.OnExport);
+        this.ImportCommand = new RelayCommand<CutScene>(this.OnImport);
+        this.OpenExportRootCommand = new RelayCommand(this.OnOpenExportRoot);
 
         this.filters.Add(DefaultFilter);
     }
@@ -64,6 +72,9 @@ public sealed class VmHome : VmPageBase
     public ICommand EditPickedCommand { get; }
     public ICommand ReadPickedCommand { get; }
     public ICommand NewFileCommand { get; }
+    public ICommand ExportCommand { get; }
+    public ICommand ImportCommand { get; }
+    public ICommand OpenExportRootCommand { get; }
 
     public void AddCutScenes(IEnumerable<CutScene> cutScenes)
     {
@@ -153,5 +164,52 @@ public sealed class VmHome : VmPageBase
 
         VmGlobalState.Instance.ReserveVmCuts(new VmCuts.CrateParam { CutScene = scene });
         WeakReferenceMessenger.Default.Send(new NavigationMessage("Views/PgCutsSummary.xaml"));
+    }
+
+    private void OnExport(CutScene? scene)
+    {
+        if (scene is null)
+        {
+            Log.Error($"argument is null");
+            return;
+        }
+
+        var current = ServiceTime.Recent;
+        var fileName = $"{ExportRoot}/{scene.FileName}_{current.ToFileString()}.xlsx";
+        var nameOnly = Path.GetFileNameWithoutExtension(fileName);
+
+        var cuts = CutFileIo.LoadCutData(scene.FileName);
+        if (cuts.Any() == false)
+        {
+            Log.Error($"파일 로딩에 실패했습니다. fileName:{CutFileIo.GetTextFileName(scene.FileName)}");
+            return;
+        }
+
+        var uidGenerator = new CutUidGenerator(cuts);
+        foreach (var cut in cuts.Where(e => e.Choices.Any()))
+        {
+            var choiceUidGenerator = new ChoiceUidGenerator(cut.Uid, cut.Choices);
+        }
+
+        var writer = this.services.GetRequiredService<IExcelFileWriter>();
+        if (writer.Write(fileName, cuts.SelectMany(e => e.ToOutputExcelType())) == false)
+        {
+            Log.Error($"파일 생성에 실패했습니다. fileName:{nameOnly}");
+            return;
+        }
+
+        Log.Info($"파일 생성 완료. fileName:{nameOnly}");
+    }
+
+    private void OnOpenExportRoot()
+    {
+        var fullPath = Path.GetFullPath(ExportRoot);
+        Process.Start("explorer.exe", fullPath);
+    }
+
+    private void OnImport(CutScene? scene)
+    {
+        var picker = this.services.GetRequiredService<IFilePicker>();
+        var fileName = picker.PickFile(Environment.CurrentDirectory, "엑셀 파일 (*.xlsx)|*.xlsx");
     }
 }

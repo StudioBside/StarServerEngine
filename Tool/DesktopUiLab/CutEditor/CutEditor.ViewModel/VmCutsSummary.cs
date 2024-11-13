@@ -22,7 +22,7 @@ public sealed class VmCutsSummary : VmPageBase
     private readonly ObservableCollection<VmCut> selectedCuts = new();
     private readonly string textFilePath;
     private readonly string name;
-    private readonly CutUidGenerator uidGenerator = new();
+    private readonly CutUidGenerator uidGenerator;
     private readonly IServiceProvider services;
     private readonly IServiceScope serviceScope;
 
@@ -58,6 +58,7 @@ public sealed class VmCutsSummary : VmPageBase
         if (File.Exists(textFileName) == false)
         {
             Log.Debug($"cutscene file not found: {textFileName}");
+            this.uidGenerator = new CutUidGenerator(Enumerable.Empty<Cut>());
             return;
         }
 
@@ -68,7 +69,7 @@ public sealed class VmCutsSummary : VmPageBase
             return new VmCut(cut, this.services);
         });
 
-        this.uidGenerator.Initialize(this.cuts);
+        this.uidGenerator = new CutUidGenerator(this.cuts.Select(e => e.Cut));
 
         Log.Info($"{this.name} 파일 로딩 완료. 총 컷의 개수:{this.cuts.Count}");
     }

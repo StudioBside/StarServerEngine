@@ -3,7 +3,6 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Drawing;
 using System.Text;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Cs.Core.Util;
@@ -463,60 +462,60 @@ public sealed class Cut : ObservableObject
 
     public string? SpeakerName => this.GetSpeakerName();
 
-    public object ToOutputType()
+    public object ToOutputJsonType()
     {
-        var result = new CutOutputFormat
+        var result = new CutOutputJsonFormat
         {
             Uid = this.Uid,
             ContentsTag = this.contentsTag,
             CutsceneStrId = this.cutsceneStrId,
             WaitClick = this.waitClick,
             WaitTime = this.waitTime,
-            BgFlashBang = CutOutputFormat.EliminateZero(this.bgFlashBang),
-            BgCrash = CutOutputFormat.EliminateZero(this.bgCrash),
-            BgCrashTime = CutOutputFormat.EliminateZero(this.bgCrashTime),
+            BgFlashBang = CutOutputJsonFormat.EliminateZero(this.bgFlashBang),
+            BgCrash = CutOutputJsonFormat.EliminateZero(this.bgCrash),
+            BgCrashTime = CutOutputJsonFormat.EliminateZero(this.bgCrashTime),
             EndBgmFileName = this.endBgmFileName,
             BgFileName = this.bgFileName,
             StartBgmFileName = this.startBgmFileName,
             StartFxSoundName = this.startFxSoundName,
-            CutsceneClear = EliminateEnum(this.cutsceneClear, CutsceneClearType.NONE),
+            CutsceneClear = OutputTransfer.EliminateEnum(this.cutsceneClear, CutsceneClearType.NONE),
             UnitStrId = this.unit?.StrId,
-            UnitQuickSet = EliminateFalse(this.unitQuickSet),
-            UnitPos = EliminateEnum(this.unitPos, CutsceneUnitPos.NONE),
-            CameraOffset = EliminateEnum(this.cameraOffset, CameraOffset.NONE),
-            CameraEase = EliminateEnum(this.cameraEase, Ease.Unset),
-            CameraOffsetTime = EliminateEnum(this.cameraOffsetTime, CameraOffsetTime.NONE),
-            EmotionEffect = EliminateEnum(this.emotionEffect, EmotionEffect.NONE),
+            UnitQuickSet = OutputTransfer.EliminateFalse(this.unitQuickSet),
+            UnitPos = OutputTransfer.EliminateEnum(this.unitPos, CutsceneUnitPos.NONE),
+            CameraOffset = OutputTransfer.EliminateEnum(this.cameraOffset, CameraOffset.NONE),
+            CameraEase = OutputTransfer.EliminateEnum(this.cameraEase, Ease.Unset),
+            CameraOffsetTime = OutputTransfer.EliminateEnum(this.cameraOffsetTime, CameraOffsetTime.NONE),
+            EmotionEffect = OutputTransfer.EliminateEnum(this.emotionEffect, EmotionEffect.NONE),
             UnitTalk_KOR = this.unitTalk.AsNullable(L10nType.Korean),
             UnitTalk_ENG = this.unitTalk.AsNullable(L10nType.English),
             UnitTalk_JPN = this.unitTalk.AsNullable(L10nType.Japanese),
             UnitTalk_CHN = this.unitTalk.AsNullable(L10nType.ChineseSimplified),
-            TalkTime = CutOutputFormat.EliminateZero(this.talkTime),
-            TalkPositionControl = EliminateEnum(this.talkPositionControl, TalkPositionControlType.NONE),
-            TalkAppend = EliminateFalse(this.talkAppend),
+            TalkTime = CutOutputJsonFormat.EliminateZero(this.talkTime),
+            TalkPositionControl = OutputTransfer.EliminateEnum(this.talkPositionControl, TalkPositionControlType.NONE),
+            TalkAppend = OutputTransfer.EliminateFalse(this.talkAppend),
             UnitMotion = this.unitMotion,
             TransitionEffect = this.transitionEffect,
             TransitionControl = this.transitionControl,
             TalkVoice = this.talkVoice,
-            BgChangeTime = CutOutputFormat.EliminateZero(this.bgChangeTime),
-            AutoHighlight = EliminateEnum(this.autoHighlight, CutsceneAutoHighlight.NONE),
-            FilterType = EliminateEnum(this.filterType, CutsceneFilterType.NONE),
+            BgChangeTime = CutOutputJsonFormat.EliminateZero(this.bgChangeTime),
+            AutoHighlight = OutputTransfer.EliminateEnum(this.autoHighlight, CutsceneAutoHighlight.NONE),
+            FilterType = OutputTransfer.EliminateEnum(this.filterType, CutsceneFilterType.NONE),
             ArcpointId = this.arcpoint?.Id,
-            StartFxSoundLoopControl = EliminateEnum(this.startFxLoopControl, CutsceneSoundLoopControl.NONE),
-            EndFxLoopControl = EliminateEnum(this.endFxLoopControl, CutsceneSoundLoopControl.NONE),
-            SlateControlType = EliminateEnum(this.slateControlType, SlateControlType.NONE),
-            SlateSectionNo = EliminateZeroInt(this.slateSectionNo),
+            StartFxSoundLoopControl = OutputTransfer.EliminateEnum(this.startFxLoopControl, CutsceneSoundLoopControl.NONE),
+            EndFxLoopControl = OutputTransfer.EliminateEnum(this.endFxLoopControl, CutsceneSoundLoopControl.NONE),
+            SlateControlType = OutputTransfer.EliminateEnum(this.slateControlType, SlateControlType.NONE),
+            SlateSectionNo = OutputTransfer.EliminateZeroInt(this.slateSectionNo),
             AmbientSound = this.ambientSound,
-            ImageNameFadeIn = EliminateEnum(this.imageNameFadeIn, ImageNameFadeEffect.NONE),
-            ImageNameFadeOut = EliminateEnum(this.imageNameFadeOut, ImageNameFadeEffect.NONE),
+            ImageNameFadeIn = OutputTransfer.EliminateEnum(this.imageNameFadeIn, ImageNameFadeEffect.NONE),
+            ImageNameFadeOut = OutputTransfer.EliminateEnum(this.imageNameFadeOut, ImageNameFadeEffect.NONE),
             ImageName = this.imageName,
-            BgAniScale = EliminateFalse(this.bgAniScale),
+            BgAniScale = OutputTransfer.EliminateFalse(this.bgAniScale),
             BgOffsetScale = this.bgOffsetScale,
-            BgOffsetScaleTime = CutOutputFormat.EliminateZero(this.bgOffsetScaleTime),
-            BgAniPos = EliminateFalse(this.bgAniPos),
+            BgOffsetScaleTime = CutOutputJsonFormat.EliminateZero(this.bgOffsetScaleTime),
+            BgAniPos = OutputTransfer.EliminateFalse(this.bgAniPos),
             BgPos = this.bgPos,
-            BgEase = EliminateEnum(this.bgEase, Ease.Unset),
-            BgPosTime = CutOutputFormat.EliminateZero(this.bgPosTime),
+            BgEase = OutputTransfer.EliminateEnum(this.bgEase, Ease.Unset),
+            BgPosTime = CutOutputJsonFormat.EliminateZero(this.bgPosTime),
         };
 
         this.bgFadeInOut?.WriteTo(result);
@@ -544,21 +543,21 @@ public sealed class Cut : ObservableObject
         }
 
         return result;
+    }
 
-        static int? EliminateZeroInt(int source)
+    public IEnumerable<CutOutputExcelFormat> ToOutputExcelType()
+    {
+        if (this.choices.Count > 0)
         {
-            return source > 0 ? source : null;
+            foreach (var choice in this.choices)
+            {
+                yield return new CutOutputExcelFormat(choice);
+            }
+
+            yield break;
         }
 
-        static bool? EliminateFalse(bool source)
-        {
-            return source ? source : null;
-        }
-
-        static T? EliminateEnum<T>(T source, T defaultValue) where T : struct, Enum
-        {
-            return source.Equals(defaultValue) ? null : source;
-        }
+        yield return new CutOutputExcelFormat(this);
     }
 
     public string GetSummaryText(L10nType l10nType)

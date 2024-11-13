@@ -76,8 +76,7 @@ public sealed class VmCut : ObservableObject
         this.showScreenSection = cut.HasScreenBoxData();
         this.ShowCameraSection = cut.HasCameraBoxData();
 
-        this.choiceUidGenerator = new(cut.Uid);
-        this.choiceUidGenerator.Initialize(cut.Choices);
+        this.choiceUidGenerator = new(cut.Uid, cut.Choices);
 
         if (this.Cut.Choices is ObservableCollection<ChoiceOption> choices)
         {

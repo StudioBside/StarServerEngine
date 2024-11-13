@@ -57,6 +57,7 @@ public partial class App : Application
         services.AddTransient<FileAndSnackbarLog>();
         services.AddTransient<ITempletPicker<Unit>, UnitPicker>();
         services.AddTransient<ITempletPicker<LobbyItem>, ArcpointPicker>();
+        services.AddTransient<IExcelFileWriter, ExcelFileWriter>();
         services.AddSingleton<IEnumPicker<Ease>>(EasingGraph.Instance);
         services.AddSingleton<IEnumPicker<CameraOffset>>(CameraOffsetController.Instance);
         services.AddSingleton(_ => CutsListController.LastInstance);
@@ -77,6 +78,7 @@ public partial class App : Application
         services.AddTransient<IFilteredCollectionProvider, FilteredCollectionProvider>();
         services.AddTransient<IUserWaitingNotifier, WaitingNotifierDialog>();
         services.AddTransient<IClipboardWriter, ClipboardWriter>();
+        services.AddTransient<IFilePicker, FilePicker>();
 
         return services.BuildServiceProvider();
     }
@@ -108,8 +110,9 @@ public partial class App : Application
         EasingGraph.Instance.Initialize(assetList);
         CameraOffsetController.Instance.Initialize(assetList);
 
-        VmGlobalState.Instance.Initialize();
-        TempletLoad.Execute(this.Services.GetRequiredService<IConfiguration>());
+        var config = this.Services.GetRequiredService<IConfiguration>();
+        VmGlobalState.Instance.Initialize(config);
+        TempletLoad.Execute(config);
 
         var loader = this.Services.GetRequiredService<FileLoader>();
         loader.Load();

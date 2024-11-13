@@ -4,7 +4,7 @@ using System.Drawing;
 using NKM;
 using static CutEditor.Model.Enums;
 
-internal class CutOutputFormat
+internal class CutOutputJsonFormat
 {
     public long Uid { get; set; }
     public string? ContentsTag { get; set; }

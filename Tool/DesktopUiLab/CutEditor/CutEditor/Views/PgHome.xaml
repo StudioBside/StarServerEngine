@@ -108,13 +108,19 @@
                                     
                                     <ui:Button Content="편집" Margin="10,0"
                                                Command="{Binding DataContext.EditPickedCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
-                                               CommandParameter="{Binding .}"/>
+                                               CommandParameter="{Binding}"/>
 
                                     <ui:Button Content="읽기" Margin="10,0"
                                                Command="{Binding DataContext.ReadPickedCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
-                                               CommandParameter="{Binding .}"/>
+                                               CommandParameter="{Binding}"/>
                                     
-                                    <ui:DropDownButton Content="번역 파일 추출" Margin="10,0" />
+                                    <ui:Button Content="번역 파일 추출" Margin="10,0"
+                                               Command="{Binding DataContext.ExportCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                               CommandParameter="{Binding}"/>
+
+                                    <ui:Button Content="번역 적용" Margin="10,0"
+                                               Command="{Binding DataContext.ImportCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                               CommandParameter="{Binding}"/>
 
                                 </StackPanel>
                             </DataTemplate>
@@ -142,6 +148,9 @@
                 <ui:Button Margin="0,0,10,0"
                            Content="전체 검색"
                            IsEnabled="False"/>
+                <ui:Button Margin="0,0,10,0"
+                           Content="추출파일 폴더 열기"
+                           Command="{Binding OpenExportRootCommand}"/>
             </StackPanel>
 
             

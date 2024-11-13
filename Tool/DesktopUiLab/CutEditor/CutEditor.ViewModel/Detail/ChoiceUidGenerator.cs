@@ -3,11 +3,11 @@
 using System.Collections.Generic;
 using CutEditor.Model;
 
-internal sealed class ChoiceUidGenerator(long cutUid)
+internal sealed class ChoiceUidGenerator
 {
     private long uidSeed = 0;
 
-    public void Initialize(IEnumerable<ChoiceOption> choices)
+    public ChoiceUidGenerator(long cutUid, IEnumerable<ChoiceOption> choices)
     {
         if (choices.Any() == false)
         {

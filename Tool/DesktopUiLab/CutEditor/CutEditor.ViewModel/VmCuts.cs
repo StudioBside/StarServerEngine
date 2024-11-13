@@ -31,10 +31,10 @@ public sealed class VmCuts : VmPageBase,
 {
     private readonly ObservableCollection<VmCut> cuts = new();
     private readonly ObservableCollection<VmCut> selectedCuts = new();
-    private readonly string textFilePath;
     private readonly string binFilePath;
+    private readonly string textFileName;
     private readonly string name;
-    private readonly CutUidGenerator uidGenerator = new();
+    private readonly CutUidGenerator uidGenerator;
     private readonly IServiceProvider services;
     private readonly UndoController undoController;
     private readonly string packetExeFile;
@@ -60,7 +60,6 @@ public sealed class VmCuts : VmPageBase,
         }
 
         var param = VmGlobalState.Instance.VmCutsCreateParam;
-        this.textFilePath = config["CutTextFilePath"] ?? throw new Exception("CutTextFilePath is not set in the configuration file.");
         this.binFilePath = config["CutBinFilePath"] ?? throw new Exception("CutBinFilePath is not set in the configuration file.");
         this.packetExeFile = config["TextFilePacker"] ?? throw new Exception("TextFilePacker is not set in the configuration file.");
 
@@ -75,21 +74,15 @@ public sealed class VmCuts : VmPageBase,
             this.Title = $"{param.CutScene.Title} - {this.name}";
         }
 
-        var textFileName = this.GetTextFileName();
-        if (File.Exists(textFileName) == false)
+        this.textFileName = CutFileIo.GetTextFileName(this.name);
+        var cutList = CutFileIo.LoadCutData(this.name);
+
+        foreach (var cut in cutList)
         {
-            Log.Debug($"cutscene file not found: {textFileName}");
-            return;
+            this.cuts.Add(new VmCut(cut, this.services));
         }
 
-        var json = JsonUtil.Load(textFileName);
-        json.GetArray("Data", this.cuts, (e, i) =>
-        {
-            var cut = new Cut(e);
-            return new VmCut(cut, this.services);
-        });
-
-        this.uidGenerator.Initialize(this.cuts);
+        this.uidGenerator = new CutUidGenerator(this.cuts.Select(e => e.Cut));
 
         this.selectedCuts.CollectionChanged += (s, e) =>
         {
@@ -217,7 +210,7 @@ public sealed class VmCuts : VmPageBase,
         ////await Task.Delay(3000);
         await Task.Delay(0);
 
-        var textFilePath = this.GetTextFileName();
+        var textFilePath = this.textFileName;
         if (P4Commander.TryCreate(out var p4Commander) == false)
         {
             Log.Error($"{this.DebugName} P4Commander 객체 생성 실패");
@@ -248,7 +241,7 @@ public sealed class VmCuts : VmPageBase,
             ],
         };
 
-        var rows = this.cuts.Select(e => e.Cut.ToOutputType())
+        var rows = this.cuts.Select(e => e.Cut.ToOutputJsonType())
             .Select(e => JsonConvert.SerializeObject(e, setting))
             .ToArray();
 
@@ -367,19 +360,17 @@ public sealed class VmCuts : VmPageBase,
         this.undoController.Add(command);
     }
 
-    private string GetTextFileName() => Path.Combine(this.textFilePath, $"CLIENT_{this.name}.exported");
     private string GetBinFileName() => Path.Combine(this.binFilePath, $"CLIENT_{this.name}.bytes");
 
     private void OnOpenFile()
     {
-        var fileName = this.GetTextFileName();
-        if (File.Exists(fileName) == false)
+        if (File.Exists(this.textFileName) == false)
         {
-            Log.Error($"{this.DebugName} 파일이 존재하지 않습니다.\n{fileName}");
+            Log.Error($"{this.DebugName} 파일이 존재하지 않습니다.\n{this.textFileName}");
             return;
         }
 
-        var fullPath = Path.GetFullPath(fileName);
+        var fullPath = Path.GetFullPath(this.textFileName);
         Process.Start(new ProcessStartInfo(fullPath) { UseShellExecute = true });
     }
 

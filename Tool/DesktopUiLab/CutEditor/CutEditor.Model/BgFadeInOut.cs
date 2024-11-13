@@ -90,18 +90,18 @@ public sealed class BgFadeInOut : ObservableObject
         };
     }
 
-    internal void WriteTo(CutOutputFormat output)
+    internal void WriteTo(CutOutputJsonFormat output)
     {
         if (this.FadeType == BgFadeType.FadeIn)
         {
-            output.BgFadeInStartCol = CutOutputFormat.ConvertColor(this.StartColor);
-            output.BgFadeInCol = CutOutputFormat.ConvertColor(this.EndColor);
-            output.BgFadeInTime = CutOutputFormat.EliminateZero(this.Time);
+            output.BgFadeInStartCol = CutOutputJsonFormat.ConvertColor(this.StartColor);
+            output.BgFadeInCol = CutOutputJsonFormat.ConvertColor(this.EndColor);
+            output.BgFadeInTime = CutOutputJsonFormat.EliminateZero(this.Time);
         }
         else
         {
-            output.BgFadeOutCol = CutOutputFormat.ConvertColor(this.EndColor);
-            output.BgFadeOutTime = CutOutputFormat.EliminateZero(this.Time);
+            output.BgFadeOutCol = CutOutputJsonFormat.ConvertColor(this.EndColor);
+            output.BgFadeOutTime = CutOutputJsonFormat.EliminateZero(this.Time);
         }
     }
 
