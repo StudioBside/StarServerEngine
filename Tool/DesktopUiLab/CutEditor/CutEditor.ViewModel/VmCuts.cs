@@ -7,13 +7,11 @@ using System.Text;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using CommunityToolkit.Mvvm.Messaging.Messages;
 using Cs.Core.Perforce;
 using Cs.Core.Util;
 using Cs.Logging;
 using CutEditor.Model;
 using CutEditor.ViewModel.Detail;
-using CutEditor.ViewModel.Messages;
 using CutEditor.ViewModel.UndoCommands;
 using Du.Core.Bases;
 using Du.Core.Interfaces;
@@ -26,13 +24,14 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using Shared.Templet.Base;
 using Shared.Templet.TempletTypes;
+using static CutEditor.Model.Messages;
 using static CutEditor.ViewModel.Enums;
 
 public sealed class VmCuts : VmPageBase,
     IClipboardHandler
 {
-    private readonly ObservableCollection<VmCut> cuts = new();
-    private readonly ObservableCollection<VmCut> selectedCuts = new();
+    private readonly ObservableCollection<VmCut> cuts = [];
+    private readonly ObservableCollection<VmCut> selectedCuts = [];
     private readonly string binFilePath;
     private readonly string textFileName;
     private readonly string name;
@@ -56,6 +55,7 @@ public sealed class VmCuts : VmPageBase,
         this.DeleteCommand = new RelayCommand(this.OnDelete, () => this.selectedCuts.Count > 0);
         this.NewCutCommand = new RelayCommand<CutDataType>(this.OnNewCut);
         this.DeletePickCommand = new RelayCommand<VmCut>(this.OnDeletePick);
+        WeakReferenceMessenger.Default.Register<UpdatePreviewMessage>(this, this.OnUpdatePreview);
 
         if (VmGlobalState.Instance.VmCutsCreateParam is null)
         {
@@ -91,6 +91,13 @@ public sealed class VmCuts : VmPageBase,
         {
             this.DeleteCommand.NotifyCanExecuteChanged();
         };
+
+        this.cuts.CollectionChanged += (s, e) =>
+        {
+            this.UpdatePreview(startIndex: 0);
+        };
+
+        this.UpdatePreview(startIndex: 0);
 
         Log.Info($"{this.name} 파일 로딩 완료. 총 컷의 개수:{this.cuts.Count}");
     }
@@ -165,7 +172,7 @@ public sealed class VmCuts : VmPageBase,
             cut.Unit = unit;
 
             // < ~ > 로 둘러싸인 경우 선택지 포맷으로 인식
-            if (unit is null && talkText.StartsWith("<") && talkText.EndsWith(">"))
+            if (unit is null && talkText.StartsWith('<') && talkText.EndsWith('>'))
             {
                 var newChoice = new ChoiceOption();
                 newChoice.Text.Korean = talkText[1..^1];
@@ -190,6 +197,21 @@ public sealed class VmCuts : VmPageBase,
         Log.Debug($"{this.DebugName} OnNavigating: {uri}");
 
         this.serviceScope.Dispose();
+    }
+
+    public void UpdatePreview(int startIndex)
+    {
+        Log.Debug($"{this.DebugName} preview 업데이트 시작. startIndex:{startIndex}");
+
+        Cut? prevCut = startIndex > 0
+            ? this.cuts[startIndex - 1].Cut
+            : null;
+
+        for (int i = startIndex; i < this.cuts.Count; i++)
+        {
+            this.cuts[i].Cut.Preview.Calculate(prevCut);
+            prevCut = this.cuts[i].Cut;
+        }
     }
 
     //// --------------------------------------------------------------------------------------------
@@ -392,6 +414,19 @@ public sealed class VmCuts : VmPageBase,
         clipboardWriter.SetText(this.name);
 
         Log.Info($"{this.DebugName} 파일명을 클립보드에 복사했습니다.");
+    }
+
+    private void OnUpdatePreview(object recipient, UpdatePreviewMessage message)
+    {
+        var vmCut = this.cuts.FirstOrDefault(e => e.Cut == message.Value);
+        if (vmCut is null)
+        {
+            Log.Warn($"{this.DebugName} preview 대상 컷을 찾을 수 없습니다. cutUid:{message.Value.Uid}");
+            return;
+        }
+
+        var startIndex = this.cuts.IndexOf(vmCut);
+        this.UpdatePreview(startIndex);
     }
 
     public sealed record CrateParam

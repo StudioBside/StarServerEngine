@@ -1,0 +1,48 @@
+﻿<UserControl
+    x:Class="CutEditor.Views.CutBoxes.BoxPreview"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:local="clr-namespace:CutEditor.Views.CutBoxes"
+    mc:Ignorable="d" 
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:lcvt="clr-namespace:CutEditor.Converters"
+    xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
+    xmlns:nkm="clr-namespace:NKM;assembly=Shared.Templet"
+    xmlns:extensions="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
+    xmlns:models="clr-namespace:CutEditor.Model;assembly=CutEditor.Model"
+    xmlns:viewmodels="clr-namespace:CutEditor.ViewModel;assembly=CutEditor.ViewModel"
+    d:DataContext="{d:DesignInstance Type=viewmodels:VmCut}"
+    d:DesignHeight="450" d:DesignWidth="800">
+
+    <!--카메라와 유닛 배치 정보 미리보기-->
+    <Border Width="248" Margin="2" CornerRadius="5"
+            Background="black"
+            Visibility="{Binding DataContext.ShowPreview,
+        RelativeSource={RelativeSource AncestorType=Page},
+        Converter={converters:BoolToVisibilityConverter}}">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <!--<ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>-->
+            </Grid.ColumnDefinitions>
+
+            <ContentPresenter 
+                VerticalAlignment="Center"
+                Content="{Binding Cut.Preview.BgFileName, Converter={lcvt:BgFileToPreviewConverter}}"
+                Visibility="{Binding Cut.Preview.BgFileName, Converter={converters:NullToVisibilityConverter}}"
+                />
+
+            <TextBlock Foreground="White" Margin="5"
+                       VerticalAlignment="Center"
+                Text="{Binding Cut.Preview.ValueText}">
+                <TextBlock.Effect>
+                    <DropShadowEffect Color="Black" Direction="315" ShadowDepth="1" BlurRadius="0"/>
+                </TextBlock.Effect>
+            </TextBlock>
+        </Grid>
+    </Border>
+
+</UserControl>

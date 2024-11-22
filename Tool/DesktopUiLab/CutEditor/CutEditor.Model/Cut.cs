@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
 using Cs.Core.Util;
 using Cs.Logging;
 using CutEditor.Model.Detail;
@@ -14,6 +15,7 @@ using Shared.Templet.Base;
 using Shared.Templet.Strings;
 using Shared.Templet.TempletTypes;
 using static CutEditor.Model.Enums;
+using static CutEditor.Model.Messages;
 using static Shared.Templet.Enums;
 
 public sealed class Cut : ObservableObject
@@ -23,6 +25,7 @@ public sealed class Cut : ObservableObject
     private readonly L10nText unitTalk = new();
     private readonly ObservableCollection<ChoiceOption> choices = new();
     private readonly ObservableCollection<StringElement> unitNames = new();
+    private readonly CutPreview preview;
     private string? contentsTag;
     private string? cutsceneStrId;
     private bool waitClick = true;
@@ -84,6 +87,7 @@ public sealed class Cut : ObservableObject
     public Cut(long uid)
     {
         this.Uid = uid;
+        this.preview = new CutPreview(this);
 
         // 컬렉션의 요소들이 변경될 때 UnitNames로 바인딩한 값들도 새로고침 하도록 알림 추가.
         this.unitNames.CollectionChanged += (s, e) => this.OnPropertyChanged(nameof(this.UnitNames));
@@ -211,6 +215,7 @@ public sealed class Cut : ObservableObject
     public L10nText UnitTalk => this.unitTalk;
     public IList<ChoiceOption> Choices => this.choices;
     public IList<StringElement> UnitNames => this.unitNames;
+    public CutPreview Preview => this.preview;
 
     public float TalkTime
     {
@@ -645,6 +650,14 @@ public sealed class Cut : ObservableObject
             case nameof(this.UnitEffect):
             case nameof(this.NicknameInput):
                 this.OnPropertyChanged(nameof(this.HasMinorityData));
+                break;
+
+            case nameof(this.CameraOffset):
+            case nameof(this.Unit):
+            case nameof(this.UnitPos):
+            case nameof(this.CutsceneClear):
+            case nameof(this.BgFileName):
+                WeakReferenceMessenger.Default.Send(new UpdatePreviewMessage(this));
                 break;
         }
     }

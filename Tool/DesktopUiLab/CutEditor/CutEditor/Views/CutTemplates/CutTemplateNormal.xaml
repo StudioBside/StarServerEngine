@@ -170,30 +170,7 @@
                 <boxes:BoxCamera Grid.Row="2"/>
                 <boxes:BoxUnit Grid.Row="3"/>
 
-                <!--카메라와 유닛 배치 정보 미리보기-->
-                <Border Grid.Column="1" Grid.RowSpan="4"
-                        Width="248" Margin="2"
-                        BorderBrush="Red" BorderThickness="1" CornerRadius="5"
-                        Visibility="{Binding DataContext.ShowPreview,
-                    RelativeSource={RelativeSource AncestorType=Page},
-                    Converter={converters:BoolToVisibilityConverter}}">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Border Grid.Column="0" Width="80" Height="80"
-                                BorderBrush="Black" BorderThickness="1"/>
-
-                        <Border Grid.Column="1" Width="80" Height="80"
-                                BorderBrush="Black" BorderThickness="1"/>
-
-                        <Border Grid.Column="2" Width="80" Height="80"
-                                BorderBrush="Black" BorderThickness="1"/>
-                    </Grid>
-                </Border>
+                <boxes:BoxPreview Grid.Column="1" Grid.RowSpan="4"/>
             </Grid>
         </Border>
     </DataTemplate>

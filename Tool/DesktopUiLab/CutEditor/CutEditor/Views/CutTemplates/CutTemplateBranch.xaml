@@ -3,6 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:boxes="clr-namespace:CutEditor.Views.CutBoxes"
     xmlns:lcvt="clr-namespace:CutEditor.Converters"
     xmlns:models="clr-namespace:CutEditor.Model;assembly=CutEditor.Model"
     xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
@@ -20,14 +21,16 @@
                     CornerRadius="3">
             <Grid Margin="1">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <!--헤더. uid 및 체크박스 목록-->
-                    <RowDefinition Height="Auto"/>
-                    <!--화면 박스-->
-                    <RowDefinition Height="Auto"/>
-                    <!--유닛 박스-->
+                    <RowDefinition Height="Auto"/> <!--헤더. uid 및 체크박스 목록-->
+                    <RowDefinition Height="Auto"/> <!--화면 박스-->
+                    <RowDefinition Height="Auto"/> <!--유닛 박스-->
                 </Grid.RowDefinitions>
 
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1425"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
                 <!--헤더. 추가버튼 위치-->
                 <DockPanel Grid.Row="0" Margin="5,7" LastChildFill="True">
                     <TextBlock DockPanel.Dock="Left" Grid.Row="0" Grid.Column="0"
@@ -105,6 +108,7 @@
                     </ui:ListView>
                 </Border>
 
+                <boxes:BoxPreview Grid.Column="1" Grid.RowSpan="4"/>
             </Grid>
         </Border>
     </DataTemplate>

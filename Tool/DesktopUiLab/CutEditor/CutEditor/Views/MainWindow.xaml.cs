@@ -1,13 +1,12 @@
 ﻿namespace CutEditor;
 
-using System;
 using System.ComponentModel;
 using System.Windows;
 using CommunityToolkit.Mvvm.Messaging;
 using CutEditor.ViewModel;
-using CutEditor.ViewModel.Messages;
 using Microsoft.Extensions.DependencyInjection;
 using Wpf.Ui;
+using static CutEditor.Model.Messages;
 
 public partial class MainWindow : Window
 {
@@ -56,6 +55,9 @@ public partial class MainWindow : Window
 
             // int를 WindowState로 변환
             this.WindowState = (WindowState)Properties.Settings.Default.WindowState;
+
+            // 프리뷰로 인한 너비 조정 이슈 : 너비는 저장값을 무시하고 항상 최소 너비로 설정.
+            this.Width = this.MinWidth;
         }
     }
 
