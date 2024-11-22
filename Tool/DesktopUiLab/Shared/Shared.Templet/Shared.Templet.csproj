@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net9.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <CodeAnalysisRuleSet>..\..\..\..\BaseEnvironment\CodingStyle.ruleset</CodeAnalysisRuleSet>
@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="Cs.Core" Version="0.0.9" />
-    <PackageReference Include="Cs.Logging" Version="0.0.23" />
+    <PackageReference Include="Cs.Logging" Version="0.0.25" />
     <PackageReference Include="stylecop.analyzers" Version="1.2.0-beta.556">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

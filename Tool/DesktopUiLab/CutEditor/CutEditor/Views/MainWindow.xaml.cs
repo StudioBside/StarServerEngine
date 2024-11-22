@@ -1,13 +1,18 @@
 ﻿namespace CutEditor;
 
+using System;
 using System.ComponentModel;
 using System.Windows;
+using CommunityToolkit.Mvvm.Messaging;
 using CutEditor.ViewModel;
+using CutEditor.ViewModel.Messages;
 using Microsoft.Extensions.DependencyInjection;
 using Wpf.Ui;
 
 public partial class MainWindow : Window
 {
+    private readonly double defaultMinWidth;
+
     public MainWindow()
     {
         this.InitializeComponent();
@@ -21,6 +26,9 @@ public partial class MainWindow : Window
 
         var snackbarService = services.GetRequiredService<ISnackbarService>();
         snackbarService.SetSnackbarPresenter(this.SnackbarPresenter);
+
+        this.defaultMinWidth = this.MinWidth;
+        WeakReferenceMessenger.Default.Register<PreviewChangedMessage>(this, this.OnPreviewChanged);
     }
 
     protected override void OnClosing(CancelEventArgs e)
@@ -62,5 +70,14 @@ public partial class MainWindow : Window
         Properties.Settings.Default.WindowState = (int)this.WindowState;
 
         Properties.Settings.Default.Save(); // 설정 저장
+    }
+
+    private void OnPreviewChanged(object recipient, PreviewChangedMessage message)
+    {
+        this.MinWidth = message.Value
+            ? this.defaultMinWidth + 255
+            : this.defaultMinWidth;
+
+        this.Width = this.MinWidth;
     }
 }

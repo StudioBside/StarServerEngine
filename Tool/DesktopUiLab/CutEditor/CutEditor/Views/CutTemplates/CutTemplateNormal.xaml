@@ -7,6 +7,7 @@
     xmlns:models="clr-namespace:CutEditor.Model;assembly=CutEditor.Model"
     xmlns:extensions="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
     xmlns:nkm="clr-namespace:NKM;assembly=Shared.Templet"
+    xmlns:viewmodels="clr-namespace:CutEditor.ViewModel;assembly=CutEditor.ViewModel"
     >
 
     <ResourceDictionary.MergedDictionaries>
@@ -16,13 +17,18 @@
     <DataTemplate x:Key="CutNormalTemplet">
         <Border Style="{StaticResource ChangeSelectedBgStyle}" BorderThickness="1" BorderBrush="LightGray"
                     CornerRadius="3">
-            <Grid Margin="1">
+            <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/> <!--헤더. uid 및 체크박스 목록-->
                     <RowDefinition Height="Auto"/> <!--화면 박스-->
                     <RowDefinition Height="Auto"/> <!--카메라 박스-->
                     <RowDefinition Height="Auto"/> <!--유닛 박스-->
                 </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1425"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
                 <!--헤더. 컨트롤 표시 제어 및 기타 설정들. uid 표기 등.-->
                 <DockPanel Grid.Row="0" Margin="5,0" LastChildFill="True">
@@ -163,6 +169,31 @@
                 <boxes:BoxScreen Grid.Row="1"/>
                 <boxes:BoxCamera Grid.Row="2"/>
                 <boxes:BoxUnit Grid.Row="3"/>
+
+                <!--카메라와 유닛 배치 정보 미리보기-->
+                <Border Grid.Column="1" Grid.RowSpan="4"
+                        Width="248" Margin="2"
+                        BorderBrush="Red" BorderThickness="1" CornerRadius="5"
+                        Visibility="{Binding DataContext.ShowPreview,
+                    RelativeSource={RelativeSource AncestorType=Page},
+                    Converter={converters:BoolToVisibilityConverter}}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Column="0" Width="80" Height="80"
+                                BorderBrush="Black" BorderThickness="1"/>
+
+                        <Border Grid.Column="1" Width="80" Height="80"
+                                BorderBrush="Black" BorderThickness="1"/>
+
+                        <Border Grid.Column="2" Width="80" Height="80"
+                                BorderBrush="Black" BorderThickness="1"/>
+                    </Grid>
+                </Border>
             </Grid>
         </Border>
     </DataTemplate>
