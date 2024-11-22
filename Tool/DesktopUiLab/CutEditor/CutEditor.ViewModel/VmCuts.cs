@@ -40,7 +40,6 @@ public sealed class VmCuts : VmPageBase,
     private readonly UndoController undoController;
     private readonly string packetExeFile;
     private readonly IServiceScope serviceScope;
-    private bool showPreview;
 
     public VmCuts(IConfiguration config, IServiceProvider services)
     {
@@ -114,11 +113,6 @@ public sealed class VmCuts : VmPageBase,
     public IRelayCommand DeleteCommand { get; } // 현재 (멀티)선택한 대상을 모두 삭제
     public ICommand NewCutCommand { get; }
     public ICommand DeletePickCommand { get; } // 인자로 넘어오는 1개의 cut을 삭제
-    public bool ShowPreview
-    {
-        get => this.showPreview;
-        set => this.SetProperty(ref this.showPreview, value);
-    }
 
     internal CutUidGenerator UidGenerator => this.uidGenerator;
     internal IServiceProvider Services => this.services;
@@ -224,10 +218,6 @@ public sealed class VmCuts : VmPageBase,
         {
             case nameof(this.SelectedCuts):
                 this.DeleteCommand.NotifyCanExecuteChanged();
-                break;
-
-            case nameof(this.ShowPreview):
-                WeakReferenceMessenger.Default.Send(new PreviewChangedMessage(this.ShowPreview));
                 break;
         }
     }

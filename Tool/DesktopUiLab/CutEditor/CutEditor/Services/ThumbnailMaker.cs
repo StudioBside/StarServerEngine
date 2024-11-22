@@ -9,12 +9,12 @@ public static class ThumbnailMaker
     {
         foreach (var data in AssetList.Instance.BgImageFiles)
         {
-            ImageHelper.CreateThumbnail(data, thumbnailWidth: 100);
+            ImageHelper.CreateThumbnail(data, thumbnailWidth: 200);
         }
 
         foreach (var data in AssetList.Instance.StoryImageFiles)
         {
-            ImageHelper.CreateThumbnail(data, thumbnailWidth: 100);
+            ImageHelper.CreateThumbnail(data, thumbnailWidth: 200);
         }
     }
 }

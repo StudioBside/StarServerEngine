@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Windows;
 using CutEditor.Services;
 using Du.Presentation.Converters;
+using Du.Presentation.Extensions;
 using NKM;
 
 public sealed class CameraOffsetToImageConverter : ConverterMarkupExtension<CameraOffsetToImageConverter>

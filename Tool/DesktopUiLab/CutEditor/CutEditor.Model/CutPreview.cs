@@ -33,11 +33,15 @@ public sealed class CutPreview : ObservableObject
         set => this.SetProperty(ref this.bgFileName, value);
     }
 
-    ////public Unit? UnitPos1
-    ////{
-    ////    get => this.units[0];
-    ////    set => this.SetUnit(value, CutsceneUnitPos.POS1);
-    ////}
+    public Unit? UnitPos1 => this.units[0];
+    public Unit? UnitPos2 => this.units[1];
+    public Unit? UnitPos3 => this.units[2];
+    public Unit? UnitPos4 => this.units[3];
+    public Unit? UnitPos5 => this.units[4];
+    public Unit? UnitPos6 => this.units[5];
+    public Unit? UnitPos7 => this.units[6];
+    public Unit? UnitPos8 => this.units[7];
+    public Unit? UnitPos9 => this.units[8];
 
     public string ValueText => this.ToString();
     private string DebugName => $"[Preview.{this.owner.Uid}]";
@@ -134,6 +138,7 @@ public sealed class CutPreview : ObservableObject
 
         Log.Debug($"{this.DebugName} position:{position} unit:{this.units[index]?.Name} -> {unit?.Name}");
         this.units[index] = unit;
+        this.OnPropertyChanged($"UnitPos{index + 1}");
         return true;
     }
 

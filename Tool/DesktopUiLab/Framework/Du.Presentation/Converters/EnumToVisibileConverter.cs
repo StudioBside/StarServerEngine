@@ -19,7 +19,11 @@ public sealed class EnumToVisibileConverter : ConverterMarkupExtension<EnumToVis
             return DependencyProperty.UnsetValue;
         }
 
-        object parameterValue = Enum.Parse(value.GetType(), parameterString);
+        if (Enum.TryParse(value.GetType(), parameterString, out var parameterValue) == false)
+        {
+            return DependencyProperty.UnsetValue;
+        }
+
         return parameterValue.Equals(value) ? Visibility.Visible : Visibility.Collapsed;
     }
 

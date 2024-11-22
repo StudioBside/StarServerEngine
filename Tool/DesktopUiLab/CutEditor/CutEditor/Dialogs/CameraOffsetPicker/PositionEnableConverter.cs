@@ -3,6 +3,7 @@
 using System.Globalization;
 using System.Windows;
 using Du.Presentation.Converters;
+using Du.Presentation.Extensions;
 using static CutEditor.Model.Enums;
 
 public sealed class PositionEnableConverter : ConverterMarkupExtension<PositionEnableConverter>

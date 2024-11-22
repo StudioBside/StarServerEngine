@@ -3,6 +3,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:boxes="clr-namespace:CutEditor.Views.CutBoxes"
+    xmlns:preview="clr-namespace:CutEditor.Views.Preview"
+    xmlns:views="clr-namespace:CutEditor.Views"
     xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
     xmlns:models="clr-namespace:CutEditor.Model;assembly=CutEditor.Model"
     xmlns:extensions="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
@@ -18,159 +20,160 @@
         <Border Style="{StaticResource ChangeSelectedBgStyle}" BorderThickness="1" BorderBrush="LightGray"
                     CornerRadius="3">
             <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/> <!--헤더. uid 및 체크박스 목록-->
-                    <RowDefinition Height="Auto"/> <!--화면 박스-->
-                    <RowDefinition Height="Auto"/> <!--카메라 박스-->
-                    <RowDefinition Height="Auto"/> <!--유닛 박스-->
-                </Grid.RowDefinitions>
-
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1425"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <!--헤더. 컨트롤 표시 제어 및 기타 설정들. uid 표기 등.-->
-                <DockPanel Grid.Row="0" Margin="5,0" LastChildFill="True">
-                    <TextBlock DockPanel.Dock="Left" Grid.Row="0" Grid.Column="0"
+                <StackPanel>
+                    
+                    <!--헤더. 컨트롤 표시 제어 및 기타 설정들. uid 표기 등.-->
+                    <DockPanel Margin="5,0" LastChildFill="True"
+                           >
+                        <TextBlock DockPanel.Dock="Left" Grid.Row="0" Grid.Column="0"
                                    VerticalAlignment="Center"
                                    Margin="0,0,50,0">
                             <Run>Uid : </Run>
                             <Run Text="{Binding Cut.Uid, Mode=OneWay}" />
-                    </TextBlock>
+                        </TextBlock>
 
-                    <ui:ToggleSwitch Content="WaitClick" Margin="0,0,10,0"
+                        <ui:ToggleSwitch Content="WaitClick" Margin="0,0,10,0"
                                      IsChecked="{Binding Cut.WaitClick}"/>
-                    <ui:NumberBox PlaceholderText="대기시간"
+                        <ui:NumberBox PlaceholderText="대기시간"
                                   Width="70" Margin="0,0,10,0"
                                   SpinButtonPlacementMode="Hidden"
                                   Value="{Binding Cut.WaitTime}"
                                   FontSize="11"/>
 
 
-                    <CheckBox Content="화면" Background="{StaticResource ScreenBoxBrush}"
+                        <CheckBox Content="화면" Background="{StaticResource ScreenBoxBrush}"
                                 IsChecked="{Binding ShowScreenSection}" MinWidth="70"/>
-                    <CheckBox Content="카메라" Background="{StaticResource CameraBoxBrush}"
+                        <CheckBox Content="카메라" Background="{StaticResource CameraBoxBrush}"
                                 IsChecked="{Binding ShowCameraSection}" MinWidth="80"/>
-                    <CheckBox Content="유닛" Background="{StaticResource UnitBoxBrush}"
+                        <CheckBox Content="유닛" Background="{StaticResource UnitBoxBrush}"
                                 IsChecked="{Binding ShowUnitSection}" MinWidth="70"/>
 
-                    <ui:DropDownButton Margin="0,0,10,0">
-                        <!--값이 없을 때는 한글 표기. 값이 있을때는 배경색을 다르게 표기-->
-                        <ui:DropDownButton.Style>
-                            <Style TargetType="ui:DropDownButton" BasedOn="{StaticResource {x:Type ui:DropDownButton}}">
-                                <Setter Property="Content" Value="{Binding Cut.JumpAnchor}"/>
-                                <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Cut.JumpAnchor}" Value="{x:Static models:Enums+DestAnchorType.None}">
-                                        <Setter Property="Content" Value="도착 앵커"/>
-                                        <Setter Property="Background" Value="White"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ui:DropDownButton.Style>
-                        <ui:DropDownButton.Flyout>
-                            <ContextMenu ItemsSource="{Binding Source={extensions:EnumValues {x:Type models:Enums+DestAnchorType}}}">
-                                <ContextMenu.ItemTemplate>
-                                    <DataTemplate>
-                                        <MenuItem Header="{Binding .}"
-                                      Command="{Binding DataContext.SetAnchorCommand, RelativeSource={RelativeSource AncestorType=ListViewItem}}"
-                                      CommandParameter="{Binding .}"/>
-                                    </DataTemplate>
-                                </ContextMenu.ItemTemplate>
-                            </ContextMenu>
-                        </ui:DropDownButton.Flyout>
-                    </ui:DropDownButton>
-
-                    <ui:DropDownButton Margin="0,0,10,0">
-                        <!--값이 없을 때는 한글 표기. 값이 있을때는 배경색을 다르게 표기-->
-                        <ui:DropDownButton.Style>
-                            <Style TargetType="ui:DropDownButton" BasedOn="{StaticResource {x:Type ui:DropDownButton}}">
-                                <Setter Property="Content" Value="{Binding Cut.CutsceneClear}"/>
-                                <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Cut.CutsceneClear}" Value="{x:Static nkm:CutsceneClearType.NONE}">
-                                        <Setter Property="Content" Value="컷신 클리어"/>
-                                        <Setter Property="Background" Value="White"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ui:DropDownButton.Style>
-                        <ui:DropDownButton.Flyout>
-                            <ContextMenu ItemsSource="{Binding Source={extensions:EnumValues {x:Type nkm:CutsceneClearType}}}">
-                                <ContextMenu.ItemTemplate>
-                                    <DataTemplate>
-                                        <MenuItem Header="{Binding .}"
-                                      Command="{Binding DataContext.SetCutsceneClearCommand, RelativeSource={RelativeSource AncestorType=ListViewItem}}"
-                                      CommandParameter="{Binding .}"/>
-                                    </DataTemplate>
-                                </ContextMenu.ItemTemplate>
-                            </ContextMenu>
-                        </ui:DropDownButton.Flyout>
-                    </ui:DropDownButton>
-                    
-                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal"
-                                HorizontalAlignment="Right">
-                        <Canvas Width="30">
-                            <Image Width="20" Stretch="Uniform" Canvas.ZIndex="1"
-                                   Source="pack://application:,,,/Assets/clip.png"
-                                   Canvas.Top="-35"
-                                   Visibility="{Binding Cut.TalkAppend, Converter={converters:BoolToVisibilityConverter}}"/>
-                        </Canvas>
-                        <CheckBox Content="TalkAppend" IsChecked="{Binding Cut.TalkAppend}"/>
-
-                        <ui:Flyout Placement="Top" VerticalAlignment="Top"
-                                   IsOpen="{Binding MinorityFlyoutOpen, Mode=TwoWay}">
-                            <Border BorderThickness="0.5" BorderBrush="Gray"
-                                    CornerRadius="5" Padding="5" Margin="0,0,0,10">
-                                <StackPanel Width="250">
-                                    <!--CutEffectg-->
-                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                                        <TextBlock VerticalAlignment="Center" Text="CutEffect : "/>
-                                        <ui:TextBox Width="150"
-                                                    Text="{Binding Cut.CutEffect, UpdateSourceTrigger=PropertyChanged}"/>
-                                    </StackPanel>
-                                    
-                                    <!--UnitEffect-->
-                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                                        <TextBlock VerticalAlignment="Center" Text="UnitEffect : "/>
-                                        <ComboBox Width="150"
-                                                  ItemsSource="{Binding Source={extensions:EnumValues {x:Type nkm:UnitEffect}}}"
-                                                  SelectedItem="{Binding Cut.UnitEffect}"
-                                                  IsEditable="False"/>
-                                    </StackPanel>
-                                    
-                                    <!--NicknameInput-->
-                                    <CheckBox Content=" : NicknameInput" FlowDirection="RightToLeft"
-                                              IsChecked="{Binding Cut.NicknameInput}"/>
-                                </StackPanel>
-                            </Border>
-                        </ui:Flyout>
-                        <ui:Button Content="잡동사니" Margin="0,0,10,0"
-                                   Command="{Binding OpenMinorityFlyoutCommand}">
-                            <ui:Button.Style>
-                                <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+                        <ui:DropDownButton Margin="0,0,10,0">
+                            <!--값이 없을 때는 한글 표기. 값이 있을때는 배경색을 다르게 표기-->
+                            <ui:DropDownButton.Style>
+                                <Style TargetType="ui:DropDownButton" BasedOn="{StaticResource {x:Type ui:DropDownButton}}">
+                                    <Setter Property="Content" Value="{Binding Cut.JumpAnchor}"/>
                                     <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Cut.HasMinorityData}" Value="False">
+                                        <DataTrigger Binding="{Binding Cut.JumpAnchor}" Value="{x:Static models:Enums+DestAnchorType.None}">
+                                            <Setter Property="Content" Value="도착 앵커"/>
                                             <Setter Property="Background" Value="White"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
-                            </ui:Button.Style>
-                        </ui:Button>
+                            </ui:DropDownButton.Style>
+                            <ui:DropDownButton.Flyout>
+                                <ContextMenu ItemsSource="{Binding Source={extensions:EnumValues {x:Type models:Enums+DestAnchorType}}}">
+                                    <ContextMenu.ItemTemplate>
+                                        <DataTemplate>
+                                            <MenuItem Header="{Binding .}"
+                                      Command="{Binding DataContext.SetAnchorCommand, RelativeSource={RelativeSource AncestorType=ListViewItem}}"
+                                      CommandParameter="{Binding .}"/>
+                                        </DataTemplate>
+                                    </ContextMenu.ItemTemplate>
+                                </ContextMenu>
+                            </ui:DropDownButton.Flyout>
+                        </ui:DropDownButton>
 
-                        <Button Content="X" Margin="0,0,10,0"
+                        <ui:DropDownButton Margin="0,0,10,0">
+                            <!--값이 없을 때는 한글 표기. 값이 있을때는 배경색을 다르게 표기-->
+                            <ui:DropDownButton.Style>
+                                <Style TargetType="ui:DropDownButton" BasedOn="{StaticResource {x:Type ui:DropDownButton}}">
+                                    <Setter Property="Content" Value="{Binding Cut.CutsceneClear}"/>
+                                    <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Cut.CutsceneClear}" Value="{x:Static nkm:CutsceneClearType.NONE}">
+                                            <Setter Property="Content" Value="컷신 클리어"/>
+                                            <Setter Property="Background" Value="White"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </ui:DropDownButton.Style>
+                            <ui:DropDownButton.Flyout>
+                                <ContextMenu ItemsSource="{Binding Source={extensions:EnumValues {x:Type nkm:CutsceneClearType}}}">
+                                    <ContextMenu.ItemTemplate>
+                                        <DataTemplate>
+                                            <MenuItem Header="{Binding .}"
+                                      Command="{Binding DataContext.SetCutsceneClearCommand, RelativeSource={RelativeSource AncestorType=ListViewItem}}"
+                                      CommandParameter="{Binding .}"/>
+                                        </DataTemplate>
+                                    </ContextMenu.ItemTemplate>
+                                </ContextMenu>
+                            </ui:DropDownButton.Flyout>
+                        </ui:DropDownButton>
+
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal"
+                                HorizontalAlignment="Right">
+                            <Canvas Width="30">
+                                <Image Width="20" Stretch="Uniform" Canvas.ZIndex="1"
+                                   Source="pack://application:,,,/Assets/clip.png"
+                                   Canvas.Top="-35"
+                                   Visibility="{Binding Cut.TalkAppend, Converter={converters:BoolToVisibilityConverter}}"/>
+                            </Canvas>
+                            <CheckBox Content="TalkAppend" IsChecked="{Binding Cut.TalkAppend}"/>
+
+                            <ui:Flyout Placement="Top" VerticalAlignment="Top"
+                                   IsOpen="{Binding MinorityFlyoutOpen, Mode=TwoWay}">
+                                <Border BorderThickness="0.5" BorderBrush="Gray"
+                                    CornerRadius="5" Padding="5" Margin="0,0,0,10">
+                                    <StackPanel Width="250">
+                                        <!--CutEffectg-->
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                            <TextBlock VerticalAlignment="Center" Text="CutEffect : "/>
+                                            <ui:TextBox Width="150"
+                                                    Text="{Binding Cut.CutEffect, UpdateSourceTrigger=PropertyChanged}"/>
+                                        </StackPanel>
+
+                                        <!--UnitEffect-->
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                            <TextBlock VerticalAlignment="Center" Text="UnitEffect : "/>
+                                            <ComboBox Width="150"
+                                                  ItemsSource="{Binding Source={extensions:EnumValues {x:Type nkm:UnitEffect}}}"
+                                                  SelectedItem="{Binding Cut.UnitEffect}"
+                                                  IsEditable="False"/>
+                                        </StackPanel>
+
+                                        <!--NicknameInput-->
+                                        <CheckBox Content=" : NicknameInput" FlowDirection="RightToLeft"
+                                              IsChecked="{Binding Cut.NicknameInput}"/>
+                                    </StackPanel>
+                                </Border>
+                            </ui:Flyout>
+                            <ui:Button Content="잡동사니" Margin="0,0,10,0"
+                                   Command="{Binding OpenMinorityFlyoutCommand}">
+                                <ui:Button.Style>
+                                    <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+                                        <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Cut.HasMinorityData}" Value="False">
+                                                <Setter Property="Background" Value="White"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ui:Button.Style>
+                            </ui:Button>
+
+                            <Button Content="X" Margin="0,0,10,0"
                                 Command="{Binding DataContext.DeletePickCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
                                 CommandParameter="{Binding .}"/>
-                    </StackPanel>
-                </DockPanel>
+                        </StackPanel>
+                    </DockPanel>
 
-                <boxes:BoxScreen Grid.Row="1"/>
-                <boxes:BoxCamera Grid.Row="2"/>
-                <boxes:BoxUnit Grid.Row="3"/>
+                    <boxes:BoxScreen />
+                    <boxes:BoxCamera />
+                    <boxes:BoxUnit />
+                </StackPanel>
 
-                <boxes:BoxPreview Grid.Column="1" Grid.RowSpan="4"/>
+                <preview:PreviewBase Grid.Column="1"
+                   Visibility="{Binding ShowPreview,
+        Source={views:GlobalState},
+        Converter={converters:BoolToVisibilityConverter}}"
+                            />
             </Grid>
         </Border>
     </DataTemplate>

@@ -57,7 +57,10 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Update="Views\CutBoxes\BoxPreview.xaml.cs">
+    <Compile Update="Views\Preview\PreviewUnitSlot.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Preview\PreviewBase.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Views\CutBoxes\BoxCamera.xaml.cs">

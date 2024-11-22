@@ -4,6 +4,8 @@
     xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:boxes="clr-namespace:CutEditor.Views.CutBoxes"
+    xmlns:preview="clr-namespace:CutEditor.Views.Preview"
+    xmlns:views="clr-namespace:CutEditor.Views"
     xmlns:lcvt="clr-namespace:CutEditor.Converters"
     xmlns:models="clr-namespace:CutEditor.Model;assembly=CutEditor.Model"
     xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
@@ -108,7 +110,11 @@
                     </ui:ListView>
                 </Border>
 
-                <boxes:BoxPreview Grid.Column="1" Grid.RowSpan="4"/>
+                <preview:PreviewBase Grid.Column="1" Grid.RowSpan="4"
+          Visibility="{Binding ShowPreview,
+        Source={views:GlobalState},
+        Converter={converters:BoolToVisibilityConverter}}"
+                                     />
             </Grid>
         </Border>
     </DataTemplate>

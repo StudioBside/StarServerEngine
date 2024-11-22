@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Windows;
 using Du.Presentation.Converters;
+using Du.Presentation.Extensions;
 using Du.Presentation.Util;
 
 public sealed class BgFileToPreviewConverter : ConverterMarkupExtension<BgFileToPreviewConverter>
@@ -17,7 +18,7 @@ public sealed class BgFileToPreviewConverter : ConverterMarkupExtension<BgFileTo
 
         if (strValue.EndsWith(".png"))
         {
-            var source = ImageHelper.GetThumbnail(strValue, thumbnailWidth: 100);
+            var source = ImageHelper.GetThumbnail(strValue, thumbnailWidth: 200);
             if (source is null)
             {
                 return "no cache";

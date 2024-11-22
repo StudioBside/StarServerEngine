@@ -38,6 +38,6 @@ public sealed class ElementType : ISearchable
 
     public void LoadImage()
     {
-        this.ImageSource = ImageHelper.GetThumbnail(this.fullPath, thumbnailWidth: 100);
+        this.ImageSource = ImageHelper.GetThumbnail(this.fullPath, thumbnailWidth: 200);
     }
 }

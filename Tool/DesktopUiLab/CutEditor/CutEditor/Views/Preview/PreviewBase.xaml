@@ -1,0 +1,78 @@
+﻿<UserControl
+    x:Class="CutEditor.Views.Preview.PreviewBase"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:local="clr-namespace:CutEditor.Views.Preview"
+    mc:Ignorable="d" 
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:lcvt="clr-namespace:CutEditor.Converters"
+    xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
+    xmlns:viewmodels="clr-namespace:CutEditor.ViewModel;assembly=CutEditor.ViewModel"
+    d:DataContext="{d:DesignInstance Type=viewmodels:VmCut}"
+    d:DesignHeight="450" d:DesignWidth="800">
+
+    <!--카메라와 유닛 배치 정보 미리보기-->
+    <Grid Width="290" Margin="2"
+          VerticalAlignment="Stretch">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <ContentPresenter Grid.RowSpan="2" Grid.ColumnSpan="2"
+            Width="290"
+            VerticalAlignment="Top"
+            Content="{Binding Cut.Preview.BgFileName, Converter={lcvt:BgFileToPreviewConverter}}"
+            Visibility="{Binding Cut.Preview.BgFileName, Converter={converters:NullToVisibilityConverter}}" />
+
+
+        <Border Background="Red" Padding="1" CornerRadius="3">
+            <ui:TextBlock Foreground="White" FontTypography="Subtitle"
+                    Text="{Binding Cut.Preview.CameraOffset}"/>
+        </Border>
+
+
+        <Canvas Grid.Row="1" Grid.ColumnSpan="2" Width="280" Height="60">
+            <local:PreviewUnitSlot
+                Canvas.Top="25" Canvas.Left="0" 
+                DataContext="{Binding Cut.Preview.UnitPos1}"/>
+            <local:PreviewUnitSlot
+                Canvas.Top="5" Canvas.Left="30" 
+                DataContext="{Binding Cut.Preview.UnitPos6}"/>
+            <local:PreviewUnitSlot
+                Canvas.Top="25" Canvas.Left="60"
+                DataContext="{Binding Cut.Preview.UnitPos2}"/>
+            <local:PreviewUnitSlot
+                Canvas.Top="5" Canvas.Left="90"
+                DataContext="{Binding Cut.Preview.UnitPos7}"/>
+            <local:PreviewUnitSlot
+                Canvas.Top="25" Canvas.Left="120"
+                DataContext="{Binding Cut.Preview.UnitPos3}"/>
+            <local:PreviewUnitSlot
+                Canvas.Top="5" Canvas.Left="150"
+                DataContext="{Binding Cut.Preview.UnitPos8}"/>
+            <local:PreviewUnitSlot
+                Canvas.Top="25" Canvas.Left="180"
+                DataContext="{Binding Cut.Preview.UnitPos4}"/>
+            <local:PreviewUnitSlot
+                Canvas.Top="5" Canvas.Left="210"
+                DataContext="{Binding Cut.Preview.UnitPos9}"/>
+            <local:PreviewUnitSlot
+                Canvas.Top="25" Canvas.Left="240"
+                DataContext="{Binding Cut.Preview.UnitPos5}"/>
+
+            <Rectangle
+                Width="160" Height="75" Stroke="Red" StrokeThickness="3" Visibility="{Binding Cut.Preview.CameraOffset,
+                Converter={converters:EnumToVisibileConverter}, ConverterParameter=TRIPLE_1}"/>
+        </Canvas>
+    </Grid>
+
+</UserControl>

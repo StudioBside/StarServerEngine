@@ -77,7 +77,7 @@ public partial class MainWindow : Window
     private void OnPreviewChanged(object recipient, PreviewChangedMessage message)
     {
         this.MinWidth = message.Value
-            ? this.defaultMinWidth + 255
+            ? this.defaultMinWidth + 290
             : this.defaultMinWidth;
 
         this.Width = this.MinWidth;
