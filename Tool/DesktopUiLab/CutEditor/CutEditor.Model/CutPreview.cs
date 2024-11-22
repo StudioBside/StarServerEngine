@@ -33,6 +33,12 @@ public sealed class CutPreview : ObservableObject
         set => this.SetProperty(ref this.bgFileName, value);
     }
 
+    ////public Unit? UnitPos1
+    ////{
+    ////    get => this.units[0];
+    ////    set => this.SetUnit(value, CutsceneUnitPos.POS1);
+    ////}
+
     public string ValueText => this.ToString();
     private string DebugName => $"[Preview.{this.owner.Uid}]";
 
@@ -84,9 +90,6 @@ public sealed class CutPreview : ObservableObject
     public override string ToString()
     {
         var sb = new StringBuilder();
-        sb.AppendLine($"CameraOffset: {this.CameraOffset}");
-        sb.AppendLine();
-
         for (int i = 0; i < this.units.Length; i++)
         {
             var unit = this.units[i];

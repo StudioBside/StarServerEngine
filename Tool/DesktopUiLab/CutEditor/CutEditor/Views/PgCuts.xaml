@@ -16,6 +16,8 @@
     d:DataContext="{d:DesignInstance Type=viewmodels:VmCuts}"
     mc:Ignorable="d" 
     d:DesignHeight="450" d:DesignWidth="800"
+    SnapsToDevicePixels="True"
+    UseLayoutRounding="True"
     Title="PgCutScene">
     <Page.InputBindings>
         <KeyBinding Key="Delete" Command="{Binding DeleteCommand}"/>

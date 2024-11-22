@@ -17,32 +17,49 @@
     d:DesignHeight="450" d:DesignWidth="800">
 
     <!--카메라와 유닛 배치 정보 미리보기-->
-    <Border Width="248" Margin="2" CornerRadius="5"
-            Background="black"
-            Visibility="{Binding DataContext.ShowPreview,
+    <Grid Width="250" Margin="2"
+          VerticalAlignment="Stretch"
+          Visibility="{Binding DataContext.ShowPreview,
         RelativeSource={RelativeSource AncestorType=Page},
         Converter={converters:BoolToVisibilityConverter}}">
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <!--<ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>-->
-            </Grid.ColumnDefinitions>
 
-            <ContentPresenter 
-                VerticalAlignment="Center"
-                Content="{Binding Cut.Preview.BgFileName, Converter={lcvt:BgFileToPreviewConverter}}"
-                Visibility="{Binding Cut.Preview.BgFileName, Converter={converters:NullToVisibilityConverter}}"
-                />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-            <TextBlock Foreground="White" Margin="5"
-                       VerticalAlignment="Center"
-                Text="{Binding Cut.Preview.ValueText}">
-                <TextBlock.Effect>
-                    <DropShadowEffect Color="Black" Direction="315" ShadowDepth="1" BlurRadius="0"/>
-                </TextBlock.Effect>
-            </TextBlock>
-        </Grid>
-    </Border>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <ContentPresenter Grid.RowSpan="2" Grid.ColumnSpan="2"
+            Width="250"
+            VerticalAlignment="Top"
+            Content="{Binding Cut.Preview.BgFileName, Converter={lcvt:BgFileToPreviewConverter}}"
+            Visibility="{Binding Cut.Preview.BgFileName, Converter={converters:NullToVisibilityConverter}}" />
+
+
+        <Border Background="Red" Padding="1" CornerRadius="3">
+            <ui:TextBlock Foreground="White" FontTypography="Subtitle"
+                    Text="{Binding Cut.Preview.CameraOffset}"/>
+        </Border>
+
+
+        <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Foreground="White" Margin="5"
+                    Text="{Binding Cut.Preview.ValueText}">
+            <TextBlock.Effect>
+                <DropShadowEffect Color="Black" Direction="315" ShadowDepth="1" BlurRadius="0"/>
+            </TextBlock.Effect>
+        </TextBlock>
+
+        <!--<Ellipse Canvas.Top="60" Canvas.Left="0" Width="40" Height="40">
+            <Ellipse.Fill>
+                <ImageBrush ImageSource="{Binding Cut.Preview.Unit.ImageFullPath}"/>
+            </Ellipse.Fill>
+        </Ellipse>
+        <Ellipse Canvas.Top="40" Canvas.Left="40" Width="40" Height="40" Fill="#80FFFFFF"/>
+        <Ellipse Canvas.Top="60" Canvas.Left="80" Width="40" Height="40" Fill="#80FFFFFF"/>-->
+    </Grid>
 
 </UserControl>
