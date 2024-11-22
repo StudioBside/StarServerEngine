@@ -28,13 +28,9 @@ public sealed class StringTemplateFactory
 
     public Template CreateFromFile(string fileName, string name)
     {
-        if (this.cache.TryGetValue(fileName, out var templetGroup) == false)
-        {
-            string groupFilePath = Path.Combine(this.filePath, fileName);
-            groupFilePath = Path.GetFullPath(groupFilePath);
-            templetGroup = new TemplateGroupFile(groupFilePath);
-            this.cache.Add(fileName, templetGroup);
-        }
+        string groupFilePath = Path.Combine(this.filePath, fileName);
+        groupFilePath = Path.GetFullPath(groupFilePath);
+        var templetGroup = new TemplateGroupFile(groupFilePath);
 
         return templetGroup.GetInstanceOf(name);
     }
