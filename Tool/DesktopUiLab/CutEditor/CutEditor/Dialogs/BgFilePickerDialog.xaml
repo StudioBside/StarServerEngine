@@ -79,7 +79,7 @@
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <ui:Image Source="{Binding ImageSource}"
-                                                      CornerRadius="5"/>
+                                                      CornerRadius="5" Width="120"/>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>

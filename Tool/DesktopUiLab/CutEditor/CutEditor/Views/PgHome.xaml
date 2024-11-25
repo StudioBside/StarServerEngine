@@ -29,7 +29,10 @@
         </Grid.RowDefinitions>
 
         <!--타이틀 영역-->
-        <TextBlock Grid.Row="0" Margin="0,0,0,10" FontSize="20" Text="{Binding Title}" />
+        <ui:TextBlock Grid.Row="0"
+                      Margin="0,0,0,10"
+                      FontTypography="Subtitle"
+                      Text="{Binding Title}" />
 
         <!--검색 필터 영역-->
         <Grid Grid.Row="1">
@@ -148,6 +151,10 @@
                 <ui:Button Margin="0,0,10,0"
                            Content="전체 검색"
                            IsEnabled="False"/>
+                <ui:Button Margin="0,0,10,0"
+                           Content="시스템 스트링"
+                           Command="{Binding GoToCommand}"
+                           CommandParameter="Views/PgStrings.xaml" />
                 <ui:Button Margin="0,0,10,0"
                            Content="추출파일 폴더 열기"
                            Command="{Binding OpenExportRootCommand}"/>

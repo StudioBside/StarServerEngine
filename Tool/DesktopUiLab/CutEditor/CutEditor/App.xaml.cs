@@ -53,6 +53,7 @@ public partial class App : Application
         services.AddSingleton<AssetList>();
         services.AddTransient<VmCuts>();
         services.AddTransient<VmCutsSummary>();
+        services.AddTransient<VmStrings>();
         services.AddTransient<FileLoader>();
         services.AddTransient<FileAndSnackbarLog>();
         services.AddTransient<ITempletPicker<Unit>, UnitPicker>();

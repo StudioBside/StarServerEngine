@@ -85,6 +85,9 @@
     <Page Update="Views\CutTemplates\CutTemplateBranch.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Views\PgStrings.xaml">
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
 
 </Project>

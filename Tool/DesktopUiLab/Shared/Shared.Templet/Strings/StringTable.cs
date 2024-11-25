@@ -14,6 +14,7 @@ public sealed class StringTable
 
     public static StringTable Instance => Singleton<StringTable>.Instance;
     public IEnumerable<StringElement> Elements => this.uniqueElements.Values;
+    public int UniqueCount => this.uniqueElements.Count;
 
     public string Find(string key)
     {
