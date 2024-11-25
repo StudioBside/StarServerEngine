@@ -628,6 +628,11 @@ public sealed class Cut : ObservableObject
             this.cameraOffsetTime != CameraOffsetTime.NONE;
     }
 
+    public override string ToString()
+    {
+        return $"Cut. Uid:{this.Uid}";
+    }
+
     //// --------------------------------------------------------------------------------
 
     protected override void OnPropertyChanged(PropertyChangedEventArgs e)

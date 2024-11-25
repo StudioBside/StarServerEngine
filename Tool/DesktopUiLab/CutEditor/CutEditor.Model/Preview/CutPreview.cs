@@ -127,7 +127,6 @@ public sealed class CutPreview : ObservableObject
             return;
         }
 
-        Log.Debug($"{this.DebugName} position:{position} unit:{this.slots[index].Unit?.Name} -> {unit?.Name}");
         this.slots[index].Unit = unit;
         this.OnPropertyChanged($"UnitPos{index + 1}");
     }
@@ -144,7 +143,6 @@ public sealed class CutPreview : ObservableObject
             return;
         }
 
-        Log.Debug($"{this.DebugName} cameraoffset:{this.cameraOffset} -> {cameraOffset}");
         this.CameraOffset = cameraOffset;
     }
 
@@ -155,7 +153,6 @@ public sealed class CutPreview : ObservableObject
             return;
         }
 
-        Log.Debug($"{this.DebugName} bgFileName:{this.bgFileName} -> {bgFileName}");
         this.BgFileName = bgFileName;
     }
 

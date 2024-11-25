@@ -50,13 +50,8 @@
                 Margin="0,0,10,0"
                 PlaceholderText="검색어 입력.."
                 Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}"
-                ext:FocusExtension.IsFocused="True">
-                <ui:TextBox.Icon>
-                    <ui:IconSourceElement>
-                        <ui:SymbolIconSource Symbol="Search12"/>
-                    </ui:IconSourceElement>
-                </ui:TextBox.Icon>
-            </ui:TextBox>
+                ext:FocusExtension.IsFocused="True"
+                />
 
             <StackPanel Grid.Column="2"  Orientation="Horizontal">
                 <TextBlock VerticalAlignment="Center" Text="필터 : "/>

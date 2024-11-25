@@ -106,11 +106,7 @@
                     </Border>
                 </StackPanel>
 
-                <preview:PreviewBase Grid.Column="0" Grid.RowSpan="4"
-          Visibility="{Binding ShowPreview,
-        Source={views:GlobalState},
-        Converter={converters:BoolToVisibilityConverter}}"
-                                     />
+                <preview:PreviewBase Grid.Column="0" Grid.RowSpan="4" />
             </Grid>
         </Border>
     </DataTemplate>

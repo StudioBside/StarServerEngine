@@ -170,6 +170,11 @@ public sealed class VmCut : ObservableObject
         set => this.SetProperty(ref this.minorityFlyoutOpen, value);
     }
 
+    public override string ToString()
+    {
+        return $"VmCut. Uid:{this.Cut.Uid}";
+    }
+
     //// --------------------------------------------------------------------------------------------
 
     private void Cut_PropertyChanged(object? sender, PropertyChangedEventArgs e)

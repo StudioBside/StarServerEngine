@@ -48,35 +48,5 @@
                 </DataTemplate>
             </GridViewColumn.CellTemplate>
         </GridViewColumn>
-
-        <GridViewColumn Header="Japanese" Width="Auto">
-            <GridViewColumn.CellTemplate>
-                <DataTemplate>
-                    <ContentPresenter
-                        Content="{Binding SummaryJapanese}"
-                        ContentTemplate="{StaticResource TalkTextTemplate}" />
-                </DataTemplate>
-            </GridViewColumn.CellTemplate>
-        </GridViewColumn>
-
-        <GridViewColumn Header="English" Width="Auto">
-            <GridViewColumn.CellTemplate>
-                <DataTemplate>
-                    <ContentPresenter
-                        Content="{Binding SummaryEnglish}"
-                        ContentTemplate="{StaticResource TalkTextTemplate}" />
-                </DataTemplate>
-            </GridViewColumn.CellTemplate>
-        </GridViewColumn>
-
-        <GridViewColumn Header="ChineseSimplified" Width="Auto">
-            <GridViewColumn.CellTemplate>
-                <DataTemplate>
-                    <ContentPresenter
-                        Content="{Binding SummaryChineseSimplified}"
-                        ContentTemplate="{StaticResource TalkTextTemplate}" />
-                </DataTemplate>
-            </GridViewColumn.CellTemplate>
-        </GridViewColumn>
     </GridView>
 </ResourceDictionary>

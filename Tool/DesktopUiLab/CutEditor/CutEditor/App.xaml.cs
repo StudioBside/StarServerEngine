@@ -77,6 +77,7 @@ public partial class App : Application
         services.AddTransient<IPopupMessageNotifier, PopupMessageNotifier>();
         services.AddTransient<ICollectionEditor, CollectionEditor>();
         services.AddTransient<ISearchableCollectionProvider, SearchableCollectionProvider>();
+        services.AddTransient<IFilteredCollectionProvider, FilteredCollectionProvider>();
         services.AddTransient<IUserWaitingNotifier, WaitingNotifierDialog>();
         services.AddTransient<IClipboardWriter, ClipboardWriter>();
         services.AddTransient<IFilePicker, FilePicker>();

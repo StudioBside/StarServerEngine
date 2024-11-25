@@ -109,6 +109,12 @@
                 <ui:Button Margin="3" Content="필터 삭제"
                            Icon="{ui:SymbolIcon FilterDismiss16}"
                            Command="{Binding ClearFilterCommand}"/>
+                <CheckBox IsChecked="{Binding FilterTextless}"/>
+                <TextBlock VerticalAlignment="Center">
+                    <Run Text="{Binding FilteredCount, Mode=OneWay}"/>
+                    <Run>/</Run>
+                    <Run Text="{Binding TotalCount, Mode=OneWay}"/>
+                </TextBlock>
             </StackPanel>
             
             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Margin="5"
@@ -169,7 +175,7 @@
         <Border BorderThickness="1" BorderBrush="Gray"/>
 
         <!--메인 영역 : 컷 리스트-->
-        <ui:ListView Grid.Row="2" ItemsSource="{Binding Cuts}"
+        <ui:ListView Grid.Row="2" ItemsSource="{Binding FilteredCuts}"
                      AllowDrop="True"
                      VirtualizingPanel.VirtualizationMode="Recycling"
                      ItemTemplate="{StaticResource SwitchableTemplet}"

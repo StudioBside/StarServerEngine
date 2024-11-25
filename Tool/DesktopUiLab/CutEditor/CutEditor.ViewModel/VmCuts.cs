@@ -1,5 +1,6 @@
 ﻿namespace CutEditor.ViewModel;
 
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -31,7 +32,7 @@ public sealed class VmCuts : VmPageBase,
     IClipboardHandler
 {
     private readonly ObservableCollection<VmCut> cuts = [];
-    //private readonly ISearchableCollection<VmCut> filteredCuts;
+    private readonly IFilteredCollection<VmCut> filteredCuts;
     private readonly ObservableCollection<VmCut> selectedCuts = [];
     private readonly string binFilePath;
     private readonly string textFileName;
@@ -41,6 +42,7 @@ public sealed class VmCuts : VmPageBase,
     private readonly UndoController undoController;
     private readonly string packetExeFile;
     private readonly IServiceScope serviceScope;
+    private bool filterTextless;
 
     public VmCuts(IConfiguration config, IServiceProvider services)
     {
@@ -48,7 +50,7 @@ public sealed class VmCuts : VmPageBase,
         this.serviceScope = services.CreateScope();
         this.undoController = this.serviceScope.ServiceProvider.GetRequiredService<UndoController>();
         this.services = services;
-        //this.filteredCuts = services.GetRequiredService<ISearchableCollectionProvider>().Build(this.cuts);
+        this.filteredCuts = services.GetRequiredService<IFilteredCollectionProvider>().Build(this.cuts);
         this.GoToListCommand = new RelayCommand(this.OnGoToList);
         this.SaveCommand = new AsyncRelayCommand(this.OnSave);
         this.OpenFileCommand = new RelayCommand(this.OnOpenFile);
@@ -57,6 +59,16 @@ public sealed class VmCuts : VmPageBase,
         this.NewCutCommand = new RelayCommand<CutDataType>(this.OnNewCut);
         this.DeletePickCommand = new RelayCommand<VmCut>(this.OnDeletePick);
         WeakReferenceMessenger.Default.Register<UpdatePreviewMessage>(this, this.OnUpdatePreview);
+
+        this.filteredCuts.Filter = e =>
+        {
+            if (this.filterTextless && e.Cut.UnitTalk.Korean.Length == 0)
+            {
+                return false;
+            }
+
+            return true;
+        };
 
         if (VmGlobalState.Instance.VmCutsCreateParam is null)
         {
@@ -104,6 +116,9 @@ public sealed class VmCuts : VmPageBase,
     }
 
     public IList<VmCut> Cuts => this.cuts;
+    public IEnumerable<VmCut> FilteredCuts => this.filteredCuts.TypedList;
+    public int TotalCount => this.filteredCuts.SourceCount;
+    public int FilteredCount => this.filteredCuts.FilteredCount;
     public IList<VmCut> SelectedCuts => this.selectedCuts;
     public VmFindFlyout FindFlyout { get; }
     public ICommand UndoCommand => this.undoController.UndoCommand;
@@ -115,6 +130,12 @@ public sealed class VmCuts : VmPageBase,
     public IRelayCommand DeleteCommand { get; } // 현재 (멀티)선택한 대상을 모두 삭제
     public ICommand NewCutCommand { get; }
     public ICommand DeletePickCommand { get; } // 인자로 넘어오는 1개의 cut을 삭제
+
+    public bool FilterTextless
+    {
+        get => this.filterTextless;
+        set => this.SetProperty(ref this.filterTextless, value);
+    }
 
     internal CutUidGenerator UidGenerator => this.uidGenerator;
     internal IServiceProvider Services => this.services;
@@ -220,6 +241,12 @@ public sealed class VmCuts : VmPageBase,
         {
             case nameof(this.SelectedCuts):
                 this.DeleteCommand.NotifyCanExecuteChanged();
+                break;
+
+            case nameof(this.FilterTextless):
+                this.filteredCuts.Refresh();
+                this.OnPropertyChanged(nameof(this.FilteredCuts));
+                this.OnPropertyChanged(nameof(this.FilteredCount));
                 break;
         }
     }
