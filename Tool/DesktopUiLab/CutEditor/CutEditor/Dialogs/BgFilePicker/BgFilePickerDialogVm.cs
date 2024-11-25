@@ -10,16 +10,16 @@ using Microsoft.Extensions.DependencyInjection;
 
 public partial class BgFilePickerDialogVm : ObservableObject
 {
-    private readonly IFilteredCollection<ElementType> imageFiles;
-    private readonly IFilteredCollection<ElementType> movFiles;
-    private readonly IFilteredCollection<ElementType> slateFiles;
-    private readonly IFilteredCollection<ElementType> spineFiles;
+    private readonly ISearchableCollection<ElementType> imageFiles;
+    private readonly ISearchableCollection<ElementType> movFiles;
+    private readonly ISearchableCollection<ElementType> slateFiles;
+    private readonly ISearchableCollection<ElementType> spineFiles;
     private string searchKeyword = string.Empty;
     private string? selected;
 
     public BgFilePickerDialogVm()
     {
-        var filteredCollectionProvider = App.Current.Services.GetRequiredService<IFilteredCollectionProvider>();
+        var filteredCollectionProvider = App.Current.Services.GetRequiredService<ISearchableCollectionProvider>();
 
         ThumbnailMaker.UpdateAll();
         var imageList = AssetList.Instance.BgImageFiles.Select(e =>

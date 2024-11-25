@@ -33,6 +33,7 @@ public sealed class Unit : ITemplet, ISearchable
     public string ImageFullPath { get; private set; } = string.Empty;
     public NKM_UNIT_TYPE UnitType { get; }
     public string Name { get; private set; } = string.Empty;
+    public string DebugName => $"[{this.Id}]{this.Name}";
 
     public void Join()
     {
@@ -66,5 +67,10 @@ public sealed class Unit : ITemplet, ISearchable
     {
         return this.UnitType == NKM_UNIT_TYPE.NUT_SAVIOR ||
             this.UnitType == NKM_UNIT_TYPE.NUT_NPC;
+    }
+
+    public override string ToString()
+    {
+        return this.DebugName;
     }
 }

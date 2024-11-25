@@ -11,7 +11,7 @@ using Wpf.Ui.Controls;
 
 public partial class UnitPickerDialog : ContentDialog
 {
-    private readonly IFilteredCollection<Unit> filteredList;
+    private readonly ISearchableCollection<Unit> filteredList;
     private string searchKeyword = string.Empty;
 
     public UnitPickerDialog(ContentPresenter? dialogHost) : base(dialogHost)
@@ -19,7 +19,7 @@ public partial class UnitPickerDialog : ContentDialog
         this.DataContext = this;
 
         var units = TempletContainer<Unit>.Values.Where(e => e.EnableForCutscene());
-        this.filteredList = App.Current.Services.GetRequiredService<IFilteredCollectionProvider>().Build(units);
+        this.filteredList = App.Current.Services.GetRequiredService<ISearchableCollectionProvider>().Build(units);
         this.InitializeComponent();
     }
 

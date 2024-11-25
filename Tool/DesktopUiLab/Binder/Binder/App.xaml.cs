@@ -48,7 +48,7 @@ public partial class App : Application
         services.AddSingleton<IContentDialogService, ContentDialogService>();
         services.AddTransient<IPopupMessageNotifier, PopupMessageNotifier>();
         services.AddTransient<ICollectionEditor, CollectionEditor>();
-        services.AddTransient<IFilteredCollectionProvider, FilteredCollectionProvider>();
+        services.AddTransient<ISearchableCollectionProvider, SearchableCollectionProvider>();
         services.AddTransient<IUserWaitingNotifier, WaitingNotifierDialog>();
 
         return services.BuildServiceProvider();

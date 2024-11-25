@@ -18,23 +18,36 @@
 
     <!--카메라와 유닛 배치 정보 미리보기-->
     <Grid>
-        <Ellipse Width="40" Height="40" StrokeThickness="1" Stroke="Black"
-                 ToolTip="{Binding Name}">
+        <Ellipse Width="40" Height="40" StrokeThickness="0.5" Stroke="#000">
+            <Ellipse.ToolTip>
+                <StackPanel>
+                    <ui:Image CornerRadius="5" Source="{Binding Unit.ImageFullPath}"/>
+                    <TextBlock Margin="5,10,0,0" Text="{Binding Unit.Name}"/>
+                </StackPanel>
+            </Ellipse.ToolTip>
             <Ellipse.Style>
                 <Style TargetType="Ellipse">
                     <Setter Property="Fill">
                         <Setter.Value>
-                            <ImageBrush ImageSource="{Binding ImageFullPath}"/>
+                            <ImageBrush ImageSource="{Binding Unit.ImageFullPath}"/>
                         </Setter.Value>
                     </Setter>
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding}" Value="{x:Null}">
-                            <Setter Property="Fill" Value="#80a0a0a0"/>
+                        <DataTrigger Binding="{Binding Unit}" Value="{x:Null}">
+                            <Setter Property="Fill" Value="#90a0a0a0"/>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </Ellipse.Style>
         </Ellipse>
+        <ui:TextBlock FontTypography="Subtitle"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      Foreground="#000"
+                      Visibility="{Binding Unit,
+            Converter={converters:NullToVisibilityConverter},
+            ConverterParameter=Invert}"
+                      Text="{Binding VisualNumber}" />
     </Grid>
 
 </UserControl>

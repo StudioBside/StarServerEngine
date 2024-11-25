@@ -1,4 +1,4 @@
-﻿namespace CutEditor.Model;
+﻿namespace CutEditor.Model.Preview;
 
 using System.ComponentModel;
 using System.Text;
@@ -12,13 +12,18 @@ public sealed class CutPreview : ObservableObject
     private const int UnitSlotCount = 9;
 
     private readonly Cut owner;
-    private readonly Unit?[] units = new Unit[UnitSlotCount];
+    private readonly PreviewUnitSlot[] slots = new PreviewUnitSlot[UnitSlotCount];
     private CameraOffset cameraOffset;
     private string? bgFileName;
 
     public CutPreview(Cut owner)
     {
         this.owner = owner;
+
+        for (int i = 0; i < this.slots.Length; i++)
+        {
+            this.slots[i] = new PreviewUnitSlot(CutsceneUnitPos.POS1 + i);
+        }
     }
 
     public CameraOffset CameraOffset
@@ -33,17 +38,16 @@ public sealed class CutPreview : ObservableObject
         set => this.SetProperty(ref this.bgFileName, value);
     }
 
-    public Unit? UnitPos1 => this.units[0];
-    public Unit? UnitPos2 => this.units[1];
-    public Unit? UnitPos3 => this.units[2];
-    public Unit? UnitPos4 => this.units[3];
-    public Unit? UnitPos5 => this.units[4];
-    public Unit? UnitPos6 => this.units[5];
-    public Unit? UnitPos7 => this.units[6];
-    public Unit? UnitPos8 => this.units[7];
-    public Unit? UnitPos9 => this.units[8];
+    public PreviewUnitSlot UnitPos1 => this.slots[0];
+    public PreviewUnitSlot UnitPos2 => this.slots[1];
+    public PreviewUnitSlot UnitPos3 => this.slots[2];
+    public PreviewUnitSlot UnitPos4 => this.slots[3];
+    public PreviewUnitSlot UnitPos5 => this.slots[4];
+    public PreviewUnitSlot UnitPos6 => this.slots[5];
+    public PreviewUnitSlot UnitPos7 => this.slots[6];
+    public PreviewUnitSlot UnitPos8 => this.slots[7];
+    public PreviewUnitSlot UnitPos9 => this.slots[8];
 
-    public string ValueText => this.ToString();
     private string DebugName => $"[Preview.{this.owner.Uid}]";
 
     public void Calculate(Cut? prevCut)
@@ -54,56 +58,43 @@ public sealed class CutPreview : ObservableObject
             this.SetUnit(this.owner.Unit, this.owner.UnitPos);
             this.SetCamera(this.owner.CameraOffset);
             this.BgFileName = this.owner.BgFileName;
-            this.OnPropertyChanged(nameof(this.ValueText));
             return;
         }
 
         // --- 유닛 설정
-        bool updated = this.CalculateUnit(prevCut);
+        this.CalculateUnit(prevCut);
 
         // --- 카메라 설정
         if (this.owner.CameraOffset != CameraOffset.NONE)
         {
-            updated |= this.SetCamera(this.owner.CameraOffset);
+            this.SetCamera(this.owner.CameraOffset);
         }
         else if (this.owner.BgFileName is not null)
         {
-            updated |= this.SetCamera(CameraOffset.TWIN_6);
+            this.SetCamera(CameraOffset.TWIN_6);
         }
         else
         {
-            updated |= this.SetCamera(prevCut.Preview.CameraOffset);
+            this.SetCamera(prevCut.Preview.CameraOffset);
         }
 
         // --- 배경 설정
         if (this.owner.BgFileName is not null)
         {
-            updated |= this.SetBgFileName(this.owner.BgFileName);
+            this.SetBgFileName(this.owner.BgFileName);
         }
         else
         {
-            updated |= this.SetBgFileName(prevCut.Preview.BgFileName);
-        }
-
-        if (updated)
-        {
-            this.OnPropertyChanged(nameof(this.ValueText));
+            this.SetBgFileName(prevCut.Preview.BgFileName);
         }
     }
 
     public override string ToString()
     {
         var sb = new StringBuilder();
-        for (int i = 0; i < this.units.Length; i++)
+        foreach (var slot in this.slots.Where(e => e.Unit is not null))
         {
-            var unit = this.units[i];
-            if (unit is null)
-            {
-                continue;
-            }
-
-            var position = i + CutsceneUnitPos.POS1;
-            sb.AppendLine($"{position} : {unit.Name}");
+            sb.AppendLine($"{slot.Position} : {slot.Unit!.Name}");
         }
 
         return sb.ToString();
@@ -123,7 +114,7 @@ public sealed class CutPreview : ObservableObject
         //}
     }
 
-    private bool SetUnit(Unit? unit, CutsceneUnitPos position)
+    private void SetUnit(Unit? unit, CutsceneUnitPos position)
     {
         if (position == CutsceneUnitPos.NONE)
         {
@@ -131,18 +122,17 @@ public sealed class CutPreview : ObservableObject
         }
 
         int index = position - CutsceneUnitPos.POS1;
-        if (this.units[index] == unit)
+        if (this.slots[index].Unit == unit)
         {
-            return false;
+            return;
         }
 
-        Log.Debug($"{this.DebugName} position:{position} unit:{this.units[index]?.Name} -> {unit?.Name}");
-        this.units[index] = unit;
+        Log.Debug($"{this.DebugName} position:{position} unit:{this.slots[index].Unit?.Name} -> {unit?.Name}");
+        this.slots[index].Unit = unit;
         this.OnPropertyChanged($"UnitPos{index + 1}");
-        return true;
     }
 
-    private bool SetCamera(CameraOffset cameraOffset)
+    private void SetCamera(CameraOffset cameraOffset)
     {
         if (cameraOffset == CameraOffset.NONE)
         {
@@ -151,31 +141,28 @@ public sealed class CutPreview : ObservableObject
 
         if (cameraOffset == this.cameraOffset)
         {
-            return false;
+            return;
         }
 
         Log.Debug($"{this.DebugName} cameraoffset:{this.cameraOffset} -> {cameraOffset}");
         this.CameraOffset = cameraOffset;
-
-        return true;
     }
 
-    private bool SetBgFileName(string? bgFileName)
+    private void SetBgFileName(string? bgFileName)
     {
         if (this.bgFileName == bgFileName)
         {
-            return false;
+            return;
         }
 
         Log.Debug($"{this.DebugName} bgFileName:{this.bgFileName} -> {bgFileName}");
         this.BgFileName = bgFileName;
-        return true;
     }
 
-    private bool CalculateUnit(Cut prevCut)
+    private void CalculateUnit(Cut prevCut)
     {
         // 기본값 : 이전 컷의 데이터 사본.
-        var buffer = prevCut.Preview.units.ToArray();
+        var buffer = prevCut.Preview.slots.Select(e => e.Unit).ToArray();
 
         if (this.owner.CutsceneClear == CutsceneClearType.CLEARUNIT ||
             this.owner.CutsceneClear == CutsceneClearType.CLEARALL)
@@ -192,32 +179,39 @@ public sealed class CutPreview : ObservableObject
                 if (index < 0)
                 {
                     Log.Warn($"{this.DebugName} Invalid unit: {this.owner.Unit.Name}");
-                    return false;
+                    return;
                 }
 
                 buffer[index] = null;
             }
         }
-
-        if (this.owner.Unit is not null && buffer.All(e => e != this.owner.Unit))
+        else if (this.owner.Unit is not null)
         {
-            var position = this.owner.UnitPos == CutsceneUnitPos.NONE ? CutsceneUnitPos.POS3 : this.owner.UnitPos;
-            buffer[position - CutsceneUnitPos.POS1] = this.owner.Unit;
+            var prevIndex = GetIndex(buffer, this.owner.Unit);
+            if (prevIndex < 0)
+            {
+                // 기존에 화면에 나와있지 않은 유닛을 지정 : 새로 등장
+                var position = this.owner.UnitPos == CutsceneUnitPos.NONE ? CutsceneUnitPos.POS3 : this.owner.UnitPos;
+                buffer[position - CutsceneUnitPos.POS1] = this.owner.Unit;
+            }
+            else if (this.owner.UnitPos != CutsceneUnitPos.NONE)
+            {
+                // 기존에 화면에 나와있는 유닛과 위치값을 지정 : 위치 변경
+                buffer[prevIndex] = null;
+                buffer[this.owner.UnitPos - CutsceneUnitPos.POS1] = this.owner.Unit;
+            }
         }
 
-        bool updated = false;
         for (int i = 0; i < buffer.Length; i++)
         {
-            updated |= this.SetUnit(buffer[i], CutsceneUnitPos.POS1 + i);
+            this.SetUnit(buffer[i], CutsceneUnitPos.POS1 + i);
         }
 
-        return updated;
-
-        static int GetIndex(Unit?[] units, Unit unit)
+        static int GetIndex(Unit?[] slots, Unit unit)
         {
-            for (int i = 0; i < units.Length; i++)
+            for (int i = 0; i < slots.Length; i++)
             {
-                if (units[i] == unit)
+                if (slots[i] == unit)
                 {
                     return i;
                 }

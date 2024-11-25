@@ -2,16 +2,12 @@
 
 using System.ComponentModel;
 using System.Windows;
-using CommunityToolkit.Mvvm.Messaging;
 using CutEditor.ViewModel;
 using Microsoft.Extensions.DependencyInjection;
 using Wpf.Ui;
-using static CutEditor.Model.Messages;
 
 public partial class MainWindow : Window
 {
-    private readonly double defaultMinWidth;
-
     public MainWindow()
     {
         this.InitializeComponent();
@@ -25,9 +21,6 @@ public partial class MainWindow : Window
 
         var snackbarService = services.GetRequiredService<ISnackbarService>();
         snackbarService.SetSnackbarPresenter(this.SnackbarPresenter);
-
-        this.defaultMinWidth = this.MinWidth;
-        WeakReferenceMessenger.Default.Register<PreviewChangedMessage>(this, this.OnPreviewChanged);
     }
 
     protected override void OnClosing(CancelEventArgs e)
@@ -55,9 +48,6 @@ public partial class MainWindow : Window
 
             // int를 WindowState로 변환
             this.WindowState = (WindowState)Properties.Settings.Default.WindowState;
-
-            // 프리뷰로 인한 너비 조정 이슈 : 너비는 저장값을 무시하고 항상 최소 너비로 설정.
-            this.Width = this.MinWidth;
         }
     }
 
@@ -72,14 +62,5 @@ public partial class MainWindow : Window
         Properties.Settings.Default.WindowState = (int)this.WindowState;
 
         Properties.Settings.Default.Save(); // 설정 저장
-    }
-
-    private void OnPreviewChanged(object recipient, PreviewChangedMessage message)
-    {
-        this.MinWidth = message.Value
-            ? this.defaultMinWidth + 290
-            : this.defaultMinWidth;
-
-        this.Width = this.MinWidth;
     }
 }

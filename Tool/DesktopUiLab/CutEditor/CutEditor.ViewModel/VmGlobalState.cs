@@ -3,26 +3,16 @@
 using System.ComponentModel;
 using System.Reflection;
 using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Messaging;
 using Cs.Core;
 using Cs.Core.Util;
 using CutEditor.ViewModel.Detail;
 using Microsoft.Extensions.Configuration;
-using static CutEditor.Model.Messages;
 
 public sealed class VmGlobalState : ObservableObject
 {
-    private bool showPreview;
-
     public static VmGlobalState Instance => Singleton<VmGlobalState>.Instance;
     public VmCuts.CrateParam? VmCutsCreateParam { get; private set; }
     public string TextFilePath { get; private set; } = string.Empty;
-
-    public bool ShowPreview
-    {
-        get => this.showPreview;
-        set => this.SetProperty(ref this.showPreview, value);
-    }
 
     public void Initialize(IConfiguration config)
     {
@@ -44,11 +34,10 @@ public sealed class VmGlobalState : ObservableObject
     {
         base.OnPropertyChanged(e);
 
-        switch (e.PropertyName)
-        {
-            case nameof(this.ShowPreview):
-                WeakReferenceMessenger.Default.Send(new PreviewChangedMessage(this.ShowPreview));
-                break;
-        }
+        //switch (e.PropertyName)
+        //{
+        //    case nameof(this.ShowPreview):
+        //        break;
+        //}
     }
 }

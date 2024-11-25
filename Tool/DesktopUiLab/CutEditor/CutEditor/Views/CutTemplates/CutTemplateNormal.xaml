@@ -21,11 +21,11 @@
                     CornerRadius="3">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1425"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="1425"/>
                 </Grid.ColumnDefinitions>
 
-                <StackPanel>
+                <StackPanel Grid.Column="1">
                     
                     <!--헤더. 컨트롤 표시 제어 및 기타 설정들. uid 표기 등.-->
                     <DockPanel Margin="5,0" LastChildFill="True"
@@ -169,7 +169,7 @@
                     <boxes:BoxUnit />
                 </StackPanel>
 
-                <preview:PreviewBase Grid.Column="1"
+                <preview:PreviewBase Grid.Column="0"
                    Visibility="{Binding ShowPreview,
         Source={views:GlobalState},
         Converter={converters:BoolToVisibilityConverter}}"

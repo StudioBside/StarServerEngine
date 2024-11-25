@@ -24,7 +24,7 @@ public sealed class VmHome : VmPageBase
     private readonly List<CutScene> cutScenes = new();
     private readonly HashSet<string> filters = new();
     private readonly IServiceProvider services;
-    private readonly IFilteredCollection<CutScene> filteredList;
+    private readonly ISearchableCollection<CutScene> filteredList;
     private CutScene? selectedCutScene;
     private string searchKeyword = string.Empty;
     private string selectedFilter = DefaultFilter;
@@ -33,7 +33,7 @@ public sealed class VmHome : VmPageBase
     {
         this.Title = "컷신 목록";
         this.services = services;
-        this.filteredList = services.GetRequiredService<IFilteredCollectionProvider>().Build(this.cutScenes);
+        this.filteredList = services.GetRequiredService<ISearchableCollectionProvider>().Build(this.cutScenes);
         this.EditSelectedCommand = new RelayCommand(this.OnEditSelected, () => this.selectedCutScene is not null);
         this.EditPickedCommand = new RelayCommand<CutScene>(this.OnEditPicked);
         this.ReadPickedCommand = new RelayCommand<CutScene>(this.OnReadPicked);

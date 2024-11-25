@@ -9,6 +9,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using Cs.Core.Util;
 using Cs.Logging;
 using CutEditor.Model.Detail;
+using CutEditor.Model.Preview;
 using Newtonsoft.Json.Linq;
 using NKM;
 using Shared.Templet.Base;

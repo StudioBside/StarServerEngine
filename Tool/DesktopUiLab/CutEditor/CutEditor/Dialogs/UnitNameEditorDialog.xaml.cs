@@ -17,7 +17,7 @@ public partial class UnitNameEditorDialog : ContentDialog
 {
     public const int MaxStringLength = 15;
     private readonly ObservableCollection<StringElement> selectedList = new();
-    private readonly IFilteredCollection<StringElement> filteredList;
+    private readonly ISearchableCollection<StringElement> filteredList;
     private string searchKeyword = string.Empty;
 
     public UnitNameEditorDialog(ContentPresenter? dialogHost, IList<StringElement> current) : base(dialogHost)
@@ -29,7 +29,7 @@ public partial class UnitNameEditorDialog : ContentDialog
 
         // candidate 목록 생성
         var list = StringTable.Instance.Elements.Where(e => e.Korean.Length <= MaxStringLength);
-        this.filteredList = App.Current.Services.GetRequiredService<IFilteredCollectionProvider>().Build(list);
+        this.filteredList = App.Current.Services.GetRequiredService<ISearchableCollectionProvider>().Build(list);
         this.AddCommand = new RelayCommand<StringElement>(this.OnAdd);
         this.RemoveCommand = new RelayCommand<StringElement>(this.OnRemove);
 

@@ -31,6 +31,7 @@ public sealed class VmCuts : VmPageBase,
     IClipboardHandler
 {
     private readonly ObservableCollection<VmCut> cuts = [];
+    //private readonly ISearchableCollection<VmCut> filteredCuts;
     private readonly ObservableCollection<VmCut> selectedCuts = [];
     private readonly string binFilePath;
     private readonly string textFileName;
@@ -47,6 +48,7 @@ public sealed class VmCuts : VmPageBase,
         this.serviceScope = services.CreateScope();
         this.undoController = this.serviceScope.ServiceProvider.GetRequiredService<UndoController>();
         this.services = services;
+        //this.filteredCuts = services.GetRequiredService<ISearchableCollectionProvider>().Build(this.cuts);
         this.GoToListCommand = new RelayCommand(this.OnGoToList);
         this.SaveCommand = new AsyncRelayCommand(this.OnSave);
         this.OpenFileCommand = new RelayCommand(this.OnOpenFile);

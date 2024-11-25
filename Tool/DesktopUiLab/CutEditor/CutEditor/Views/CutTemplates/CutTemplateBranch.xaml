@@ -22,95 +22,91 @@
         <Border Style="{StaticResource ChangeSelectedBgStyle}" BorderThickness="1" BorderBrush="LightGray"
                     CornerRadius="3">
             <Grid Margin="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/> <!--헤더. uid 및 체크박스 목록-->
-                    <RowDefinition Height="Auto"/> <!--화면 박스-->
-                    <RowDefinition Height="Auto"/> <!--유닛 박스-->
-                </Grid.RowDefinitions>
-
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1425"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="1425"/>
                 </Grid.ColumnDefinitions>
-                
-                <!--헤더. 추가버튼 위치-->
-                <DockPanel Grid.Row="0" Margin="5,7" LastChildFill="True">
-                    <TextBlock DockPanel.Dock="Left" Grid.Row="0" Grid.Column="0"
+
+                <StackPanel Grid.Column="1">
+                    <!--헤더. 추가버튼 위치-->
+                    <DockPanel Grid.Row="0" Margin="5,7" LastChildFill="True">
+                        <TextBlock DockPanel.Dock="Left" Grid.Row="0" Grid.Column="0"
                                    VerticalAlignment="Center"
                                    Margin="0,0,50,0">
                             <Run>Uid : </Run>
                             <Run Text="{Binding Cut.Uid, Mode=OneWay}" />
-                    </TextBlock>
+                        </TextBlock>
 
-                    <ui:TextBlock FontTypography="BodyStrong" Text="&lt;선택지>" VerticalAlignment="Center"/>
+                        <ui:TextBlock FontTypography="BodyStrong" Text="&lt;선택지>" VerticalAlignment="Center"/>
 
-                    <ui:Button Content="추가" Margin="30,0"
+                        <ui:Button Content="추가" Margin="30,0"
                                Command="{Binding AddChoiceOptionCommand}"/>
 
-                </DockPanel>
+                    </DockPanel>
 
-                <!--바디. 선택지 리스트--> 
-                <Border Grid.Row="1" Margin="0,0,0,0" Background="{StaticResource BranchCutBrush}">
-                    <ui:ListView ItemsSource="{Binding Cut.Choices}"
+                    <!--바디. 선택지 리스트-->
+                    <Border Grid.Row="1" Margin="0,0,0,0" Background="{StaticResource BranchCutBrush}">
+                        <ui:ListView ItemsSource="{Binding Cut.Choices}"
                                  BorderThickness="0"
                                  Margin="0,0">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Header="Uid" DisplayMemberBinding="{Binding UidString}" Width="Auto"/>
-                                <GridViewColumn Header="텍스트(Korean)" Width="500">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding Text.Korean, Mode=TwoWay}">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Uid" DisplayMemberBinding="{Binding UidString}" Width="Auto"/>
+                                    <GridViewColumn Header="텍스트(Korean)" Width="500">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Text.Korean, Mode=TwoWay}">
                                                 <!--<TextBlock.Effect>
                                                     <DropShadowEffect Color="Black" Direction="315" ShadowDepth="1" BlurRadius="0"/>
                                                 </TextBlock.Effect>-->
                                                 <b:Interaction.Behaviors>
                                                     <behaviors:TextBlockColorBehavior />
                                                 </b:Interaction.Behaviors>
-                                            </TextBlock>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                                <!--<GridViewColumn Header="점프" DisplayMemberBinding="{Binding JumpAnchor}" Width="Auto"/>-->
-                                <GridViewColumn Header="앵커" Width="200">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <ComboBox 
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <!--<GridViewColumn Header="점프" DisplayMemberBinding="{Binding JumpAnchor}" Width="Auto"/>-->
+                                    <GridViewColumn Header="앵커" Width="200">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <ComboBox 
                                                 ItemsSource="{Binding Source={extensions:EnumValues {x:Type models:Enums+StartAnchorType}}}"
                                                 SelectedItem="{Binding JumpAnchor}"
                                                 IsEditable="False">
-                                                <ComboBox.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <TextBlock Text="{Binding .}" />
-                                                    </DataTemplate>
-                                                </ComboBox.ItemTemplate>
-                                            </ComboBox>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                                <GridViewColumn Header="편집" Width="Auto">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Horizontal">
-                                                <ui:Button Content="수정" Margin="10,0"
+                                                    <ComboBox.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Text="{Binding .}" />
+                                                        </DataTemplate>
+                                                    </ComboBox.ItemTemplate>
+                                                </ComboBox>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="편집" Width="Auto">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <ui:Button Content="수정" Margin="10,0"
                                                            Command="{Binding DataContext.EditChoiceOptionCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
                                                            CommandParameter="{Binding .}"/>
-                                                <ui:Button Content="삭제"
+                                                    <ui:Button Content="삭제"
                                                            Command="{Binding DataContext.DeleteChoiceOptionCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
                                                            CommandParameter="{Binding .}"/>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                            </GridView>
-                        </ListView.View>
-                        <b:Interaction.Behaviors>
-                            <behaviors:ListViewBehavior ReorderByDragDrop="True"/>
-                        </b:Interaction.Behaviors>
-                    </ui:ListView>
-                </Border>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView>
+                            </ListView.View>
+                            <b:Interaction.Behaviors>
+                                <behaviors:ListViewBehavior ReorderByDragDrop="True"/>
+                            </b:Interaction.Behaviors>
+                        </ui:ListView>
+                    </Border>
+                </StackPanel>
 
-                <preview:PreviewBase Grid.Column="1" Grid.RowSpan="4"
+                <preview:PreviewBase Grid.Column="0" Grid.RowSpan="4"
           Visibility="{Binding ShowPreview,
         Source={views:GlobalState},
         Converter={converters:BoolToVisibilityConverter}}"

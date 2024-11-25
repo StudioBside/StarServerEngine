@@ -100,8 +100,15 @@
                 <ui:Button Margin="3" Content="선택 컷 삭제"
                            Icon="{ui:SymbolIcon Subtract16}"
                            Command="{Binding DeleteCommand}"/>
-                <CheckBox Content="Preview"
-                          IsChecked="{Binding ShowPreview, Source={local:GlobalState}}" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="30,5">
+                <ui:Button Margin="3" Content="필터 설정"
+                           Icon="{ui:SymbolIcon Filter12}"
+                           Command="{Binding SetFilterCommand}"/>
+                <ui:Button Margin="3" Content="필터 삭제"
+                           Icon="{ui:SymbolIcon FilterDismiss16}"
+                           Command="{Binding ClearFilterCommand}"/>
             </StackPanel>
             
             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Margin="5"

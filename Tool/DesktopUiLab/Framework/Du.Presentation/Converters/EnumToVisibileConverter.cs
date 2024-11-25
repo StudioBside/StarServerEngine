@@ -19,12 +19,20 @@ public sealed class EnumToVisibileConverter : ConverterMarkupExtension<EnumToVis
             return DependencyProperty.UnsetValue;
         }
 
-        if (Enum.TryParse(value.GetType(), parameterString, out var parameterValue) == false)
+        foreach (var token in parameterString.Split('|'))
         {
-            return DependencyProperty.UnsetValue;
+            if (Enum.TryParse(value.GetType(), token, out var parameterValue) == false)
+            {
+                return DependencyProperty.UnsetValue;
+            }
+
+            if (parameterValue.Equals(value))
+            {
+                return Visibility.Visible;
+            }
         }
 
-        return parameterValue.Equals(value) ? Visibility.Visible : Visibility.Collapsed;
+        return Visibility.Collapsed;
     }
 
     public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

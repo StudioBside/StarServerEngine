@@ -15,13 +15,13 @@ public sealed partial class VmHome : VmPageBase
     private readonly IUserInputProvider<string> stringProvider;
     private readonly IPopupMessageNotifier errorNotifier;
     private readonly List<BindFile> bindFiles = new();
-    private readonly IFilteredCollection<BindFile> filteredFiles = null!;
+    private readonly ISearchableCollection<BindFile> filteredFiles = null!;
     private string searchKeyword = string.Empty;
 
     public VmHome(
         IUserInputProvider<string> stringProvider,
         IPopupMessageNotifier errorNotifier,
-        IFilteredCollectionProvider collectionViewProvider)
+        ISearchableCollectionProvider collectionViewProvider)
     {
         this.Title = "바인딩 파일 목록";
         this.stringProvider = stringProvider;

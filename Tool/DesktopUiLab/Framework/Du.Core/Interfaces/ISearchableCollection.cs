@@ -1,6 +1,7 @@
 ﻿namespace Du.Core.Interfaces;
 
 using System.Collections;
+using Shared.Interfaces;
 
 /// <summary>
 /// ICollectionView에 준하는 기능을 제공합니다.
@@ -9,7 +10,7 @@ using System.Collections;
 /// CollectionViewSource : PresentationFramework.dll / in namespace System.Windows.Data.
 /// </summary>
 /// <typeparam name="T">필터링할 대상의 타입입니다.</typeparam>
-public interface IFilteredCollection<T>
+public interface ISearchableCollection<T> where T : ISearchable
 {
     IEnumerable List { get; }
     IEnumerable<T> TypedList { get; }

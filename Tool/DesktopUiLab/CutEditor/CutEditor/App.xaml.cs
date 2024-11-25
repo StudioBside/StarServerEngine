@@ -75,7 +75,7 @@ public partial class App : Application
         services.AddSingleton<ISnackbarService, SnackbarService>();
         services.AddTransient<IPopupMessageNotifier, PopupMessageNotifier>();
         services.AddTransient<ICollectionEditor, CollectionEditor>();
-        services.AddTransient<IFilteredCollectionProvider, FilteredCollectionProvider>();
+        services.AddTransient<ISearchableCollectionProvider, SearchableCollectionProvider>();
         services.AddTransient<IUserWaitingNotifier, WaitingNotifierDialog>();
         services.AddTransient<IClipboardWriter, ClipboardWriter>();
         services.AddTransient<IFilePicker, FilePicker>();
@@ -122,5 +122,10 @@ public partial class App : Application
             Log.Debug($"Creating thumbnail directory: {ImageHelper.ThumbnailRoot}");
             ThumbnailMaker.UpdateAll();
         }
+
+        AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
+        {
+            File.WriteAllText("crash_log.txt", e.ExceptionObject.ToString());
+        };
     }
 }

@@ -12,7 +12,7 @@ using Wpf.Ui.Controls;
 
 public partial class ArcpointPickerDialog : ContentDialog
 {
-    private readonly IFilteredCollection<LobbyItem> filteredList;
+    private readonly ISearchableCollection<LobbyItem> filteredList;
     private string searchKeyword = string.Empty;
 
     public ArcpointPickerDialog(ContentPresenter? dialogHost) : base(dialogHost)
@@ -20,7 +20,7 @@ public partial class ArcpointPickerDialog : ContentDialog
         this.DataContext = this;
 
         var list = TempletContainer<LobbyItem>.Values.Where(e => e.SubType == NormalItemSubType.STN_ARCPOINT);
-        this.filteredList = App.Current.Services.GetRequiredService<IFilteredCollectionProvider>().Build(list);
+        this.filteredList = App.Current.Services.GetRequiredService<ISearchableCollectionProvider>().Build(list);
         this.InitializeComponent();
     }
 

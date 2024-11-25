@@ -8,15 +8,15 @@ using Shared.Interfaces;
 /// <summary>
 /// ViewModel에서는 Windows.Base.dll에 존재하는 ICollectionView을 참조하지 않으므로 ICollectionView를 대체하는 기능을 제공합니다.
 /// </summary>
-public sealed class FilteredCollectionProvider : IFilteredCollectionProvider
+public sealed class SearchableCollectionProvider : ISearchableCollectionProvider
 {
-    IFilteredCollection<T> IFilteredCollectionProvider.Build<T>(IEnumerable<T> collection)
+    ISearchableCollection<T> ISearchableCollectionProvider.Build<T>(IEnumerable<T> collection)
     {
         IList listType = collection as IList ?? collection.ToArray();
-        return new FilteredCollection<T>(listType);
+        return new SearchableCollection<T>(listType);
     }
 
-    private sealed class FilteredCollection<T>(IList collection) : IFilteredCollection<T>
+    private sealed class SearchableCollection<T>(IList collection) : ISearchableCollection<T>
         where T : ISearchable
     {
         private readonly ListCollectionView view = new(collection);

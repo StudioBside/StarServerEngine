@@ -34,13 +34,15 @@
             Visibility="{Binding Cut.Preview.BgFileName, Converter={converters:NullToVisibilityConverter}}" />
 
 
-        <Border Background="Red" Padding="1" CornerRadius="3">
-            <ui:TextBlock Foreground="White" FontTypography="Subtitle"
+        <Button Background="Red" Padding="1" Margin="2"
+                Command="{Binding PickCameraOffsetCommand}">
+            <ui:TextBlock Foreground="White" FontTypography="Subtitle" Margin="3,0"
                     Text="{Binding Cut.Preview.CameraOffset}"/>
-        </Border>
+        </Button>
 
 
-        <Canvas Grid.Row="1" Grid.ColumnSpan="2" Width="280" Height="60">
+        <Canvas Grid.Row="1" Grid.ColumnSpan="2" Width="280" Height="60" VerticalAlignment="Top"
+                Margin="0,30">
             <local:PreviewUnitSlot
                 Canvas.Top="25" Canvas.Left="0" 
                 DataContext="{Binding Cut.Preview.UnitPos1}"/>
@@ -69,9 +71,79 @@
                 Canvas.Top="25" Canvas.Left="240"
                 DataContext="{Binding Cut.Preview.UnitPos5}"/>
 
-            <Rectangle
-                Width="160" Height="75" Stroke="Red" StrokeThickness="3" Visibility="{Binding Cut.Preview.CameraOffset,
+            <!--TRIPLE 카메라-->
+            <Rectangle Canvas.Left="-5"
+                Width="170" Height="75" Stroke="Red" StrokeThickness="3" Visibility="{Binding Cut.Preview.CameraOffset,
                 Converter={converters:EnumToVisibileConverter}, ConverterParameter=TRIPLE_1}"/>
+            <Rectangle Canvas.Left="56"
+                Width="170" Height="75" Stroke="Red" StrokeThickness="3" Visibility="{Binding Cut.Preview.CameraOffset,
+                Converter={converters:EnumToVisibileConverter}, ConverterParameter=TRIPLE_2}"/>
+            <Rectangle Canvas.Left="115"
+                Width="170" Height="75" Stroke="Red" StrokeThickness="3" Visibility="{Binding Cut.Preview.CameraOffset,
+                Converter={converters:EnumToVisibileConverter}, ConverterParameter=TRIPLE_3}"/>
+            <Rectangle Canvas.Left="25"
+                Width="170" Height="75" Stroke="Red" StrokeThickness="3" Visibility="{Binding Cut.Preview.CameraOffset,
+                Converter={converters:EnumToVisibileConverter}, ConverterParameter=TRIPLE_4}"/>
+            <Rectangle Canvas.Left="85"
+                Width="170" Height="75" Stroke="Red" StrokeThickness="3" Visibility="{Binding Cut.Preview.CameraOffset,
+                Converter={converters:EnumToVisibileConverter}, ConverterParameter=TRIPLE_5}"/>
+
+            <!--TWIN 카메라-->
+            <Rectangle Canvas.Left="-5"
+                Width="110" Height="75" Stroke="Red" StrokeThickness="3" Visibility="{Binding Cut.Preview.CameraOffset,
+                Converter={converters:EnumToVisibileConverter}, ConverterParameter=TWIN_1}"/>
+            <Rectangle Canvas.Left="56"
+                Width="110" Height="75" Stroke="Red" StrokeThickness="3" Visibility="{Binding Cut.Preview.CameraOffset,
+                Converter={converters:EnumToVisibileConverter}, ConverterParameter=TWIN_2}"/>
+            <Rectangle Canvas.Left="115"
+                Width="110" Height="75" Stroke="Red" StrokeThickness="3" Visibility="{Binding Cut.Preview.CameraOffset,
+                Converter={converters:EnumToVisibileConverter}, ConverterParameter=TWIN_3}"/>
+            <Rectangle Canvas.Left="175"
+                Width="110" Height="75" Stroke="Red" StrokeThickness="3" Visibility="{Binding Cut.Preview.CameraOffset,
+                Converter={converters:EnumToVisibileConverter}, ConverterParameter=TWIN_4}"/>
+            <Rectangle Canvas.Left="25"
+                Width="110" Height="75" Stroke="Red" StrokeThickness="3" Visibility="{Binding Cut.Preview.CameraOffset,
+                Converter={converters:EnumToVisibileConverter}, ConverterParameter=TWIN_5}"/>
+            <Rectangle Canvas.Left="85"
+                Width="110" Height="75" Stroke="Red" StrokeThickness="3" Visibility="{Binding Cut.Preview.CameraOffset,
+                Converter={converters:EnumToVisibileConverter}, ConverterParameter=TWIN_6|DEFAULT}"/>
+            <Rectangle Canvas.Left="145"
+                Width="110" Height="75" Stroke="Red" StrokeThickness="3" Visibility="{Binding Cut.Preview.CameraOffset,
+                Converter={converters:EnumToVisibileConverter}, ConverterParameter=TWIN_7}"/>
+
+            <!--싱글카메라-->
+            <Rectangle Canvas.Left="-5"
+                Width="50" Height="75" Stroke="Red" StrokeThickness="3" Visibility="{Binding Cut.Preview.CameraOffset,
+                Converter={converters:EnumToVisibileConverter}, ConverterParameter=ONE_1|POS1_2X}"/>
+            <Rectangle Canvas.Left="56"
+                Width="50" Height="75" Stroke="Red" StrokeThickness="3" Visibility="{Binding Cut.Preview.CameraOffset,
+                Converter={converters:EnumToVisibileConverter}, ConverterParameter=ONE_2|POS2_2X}"/>
+            <Rectangle Canvas.Left="115"
+                Width="50" Height="75" Stroke="Red" StrokeThickness="3" Visibility="{Binding Cut.Preview.CameraOffset,
+                Converter={converters:EnumToVisibileConverter}, ConverterParameter=ONE_3|POS3_2X}"/>
+            <Rectangle Canvas.Left="175"
+                Width="50" Height="75" Stroke="Red" StrokeThickness="3" Visibility="{Binding Cut.Preview.CameraOffset,
+                Converter={converters:EnumToVisibileConverter}, ConverterParameter=ONE_4|POS4_2X}"/>
+            <Rectangle Canvas.Left="235"
+                Width="50" Height="75" Stroke="Red" StrokeThickness="3" Visibility="{Binding Cut.Preview.CameraOffset,
+                Converter={converters:EnumToVisibileConverter}, ConverterParameter=ONE_5|POS5_2X}"/>
+            <Rectangle Canvas.Left="25"
+                Width="50" Height="75" Stroke="Red" StrokeThickness="3" Visibility="{Binding Cut.Preview.CameraOffset,
+                Converter={converters:EnumToVisibileConverter}, ConverterParameter=ONE_6|POS6_2X}"/>
+            <Rectangle Canvas.Left="85"
+                Width="50" Height="75" Stroke="Red" StrokeThickness="3" Visibility="{Binding Cut.Preview.CameraOffset,
+                Converter={converters:EnumToVisibileConverter}, ConverterParameter=ONE_7|POS7_2X}"/>
+            <Rectangle Canvas.Left="145"
+                Width="50" Height="75" Stroke="Red" StrokeThickness="3" Visibility="{Binding Cut.Preview.CameraOffset,
+                Converter={converters:EnumToVisibileConverter}, ConverterParameter=ONE_8|POS8_2X}"/>
+            <Rectangle Canvas.Left="205"
+                Width="50" Height="75" Stroke="Red" StrokeThickness="3" Visibility="{Binding Cut.Preview.CameraOffset,
+                Converter={converters:EnumToVisibileConverter}, ConverterParameter=ONE_9|POS9_2X}"/>
+
+            <!--전체카메라-->
+            <Rectangle Canvas.Left="-5"
+                Width="290" Height="75" Stroke="Red" StrokeThickness="3" Visibility="{Binding Cut.Preview.CameraOffset,
+                Converter={converters:EnumToVisibileConverter}, ConverterParameter=ALL}"/>
         </Canvas>
     </Grid>
 

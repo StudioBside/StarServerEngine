@@ -15,7 +15,7 @@ using Wpf.Ui.Controls;
 
 public partial class AssetPickerDialog : ContentDialog
 {
-    private readonly IFilteredCollection<ElementType> filteredList;
+    private readonly ISearchableCollection<ElementType> filteredList;
     private string searchKeyword = string.Empty;
 
     public AssetPickerDialog(
@@ -28,7 +28,7 @@ public partial class AssetPickerDialog : ContentDialog
 
         var elements = sourceList.Select(e => new ElementType(e)).ToArray();
         this.Title = $"{title} ({elements.Length} files)";
-        this.filteredList = App.Current.Services.GetRequiredService<IFilteredCollectionProvider>().Build(elements);
+        this.filteredList = App.Current.Services.GetRequiredService<ISearchableCollectionProvider>().Build(elements);
 
         this.InitializeComponent();
     }

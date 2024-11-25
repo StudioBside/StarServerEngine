@@ -43,10 +43,11 @@
 
                 <CheckBox Grid.Column="0" Grid.Row="0"
                           Content="Quick" FlowDirection="RightToLeft"
+                          MinWidth="90"
                           IsChecked="{Binding Cut.UnitQuickSet}"/>
 
                 <ui:Button Grid.Column="0" Grid.Row="1" Margin="0,0,10,0"
-                                       Content="UnitNameString"
+                                       Content="UnitName"
                                        ToolTip="{Binding Cut.UnitNames, Converter={converters:ListToStringConverter}}"
                                        Command="{Binding SetUnitNameStringCommand}">
                     <!--값이 없을 때는 한글 표기. 값이 있을때는 배경색을 다르게 표기-->
@@ -93,6 +94,9 @@
                                  IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS9}"/>
                     <RadioButton MinWidth="20" VerticalAlignment="Bottom"
                                  IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS5}"/>
+                    <Button ToolTip="위치 설정 삭제" Command="{Binding ClearUnitPosCommand}">
+                        <ui:SymbolIcon Symbol="Delete12"/>
+                    </Button>
                 </StackPanel>
 
                 <StackPanel Grid.Column="2" Grid.Row="1" Orientation="Horizontal">

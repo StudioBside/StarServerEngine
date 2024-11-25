@@ -8,7 +8,7 @@ using Shared.Interfaces;
 /// ICollectionView : WindowsBase.dll / in namespace System.ComponentModel
 /// CollectionViewSource : PresentationFramework.dll / in namespace System.Windows.Data.
 /// </summary>
-public interface IFilteredCollectionProvider
+public interface ISearchableCollectionProvider
 {
-    IFilteredCollection<T> Build<T>(IEnumerable<T> collection) where T : ISearchable;
+    ISearchableCollection<T> Build<T>(IEnumerable<T> collection) where T : ISearchable;
 }
