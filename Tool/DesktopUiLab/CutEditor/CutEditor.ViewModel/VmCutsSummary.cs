@@ -30,8 +30,6 @@ public sealed class VmCutsSummary : VmPageBase
     {
         this.serviceScope = services.CreateScope();
         this.services = services;
-        this.GoToListCommand = new RelayCommand(this.OnGoToList);
-        this.EditCommand = new AsyncRelayCommand(this.OnEdit);
         this.OpenFileCommand = new RelayCommand(this.OnOpenFile);
         this.CopyFileNameCommand = new RelayCommand(this.OnCopyFileName);
 
@@ -72,12 +70,20 @@ public sealed class VmCutsSummary : VmPageBase
         this.uidGenerator = new CutUidGenerator(this.cuts.Select(e => e.Cut));
 
         Log.Info($"{this.name} 파일 로딩 완료. 총 컷의 개수:{this.cuts.Count}");
+
+        var removeTargets = this.cuts.Where(e => e.Cut.UnitTalk.Korean.Length == 0).ToArray();
+        if (removeTargets.Length > 0)
+        {
+            Log.Debug($"{this.name} 파일에서 대사가 없는 컷을 제거합니다. {removeTargets.Length}개");
+            foreach (var vmCut in removeTargets)
+            {
+                this.cuts.Remove(vmCut);
+            }
+        }
     }
 
     public IList<VmCut> Cuts => this.cuts;
     public IList<VmCut> SelectedCuts => this.selectedCuts;
-    public ICommand GoToListCommand { get; }
-    public ICommand EditCommand { get; }
     public ICommand OpenFileCommand { get; }
     public ICommand CopyFileNameCommand { get; }
 
@@ -103,17 +109,6 @@ public sealed class VmCutsSummary : VmPageBase
         //        this.DeleteCommand.NotifyCanExecuteChanged();
         //        break;
         //}
-    }
-
-    private void OnGoToList()
-    {
-        WeakReferenceMessenger.Default.Send(new NavigationMessage("Views/PgHome.xaml"));
-    }
-
-    private async Task OnEdit()
-    {
-        await Task.Delay(0);
-        WeakReferenceMessenger.Default.Send(new NavigationMessage("Views/PgCuts.xaml"));
     }
 
     private string GetTextFileName() => Path.Combine(this.textFilePath, $"CLIENT_{this.name}.exported");

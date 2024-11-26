@@ -48,6 +48,7 @@
         }
 
         public string PrimeKey => this.keys.First();
+        public int KeyCount => this.keys.Count;
         public IEnumerable<string> Keys => this.keys;
         public string Korean => this.values[(int)L10nType.Korean];
         public string English => this.values[(int)L10nType.English];

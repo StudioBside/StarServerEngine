@@ -43,7 +43,8 @@
 
                 <ui:Button Margin="3" Content="목록으로"
                            Icon="{ui:SymbolIcon ArrowStepBack16}"
-                           Command="{Binding GoToListCommand}"/>
+                           Command="{Binding GoToCommand}"
+                           CommandParameter="Views/PgHome.xaml"/>
                 <ui:Button Margin="3" Content="파일 열기"
                            Icon="{ui:SymbolIcon Code16}"
                            Command="{Binding OpenFileCommand}"/>
@@ -52,7 +53,8 @@
                            Command="{Binding CopyFileNameCommand}"/>
                 <ui:Button Margin="3" Content="수정하기" Appearance="Primary"
                            Icon="{ui:SymbolIcon Edit16}"
-                           Command="{Binding EditCommand}"/>
+                           Command="{Binding GoToCommand}"
+                           CommandParameter="Views/PgCuts.xaml"/>
             </StackPanel>
         </DockPanel>
 

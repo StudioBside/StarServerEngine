@@ -1,7 +1,6 @@
 ﻿namespace Du.Presentation.Util;
 
 using System.Collections;
-using System.Collections.ObjectModel;
 using System.Windows.Data;
 using Du.Core.Interfaces;
 

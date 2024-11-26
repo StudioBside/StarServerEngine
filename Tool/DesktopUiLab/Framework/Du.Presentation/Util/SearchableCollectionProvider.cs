@@ -16,38 +16,68 @@ public sealed class SearchableCollectionProvider : ISearchableCollectionProvider
         return new SearchableCollection<T>(listType);
     }
 
-    private sealed class SearchableCollection<T>(IList collection) : ISearchableCollection<T>
+    private sealed class SearchableCollection<T> : ISearchableCollection<T>
         where T : ISearchable
     {
-        private readonly ListCollectionView view = new(collection);
+        private readonly IList source;
+        private readonly ListCollectionView view;
+        private string searchKeyword = string.Empty;
+        private Predicate<T>? subFilter;
+
+        public SearchableCollection(IList source)
+        {
+            this.source = source;
+            this.view = new ListCollectionView(source);
+            this.view.Filter = this.Filter;
+        }
 
         public IEnumerable List => this.view;
         public IEnumerable<T> TypedList => this.view.Cast<T>();
-        public int SourceCount => collection.Count;
+        public int SourceCount => this.source.Count;
         public int FilteredCount => this.view.Count;
 
-        public void Refresh(string searchKeyword, Predicate<T>? filter)
+        public void SetSubFilter(Predicate<T>? filter)
         {
-            if (string.IsNullOrEmpty(searchKeyword) && filter is null)
+            this.subFilter = filter;
+            this.view.Refresh();
+        }
+
+        public void Refresh()
+        {
+            this.view.Refresh();
+        }
+
+        public void Refresh(string searchKeyword)
+        {
+            this.searchKeyword = searchKeyword;
+            this.view.Refresh();
+        }
+
+        public void AddGroupDescription(string propertyName)
+        {
+            this.view.GroupDescriptions.Add(new PropertyGroupDescription(propertyName));
+        }
+
+        //// -----------------------------------------------------------------------------------------------
+
+        private bool Filter(object obj)
+        {
+            if (obj is not T item)
             {
-                this.view.Filter = null;
-                return;
+                return false;
             }
 
-            this.view.Filter = e =>
+            if (string.IsNullOrEmpty(this.searchKeyword) && this.subFilter is null)
             {
-                if (e is not T item)
-                {
-                    return false;
-                }
+                return true;
+            }
 
-                if (filter is not null && filter(item) == false)
-                {
-                    return false;
-                }
+            if (this.subFilter is not null && this.subFilter(item) == false)
+            {
+                return false;
+            }
 
-                return item.IsTarget(searchKeyword);
-            };
+            return item.IsTarget(this.searchKeyword);
         }
     }
 }

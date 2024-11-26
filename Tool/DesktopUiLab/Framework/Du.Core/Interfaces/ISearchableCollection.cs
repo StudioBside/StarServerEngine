@@ -17,6 +17,9 @@ public interface ISearchableCollection<T> where T : ISearchable
     int SourceCount { get; }
     int FilteredCount { get; }
 
-    void Refresh(string searchKeyword) => this.Refresh(searchKeyword, filter: null);
-    void Refresh(string searchKeyword, Predicate<T>? filter);
+    void Refresh(string searchKeyword);
+    void Refresh();
+
+    void AddGroupDescription(string propertyName);
+    void SetSubFilter(Predicate<T>? filter);
 }

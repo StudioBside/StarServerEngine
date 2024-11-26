@@ -51,7 +51,6 @@ public sealed class VmCuts : VmPageBase,
         this.undoController = this.serviceScope.ServiceProvider.GetRequiredService<UndoController>();
         this.services = services;
         this.filteredCuts = services.GetRequiredService<IFilteredCollectionProvider>().Build(this.cuts);
-        this.GoToListCommand = new RelayCommand(this.OnGoToList);
         this.SaveCommand = new AsyncRelayCommand(this.OnSave);
         this.OpenFileCommand = new RelayCommand(this.OnOpenFile);
         this.CopyFileNameCommand = new RelayCommand(this.OnCopyFileName);
@@ -123,7 +122,6 @@ public sealed class VmCuts : VmPageBase,
     public VmFindFlyout FindFlyout { get; }
     public ICommand UndoCommand => this.undoController.UndoCommand;
     public ICommand RedoCommand => this.undoController.RedoCommand;
-    public ICommand GoToListCommand { get; }
     public ICommand SaveCommand { get; }
     public ICommand OpenFileCommand { get; }
     public ICommand CopyFileNameCommand { get; }
@@ -249,11 +247,6 @@ public sealed class VmCuts : VmPageBase,
                 this.OnPropertyChanged(nameof(this.FilteredCount));
                 break;
         }
-    }
-
-    private void OnGoToList()
-    {
-        WeakReferenceMessenger.Default.Send(new NavigationMessage("Views/PgHome.xaml"));
     }
 
     private async Task OnSave()

@@ -20,25 +20,8 @@
     </DataTemplate>
     
     <GridView x:Key="CutGridView">
-        <GridViewColumn Header="Anchor" Width="Auto">
-            <GridViewColumn.CellTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Cut.JumpAnchor}"
-                 Visibility="{Binding Cut.JumpAnchor, Converter={converters:EnumToCollapsedConverter}, ConverterParameter=None}"/>
-                </DataTemplate>
-            </GridViewColumn.CellTemplate>
-        </GridViewColumn>
         <GridViewColumn Header="Uid" Width="Auto" DisplayMemberBinding="{Binding Cut.Uid}"/>
-        <GridViewColumn Header="유닛이름" Width="Auto" DisplayMemberBinding="{Binding Cut.SpeakerName}"/>
-        <GridViewColumn Header="모션" Width="Auto" DisplayMemberBinding="{Binding Cut.UnitMotion}"/>
-        <GridViewColumn Header="감정" Width="Auto">
-            <GridViewColumn.CellTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Cut.EmotionEffect}"
-                            Visibility="{Binding Cut.EmotionEffect, Converter={converters:EnumToCollapsedConverter}, ConverterParameter=NONE}"/>
-                </DataTemplate>
-            </GridViewColumn.CellTemplate>
-        </GridViewColumn>
+        <GridViewColumn Header="Speaker" Width="100" DisplayMemberBinding="{Binding Cut.SpeakerName}"/>
         <GridViewColumn Header="Korean" Width="Auto">
             <GridViewColumn.CellTemplate>
                 <DataTemplate>

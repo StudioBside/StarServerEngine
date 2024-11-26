@@ -14,6 +14,7 @@ public sealed class VmStrings : VmPageBase
     private bool showJapanese = true;
     private bool showEnglish = true;
     private bool showChinese = true;
+    private bool showDupeOnly = false;
 
     public VmStrings(ISearchableCollectionProvider provider)
     {
@@ -21,7 +22,20 @@ public sealed class VmStrings : VmPageBase
         this.filteredList = provider.Build(StringTable.Instance.Elements);
     }
 
-    public IEnumerable FilteredList => this.filteredList.List;
+    public IEnumerable FilteredList
+    {
+        get
+        {
+            var list = this.filteredList.TypedList;
+            if (this.ShowDupeOnly)
+            {
+                return list.OrderByDescending(e => e.KeyCount);
+            }
+    
+            return list;
+        }
+    }
+
     public int FilteredCount => this.filteredList.FilteredCount;
     public int TotalCount => StringTable.Instance.UniqueCount;
     public string SearchKeyword
@@ -54,6 +68,12 @@ public sealed class VmStrings : VmPageBase
         set => this.SetProperty(ref this.showChinese, value);
     }
 
+    public bool ShowDupeOnly
+    {
+        get => this.showDupeOnly;
+        set => this.SetProperty(ref this.showDupeOnly, value);
+    }
+
     //// --------------------------------------------------------------------------------------------
 
     protected override void OnPropertyChanged(PropertyChangedEventArgs e)
@@ -63,7 +83,9 @@ public sealed class VmStrings : VmPageBase
         switch (e.PropertyName)
         {
             case nameof(this.SearchKeyword):
+            case nameof(this.ShowDupeOnly):
                 this.filteredList.Refresh(this.searchKeyword);
+                this.OnPropertyChanged(nameof(this.FilteredList));
                 this.OnPropertyChanged(nameof(this.FilteredCount));
                 break;
         }

@@ -9,13 +9,15 @@ using Du.Core.Models;
 public sealed class VmMain : VmPageBase
 {
     private string? navigationSource = string.Empty;
+    private bool showMenu;
 
     public VmMain()
     {
         this.Title = "Main View";
         this.NavigationSource = "Views/PgHome.xaml";
         this.NavigateCommand = new RelayCommand<string?>(this.OnNavigate);
-    
+        this.ToggleMenuCommand = new RelayCommand(() => this.ShowMenu = !this.ShowMenu);
+
         WeakReferenceMessenger.Default.Register<NavigationMessage>(this, this.OnNavigationMessage);
     }
 
@@ -25,7 +27,14 @@ public sealed class VmMain : VmPageBase
         set => this.SetProperty(ref this.navigationSource, value);
     }
 
+    public bool ShowMenu
+    {
+        get => this.showMenu;
+        set => this.SetProperty(ref this.showMenu, value);
+    }
+
     public ICommand NavigateCommand { get; }
+    public ICommand ToggleMenuCommand { get; }
 
     //// --------------------------------------------------------------------------------------------
 
@@ -33,6 +42,11 @@ public sealed class VmMain : VmPageBase
     {
         // case 1. Xaml에서 ICommand로 네비게이션 할 때 
         this.NavigationSource = pageUri;
+
+        if (this.showMenu)
+        {
+            this.ShowMenu = false;
+        }
     }
 
     private void OnNavigationMessage(object recipient, NavigationMessage message)

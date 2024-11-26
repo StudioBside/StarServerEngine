@@ -43,6 +43,10 @@ public sealed class VmHome : VmPageBase
         this.OpenExportRootCommand = new RelayCommand(this.OnOpenExportRoot);
 
         this.filters.Add(DefaultFilter);
+        this.filteredList.SetSubFilter(e =>
+        {
+            return this.selectedFilter == DefaultFilter || e.CutsceneFilter == this.selectedFilter;
+        });
     }
 
     public CutScene? SelectedCutScene
@@ -85,6 +89,8 @@ public sealed class VmHome : VmPageBase
         {
             this.filters.Add(filter);
         }
+                
+        this.filteredList.Refresh();
     }
 
     //// --------------------------------------------------------------------------------------------
@@ -102,11 +108,7 @@ public sealed class VmHome : VmPageBase
                     this.SelectedCutScene = null;
                 }
 
-                Predicate<CutScene>? subFilter = this.selectedFilter != DefaultFilter
-                    ? e => e.CutsceneFilter == this.selectedFilter
-                    : null;
-
-                this.filteredList.Refresh(this.searchKeyword, subFilter);
+                this.filteredList.Refresh(this.searchKeyword);
                 this.OnPropertyChanged(nameof(this.FilteredCount));
                 break;
 
