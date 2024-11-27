@@ -35,6 +35,7 @@ public sealed class ListViewBehavior : Behavior<ListView>
         this.AssociatedObject.PreviewMouseMove += this.AssociatedObject_PreviewMouseMove;
         this.AssociatedObject.Drop += this.AssociatedObject_Drop;
         this.AssociatedObject.DragOver += this.AssociatedObject_DragOver;
+        this.AssociatedObject.Loaded += this.AssociatedObject_Loaded;
     }
 
     protected override void OnDetaching()
@@ -43,6 +44,7 @@ public sealed class ListViewBehavior : Behavior<ListView>
         this.AssociatedObject.PreviewMouseMove -= this.AssociatedObject_PreviewMouseMove;
         this.AssociatedObject.Drop -= this.AssociatedObject_Drop;
         this.AssociatedObject.DragOver -= this.AssociatedObject_DragOver;
+        this.AssociatedObject.Loaded -= this.AssociatedObject_Loaded;
     }
 
     private static void OnReorderByDragDropChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -234,5 +236,13 @@ public sealed class ListViewBehavior : Behavior<ListView>
         }
 
         e.Handled = true;
+    }
+
+    private void AssociatedObject_Loaded(object sender, RoutedEventArgs e)
+    {
+        if (this.AssociatedObject.DataContext is ILoadEventReceiver receiver)
+        {
+            receiver.OnLoaded();
+        }
     }
 }

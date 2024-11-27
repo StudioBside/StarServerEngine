@@ -102,21 +102,6 @@
                            Command="{Binding DeleteCommand}"/>
             </StackPanel>
 
-            <StackPanel Orientation="Horizontal" Margin="30,5">
-                <ui:Button Margin="3" Content="필터 설정"
-                           Icon="{ui:SymbolIcon Filter12}"
-                           Command="{Binding SetFilterCommand}"/>
-                <ui:Button Margin="3" Content="필터 삭제"
-                           Icon="{ui:SymbolIcon FilterDismiss16}"
-                           Command="{Binding ClearFilterCommand}"/>
-                <CheckBox IsChecked="{Binding FilterTextless}"/>
-                <TextBlock VerticalAlignment="Center">
-                    <Run Text="{Binding FilteredCount, Mode=OneWay}"/>
-                    <Run>/</Run>
-                    <Run Text="{Binding TotalCount, Mode=OneWay}"/>
-                </TextBlock>
-            </StackPanel>
-            
             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Margin="5"
                         HorizontalAlignment="Right">
 
@@ -180,7 +165,7 @@
         <Border BorderThickness="1" BorderBrush="Gray"/>
 
         <!--메인 영역 : 컷 리스트-->
-        <ui:ListView Grid.Row="2" ItemsSource="{Binding FilteredCuts}"
+        <ui:ListView Grid.Row="2" ItemsSource="{Binding Cuts}"
                      AllowDrop="True"
                      VirtualizingPanel.VirtualizationMode="Recycling"
                      ItemTemplate="{StaticResource SwitchableTemplet}"
@@ -191,15 +176,6 @@
                     <Setter Property="Margin" Value="0"/>
                 </Style>
             </ListView.ItemContainerStyle>
-            <!--<ui:ListView.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="삭제" Command="{Binding DeleteCommand}">
-                        <MenuItem.Icon>
-                            <ui:SymbolIcon Symbol="Delete12"/>
-                        </MenuItem.Icon>
-                    </MenuItem>
-                </ContextMenu>
-            </ui:ListView.ContextMenu>-->
             <b:Interaction.Behaviors>
                 <behaviors:ListViewBehavior ReorderByDragDrop="True"/>
                 <lbh:CutsListController/>

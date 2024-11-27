@@ -1,4 +1,4 @@
-﻿namespace CutEditor.Views;
+﻿namespace CutEditor.Views.Singletons;
 
 using System;
 using System.Windows.Markup;

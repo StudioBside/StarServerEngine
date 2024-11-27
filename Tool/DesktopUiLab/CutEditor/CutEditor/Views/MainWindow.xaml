@@ -10,6 +10,7 @@
     xmlns:behaviors="clr-namespace:Du.Presentation.Behaviors;assembly=Du.Presentation"
     xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
     xmlns:viewmodels="clr-namespace:CutEditor.ViewModel;assembly=CutEditor.ViewModel"
+    xmlns:singletons="clr-namespace:CutEditor.Views.Singletons"
     d:DataContext="{d:DesignInstance Type=viewmodels:VmMain}"
     mc:Ignorable="d"
     Title="{Binding ElementName=MyFrame, Path=Content.DataContext.Title}"
@@ -28,14 +29,27 @@
         <Menu x:Name="MainMenu"
               Visibility="{Binding ShowMenu, Converter={converters:BoolToVisibilityConverter}}">
             <MenuItem Header="컷신 목록"
-                        Command="{Binding NavigateCommand}"
-                        CommandParameter="Views/PgHome.xaml"/>
+                      Command="{Binding NavigateCommand}"
+                      CommandParameter="Views/PgHome.xaml"/>
             <MenuItem Header="시스템 스트링" 
-                        Command="{Binding NavigateCommand}"
-                        CommandParameter="Views/PgStrings.xaml"/>
+                      Command="{Binding NavigateCommand}"
+                      CommandParameter="Views/PgStrings.xaml"/>
             <MenuItem Header="유닛 목록" 
-                        Command="{Binding NavigateCommand}"
-                        CommandParameter="Views/PgUnits.xaml"/>
+                      Command="{Binding NavigateCommand}"
+                      CommandParameter="Views/PgUnits.xaml"/>
+            <MenuItem Header="" 
+                      Command="{Binding NavigateCommand}"
+                      CommandParameter="Views/PgErrors.xaml">
+                <MenuItem.HeaderTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock VerticalAlignment="Center" Text="템플릿 오류"/>
+                            <ui:InfoBadge Margin="5,-2" Severity="Critical"
+                                          Value="{Binding Count, Source={singletons:ErrorMessages}}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </MenuItem.HeaderTemplate>
+            </MenuItem>
         </Menu>
 
         <Grid Grid.Row="1">

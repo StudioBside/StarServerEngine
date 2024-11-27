@@ -8,8 +8,8 @@
     <Color x:Key="CameraBoxColor">#EFF6E0</Color>
     <Color x:Key="SoundBoxColor">#AEC3B0</Color>
 
-    <!--컷 아이템 선택된 상태일 때 시인성 높이기 위해 배경색 변경-->
-    <Color x:Key="SelectedItemColor">#F4E9CD</Color>
+    <!--컷 아이템 선택된 상태일 때 시인성 높이기 위해 배경색 변경: F4E9CD -> fcca46 -->
+    <Color x:Key="SelectedItemColor">#fcca46</Color>
     
     <!--컷 아이템 내부 버튼에 값이 설정되었음을 나타내는 배경색 변경-->
     <Color x:Key="HasValueColor">#f0f0dd</Color>

@@ -32,6 +32,7 @@ public sealed class VmCutsSummary : VmPageBase
         this.services = services;
         this.OpenFileCommand = new RelayCommand(this.OnOpenFile);
         this.CopyFileNameCommand = new RelayCommand(this.OnCopyFileName);
+        this.GoToEditCommand = new RelayCommand<VmCut>(this.OnGoToEdit);
 
         if (VmGlobalState.Instance.VmCutsCreateParam is null)
         {
@@ -71,7 +72,7 @@ public sealed class VmCutsSummary : VmPageBase
 
         Log.Info($"{this.name} 파일 로딩 완료. 총 컷의 개수:{this.cuts.Count}");
 
-        var removeTargets = this.cuts.Where(e => e.Cut.UnitTalk.Korean.Length == 0).ToArray();
+        var removeTargets = this.cuts.Where(e => e.DataType == Enums.CutDataType.Normal && e.Cut.UnitTalk.Korean.Length == 0).ToArray();
         if (removeTargets.Length > 0)
         {
             Log.Debug($"{this.name} 파일에서 대사가 없는 컷을 제거합니다. {removeTargets.Length}개");
@@ -86,6 +87,7 @@ public sealed class VmCutsSummary : VmPageBase
     public IList<VmCut> SelectedCuts => this.selectedCuts;
     public ICommand OpenFileCommand { get; }
     public ICommand CopyFileNameCommand { get; }
+    public ICommand GoToEditCommand { get; }
 
     private string DebugName => $"[{this.name}]";
 
@@ -132,5 +134,33 @@ public sealed class VmCutsSummary : VmPageBase
         clipboardWriter.SetText(this.name);
 
         Log.Info($"{this.DebugName} 파일명을 클립보드에 복사했습니다.");
+    }
+
+    private void OnGoToEdit(VmCut? target)
+    {
+        if (target is null)
+        {
+            if (this.selectedCuts.Count == 0)
+            {
+                Log.Debug($"{this.DebugName} 선택된 컷이 없습니다.");
+                return;
+            }
+
+            target = this.selectedCuts.First();
+        }
+
+        var cutscene = VmGlobalState.Instance.VmCutsCreateParam?.CutScene;
+        if (cutscene is null)
+        {
+            Log.Error($"{this.DebugName} cutscene is null.");
+            return;
+        }
+
+        VmGlobalState.Instance.ReserveVmCuts(new VmCuts.CrateParam
+        {
+            CutScene = cutscene,
+            CutUid = target.Cut.Uid,
+        });
+        WeakReferenceMessenger.Default.Send(new NavigationMessage("Views/PgCuts.xaml"));
     }
 }

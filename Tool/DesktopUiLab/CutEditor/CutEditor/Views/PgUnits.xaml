@@ -65,7 +65,7 @@
             </StackPanel>
         </Grid>
 
-        <!--파일 리스트-->
+        <!--데이터 리스트-->
         <ui:ListView
             Grid.Row="2"
             ItemsSource="{Binding FilteredList}"
@@ -94,6 +94,8 @@
                                 타입 : <Run Text="{Binding UnitType, Mode=OneWay}"/>
                                 <LineBreak/>
                                 Comment : <Run Text="{Binding Comment, Mode=OneWay}"/>
+                                <LineBreak/>
+                                UnitFaceSmall : <Run Text="{Binding UnitFaceSmall, Mode=OneWay}"/>
                                 </TextBlock>
                             </StackPanel>
                         </StackPanel>

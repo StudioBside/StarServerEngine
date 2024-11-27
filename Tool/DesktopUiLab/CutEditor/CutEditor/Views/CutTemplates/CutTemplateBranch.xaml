@@ -19,8 +19,7 @@
     </ResourceDictionary.MergedDictionaries>
 
     <DataTemplate x:Key="CutBranchTemplet">
-        <Border Style="{StaticResource ChangeSelectedBgStyle}" BorderThickness="1" BorderBrush="LightGray"
-                    CornerRadius="3">
+        <Border Style="{StaticResource ChangeSelectedBgStyle}" BorderThickness="0,1,0,0" BorderBrush="Gray">
             <Grid Margin="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>

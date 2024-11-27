@@ -9,25 +9,26 @@
     xmlns:viewmodels="clr-namespace:CutEditor.ViewModel;assembly=CutEditor.ViewModel"
     >
 
-    <DataTemplate x:Key="TalkTextTemplate">
-        <StackPanel>
-            <TextBlock Text="{Binding}">
-              <b:Interaction.Behaviors>
-                  <behaviors:TextBlockColorBehavior />
-              </b:Interaction.Behaviors>
-            </TextBlock>
-        </StackPanel>
-    </DataTemplate>
-    
     <GridView x:Key="CutGridView">
         <GridViewColumn Header="Uid" Width="Auto" DisplayMemberBinding="{Binding Cut.Uid}"/>
         <GridViewColumn Header="Speaker" Width="100" DisplayMemberBinding="{Binding Cut.SpeakerName}"/>
         <GridViewColumn Header="Korean" Width="Auto">
             <GridViewColumn.CellTemplate>
                 <DataTemplate>
-                    <ContentPresenter
-                        Content="{Binding SummaryKorean}"
-                        ContentTemplate="{StaticResource TalkTextTemplate}" />
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <ui:Button ToolTip="수정"
+                                Command="{Binding DataContext.GoToEditCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                CommandParameter="{Binding}">
+                                <ui:SymbolIcon Symbol="Edit16"/>
+                            </ui:Button>
+                            <TextBlock VerticalAlignment="Center" Margin="10,0" Text="{Binding SummaryKorean}">
+                                <b:Interaction.Behaviors>
+                                    <behaviors:TextBlockColorBehavior />
+                                </b:Interaction.Behaviors>
+                            </TextBlock>
+                        </StackPanel>
+                    </StackPanel>
                 </DataTemplate>
             </GridViewColumn.CellTemplate>
         </GridViewColumn>

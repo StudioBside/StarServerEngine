@@ -12,6 +12,7 @@ using Cs.Core.Perforce;
 using Cs.Core.Util;
 using Cs.Logging;
 using CutEditor.Model;
+using CutEditor.Model.Interfaces;
 using CutEditor.ViewModel.Detail;
 using CutEditor.ViewModel.UndoCommands;
 using Du.Core.Bases;
@@ -29,10 +30,10 @@ using static CutEditor.Model.Messages;
 using static CutEditor.ViewModel.Enums;
 
 public sealed class VmCuts : VmPageBase,
-    IClipboardHandler
+    IClipboardHandler,
+    ILoadEventReceiver
 {
     private readonly ObservableCollection<VmCut> cuts = [];
-    private readonly IFilteredCollection<VmCut> filteredCuts;
     private readonly ObservableCollection<VmCut> selectedCuts = [];
     private readonly string binFilePath;
     private readonly string textFileName;
@@ -42,7 +43,6 @@ public sealed class VmCuts : VmPageBase,
     private readonly UndoController undoController;
     private readonly string packetExeFile;
     private readonly IServiceScope serviceScope;
-    private bool filterTextless;
 
     public VmCuts(IConfiguration config, IServiceProvider services)
     {
@@ -50,7 +50,6 @@ public sealed class VmCuts : VmPageBase,
         this.serviceScope = services.CreateScope();
         this.undoController = this.serviceScope.ServiceProvider.GetRequiredService<UndoController>();
         this.services = services;
-        this.filteredCuts = services.GetRequiredService<IFilteredCollectionProvider>().Build(this.cuts);
         this.SaveCommand = new AsyncRelayCommand(this.OnSave);
         this.OpenFileCommand = new RelayCommand(this.OnOpenFile);
         this.CopyFileNameCommand = new RelayCommand(this.OnCopyFileName);
@@ -58,16 +57,6 @@ public sealed class VmCuts : VmPageBase,
         this.NewCutCommand = new RelayCommand<CutDataType>(this.OnNewCut);
         this.DeletePickCommand = new RelayCommand<VmCut>(this.OnDeletePick);
         WeakReferenceMessenger.Default.Register<UpdatePreviewMessage>(this, this.OnUpdatePreview);
-
-        this.filteredCuts.Filter = e =>
-        {
-            if (this.filterTextless && e.Cut.UnitTalk.Korean.Length == 0)
-            {
-                return false;
-            }
-
-            return true;
-        };
 
         if (VmGlobalState.Instance.VmCutsCreateParam is null)
         {
@@ -115,9 +104,6 @@ public sealed class VmCuts : VmPageBase,
     }
 
     public IList<VmCut> Cuts => this.cuts;
-    public IEnumerable<VmCut> FilteredCuts => this.filteredCuts.TypedList;
-    public int TotalCount => this.filteredCuts.SourceCount;
-    public int FilteredCount => this.filteredCuts.FilteredCount;
     public IList<VmCut> SelectedCuts => this.selectedCuts;
     public VmFindFlyout FindFlyout { get; }
     public ICommand UndoCommand => this.undoController.UndoCommand;
@@ -128,12 +114,6 @@ public sealed class VmCuts : VmPageBase,
     public IRelayCommand DeleteCommand { get; } // 현재 (멀티)선택한 대상을 모두 삭제
     public ICommand NewCutCommand { get; }
     public ICommand DeletePickCommand { get; } // 인자로 넘어오는 1개의 cut을 삭제
-
-    public bool FilterTextless
-    {
-        get => this.filterTextless;
-        set => this.SetProperty(ref this.filterTextless, value);
-    }
 
     internal CutUidGenerator UidGenerator => this.uidGenerator;
     internal IServiceProvider Services => this.services;
@@ -229,6 +209,37 @@ public sealed class VmCuts : VmPageBase,
         }
     }
 
+    public void OnLoaded()
+    {
+        if (VmGlobalState.Instance.VmCutsCreateParam is null ||
+            VmGlobalState.Instance.VmCutsCreateParam.CutUid == 0)
+        {
+            return;
+        }
+
+        var targetUid = VmGlobalState.Instance.VmCutsCreateParam.CutUid;
+        //VmGlobalState.Instance.VmCutsCreateParam.CutUid = 0;
+        var targetCut = this.cuts.FirstOrDefault(e => e.Cut.Uid == targetUid);
+        if (targetCut is null)
+        {
+            Log.Warn($"{this.DebugName} 네비게이션 대상 컷을 찾을 수 없습니다. cutUid:{targetUid}");
+            return;
+        }
+
+        this.selectedCuts.Clear();
+        this.selectedCuts.Add(targetCut);
+
+        var index = this.cuts.IndexOf(targetCut);
+        if (index < 0)
+        {
+            Log.Warn($"{this.DebugName} 네비게이션 대상 컷의 인덱스를 찾을 수 없습니다. cutUid:{targetUid}");
+            return;
+        }
+
+        var controller = this.services.GetRequiredService<ICutsListController>();
+        controller.ScrollIntoView(index);
+    }
+
     //// --------------------------------------------------------------------------------------------
 
     protected override void OnPropertyChanged(PropertyChangedEventArgs e)
@@ -239,12 +250,6 @@ public sealed class VmCuts : VmPageBase,
         {
             case nameof(this.SelectedCuts):
                 this.DeleteCommand.NotifyCanExecuteChanged();
-                break;
-
-            case nameof(this.FilterTextless):
-                this.filteredCuts.Refresh();
-                this.OnPropertyChanged(nameof(this.FilteredCuts));
-                this.OnPropertyChanged(nameof(this.FilteredCount));
                 break;
         }
     }
@@ -445,5 +450,6 @@ public sealed class VmCuts : VmPageBase,
     {
         public CutScene? CutScene { get; init; }
         public string? NewFileName { get; init; }
+        public long CutUid { get; init; }
     }
 }

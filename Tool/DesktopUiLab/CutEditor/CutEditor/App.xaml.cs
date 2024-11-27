@@ -55,6 +55,7 @@ public partial class App : Application
         services.AddTransient<VmCutsSummary>();
         services.AddTransient<VmStrings>();
         services.AddTransient<VmUnits>();
+        services.AddTransient<VmErrors>();
         services.AddTransient<FileLoader>();
         services.AddTransient<FileAndSnackbarLog>();
         services.AddTransient<ITempletPicker<Unit>, UnitPicker>();
@@ -62,7 +63,7 @@ public partial class App : Application
         services.AddTransient<IExcelFileWriter, ExcelFileWriter>();
         services.AddSingleton<IEnumPicker<Ease>>(EasingGraph.Instance);
         services.AddSingleton<IEnumPicker<CameraOffset>>(CameraOffsetController.Instance);
-        services.AddSingleton(_ => CutsListController.LastInstance);
+        services.AddSingleton(CutsListController.LastInstance);
         services.AddKeyedTransient<IAssetPicker, BgmPicker>("bgm");
         services.AddKeyedTransient<IAssetPicker, SfxPicker>("sfx");
         services.AddKeyedTransient<IAssetPicker, VoicePicker>("voice");
