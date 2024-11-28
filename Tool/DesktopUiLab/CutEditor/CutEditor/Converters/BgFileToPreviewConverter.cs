@@ -4,7 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Windows;
 using Du.Presentation.Converters;
-using Du.Presentation.Extensions;
 using Du.Presentation.Util;
 
 public sealed class BgFileToPreviewConverter : ConverterMarkupExtension<BgFileToPreviewConverter>

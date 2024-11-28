@@ -18,7 +18,7 @@ public partial class UnitPickerDialog : ContentDialog
     {
         this.DataContext = this;
 
-        var units = TempletContainer<Unit>.Values.Where(e => e.EnableForCutscene());
+        var units = Unit.Values.Where(e => e.EnableForCutscene());
         this.filteredList = App.Current.Services.GetRequiredService<ISearchableCollectionProvider>().Build(units);
         this.InitializeComponent();
     }

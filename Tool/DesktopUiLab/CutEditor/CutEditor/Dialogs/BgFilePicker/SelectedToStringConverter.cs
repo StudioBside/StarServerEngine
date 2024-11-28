@@ -12,7 +12,7 @@ public sealed class SelectedToStringConverter : ConverterMarkupExtension<Selecte
     {
         return value switch
         {
-            ElementType elementType => elementType.FileNameOnly,
+            BgElementType elementType => elementType.FileNameOnly,
             CURRENTTOWN currentTown => currentTown.ToString(),
             _ => DependencyProperty.UnsetValue,
         };
@@ -22,7 +22,7 @@ public sealed class SelectedToStringConverter : ConverterMarkupExtension<Selecte
     {
         return value switch
         {
-            ElementType elementType => elementType.FileNameOnly,
+            BgElementType elementType => elementType.FileNameOnly,
             CURRENTTOWN currentTown => currentTown.ToString(),
             _ => DependencyProperty.UnsetValue,
         };

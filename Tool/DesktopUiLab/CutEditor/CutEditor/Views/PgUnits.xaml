@@ -80,7 +80,19 @@
 
                             <ui:Image Width="125" CornerRadius="5" Margin="5"
                                   BorderBrush="Black" BorderThickness="1"
+                                  Source="{Binding SmallImageFullPath}"/>
+
+                            <ui:Image Width="125" CornerRadius="5" Margin="5"
+                                  BorderBrush="Black" BorderThickness="1"
                                   Source="{Binding ImageFullPath}"/>
+
+                            <ui:Image Width="125" CornerRadius="5" Margin="5"
+                                  BorderBrush="Black" BorderThickness="1"
+                                  Source="{Binding IllustPath, Converter={lcvt:PathToThumbnailConverter}}"/>
+
+                            <ui:Image Width="125" CornerRadius="5" Margin="5"
+                                  BorderBrush="Black" BorderThickness="1"
+                                  Source="{Binding IllustUiPath, Converter={lcvt:PathToThumbnailConverter}}"/>
 
                             <StackPanel Margin="5,0">
                                 <ui:TextBlock FontTypography="BodyStrong">

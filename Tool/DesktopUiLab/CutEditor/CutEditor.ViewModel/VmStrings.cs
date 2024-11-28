@@ -1,25 +1,33 @@
 ﻿namespace CutEditor.ViewModel;
 
+using System;
 using System.Collections;
 using System.ComponentModel;
+using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
+using Cs.Logging;
 using Du.Core.Bases;
 using Du.Core.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 using Shared.Templet.Strings;
 
 public sealed class VmStrings : VmPageBase
 {
+    private readonly IServiceProvider services;
     private readonly ISearchableCollection<StringElement> filteredList;
     private string searchKeyword = string.Empty;
     private bool showKorean = true;
-    private bool showJapanese = true;
-    private bool showEnglish = true;
-    private bool showChinese = true;
+    private bool showJapanese = false;
+    private bool showEnglish = false;
+    private bool showChinese = false;
     private bool showDupeOnly = false;
 
-    public VmStrings(ISearchableCollectionProvider provider)
+    public VmStrings(IServiceProvider services, ISearchableCollectionProvider provider)
     {
+        this.services = services;
         this.Title = "시스템 스트링 리스트";
         this.filteredList = provider.Build(StringTable.Instance.Elements);
+        this.CopyIdCommand = new RelayCommand<StringElement>(this.OnCopyId);
     }
 
     public IEnumerable FilteredList
@@ -38,6 +46,7 @@ public sealed class VmStrings : VmPageBase
 
     public int FilteredCount => this.filteredList.FilteredCount;
     public int TotalCount => StringTable.Instance.UniqueCount;
+    public ICommand CopyIdCommand { get; }
     public string SearchKeyword
     {
         get => this.searchKeyword;
@@ -89,5 +98,18 @@ public sealed class VmStrings : VmPageBase
                 this.OnPropertyChanged(nameof(this.FilteredCount));
                 break;
         }
+    }
+
+    private void OnCopyId(StringElement? element)
+    {
+        if (element is null)
+        {
+            return;
+        }
+
+        var writer = this.services.GetRequiredService<IClipboardWriter>();
+        writer.SetText(element.PrimeKey);
+
+        Log.Info($"ID를 클립보드에 복사했습니다. \n {element.PrimeKey}");
     }
 }

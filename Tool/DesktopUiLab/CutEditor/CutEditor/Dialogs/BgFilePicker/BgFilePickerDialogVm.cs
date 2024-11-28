@@ -10,10 +10,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 public partial class BgFilePickerDialogVm : ObservableObject
 {
-    private readonly ISearchableCollection<ElementType> imageFiles;
-    private readonly ISearchableCollection<ElementType> movFiles;
-    private readonly ISearchableCollection<ElementType> slateFiles;
-    private readonly ISearchableCollection<ElementType> spineFiles;
+    private readonly ISearchableCollection<BgElementType> imageFiles;
+    private readonly ISearchableCollection<BgElementType> movFiles;
+    private readonly ISearchableCollection<BgElementType> slateFiles;
+    private readonly ISearchableCollection<BgElementType> spineFiles;
     private string searchKeyword = string.Empty;
     private string? selected;
 
@@ -22,23 +22,14 @@ public partial class BgFilePickerDialogVm : ObservableObject
         var filteredCollectionProvider = App.Current.Services.GetRequiredService<ISearchableCollectionProvider>();
 
         ThumbnailMaker.UpdateAll();
-        var imageList = AssetList.Instance.BgImageFiles.Select(e =>
-        {
-            var element = new ElementType(e) { Category = "Background" };
-            element.LoadImage();
-            return element;
-        }).Concat(AssetList.Instance.StoryImageFiles.Select(e =>
-        {
-            var element = new ElementType(e) { Category = "Story" };
-            element.LoadImage();
-            return element;
-        }));
+        var imageList = AssetList.Instance.BgImageFiles.Select(e => new BgElementType(e) { Category = "Background" })
+            .Concat(AssetList.Instance.StoryImageFiles.Select(e => new BgElementType(e) { Category = "Story" }));
 
         this.imageFiles = filteredCollectionProvider.Build(imageList);
 
-        this.movFiles = filteredCollectionProvider.Build(AssetList.Instance.MovFiles.Select(e => new ElementType(e)));
-        this.slateFiles = filteredCollectionProvider.Build(AssetList.Instance.SlateFiles.Select(e => new ElementType(e)));
-        this.spineFiles = filteredCollectionProvider.Build(AssetList.Instance.SpineFiles.Select(e => new ElementType(e)));
+        this.movFiles = filteredCollectionProvider.Build(AssetList.Instance.MovFiles.Select(e => new BgElementType(e)));
+        this.slateFiles = filteredCollectionProvider.Build(AssetList.Instance.SlateFiles.Select(e => new BgElementType(e)));
+        this.spineFiles = filteredCollectionProvider.Build(AssetList.Instance.SpineFiles.Select(e => new BgElementType(e)));
     }
 
     public IEnumerable ImageFiles => this.imageFiles.List;

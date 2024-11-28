@@ -11,7 +11,7 @@
       xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
       xmlns:extensions="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
       xmlns:viewmodels="clr-namespace:CutEditor.ViewModel;assembly=CutEditor.ViewModel"
-      d:DataContext="{d:DesignInstance Type=viewmodels:VmCuts}"
+      d:DataContext="{d:DesignInstance Type=viewmodels:VmCutsSummary}"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       SnapsToDevicePixels="True"
@@ -47,7 +47,8 @@
                            CommandParameter="Views/PgHome.xaml"/>
                 <ui:Button Margin="3" Content="파일 열기"
                            Icon="{ui:SymbolIcon Code16}"
-                           Command="{Binding OpenFileCommand}"/>
+                           Command="{Binding OpenFile, Source={extensions:UtilCommands}}"
+                           CommandParameter="{Binding TextFileName}"/>
                 <ui:Button Margin="3" Content="이름 복사"
                            Icon="{ui:SymbolIcon Copy16}"
                            Command="{Binding CopyFileNameCommand}"/>

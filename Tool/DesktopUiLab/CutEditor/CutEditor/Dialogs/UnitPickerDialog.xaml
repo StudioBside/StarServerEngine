@@ -52,9 +52,8 @@
                     <GridViewColumn Header="Image" Width="90">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <ui:Image Source="{Binding ImageFullPath}"
+                                <ui:Image Source="{Binding SmallImageFullPath}"
                                           CornerRadius="8" BorderThickness="0.5" BorderBrush="Gray"/>
-                                <!--<TextBlock Text="{Binding ImageFullPath}" />-->
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>

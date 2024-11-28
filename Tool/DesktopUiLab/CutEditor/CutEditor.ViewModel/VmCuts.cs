@@ -1,9 +1,7 @@
 ﻿namespace CutEditor.ViewModel;
 
-using System.Collections;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Text;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
@@ -17,14 +15,12 @@ using CutEditor.ViewModel.Detail;
 using CutEditor.ViewModel.UndoCommands;
 using Du.Core.Bases;
 using Du.Core.Interfaces;
-using Du.Core.Models;
 using Du.Core.Util;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
-using Shared.Templet.Base;
 using Shared.Templet.TempletTypes;
 using static CutEditor.Model.Messages;
 using static CutEditor.ViewModel.Enums;
@@ -36,7 +32,6 @@ public sealed class VmCuts : VmPageBase,
     private readonly ObservableCollection<VmCut> cuts = [];
     private readonly ObservableCollection<VmCut> selectedCuts = [];
     private readonly string binFilePath;
-    private readonly string textFileName;
     private readonly string name;
     private readonly CutUidGenerator uidGenerator;
     private readonly IServiceProvider services;
@@ -51,7 +46,6 @@ public sealed class VmCuts : VmPageBase,
         this.undoController = this.serviceScope.ServiceProvider.GetRequiredService<UndoController>();
         this.services = services;
         this.SaveCommand = new AsyncRelayCommand(this.OnSave);
-        this.OpenFileCommand = new RelayCommand(this.OnOpenFile);
         this.CopyFileNameCommand = new RelayCommand(this.OnCopyFileName);
         this.DeleteCommand = new RelayCommand(this.OnDelete, () => this.selectedCuts.Count > 0);
         this.NewCutCommand = new RelayCommand<CutDataType>(this.OnNewCut);
@@ -78,7 +72,7 @@ public sealed class VmCuts : VmPageBase,
             this.Title = $"{param.CutScene.Title} - {this.name}";
         }
 
-        this.textFileName = CutFileIo.GetTextFileName(this.name);
+        this.TextFileName = CutFileIo.GetTextFileName(this.name);
         var cutList = CutFileIo.LoadCutData(this.name);
 
         foreach (var cut in cutList)
@@ -106,10 +100,10 @@ public sealed class VmCuts : VmPageBase,
     public IList<VmCut> Cuts => this.cuts;
     public IList<VmCut> SelectedCuts => this.selectedCuts;
     public VmFindFlyout FindFlyout { get; }
+    public string TextFileName { get; }
     public ICommand UndoCommand => this.undoController.UndoCommand;
     public ICommand RedoCommand => this.undoController.RedoCommand;
     public ICommand SaveCommand { get; }
-    public ICommand OpenFileCommand { get; }
     public ICommand CopyFileNameCommand { get; }
     public IRelayCommand DeleteCommand { get; } // 현재 (멀티)선택한 대상을 모두 삭제
     public ICommand NewCutCommand { get; }
@@ -156,7 +150,7 @@ public sealed class VmCuts : VmPageBase,
             if (idx > 0)
             {
                 var unitName = token[..idx].Trim();
-                unit = TempletContainer<Unit>.Values.FirstOrDefault(e => e.Name == unitName);
+                unit = Unit.Values.FirstOrDefault(e => e.Name == unitName);
                 if (unit is not null)
                 {
                     talkText = token[(idx + 1)..].Trim();
@@ -261,7 +255,6 @@ public sealed class VmCuts : VmPageBase,
         ////await Task.Delay(3000);
         await Task.Delay(0);
 
-        var textFilePath = this.textFileName;
         if (P4Commander.TryCreate(out var p4Commander) == false)
         {
             Log.Error($"{this.DebugName} P4Commander 객체 생성 실패");
@@ -304,6 +297,7 @@ public sealed class VmCuts : VmPageBase,
 
         template.Add("model", model);
 
+        var textFilePath = this.TextFileName;
         if (File.Exists(textFilePath))
         {
             File.SetAttributes(textFilePath, FileAttributes.Normal);
@@ -412,18 +406,6 @@ public sealed class VmCuts : VmPageBase,
     }
 
     private string GetBinFileName() => Path.Combine(this.binFilePath, $"CLIENT_{this.name}.bytes");
-
-    private void OnOpenFile()
-    {
-        if (File.Exists(this.textFileName) == false)
-        {
-            Log.Error($"{this.DebugName} 파일이 존재하지 않습니다.\n{this.textFileName}");
-            return;
-        }
-
-        var fullPath = Path.GetFullPath(this.textFileName);
-        Process.Start(new ProcessStartInfo(fullPath) { UseShellExecute = true });
-    }
 
     private void OnCopyFileName()
     {

@@ -20,11 +20,13 @@ public static class TempletLoad
     private static void Load(IConfiguration config)
     {
         var templetRoot = config["TempletDataRoot"] ?? throw new Exception("TempletDataRoot is not set in the configuration file.");
+        var unitSmallImageRoot = config["UnitSmallImageRoot"] ?? throw new Exception("UnitSmallImageRoot is not set in the configuration file.");
         var unitImageRoot = config["UnitImageRoot"] ?? throw new Exception("UnitImageRoot is not set in the configuration file.");
         var bgImageRoot = config["BgImageRoot"] ?? throw new Exception("BgImageRoot is not set in the configuration file.");
         var lobbyThumbnailRoot = config["LobbyThumbnailRoot"] ?? throw new Exception("LobbyThumbnailRoot is not set in the configuration file.");
 
         TempletLoader.TempletRootPath = templetRoot;
+        Unit.SmallImageRootPath = unitSmallImageRoot;
         Unit.ImageRootPath = unitImageRoot;
         LobbyItem.ImageRootPath = lobbyThumbnailRoot;
 

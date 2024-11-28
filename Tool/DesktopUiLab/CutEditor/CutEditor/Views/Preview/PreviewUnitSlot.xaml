@@ -21,7 +21,7 @@
         <Ellipse Width="40" Height="40" StrokeThickness="0.5" Stroke="#000">
             <Ellipse.ToolTip>
                 <StackPanel>
-                    <ui:Image CornerRadius="5" Source="{Binding Unit.ImageFullPath}"/>
+                    <ui:Image CornerRadius="5" Source="{Binding Unit.SmallImageFullPath}"/>
                     <TextBlock Margin="5,10,0,0" Text="{Binding Unit.Name}"/>
                 </StackPanel>
             </Ellipse.ToolTip>
@@ -29,7 +29,7 @@
                 <Style TargetType="Ellipse">
                     <Setter Property="Fill">
                         <Setter.Value>
-                            <ImageBrush ImageSource="{Binding Unit.ImageFullPath}"/>
+                            <ImageBrush ImageSource="{Binding Unit.SmallImageFullPath}"/>
                         </Setter.Value>
                     </Setter>
                     <Style.Triggers>

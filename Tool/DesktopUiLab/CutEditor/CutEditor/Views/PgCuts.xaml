@@ -150,7 +150,8 @@
                            CommandParameter="Views/PgCutsSummary.xaml"/>
                 <ui:Button Margin="3" Content="파일 열기"
                            Icon="{ui:SymbolIcon Code16}"
-                           Command="{Binding OpenFileCommand}"/>
+                           Command="{Binding OpenFile, Source={extensions:UtilCommands}}"
+                           CommandParameter="{Binding TextFileName}"/>
                 <ui:Button Margin="3" Content="이름 복사"
                            Icon="{ui:SymbolIcon Copy16}"
                            Command="{Binding CopyFileNameCommand}"/>

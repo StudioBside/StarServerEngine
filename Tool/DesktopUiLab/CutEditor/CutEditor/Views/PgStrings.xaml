@@ -39,15 +39,14 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <ui:SymbolIcon Symbol="Search12"
-                      Margin="10,0,10,0" />
+            <ui:SymbolIcon Symbol="Search12" Margin="10,0,10,0" />
 
             <ui:TextBox
-          Grid.Column="1"
-          Margin="0,0,10,0"
-          PlaceholderText="검색어 입력.."
-          Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}"
-          ext:FocusExtension.IsFocused="True">
+                Grid.Column="1"
+                Margin="0,0,10,0"
+                PlaceholderText="검색어 입력.."
+                Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}"
+                ext:FocusExtension.IsFocused="True">
                 <ui:TextBox.Icon>
                     <ui:IconSourceElement>
                         <ui:SymbolIconSource Symbol="Search12"/>
@@ -77,8 +76,18 @@
                 <GridView>
                     <GridViewColumn
                         Header="PrimeKey"
-                        Width="400"
-                        DisplayMemberBinding="{Binding PrimeKey}"/>
+                        Width="400">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <ui:HyperlinkButton 
+                                        Content="{Binding PrimeKey}" 
+                                        Command="{Binding DataContext.CopyIdCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                        CommandParameter="{Binding}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                     <GridViewColumn
                         Header="KeyCount"
                         Width="50"

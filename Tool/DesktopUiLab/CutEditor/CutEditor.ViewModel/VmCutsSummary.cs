@@ -20,7 +20,6 @@ public sealed class VmCutsSummary : VmPageBase
 {
     private readonly ObservableCollection<VmCut> cuts = new();
     private readonly ObservableCollection<VmCut> selectedCuts = new();
-    private readonly string textFilePath;
     private readonly string name;
     private readonly CutUidGenerator uidGenerator;
     private readonly IServiceProvider services;
@@ -30,7 +29,6 @@ public sealed class VmCutsSummary : VmPageBase
     {
         this.serviceScope = services.CreateScope();
         this.services = services;
-        this.OpenFileCommand = new RelayCommand(this.OnOpenFile);
         this.CopyFileNameCommand = new RelayCommand(this.OnCopyFileName);
         this.GoToEditCommand = new RelayCommand<VmCut>(this.OnGoToEdit);
 
@@ -40,7 +38,6 @@ public sealed class VmCutsSummary : VmPageBase
         }
 
         var param = VmGlobalState.Instance.VmCutsCreateParam;
-        this.textFilePath = config["CutTextFilePath"] ?? throw new Exception("CutTextFilePath is not set in the configuration file.");
 
         if (param.CutScene is null)
         {
@@ -53,15 +50,15 @@ public sealed class VmCutsSummary : VmPageBase
             this.Title = $"{param.CutScene.Title} - {this.name}";
         }
 
-        var textFileName = this.GetTextFileName();
-        if (File.Exists(textFileName) == false)
+        this.TextFileName = CutFileIo.GetTextFileName(this.name);
+        if (File.Exists(this.TextFileName) == false)
         {
-            Log.Debug($"cutscene file not found: {textFileName}");
+            Log.Debug($"cutscene file not found: {this.TextFileName}");
             this.uidGenerator = new CutUidGenerator(Enumerable.Empty<Cut>());
             return;
         }
 
-        var json = JsonUtil.Load(textFileName);
+        var json = JsonUtil.Load(this.TextFileName);
         json.GetArray("Data", this.cuts, (e, i) =>
         {
             var cut = new Cut(e);
@@ -85,7 +82,7 @@ public sealed class VmCutsSummary : VmPageBase
 
     public IList<VmCut> Cuts => this.cuts;
     public IList<VmCut> SelectedCuts => this.selectedCuts;
-    public ICommand OpenFileCommand { get; }
+    public string TextFileName { get; }
     public ICommand CopyFileNameCommand { get; }
     public ICommand GoToEditCommand { get; }
 
@@ -111,21 +108,6 @@ public sealed class VmCutsSummary : VmPageBase
         //        this.DeleteCommand.NotifyCanExecuteChanged();
         //        break;
         //}
-    }
-
-    private string GetTextFileName() => Path.Combine(this.textFilePath, $"CLIENT_{this.name}.exported");
-
-    private void OnOpenFile()
-    {
-        var fileName = this.GetTextFileName();
-        if (File.Exists(fileName) == false)
-        {
-            Log.Error($"{this.DebugName} 파일이 존재하지 않습니다.\n{fileName}");
-            return;
-        }
-
-        var fullPath = Path.GetFullPath(fileName);
-        Process.Start(new ProcessStartInfo(fullPath) { UseShellExecute = true });
     }
 
     private void OnCopyFileName()

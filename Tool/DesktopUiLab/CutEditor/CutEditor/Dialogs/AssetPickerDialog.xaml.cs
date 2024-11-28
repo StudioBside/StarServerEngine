@@ -62,25 +62,14 @@ public partial class AssetPickerDialog : ContentDialog
   
     public sealed class ElementType : ISearchable
     {
-        private readonly string fullPath;
-
         public ElementType(string fileName)
         {
-            this.fullPath = Path.GetFullPath(fileName);
+            this.FullPath = Path.GetFullPath(fileName);
             this.FileNameOnly = Path.GetFileName(fileName);
-            this.OpenFileCommand = new RelayCommand(() =>
-            {
-                Process.Start(new ProcessStartInfo(fileName) { UseShellExecute = true });
-            });
-            this.OpenInExplorerCommand = new RelayCommand(() =>
-            {
-                Process.Start("explorer.exe", $"/select,\"{this.fullPath}\"");
-            });
         }
 
+        public string FullPath { get; }
         public string FileNameOnly { get; }
-        public ICommand OpenFileCommand { get; }
-        public ICommand OpenInExplorerCommand { get; }
 
         public bool IsTarget(string keyword) => this.FileNameOnly.Contains(keyword, StringComparison.OrdinalIgnoreCase);
     }

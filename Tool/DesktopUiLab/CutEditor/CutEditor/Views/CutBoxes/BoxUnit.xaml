@@ -69,7 +69,7 @@
                                            Width="80" Height="80"
                                            VerticalAlignment="Stretch">
                     <MultiBinding Converter="{lcvt:PathToImageConverter}">
-                        <Binding Path="Cut.Unit.ImageFullPath" />
+                        <Binding Path="Cut.Unit.SmallImageFullPath" />
                         <Binding Source="유닛 선택"/>
                         <Binding Source="CornerRadius:8;BorderBrush:Black;BorderThickness:1"/>
                     </MultiBinding>
