@@ -2,6 +2,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Markup;
 using CommunityToolkit.Mvvm.Input;
@@ -16,7 +17,6 @@ public sealed class UtilCommandsExtension : MarkupExtension
         {
             if (string.IsNullOrWhiteSpace(path))
             {
-                Log.Error($"파일이 존재하지 않습니다.\n {path}");
                 return;
             }
 
@@ -33,7 +33,6 @@ public sealed class UtilCommandsExtension : MarkupExtension
         {
             if (string.IsNullOrWhiteSpace(path))
             {
-                Log.Error($"파일이 존재하지 않습니다.\n {path}");
                 return;
             }
 
@@ -45,10 +44,22 @@ public sealed class UtilCommandsExtension : MarkupExtension
 
             Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
         });
+
+        this.CopyToClipboard = new RelayCommand<string>(text =>
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                return;
+            }
+
+            Clipboard.SetText(text);
+            Log.Info($"클립보드에 복사:\n{text}");
+        });
     }
 
     public ICommand OpenInExplorer { get; }
     public ICommand OpenFile { get; }
+    public ICommand CopyToClipboard { get; }
 
     public override object ProvideValue(IServiceProvider serviceProvider)
     {

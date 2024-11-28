@@ -81,7 +81,6 @@ public partial class App : Application
         services.AddTransient<ISearchableCollectionProvider, SearchableCollectionProvider>();
         services.AddTransient<IFilteredCollectionProvider, FilteredCollectionProvider>();
         services.AddTransient<IUserWaitingNotifier, WaitingNotifierDialog>();
-        services.AddTransient<IClipboardWriter, ClipboardWriter>();
         services.AddTransient<IFilePicker, FilePicker>();
 
         return services.BuildServiceProvider();

@@ -20,7 +20,6 @@ public sealed class VmCutsSummary : VmPageBase
 {
     private readonly ObservableCollection<VmCut> cuts = new();
     private readonly ObservableCollection<VmCut> selectedCuts = new();
-    private readonly string name;
     private readonly CutUidGenerator uidGenerator;
     private readonly IServiceProvider services;
     private readonly IServiceScope serviceScope;
@@ -29,7 +28,6 @@ public sealed class VmCutsSummary : VmPageBase
     {
         this.serviceScope = services.CreateScope();
         this.services = services;
-        this.CopyFileNameCommand = new RelayCommand(this.OnCopyFileName);
         this.GoToEditCommand = new RelayCommand<VmCut>(this.OnGoToEdit);
 
         if (VmGlobalState.Instance.VmCutsCreateParam is null)
@@ -41,16 +39,16 @@ public sealed class VmCutsSummary : VmPageBase
 
         if (param.CutScene is null)
         {
-            this.name = param.NewFileName ?? throw new Exception("invalid createParam. newFileName is empty.");
-            this.Title = $"새로운 파일 생성 - {this.name}";
+            this.Name = param.NewFileName ?? throw new Exception("invalid createParam. newFileName is empty.");
+            this.Title = $"새로운 파일 생성 - {this.Name}";
         }
         else
         {
-            this.name = param.CutScene.FileName;
-            this.Title = $"{param.CutScene.Title} - {this.name}";
+            this.Name = param.CutScene.FileName;
+            this.Title = $"{param.CutScene.Title} - {this.Name}";
         }
 
-        this.TextFileName = CutFileIo.GetTextFileName(this.name);
+        this.TextFileName = CutFileIo.GetTextFileName(this.Name);
         if (File.Exists(this.TextFileName) == false)
         {
             Log.Debug($"cutscene file not found: {this.TextFileName}");
@@ -67,12 +65,12 @@ public sealed class VmCutsSummary : VmPageBase
 
         this.uidGenerator = new CutUidGenerator(this.cuts.Select(e => e.Cut));
 
-        Log.Info($"{this.name} 파일 로딩 완료. 총 컷의 개수:{this.cuts.Count}");
+        Log.Info($"{this.Name} 파일 로딩 완료. 총 컷의 개수:{this.cuts.Count}");
 
         var removeTargets = this.cuts.Where(e => e.DataType == Enums.CutDataType.Normal && e.Cut.UnitTalk.Korean.Length == 0).ToArray();
         if (removeTargets.Length > 0)
         {
-            Log.Debug($"{this.name} 파일에서 대사가 없는 컷을 제거합니다. {removeTargets.Length}개");
+            Log.Debug($"{this.Name} 파일에서 대사가 없는 컷을 제거합니다. {removeTargets.Length}개");
             foreach (var vmCut in removeTargets)
             {
                 this.cuts.Remove(vmCut);
@@ -80,13 +78,13 @@ public sealed class VmCutsSummary : VmPageBase
         }
     }
 
+    public string Name { get; }
     public IList<VmCut> Cuts => this.cuts;
     public IList<VmCut> SelectedCuts => this.selectedCuts;
     public string TextFileName { get; }
-    public ICommand CopyFileNameCommand { get; }
     public ICommand GoToEditCommand { get; }
 
-    private string DebugName => $"[{this.name}]";
+    private string DebugName => $"[{this.Name}]";
 
     public override void OnNavigating(object sender, Uri uri)
     {
@@ -108,14 +106,6 @@ public sealed class VmCutsSummary : VmPageBase
         //        this.DeleteCommand.NotifyCanExecuteChanged();
         //        break;
         //}
-    }
-
-    private void OnCopyFileName()
-    {
-        var clipboardWriter = this.services.GetRequiredService<IClipboardWriter>();
-        clipboardWriter.SetText(this.name);
-
-        Log.Info($"{this.DebugName} 파일명을 클립보드에 복사했습니다.");
     }
 
     private void OnGoToEdit(VmCut? target)

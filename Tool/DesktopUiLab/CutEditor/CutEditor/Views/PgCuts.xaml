@@ -154,7 +154,8 @@
                            CommandParameter="{Binding TextFileName}"/>
                 <ui:Button Margin="3" Content="이름 복사"
                            Icon="{ui:SymbolIcon Copy16}"
-                           Command="{Binding CopyFileNameCommand}"/>
+                           Command="{Binding CopyToClipboard, Source={extensions:UtilCommands}}"
+                           CommandParameter="{Binding Name}"/>
                 <ui:Button Margin="3" Content="저장하기" Appearance="Primary"
                            ToolTip="Ctrl + S"
                            Icon="{ui:SymbolIcon Save16}"

@@ -32,7 +32,6 @@ public sealed class VmCuts : VmPageBase,
     private readonly ObservableCollection<VmCut> cuts = [];
     private readonly ObservableCollection<VmCut> selectedCuts = [];
     private readonly string binFilePath;
-    private readonly string name;
     private readonly CutUidGenerator uidGenerator;
     private readonly IServiceProvider services;
     private readonly UndoController undoController;
@@ -46,7 +45,6 @@ public sealed class VmCuts : VmPageBase,
         this.undoController = this.serviceScope.ServiceProvider.GetRequiredService<UndoController>();
         this.services = services;
         this.SaveCommand = new AsyncRelayCommand(this.OnSave);
-        this.CopyFileNameCommand = new RelayCommand(this.OnCopyFileName);
         this.DeleteCommand = new RelayCommand(this.OnDelete, () => this.selectedCuts.Count > 0);
         this.NewCutCommand = new RelayCommand<CutDataType>(this.OnNewCut);
         this.DeletePickCommand = new RelayCommand<VmCut>(this.OnDeletePick);
@@ -63,17 +61,14 @@ public sealed class VmCuts : VmPageBase,
 
         if (param.CutScene is null)
         {
-            this.name = param.NewFileName ?? throw new Exception("invalid createParam. newFileName is empty.");
-            this.Title = $"새로운 파일 생성 - {this.name}";
-        }
-        else
-        {
-            this.name = param.CutScene.FileName;
-            this.Title = $"{param.CutScene.Title} - {this.name}";
+            throw new Exception("invalid createParam. newFileName is empty.");
         }
 
-        this.TextFileName = CutFileIo.GetTextFileName(this.name);
-        var cutList = CutFileIo.LoadCutData(this.name);
+        this.Name = param.CutScene.FileName;
+        this.Title = $"{param.CutScene.Title} - {this.Name}";
+
+        this.TextFileName = CutFileIo.GetTextFileName(this.Name);
+        var cutList = CutFileIo.LoadCutData(this.Name);
 
         foreach (var cut in cutList)
         {
@@ -94,9 +89,10 @@ public sealed class VmCuts : VmPageBase,
 
         this.UpdatePreview(startIndex: 0);
 
-        Log.Info($"{this.name} 파일 로딩 완료. 총 컷의 개수:{this.cuts.Count}");
+        Log.Info($"{this.Name} 파일 로딩 완료. 총 컷의 개수:{this.cuts.Count}");
     }
 
+    public string Name { get; }
     public IList<VmCut> Cuts => this.cuts;
     public IList<VmCut> SelectedCuts => this.selectedCuts;
     public VmFindFlyout FindFlyout { get; }
@@ -104,14 +100,13 @@ public sealed class VmCuts : VmPageBase,
     public ICommand UndoCommand => this.undoController.UndoCommand;
     public ICommand RedoCommand => this.undoController.RedoCommand;
     public ICommand SaveCommand { get; }
-    public ICommand CopyFileNameCommand { get; }
     public IRelayCommand DeleteCommand { get; } // 현재 (멀티)선택한 대상을 모두 삭제
     public ICommand NewCutCommand { get; }
     public ICommand DeletePickCommand { get; } // 인자로 넘어오는 1개의 cut을 삭제
 
     internal CutUidGenerator UidGenerator => this.uidGenerator;
     internal IServiceProvider Services => this.services;
-    private string DebugName => $"[{this.name}]";
+    private string DebugName => $"[{this.Name}]";
     async Task<bool> IClipboardHandler.HandlePastedTextAsync(string text)
     {
         text = text.Trim();
@@ -291,7 +286,7 @@ public sealed class VmCuts : VmPageBase,
 
         var model = new
         {
-            OutputFile = this.name,
+            OutputFile = this.Name,
             Rows = rows,
         };
 
@@ -405,15 +400,7 @@ public sealed class VmCuts : VmPageBase,
         this.undoController.Add(command);
     }
 
-    private string GetBinFileName() => Path.Combine(this.binFilePath, $"CLIENT_{this.name}.bytes");
-
-    private void OnCopyFileName()
-    {
-        var clipboardWriter = this.services.GetRequiredService<IClipboardWriter>();
-        clipboardWriter.SetText(this.name);
-
-        Log.Info($"{this.DebugName} 파일명을 클립보드에 복사했습니다.");
-    }
+    private string GetBinFileName() => Path.Combine(this.binFilePath, $"CLIENT_{this.Name}.bytes");
 
     private void OnUpdatePreview(object recipient, UpdatePreviewMessage message)
     {

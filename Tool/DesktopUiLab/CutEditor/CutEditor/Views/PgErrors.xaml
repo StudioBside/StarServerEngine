@@ -70,8 +70,8 @@
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
                                     <Button
-                                        Command="{Binding DataContext.CopyMessageCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
-                                        CommandParameter="{Binding}">
+                                        Command="{Binding CopyToClipboard, Source={extensions:UtilCommands}}"
+                                        CommandParameter="{Binding Message}">
                                         <ui:SymbolIcon Symbol="Copy24"/>
                                     </Button>
                                 </StackPanel>

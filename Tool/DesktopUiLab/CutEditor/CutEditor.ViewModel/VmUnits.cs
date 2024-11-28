@@ -15,7 +15,7 @@ public sealed class VmUnits : VmPageBase
     public VmUnits(ISearchableCollectionProvider provider)
     {
         this.Title = "유닛 리스트";
-        this.filteredList = provider.Build(Unit.Values);
+        this.filteredList = provider.Build(Unit.Values.OrderBy(e => e.Id));
     }
 
     public IEnumerable FilteredList => this.filteredList.List;

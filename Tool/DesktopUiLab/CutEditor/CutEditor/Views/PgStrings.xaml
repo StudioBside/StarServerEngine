@@ -68,6 +68,7 @@
         <ui:ListView
             Grid.Row="2"
             ItemsSource="{Binding FilteredList}"
+            SelectedItem="{Binding SelectedItem}"
             Margin="0,10,0,0"
             ScrollViewer.VerticalScrollBarVisibility="Auto"
             VirtualizingPanel.VirtualizationMode="Recycling"
@@ -82,8 +83,8 @@
                                 <StackPanel Orientation="Horizontal">
                                     <ui:HyperlinkButton 
                                         Content="{Binding PrimeKey}" 
-                                        Command="{Binding DataContext.CopyIdCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
-                                        CommandParameter="{Binding}"/>
+                                        Command="{Binding CopyToClipboard, Source={extensions:UtilCommands}}"
+                                        CommandParameter="{Binding PrimeKey}"/>
                                 </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
@@ -118,6 +119,22 @@
                     </GridViewColumn>
                 </GridView>
             </ListView.View>
+            <ui:ListView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="복사 : Korean" 
+                            Command="{Binding CopyToClipboard, Source={extensions:UtilCommands}}"
+                            CommandParameter="{Binding SelectedItem.Korean}"/>
+                    <MenuItem Header="복사 : English" 
+                            Command="{Binding CopyToClipboard, Source={extensions:UtilCommands}}"
+                            CommandParameter="{Binding SelectedItem.English}"/>
+                    <MenuItem Header="복사 : Japanese" 
+                            Command="{Binding CopyToClipboard, Source={extensions:UtilCommands}}"
+                            CommandParameter="{Binding SelectedItem.Japanese}"/>
+                    <MenuItem Header="복사 : Chinese" 
+                            Command="{Binding CopyToClipboard, Source={extensions:UtilCommands}}"
+                            CommandParameter="{Binding SelectedItem.ChineseSimplified}"/>
+                </ContextMenu>
+            </ui:ListView.ContextMenu>
         </ui:ListView>
 
         <Grid Grid.Row="4">

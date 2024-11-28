@@ -3,18 +3,15 @@
 using System;
 using System.Collections;
 using System.ComponentModel;
-using System.Windows.Input;
-using CommunityToolkit.Mvvm.Input;
-using Cs.Logging;
 using Du.Core.Bases;
 using Du.Core.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
 using Shared.Templet.Strings;
 
 public sealed class VmStrings : VmPageBase
 {
     private readonly IServiceProvider services;
     private readonly ISearchableCollection<StringElement> filteredList;
+    private StringElement? selectedItem;
     private string searchKeyword = string.Empty;
     private bool showKorean = true;
     private bool showJapanese = false;
@@ -27,7 +24,6 @@ public sealed class VmStrings : VmPageBase
         this.services = services;
         this.Title = "시스템 스트링 리스트";
         this.filteredList = provider.Build(StringTable.Instance.Elements);
-        this.CopyIdCommand = new RelayCommand<StringElement>(this.OnCopyId);
     }
 
     public IEnumerable FilteredList
@@ -46,7 +42,6 @@ public sealed class VmStrings : VmPageBase
 
     public int FilteredCount => this.filteredList.FilteredCount;
     public int TotalCount => StringTable.Instance.UniqueCount;
-    public ICommand CopyIdCommand { get; }
     public string SearchKeyword
     {
         get => this.searchKeyword;
@@ -83,6 +78,12 @@ public sealed class VmStrings : VmPageBase
         set => this.SetProperty(ref this.showDupeOnly, value);
     }
 
+    public StringElement? SelectedItem
+    {
+        get => this.selectedItem;
+        set => this.SetProperty(ref this.selectedItem, value);
+    }
+
     //// --------------------------------------------------------------------------------------------
 
     protected override void OnPropertyChanged(PropertyChangedEventArgs e)
@@ -98,18 +99,5 @@ public sealed class VmStrings : VmPageBase
                 this.OnPropertyChanged(nameof(this.FilteredCount));
                 break;
         }
-    }
-
-    private void OnCopyId(StringElement? element)
-    {
-        if (element is null)
-        {
-            return;
-        }
-
-        var writer = this.services.GetRequiredService<IClipboardWriter>();
-        writer.SetText(element.PrimeKey);
-
-        Log.Info($"ID를 클립보드에 복사했습니다. \n {element.PrimeKey}");
     }
 }

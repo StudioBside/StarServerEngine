@@ -38,6 +38,7 @@ public static class TempletLoad
             "CLIENT_UNIT_TEMPLET_BASE1.exported",
             "CLIENT_UNIT_TEMPLET_BASE2.exported",
             "CLIENT_UNIT_TEMPLET_BASE3.exported",
+            "CLIENT_UNIT_TEMPLET_BASE4.exported",
         ];
         TempletLoader.BuildContainer(unitFileNames, e => new Unit(e), e => e.StrId);
         TempletLoader.BuildContainer("CLIENT_LOBBY_ITEM_TEMPLET.exported", e => new LobbyItem(e));

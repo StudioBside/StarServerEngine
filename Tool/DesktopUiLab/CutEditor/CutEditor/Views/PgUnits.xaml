@@ -79,20 +79,30 @@
                         <StackPanel Orientation="Horizontal">
 
                             <ui:Image Width="125" CornerRadius="5" Margin="5"
-                                  BorderBrush="Black" BorderThickness="1"
-                                  Source="{Binding SmallImageFullPath}"/>
+                                      BorderBrush="Black" BorderThickness="1"
+                                      Source="{Binding SmallImageFullPath}"
+                                      ToolTip="{Binding UnitFaceSmall}"/>
 
                             <ui:Image Width="125" CornerRadius="5" Margin="5"
-                                  BorderBrush="Black" BorderThickness="1"
-                                  Source="{Binding ImageFullPath}"/>
+                                      BorderBrush="Black" BorderThickness="1"
+                                      Source="{Binding ImageFullPath}"
+                                      ToolTip="{Binding UnitFace}"/>
 
-                            <ui:Image Width="125" CornerRadius="5" Margin="5"
+                            <Button Padding="0" BorderThickness="0"
+                                    Command="{Binding OpenFile, Source={extensions:UtilCommands}}"
+                                    CommandParameter="{Binding IllustPath}">
+                                <ui:Image Width="125" CornerRadius="5" Margin="5"
                                   BorderBrush="Black" BorderThickness="1"
                                   Source="{Binding IllustPath, Converter={lcvt:PathToThumbnailConverter}}"/>
+                            </Button>
 
-                            <ui:Image Width="125" CornerRadius="5" Margin="5"
+                            <Button Padding="0" BorderThickness="0"
+                                    Command="{Binding OpenFile, Source={extensions:UtilCommands}}"
+                                    CommandParameter="{Binding IllustUiPath}">
+                                <ui:Image Width="125" CornerRadius="5" Margin="5"
                                   BorderBrush="Black" BorderThickness="1"
                                   Source="{Binding IllustUiPath, Converter={lcvt:PathToThumbnailConverter}}"/>
+                            </Button>
 
                             <StackPanel Margin="5,0">
                                 <ui:TextBlock FontTypography="BodyStrong">
@@ -106,8 +116,6 @@
                                 타입 : <Run Text="{Binding UnitType, Mode=OneWay}"/>
                                 <LineBreak/>
                                 Comment : <Run Text="{Binding Comment, Mode=OneWay}"/>
-                                <LineBreak/>
-                                UnitFaceSmall : <Run Text="{Binding UnitFaceSmall, Mode=OneWay}"/>
                                 </TextBlock>
                             </StackPanel>
                         </StackPanel>

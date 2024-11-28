@@ -26,14 +26,11 @@ public sealed class VmErrors : VmPageBase
         {
             return this.selectedFilter == ErrorType.All || e.ErrorType == this.selectedFilter;
         };
-
-        this.CopyMessageCommand = new RelayCommand<ErrorMessage>(this.OnCopyMessage);
     }
 
     public IEnumerable FilteredList => this.filteredList.List;
     public int FilteredCount => this.filteredList.FilteredCount;
     public int TotalCount => this.filteredList.SourceCount;
-    public ICommand CopyMessageCommand { get; }
 
     public ErrorType SelectedFilter
     {
@@ -54,18 +51,5 @@ public sealed class VmErrors : VmPageBase
                 this.OnPropertyChanged(nameof(this.FilteredCount));
                 break;
         }
-    }
-
-    private void OnCopyMessage(ErrorMessage? message)
-    {
-        if (message is null)
-        {
-            return;
-        }
-
-        var writer = this.services.GetRequiredService<IClipboardWriter>();
-        writer.SetText(message.Message);
-
-        Log.Info($"메시지를 클립보드에 복사했습니다. \n {message.Message}");
     }
 }
