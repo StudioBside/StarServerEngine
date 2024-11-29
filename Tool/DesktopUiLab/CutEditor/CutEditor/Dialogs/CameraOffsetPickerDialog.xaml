@@ -8,7 +8,6 @@
     xmlns:local="clr-namespace:CutEditor.Dialogs"
     xmlns:detail="clr-namespace:CutEditor.Dialogs.CameraOffsetPicker"
     xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
-    xmlns:ext="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
     mc:Ignorable="d" 
     xmlns:extensions="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
     d:DataContext="{d:DesignInstance Type=local:CameraOffsetPickerDialog}"

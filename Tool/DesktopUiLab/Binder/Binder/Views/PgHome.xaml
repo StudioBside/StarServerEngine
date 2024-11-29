@@ -8,7 +8,7 @@
     xmlns:local="clr-namespace:Binder.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-    xmlns:ext="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
+    xmlns:extensions="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
     xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
     xmlns:viewmodels="clr-namespace:Binder.ViewModel;assembly=Binder.ViewModel"
     d:DataContext="{d:DesignInstance Type=viewmodels:VmHome}"
@@ -48,7 +48,7 @@
                     PlaceholderText="검색어 입력.."
                     Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}"
                     Icon="Search12"
-                    ext:FocusExtension.IsFocused="True"/>
+                    extensions:FocusExtension.IsFocused="True"/>
             </Grid>
 
             <!--좌하단 파일 리스트 영역-->

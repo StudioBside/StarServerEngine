@@ -9,7 +9,6 @@
     xmlns:local="clr-namespace:CutEditor.Dialogs"
     xmlns:detail="clr-namespace:CutEditor.Dialogs.BgFilePicker"
     xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
-    xmlns:ext="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
     xmlns:nkm="clr-namespace:NKM;assembly=Shared.Templet"
     xmlns:lcvt="clr-namespace:CutEditor.Converters"
     xmlns:extensions="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
@@ -38,7 +37,7 @@
         <ui:TextBox Grid.Row="0"
                     PlaceholderText="검색어 입력.."
                     Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}"
-                    ext:FocusExtension.IsFocused="True"
+                    extensions:FocusExtension.IsFocused="True"
                     x:Name="SearchBox">
             <ui:TextBox.Icon>
                 <ui:IconSourceElement>

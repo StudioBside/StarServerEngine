@@ -7,7 +7,6 @@
       xmlns:local="clr-namespace:CutEditor.Views"
       xmlns:lcvt="clr-namespace:CutEditor.Converters"
       xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-      xmlns:ext="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
       xmlns:behaviors="clr-namespace:Du.Presentation.Behaviors;assembly=Du.Presentation"
       xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
       xmlns:extensions="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
@@ -47,7 +46,7 @@
           Margin="0,0,10,0"
           PlaceholderText="검색어 입력.."
           Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}"
-          ext:FocusExtension.IsFocused="True">
+          extensions:FocusExtension.IsFocused="True">
                 <ui:TextBox.Icon>
                     <ui:IconSourceElement>
                         <ui:SymbolIconSource Symbol="Search12"/>
@@ -105,10 +104,16 @@
                             </Button>
 
                             <StackPanel Margin="5,0">
-                                <ui:TextBlock FontTypography="BodyStrong">
-                                    [ <Run Text="{Binding Id, Mode=OneWay}"/> ]
-                                    <Run Text="{Binding StrId, Mode=OneWay}"/>
-                                </ui:TextBlock>
+                                <ui:HyperlinkButton
+                                    Command="{Binding RouteCommand, Source={extensions:PageRouter}}"
+                                    CommandParameter="{Binding}">
+                                    <ui:HyperlinkButton.Content>
+                                        <ui:TextBlock FontTypography="BodyStrong">
+                                            [ <Run Text="{Binding Id, Mode=OneWay}"/> ]
+                                            <Run Text="{Binding StrId, Mode=OneWay}"/>
+                                        </ui:TextBlock>
+                                    </ui:HyperlinkButton.Content>
+                                </ui:HyperlinkButton>
 
                                 <TextBlock LineHeight="20" Margin="5,10,0,0">
                                 이름 : <Run Text="{Binding Name, Mode=OneWay}"/>

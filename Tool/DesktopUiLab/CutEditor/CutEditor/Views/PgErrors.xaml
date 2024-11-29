@@ -7,7 +7,6 @@
       xmlns:local="clr-namespace:CutEditor.Views"
       xmlns:lcvt="clr-namespace:CutEditor.Converters"
       xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-      xmlns:ext="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
       xmlns:behaviors="clr-namespace:Du.Presentation.Behaviors;assembly=Du.Presentation"
       xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
       xmlns:extensions="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"

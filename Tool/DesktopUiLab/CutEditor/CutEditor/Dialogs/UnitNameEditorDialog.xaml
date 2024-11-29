@@ -8,7 +8,6 @@
     xmlns:local="clr-namespace:CutEditor.Dialogs"
     xmlns:models="clr-namespace:CutEditor.Model;assembly=CutEditor.Model"
     xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
-    xmlns:ext="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
     mc:Ignorable="d" 
     xmlns:extensions="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
     d:DataContext="{d:DesignInstance Type=local:UnitNameEditorDialog}"
@@ -30,7 +29,7 @@
 
         <ui:TextBox Margin="0,0,0,10" PlaceholderText="검색어 입력"
                     Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}"
-                    ext:FocusExtension.IsFocused="True"/>
+                    extensions:FocusExtension.IsFocused="True"/>
         <ui:ListView Height="200" BorderBrush="Gray" BorderThickness="0.5"
                      ItemsSource="{Binding FilteredFiles}">
             <ListView.View>

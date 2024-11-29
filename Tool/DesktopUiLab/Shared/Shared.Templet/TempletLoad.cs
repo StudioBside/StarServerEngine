@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Shared.Templet.Base;
 using Shared.Templet.Strings;
 using Shared.Templet.TempletTypes;
+using Shared.Templet.UnitScripts;
 
 public static class TempletLoad
 {
@@ -24,6 +25,7 @@ public static class TempletLoad
         var unitImageRoot = config["UnitImageRoot"] ?? throw new Exception("UnitImageRoot is not set in the configuration file.");
         var bgImageRoot = config["BgImageRoot"] ?? throw new Exception("BgImageRoot is not set in the configuration file.");
         var lobbyThumbnailRoot = config["LobbyThumbnailRoot"] ?? throw new Exception("LobbyThumbnailRoot is not set in the configuration file.");
+        var unitScriptRoot = config["UnitScriptRoot"] ?? throw new Exception($"UnitScriptRoot is not defined in the configuration file.");
 
         TempletLoader.TempletRootPath = templetRoot;
         Unit.SmallImageRootPath = unitSmallImageRoot;
@@ -42,6 +44,8 @@ public static class TempletLoad
         ];
         TempletLoader.BuildContainer(unitFileNames, e => new Unit(e), e => e.StrId);
         TempletLoader.BuildContainer("CLIENT_LOBBY_ITEM_TEMPLET.exported", e => new LobbyItem(e));
+
+        UnitScriptContainer.Instance.Load(unitScriptRoot);
     }
 
     private static void Join()

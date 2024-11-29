@@ -139,6 +139,7 @@ public partial class App : Application
             .Register<PgCuts, CutScene>()
             .Register<PgCuts, VmCut>()
             .Register<PgCutsSummary, VmCutsSummary.CreateParam>()
+            .Register<PgUnitDetail, Unit>()
             ;
     }
 }
