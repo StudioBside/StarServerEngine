@@ -1,19 +1,35 @@
 ﻿namespace Shared.Templet.UnitScripts;
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Shared.Interfaces;
+using Shared.Templet.TempletTypes;
 
-public sealed class UnitScript
+public sealed class UnitScript : ISearchable
 {
+    private readonly List<Unit> references = new();
+
     public UnitScript(string path)
     {
         this.FullPath = Path.GetFullPath(path);
         this.FileName = Path.GetFileName(path);
+        this.FullText = File.ReadAllText(path);
+        this.Loc = this.FullText.Count(c => c == '\n');
     }
 
-    public string FileName { get; set; }
-    public string FullPath { get; set; }
+    public static IEnumerable<UnitScript> Values => UnitScriptContainer.Instance.Values;
+    public IReadOnlyList<Unit> References => this.references;
+    public string FileName { get; }
+    public string FullPath { get; }
+    public string FullText { get; }
+    public int Loc { get; }
+
+    public bool IsTarget(string keyword)
+    {
+        return this.FileName.Contains(keyword, StringComparison.OrdinalIgnoreCase);
+    }
+
+    internal void AddReference(Unit unit)
+    {
+        this.references.Add(unit);
+    }
 }

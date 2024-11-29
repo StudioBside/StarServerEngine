@@ -11,8 +11,8 @@ public sealed class ErrorMessageController
     public IEnumerable<ErrorMessage> List => this.list;
     public int Count => this.list.Count;
 
-    public void Add(ErrorType errorType, string message)
+    public void Add(ErrorMessage message)
     {
-        this.list.Add(new ErrorMessage(errorType, message));
+        this.list.Add(message);
     }
 }

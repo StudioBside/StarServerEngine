@@ -76,18 +76,8 @@
                 <GridView>
                     <GridViewColumn
                         Header="PrimeKey"
-                        Width="400">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal">
-                                    <ui:HyperlinkButton 
-                                        Content="{Binding PrimeKey}" 
-                                        Command="{Binding CopyToClipboard, Source={extensions:UtilCommands}}"
-                                        CommandParameter="{Binding PrimeKey}"/>
-                                </StackPanel>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
+                        Width="400"
+                        DisplayMemberBinding="{Binding PrimeKey}"/>
                     <GridViewColumn
                         Header="KeyCount"
                         Width="50"

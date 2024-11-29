@@ -10,6 +10,7 @@ using Shared.Templet.Base;
 using Shared.Templet.Errors;
 using Shared.Templet.Images;
 using Shared.Templet.Strings;
+using Shared.Templet.UnitScripts;
 using static NKM.NKMOpenEnums;
 
 public sealed class Unit : ITemplet, ISearchable
@@ -19,6 +20,7 @@ public sealed class Unit : ITemplet, ISearchable
     private static readonly string AnonymousImage;
     private static readonly string MissingImage;
     private readonly string nameStringId = string.Empty;
+    private readonly string? scriptFileName;
 
     static Unit()
     {
@@ -37,6 +39,7 @@ public sealed class Unit : ITemplet, ISearchable
         this.nameStringId = token.GetString("m_UnitNameString");
         this.IllustName = token.GetString("m_IllustName", null!);
         this.IllustNameUi = token.GetString("m_IllustNameUI", null!);
+        this.scriptFileName = token.GetString("m_UnitTempletFileName", null!);
     }
 
     public static IEnumerable<Unit> Values => TempletContainer<Unit>.Values;
@@ -56,6 +59,7 @@ public sealed class Unit : ITemplet, ISearchable
     public string IllustUiPath { get; private set; } = string.Empty;
     public NKM_UNIT_TYPE UnitType { get; }
     public string Name { get; private set; } = string.Empty;
+    public UnitScript? Script { get; private set; }
     public string DebugName => $"[{this.Id}] {this.Name}";
 
     public void Join()
@@ -87,9 +91,7 @@ public sealed class Unit : ITemplet, ISearchable
 
                 if (MissingFiles.Add(this.UnitFaceSmall))
                 {
-                    ErrorMessageController.Instance.Add(
-                        ErrorType.Unit,
-                        $"{this.DebugName} UnitFaceSmall 이미지가 존재하지 않습니다: {this.UnitFaceSmall}");
+                    ErrorMessage.Add(ErrorType.Unit, $"{this.DebugName} UnitFaceSmall 이미지가 존재하지 않습니다: {this.UnitFaceSmall}", this);
                 }
             }
         }
@@ -107,9 +109,7 @@ public sealed class Unit : ITemplet, ISearchable
             {
                 this.ImageFullPath = MissingImage;
 
-                ErrorMessageController.Instance.Add(
-                    ErrorType.Unit,
-                    $"{this.DebugName} UnitFace 이미지가 존재하지 않습니다: {this.UnitFace}");
+                ErrorMessage.Add(ErrorType.Unit, $"{this.DebugName} UnitFace 이미지가 존재하지 않습니다: {this.UnitFace}", this);
             }
         }
 
@@ -121,9 +121,7 @@ public sealed class Unit : ITemplet, ISearchable
             }
             else if (MissingFiles.Add(this.IllustName))
             {
-                ErrorMessageController.Instance.Add(
-                    ErrorType.Unit,
-                    $"{this.DebugName} Illust 이미지가 존재하지 않습니다: {this.IllustName}");
+                ErrorMessage.Add(ErrorType.Unit, $"{this.DebugName} Illust 이미지가 존재하지 않습니다: {this.IllustName}", this);
             }
         }
 
@@ -135,9 +133,20 @@ public sealed class Unit : ITemplet, ISearchable
             }
             else if (MissingFiles.Add(this.IllustNameUi))
             {
-                ErrorMessageController.Instance.Add(
-                    ErrorType.Unit,
-                    $"{this.DebugName} Illust UI 이미지가 존재하지 않습니다: {this.IllustNameUi}");
+                ErrorMessage.Add(ErrorType.Unit, $"{this.DebugName} Illust UI 이미지가 존재하지 않습니다: {this.IllustNameUi}", this);
+            }
+        }
+
+        if (string.IsNullOrEmpty(this.scriptFileName) == false)
+        {
+            this.Script = UnitScriptContainer.Instance.Find(this.scriptFileName);
+            if (this.Script is null)
+            {
+                ErrorMessage.Add(ErrorType.Unit, $"{this.DebugName} 스크립트 파일을 찾을 수 없습니다: {this.scriptFileName}", this);
+            }
+            else
+            {
+                this.Script.AddReference(this);
             }
         }
     }
@@ -146,9 +155,7 @@ public sealed class Unit : ITemplet, ISearchable
     {
         if (this.nameStringId == this.Name)
         {
-            ErrorMessageController.Instance.Add(
-                ErrorType.String,
-                $"유닛 {this.DebugName} 의 이름 스트링을 찾을 수 없습니다. nameStringId:{this.nameStringId}");
+            ErrorMessage.Add(ErrorType.Unit, $"유닛 {this.DebugName} 의 이름 스트링을 찾을 수 없습니다.", this);
         }
     }
 

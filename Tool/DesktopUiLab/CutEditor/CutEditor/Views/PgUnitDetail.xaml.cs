@@ -2,6 +2,7 @@
 
 using System.Windows.Controls;
 using CutEditor.ViewModel;
+using ICSharpCode.AvalonEdit.Highlighting;
 using Shared.Templet.TempletTypes;
 
 public sealed partial class PgUnitDetail : Page
@@ -10,5 +11,11 @@ public sealed partial class PgUnitDetail : Page
     {
         this.InitializeComponent();
         this.DataContext = new VmUnitDetail(unitTemplet);
+
+        if (unitTemplet.Script is not null)
+        {
+            this.JsonTextEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("JavaScript");
+            this.JsonTextEditor.Text = unitTemplet.Script.FullText;
+        }
     }
 }

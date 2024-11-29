@@ -38,6 +38,9 @@
             <MenuItem Header="유닛 목록" 
                       Command="{Binding GoToCommand, Source={extensions:PageRouter}}"
                       CommandParameter="Views/PgUnits.xaml"/>
+            <MenuItem Header="유닛 스크립트" 
+                      Command="{Binding GoToCommand, Source={extensions:PageRouter}}"
+                      CommandParameter="Views/PgUnitScripts.xaml"/>
             <MenuItem Header="" 
                       Command="{Binding GoToCommand, Source={extensions:PageRouter}}"
                       CommandParameter="Views/PgErrors.xaml">
