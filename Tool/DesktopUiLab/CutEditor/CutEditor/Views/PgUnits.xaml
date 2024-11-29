@@ -134,7 +134,7 @@
                     Orientation="Horizontal">
                 <ui:Button Margin="0,0,10,0"
                        Content="돌아가기"
-                       Command="{Binding GoToCommand}"
+                       Command="{Binding GoToCommand, Source={extensions:PageRouter}}"
                        CommandParameter="Views/PgHome.xaml" />
 
             </StackPanel>

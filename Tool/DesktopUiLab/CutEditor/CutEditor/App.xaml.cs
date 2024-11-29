@@ -135,7 +135,7 @@ public partial class App : Application
         };
 
         PageRouterExtension.Instance
-            .Register<PgCuts, VmCutsParam>()
+            .Register<PgCuts, VmCuts.CreateParam>()
             .Register<PgCuts, CutScene>()
             .Register<PgCuts, VmCut>()
             .Register<PgCutsSummary, VmCutsSummary.CreateParam>()

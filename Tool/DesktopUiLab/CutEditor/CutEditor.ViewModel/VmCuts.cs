@@ -29,7 +29,7 @@ public sealed class VmCuts : VmPageBase,
     IClipboardHandler,
     ILoadEventReceiver
 {
-    private readonly VmCutsParam param;
+    private readonly CreateParam param;
     private readonly ObservableCollection<VmCut> cuts = [];
     private readonly ObservableCollection<VmCut> selectedCuts = [];
     private readonly string binFilePath;
@@ -39,7 +39,7 @@ public sealed class VmCuts : VmPageBase,
     private readonly string packetExeFile;
     private readonly IServiceScope serviceScope;
 
-    public VmCuts(IConfiguration config, IServiceProvider services, VmCutsParam param)
+    public VmCuts(IConfiguration config, IServiceProvider services, CreateParam param)
     {
         this.param = param;
         this.FindFlyout = new VmFindFlyout(this, this.cuts);
@@ -50,15 +50,13 @@ public sealed class VmCuts : VmPageBase,
         this.DeleteCommand = new RelayCommand(this.OnDelete, () => this.selectedCuts.Count > 0);
         this.NewCutCommand = new RelayCommand<CutDataType>(this.OnNewCut);
         this.DeletePickCommand = new RelayCommand<VmCut>(this.OnDeletePick);
+        this.GoToReadPageCommand = new RelayCommand(this.OnGoToReadPage);
         WeakReferenceMessenger.Default.Register<UpdatePreviewMessage>(this, this.OnUpdatePreview);
 
         this.binFilePath = config["CutBinFilePath"] ?? throw new Exception("CutBinFilePath is not set in the configuration file.");
         this.packetExeFile = config["TextFilePacker"] ?? throw new Exception("TextFilePacker is not set in the configuration file.");
 
-        this.Name = param.CutScene?.FileName
-            ?? param.NewFileName
-            ?? throw new Exception("invalid createParam. newFileName is empty.");
-
+        this.Name = param.FileName;
         this.Title = this.Name;
         this.TextFileName = CutFileIo.GetTextFileName(this.Name);
         var cutList = CutFileIo.LoadCutData(this.Name);
@@ -96,6 +94,7 @@ public sealed class VmCuts : VmPageBase,
     public IRelayCommand DeleteCommand { get; } // 현재 (멀티)선택한 대상을 모두 삭제
     public ICommand NewCutCommand { get; }
     public ICommand DeletePickCommand { get; } // 인자로 넘어오는 1개의 cut을 삭제
+    public ICommand GoToReadPageCommand { get; } // note: 제대로 하려면 수정사항을 저장하고 넘어가야 함.
 
     internal CutUidGenerator UidGenerator => this.uidGenerator;
     internal IServiceProvider Services => this.services;
@@ -406,14 +405,17 @@ public sealed class VmCuts : VmPageBase,
         this.UpdatePreview(startIndex);
     }
 
-    public sealed record CreateParam
+    private void OnGoToReadPage()
     {
-        public CutScene? CutScene { get; init; }
+        this.services.GetRequiredService<IPageRouter>()
+            .Route(new VmCutsSummary.CreateParam(this.Name));
     }
+
+    public sealed record CreateParam(string FileName, long CutUid);
 
     public sealed class Factory(IServiceProvider services)
     {
-        public VmPageBase Create(VmCutsParam param)
+        public VmPageBase Create(CreateParam param)
         {
             var config = services.GetRequiredService<IConfiguration>();
             return new VmCuts(config, services, param);

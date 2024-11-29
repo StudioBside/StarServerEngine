@@ -151,7 +151,7 @@
                            IsEnabled="False"/>
                 <ui:Button Margin="0,0,10,0"
                            Content="시스템 스트링"
-                           Command="{Binding GoToCommand}"
+                           Command="{Binding GoToCommand, Source={extensions:PageRouter}}"
                            CommandParameter="Views/PgStrings.xaml" />
                 <ui:Button Margin="0,0,10,0"
                            Content="추출파일 폴더 열기"

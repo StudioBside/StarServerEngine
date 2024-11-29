@@ -142,12 +142,11 @@
                            Command="{Binding FindFlyout.OpenCommand}"/>
                 <ui:Button Margin="3" Content="목록으로"
                            Icon="{ui:SymbolIcon ArrowStepBack16}"
-                           Command="{Binding GoToCommand}"
+                           Command="{Binding GoToCommand, Source={extensions:PageRouter}}"
                            CommandParameter="Views/PgHome.xaml"/>
                 <ui:Button Margin="3" Content="읽기 모드"
                            Icon="{ui:SymbolIcon ArrowStepBack16}"
-                           Command="{Binding GoToCommand}"
-                           CommandParameter="Views/PgCutsSummary.xaml"/>
+                           Command="{Binding GoToReadPageCommand}" />
                 <ui:Button Margin="3" Content="파일 열기"
                            Icon="{ui:SymbolIcon Code16}"
                            Command="{Binding OpenFile, Source={extensions:UtilCommands}}"

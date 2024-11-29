@@ -24,6 +24,7 @@ public partial class MainWindow : Window
         snackbarService.SetSnackbarPresenter(this.SnackbarPresenter);
 
         PageRouterExtension.Instance.SetFrame(this.MyFrame);
+        this.MyFrame.Navigate(new Uri("Views/PgHome.xaml", UriKind.Relative));
     }
 
     protected override void OnClosing(CancelEventArgs e)

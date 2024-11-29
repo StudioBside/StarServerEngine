@@ -43,7 +43,7 @@
 
                 <ui:Button Margin="3" Content="목록으로"
                            Icon="{ui:SymbolIcon ArrowStepBack16}"
-                           Command="{Binding GoToCommand}"
+                           Command="{Binding GoToCommand, Source={extensions:PageRouter}}"
                            CommandParameter="Views/PgHome.xaml"/>
                 <ui:Button Margin="3" Content="파일 열기"
                            Icon="{ui:SymbolIcon Code16}"
@@ -55,7 +55,7 @@
                            CommandParameter="{Binding Name}"/>
                 <ui:Button Margin="3" Content="수정하기" Appearance="Primary"
                            Icon="{ui:SymbolIcon Edit16}"
-                           Command="{Binding GoToCommand}"
+                           Command="{Binding GoToCommand, Source={extensions:PageRouter}}"
                            CommandParameter="Views/PgCuts.xaml"/>
             </StackPanel>
         </DockPanel>

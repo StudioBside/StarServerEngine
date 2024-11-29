@@ -119,7 +119,7 @@ public sealed class VmHome : VmPageBase
         }
 
         this.services.GetRequiredService<IPageRouter>()
-            .Route(new VmCutsParam { NewFileName = fileName });
+            .Route(new VmCuts.CreateParam(fileName, CutUid: 0));
     }
 
     private void OnReadPicked(CutScene? scene)

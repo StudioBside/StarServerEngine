@@ -11,6 +11,7 @@
     xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
     xmlns:viewmodels="clr-namespace:CutEditor.ViewModel;assembly=CutEditor.ViewModel"
     xmlns:singletons="clr-namespace:CutEditor.Views.Singletons"
+    xmlns:extensions="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
     d:DataContext="{d:DesignInstance Type=viewmodels:VmMain}"
     mc:Ignorable="d"
     Title="{Binding ElementName=MyFrame, Path=Content.DataContext.Title}"
@@ -29,16 +30,16 @@
         <Menu x:Name="MainMenu"
               Visibility="{Binding ShowMenu, Converter={converters:BoolToVisibilityConverter}}">
             <MenuItem Header="컷신 목록"
-                      Command="{Binding NavigateCommand}"
+                      Command="{Binding GoToCommand, Source={extensions:PageRouter}}"
                       CommandParameter="Views/PgHome.xaml"/>
             <MenuItem Header="시스템 스트링" 
-                      Command="{Binding NavigateCommand}"
+                      Command="{Binding GoToCommand, Source={extensions:PageRouter}}"
                       CommandParameter="Views/PgStrings.xaml"/>
             <MenuItem Header="유닛 목록" 
-                      Command="{Binding NavigateCommand}"
+                      Command="{Binding GoToCommand, Source={extensions:PageRouter}}"
                       CommandParameter="Views/PgUnits.xaml"/>
             <MenuItem Header="" 
-                      Command="{Binding NavigateCommand}"
+                      Command="{Binding GoToCommand, Source={extensions:PageRouter}}"
                       CommandParameter="Views/PgErrors.xaml">
                 <MenuItem.HeaderTemplate>
                     <DataTemplate>
@@ -53,12 +54,7 @@
         </Menu>
 
         <Grid Grid.Row="1">
-            <Frame NavigationUIVisibility="Hidden"
-            x:Name="MyFrame">
-                <b:Interaction.Behaviors>
-                    <behaviors:FrameBehavior NavigationSource="{Binding NavigationSource, Mode=TwoWay}" />
-                </b:Interaction.Behaviors>
-            </Frame>
+            <Frame NavigationUIVisibility="Hidden" x:Name="MyFrame" />
             <ContentPresenter x:Name="RootContentDialog"/>
             <ui:SnackbarPresenter x:Name="SnackbarPresenter" VerticalAlignment="Bottom" HorizontalAlignment="Center" />
         </Grid>
