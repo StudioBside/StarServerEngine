@@ -6,7 +6,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 using Cs.Core.Util;
 using Cs.Logging;
 using CutEditor.Model;
@@ -14,7 +13,6 @@ using CutEditor.Model.Interfaces;
 using CutEditor.ViewModel.Detail;
 using Du.Core.Bases;
 using Du.Core.Interfaces;
-using Du.Core.Models;
 using Microsoft.Extensions.DependencyInjection;
 
 public sealed class VmHome : VmPageBase
@@ -34,8 +32,6 @@ public sealed class VmHome : VmPageBase
         this.Title = "컷신 목록";
         this.services = services;
         this.filteredList = services.GetRequiredService<ISearchableCollectionProvider>().Build(this.cutScenes);
-        this.EditSelectedCommand = new RelayCommand(this.OnEditSelected, () => this.selectedCutScene is not null);
-        this.EditPickedCommand = new RelayCommand<CutScene>(this.OnEditPicked);
         this.ReadPickedCommand = new RelayCommand<CutScene>(this.OnReadPicked);
         this.NewFileCommand = new AsyncRelayCommand(this.OnNewFile);
         this.ExportCommand = new RelayCommand<CutScene>(this.OnExport);
@@ -72,8 +68,6 @@ public sealed class VmHome : VmPageBase
         set => this.SetProperty(ref this.selectedFilter, value);
     }
 
-    public IRelayCommand EditSelectedCommand { get; }
-    public ICommand EditPickedCommand { get; }
     public ICommand ReadPickedCommand { get; }
     public ICommand NewFileCommand { get; }
     public ICommand ExportCommand { get; }
@@ -111,35 +105,7 @@ public sealed class VmHome : VmPageBase
                 this.filteredList.Refresh(this.searchKeyword);
                 this.OnPropertyChanged(nameof(this.FilteredCount));
                 break;
-
-            case nameof(this.SelectedCutScene):
-                this.EditSelectedCommand.NotifyCanExecuteChanged();
-                break;
         }
-    }
-
-    private void OnEditSelected()
-    {
-        if (this.selectedCutScene is null)
-        {
-            Log.Error($"{nameof(this.OnEditSelected)}: SelectedCutScene is null");
-            return;
-        }
-   
-        VmGlobalState.Instance.ReserveVmCuts(new VmCuts.CrateParam { CutScene = this.selectedCutScene });
-        WeakReferenceMessenger.Default.Send(new NavigationMessage("Views/PgCuts.xaml"));
-    }
-
-    private void OnEditPicked(CutScene? scene)
-    {
-        if (scene is null)
-        {
-            Log.Error($"argument is null");
-            return;
-        }
-
-        VmGlobalState.Instance.ReserveVmCuts(new VmCuts.CrateParam { CutScene = scene });
-        WeakReferenceMessenger.Default.Send(new NavigationMessage("Views/PgCuts.xaml"));
     }
 
     private async Task OnNewFile()
@@ -152,8 +118,8 @@ public sealed class VmHome : VmPageBase
             return;
         }
 
-        VmGlobalState.Instance.ReserveVmCuts(new VmCuts.CrateParam { NewFileName = fileName });
-        WeakReferenceMessenger.Default.Send(new NavigationMessage("Views/PgCuts.xaml"));
+        this.services.GetRequiredService<IPageRouter>()
+            .Route(new VmCutsParam { NewFileName = fileName });
     }
 
     private void OnReadPicked(CutScene? scene)
@@ -164,8 +130,8 @@ public sealed class VmHome : VmPageBase
             return;
         }
 
-        VmGlobalState.Instance.ReserveVmCuts(new VmCuts.CrateParam { CutScene = scene });
-        WeakReferenceMessenger.Default.Send(new NavigationMessage("Views/PgCutsSummary.xaml"));
+        this.services.GetRequiredService<IPageRouter>()
+            .Route(new VmCutsSummary.CreateParam(scene.FileName));
     }
 
     private void OnExport(CutScene? scene)

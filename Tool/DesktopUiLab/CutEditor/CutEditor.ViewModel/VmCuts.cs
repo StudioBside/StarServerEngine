@@ -29,6 +29,7 @@ public sealed class VmCuts : VmPageBase,
     IClipboardHandler,
     ILoadEventReceiver
 {
+    private readonly VmCutsParam param;
     private readonly ObservableCollection<VmCut> cuts = [];
     private readonly ObservableCollection<VmCut> selectedCuts = [];
     private readonly string binFilePath;
@@ -38,8 +39,9 @@ public sealed class VmCuts : VmPageBase,
     private readonly string packetExeFile;
     private readonly IServiceScope serviceScope;
 
-    public VmCuts(IConfiguration config, IServiceProvider services)
+    public VmCuts(IConfiguration config, IServiceProvider services, VmCutsParam param)
     {
+        this.param = param;
         this.FindFlyout = new VmFindFlyout(this, this.cuts);
         this.serviceScope = services.CreateScope();
         this.undoController = this.serviceScope.ServiceProvider.GetRequiredService<UndoController>();
@@ -50,29 +52,20 @@ public sealed class VmCuts : VmPageBase,
         this.DeletePickCommand = new RelayCommand<VmCut>(this.OnDeletePick);
         WeakReferenceMessenger.Default.Register<UpdatePreviewMessage>(this, this.OnUpdatePreview);
 
-        if (VmGlobalState.Instance.VmCutsCreateParam is null)
-        {
-            throw new Exception($"VmCuts.CreateParam is not set in the GlobalState.");
-        }
-
-        var param = VmGlobalState.Instance.VmCutsCreateParam;
         this.binFilePath = config["CutBinFilePath"] ?? throw new Exception("CutBinFilePath is not set in the configuration file.");
         this.packetExeFile = config["TextFilePacker"] ?? throw new Exception("TextFilePacker is not set in the configuration file.");
 
-        if (param.CutScene is null)
-        {
-            throw new Exception("invalid createParam. newFileName is empty.");
-        }
+        this.Name = param.CutScene?.FileName
+            ?? param.NewFileName
+            ?? throw new Exception("invalid createParam. newFileName is empty.");
 
-        this.Name = param.CutScene.FileName;
-        this.Title = $"{param.CutScene.Title} - {this.Name}";
-
+        this.Title = this.Name;
         this.TextFileName = CutFileIo.GetTextFileName(this.Name);
         var cutList = CutFileIo.LoadCutData(this.Name);
 
         foreach (var cut in cutList)
         {
-            this.cuts.Add(new VmCut(cut, this.services));
+            this.cuts.Add(new VmCut(cut, this.Name, this.services));
         }
 
         this.uidGenerator = new CutUidGenerator(this.cuts.Select(e => e.Cut));
@@ -169,7 +162,7 @@ public sealed class VmCuts : VmPageBase,
                 cut.TalkTime = Cut.TalkTimeDefault;
             }
 
-            this.cuts.Add(new VmCut(cut, this.services));
+            this.cuts.Add(new VmCut(cut, this.Name, this.services));
         }
 
         return true;
@@ -200,14 +193,12 @@ public sealed class VmCuts : VmPageBase,
 
     public void OnLoaded()
     {
-        if (VmGlobalState.Instance.VmCutsCreateParam is null ||
-            VmGlobalState.Instance.VmCutsCreateParam.CutUid == 0)
+        if (this.param.CutUid == 0)
         {
             return;
         }
 
-        var targetUid = VmGlobalState.Instance.VmCutsCreateParam.CutUid;
-        //VmGlobalState.Instance.VmCutsCreateParam.CutUid = 0;
+        var targetUid = this.param.CutUid;
         var targetCut = this.cuts.FirstOrDefault(e => e.Cut.Uid == targetUid);
         if (targetCut is null)
         {
@@ -415,10 +406,17 @@ public sealed class VmCuts : VmPageBase,
         this.UpdatePreview(startIndex);
     }
 
-    public sealed record CrateParam
+    public sealed record CreateParam
     {
         public CutScene? CutScene { get; init; }
-        public string? NewFileName { get; init; }
-        public long CutUid { get; init; }
+    }
+
+    public sealed class Factory(IServiceProvider services)
+    {
+        public VmPageBase Create(VmCutsParam param)
+        {
+            var config = services.GetRequiredService<IConfiguration>();
+            return new VmCuts(config, services, param);
+        }
     }
 }

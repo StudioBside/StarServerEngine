@@ -76,15 +76,6 @@
                     <Setter Property="Margin" Value="0"/>
                 </Style>
             </ListView.ItemContainerStyle>
-            <!--<ui:ListView.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="수정" Command="{Binding GoToEditCommand}">
-                        <MenuItem.Icon>
-                            <ui:SymbolIcon Symbol="Edit16"/>
-                        </MenuItem.Icon>
-                    </MenuItem>
-                </ContextMenu>
-            </ui:ListView.ContextMenu>-->
         </ui:ListView>
         
     </Grid>

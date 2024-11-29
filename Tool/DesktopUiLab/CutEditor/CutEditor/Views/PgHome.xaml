@@ -8,7 +8,7 @@
     xmlns:local="clr-namespace:CutEditor.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-    xmlns:ext="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
+    xmlns:extensions="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
     xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
     xmlns:models="clr-namespace:CutEditor.Model;assembly=CutEditor.Model"
     xmlns:viewmodels="clr-namespace:CutEditor.ViewModel;assembly=CutEditor.ViewModel"
@@ -17,7 +17,9 @@
     d:DesignWidth="800"
     mc:Ignorable="d">
     <Page.InputBindings>
-        <KeyBinding Key="Return" Command="{Binding EditSelectedCommand}"/>
+        <KeyBinding Key="Return"
+                    Command="{Binding RouteCommand, Source={extensions:PageRouter}}"
+                    CommandParameter="{Binding SelectedCutScene}"/>
     </Page.InputBindings>
 
     <Grid Margin="10">
@@ -50,7 +52,7 @@
                 Margin="0,0,10,0"
                 PlaceholderText="검색어 입력.."
                 Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}"
-                ext:FocusExtension.IsFocused="True"
+                extensions:FocusExtension.IsFocused="True"
                 />
 
             <StackPanel Grid.Column="2"  Orientation="Horizontal">
@@ -105,7 +107,7 @@
                                 <StackPanel Orientation="Horizontal">
                                     
                                     <ui:Button Content="편집" Margin="10,0"
-                                               Command="{Binding DataContext.EditPickedCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                               Command="{Binding RouteCommand, Source={extensions:PageRouter}}"
                                                CommandParameter="{Binding}"/>
 
                                     <ui:Button Content="읽기" Margin="10,0"
@@ -128,9 +130,10 @@
             </ListView.View>
             <b:Interaction.Triggers>
                 <b:EventTrigger EventName="MouseDoubleClick">
-                    <b:InvokeCommandAction 
-                        Command="{Binding EditSelectedCommand}"
-                        CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=ListView}}"/>
+                    <b:InvokeCommandAction
+                        Command="{Binding RouteCommand, Source={extensions:PageRouter}}"
+                        CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=ListView}}">
+                    </b:InvokeCommandAction>
                 </b:EventTrigger>
             </b:Interaction.Triggers>
         </ui:ListView>
@@ -159,10 +162,6 @@
             <StackPanel Grid.Column="1" Margin="10"
                         Orientation="Horizontal"
                         HorizontalAlignment="Right">
-
-                <ui:Button Margin="0,0,10,0"
-                Content="편집"
-                Command="{Binding EditSelectedCommand}"/>
 
                 <ui:Button Margin="0,0,10,0"
                 Content="새 파일..."

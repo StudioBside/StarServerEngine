@@ -3,6 +3,7 @@
 using System.ComponentModel;
 using System.Windows;
 using CutEditor.ViewModel;
+using Du.Presentation.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Wpf.Ui;
 
@@ -21,6 +22,8 @@ public partial class MainWindow : Window
 
         var snackbarService = services.GetRequiredService<ISnackbarService>();
         snackbarService.SetSnackbarPresenter(this.SnackbarPresenter);
+
+        PageRouterExtension.Instance.SetFrame(this.MyFrame);
     }
 
     protected override void OnClosing(CancelEventArgs e)

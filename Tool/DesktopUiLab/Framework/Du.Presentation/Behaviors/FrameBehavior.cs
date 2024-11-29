@@ -71,6 +71,11 @@ public sealed class FrameBehavior : Behavior<Frame>
 
     private void AssociatedObject_Navigated(object sender, NavigationEventArgs e)
     {
+        if (e.Uri is null)
+        {
+            return;
+        }
+
         this.isWork = true;
         this.NavigationSource = e.Uri.ToString(); //네비게이션이 완료된 Uri를 NavigationSource에 입력
         this.isWork = false;

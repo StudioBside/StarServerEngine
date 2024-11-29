@@ -7,6 +7,7 @@
     xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
     xmlns:behaviors="clr-namespace:Du.Presentation.Behaviors;assembly=Du.Presentation"
     xmlns:viewmodels="clr-namespace:CutEditor.ViewModel;assembly=CutEditor.ViewModel"
+    xmlns:extensions="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
     >
 
     <GridView x:Key="CutGridView">
@@ -18,7 +19,7 @@
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <ui:Button ToolTip="수정"
-                                Command="{Binding DataContext.GoToEditCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                Command="{Binding RouteCommand, Source={extensions:PageRouter}}"
                                 CommandParameter="{Binding}">
                                 <ui:SymbolIcon Symbol="Edit16"/>
                             </ui:Button>

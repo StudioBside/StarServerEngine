@@ -30,7 +30,7 @@ public sealed class VmCut : ObservableObject
     private bool slateFlyoutOpen;
     private bool minorityFlyoutOpen;
 
-    public VmCut(Cut cut, IServiceProvider services)
+    public VmCut(Cut cut, string cutsceneName, IServiceProvider services)
     {
         this.Cut = cut;
         cut.PropertyChanged += this.Cut_PropertyChanged;
@@ -38,6 +38,7 @@ public sealed class VmCut : ObservableObject
             ? CutDataType.Branch
             : CutDataType.Normal;
 
+        this.CutsceneName = cutsceneName;
         this.services = services;
         this.PickUnitCommand = new AsyncRelayCommand(this.OnPickUnit);
         this.PickArcpointCommand = new AsyncRelayCommand(this.OnPickArcpoint);
@@ -89,6 +90,7 @@ public sealed class VmCut : ObservableObject
         }
     }
 
+    public string CutsceneName { get; }
     public Cut Cut { get; }
     public IRelayCommand PickUnitCommand { get; }
     public ICommand PickArcpointCommand { get; }

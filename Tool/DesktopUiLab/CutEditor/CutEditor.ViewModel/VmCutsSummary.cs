@@ -2,17 +2,11 @@
 
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Windows.Input;
-using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
 using Cs.Core.Util;
 using Cs.Logging;
 using CutEditor.Model;
 using CutEditor.ViewModel.Detail;
 using Du.Core.Bases;
-using Du.Core.Interfaces;
-using Du.Core.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -24,29 +18,13 @@ public sealed class VmCutsSummary : VmPageBase
     private readonly IServiceProvider services;
     private readonly IServiceScope serviceScope;
 
-    public VmCutsSummary(IConfiguration config, IServiceProvider services)
+    public VmCutsSummary(IConfiguration config, IServiceProvider services, CreateParam param)
     {
         this.serviceScope = services.CreateScope();
         this.services = services;
-        this.GoToEditCommand = new RelayCommand<VmCut>(this.OnGoToEdit);
 
-        if (VmGlobalState.Instance.VmCutsCreateParam is null)
-        {
-            throw new Exception($"VmCuts.CreateParam is not set in the GlobalState.");
-        }
-
-        var param = VmGlobalState.Instance.VmCutsCreateParam;
-
-        if (param.CutScene is null)
-        {
-            this.Name = param.NewFileName ?? throw new Exception("invalid createParam. newFileName is empty.");
-            this.Title = $"새로운 파일 생성 - {this.Name}";
-        }
-        else
-        {
-            this.Name = param.CutScene.FileName;
-            this.Title = $"{param.CutScene.Title} - {this.Name}";
-        }
+        this.Name = param.Name;
+        this.Title = this.Name;
 
         this.TextFileName = CutFileIo.GetTextFileName(this.Name);
         if (File.Exists(this.TextFileName) == false)
@@ -60,7 +38,7 @@ public sealed class VmCutsSummary : VmPageBase
         json.GetArray("Data", this.cuts, (e, i) =>
         {
             var cut = new Cut(e);
-            return new VmCut(cut, this.services);
+            return new VmCut(cut, this.Name, this.services);
         });
 
         this.uidGenerator = new CutUidGenerator(this.cuts.Select(e => e.Cut));
@@ -82,7 +60,6 @@ public sealed class VmCutsSummary : VmPageBase
     public IList<VmCut> Cuts => this.cuts;
     public IList<VmCut> SelectedCuts => this.selectedCuts;
     public string TextFileName { get; }
-    public ICommand GoToEditCommand { get; }
 
     private string DebugName => $"[{this.Name}]";
 
@@ -108,31 +85,14 @@ public sealed class VmCutsSummary : VmPageBase
         //}
     }
 
-    private void OnGoToEdit(VmCut? target)
+    public sealed record CreateParam(string Name);
+
+    public sealed class Factory(IServiceProvider services)
     {
-        if (target is null)
+        public VmPageBase Create(CreateParam param)
         {
-            if (this.selectedCuts.Count == 0)
-            {
-                Log.Debug($"{this.DebugName} 선택된 컷이 없습니다.");
-                return;
-            }
-
-            target = this.selectedCuts.First();
+            var config = services.GetRequiredService<IConfiguration>();
+            return new VmCutsSummary(config, services, param);
         }
-
-        var cutscene = VmGlobalState.Instance.VmCutsCreateParam?.CutScene;
-        if (cutscene is null)
-        {
-            Log.Error($"{this.DebugName} cutscene is null.");
-            return;
-        }
-
-        VmGlobalState.Instance.ReserveVmCuts(new VmCuts.CrateParam
-        {
-            CutScene = cutscene,
-            CutUid = target.Cut.Uid,
-        });
-        WeakReferenceMessenger.Default.Send(new NavigationMessage("Views/PgCuts.xaml"));
     }
 }

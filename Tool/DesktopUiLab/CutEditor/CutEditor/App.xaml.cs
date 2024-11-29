@@ -8,9 +8,11 @@ using CutEditor.Model;
 using CutEditor.Model.Interfaces;
 using CutEditor.Services;
 using CutEditor.ViewModel;
+using CutEditor.Views;
 using Du.Core.Interfaces;
 using Du.Core.Util;
 using Du.Excel;
+using Du.Presentation.Extensions;
 using Du.Presentation.Util;
 using Du.WpfLib;
 using Microsoft.Extensions.Configuration;
@@ -51,8 +53,9 @@ public partial class App : Application
         services.AddTransient<VmMain>();
         services.AddSingleton<VmHome>();
         services.AddSingleton<AssetList>();
-        services.AddTransient<VmCuts>();
-        services.AddTransient<VmCutsSummary>();
+        services.AddSingleton<IPageRouter>(PageRouterExtension.Instance);
+        services.AddTransient<VmCuts.Factory>();
+        services.AddTransient<VmCutsSummary.Factory>();
         services.AddTransient<VmStrings>();
         services.AddTransient<VmUnits>();
         services.AddTransient<VmErrors>();
@@ -130,5 +133,12 @@ public partial class App : Application
         {
             File.WriteAllText("crash_log.txt", e.ExceptionObject.ToString());
         };
+
+        PageRouterExtension.Instance
+            .Register<PgCuts, VmCutsParam>()
+            .Register<PgCuts, CutScene>()
+            .Register<PgCuts, VmCut>()
+            .Register<PgCutsSummary, VmCutsSummary.CreateParam>()
+            ;
     }
 }

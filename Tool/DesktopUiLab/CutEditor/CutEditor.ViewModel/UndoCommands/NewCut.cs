@@ -16,7 +16,7 @@ internal sealed class NewCut(VmCuts vmCuts, int index, VmCut newCut) : IDormammu
         }
 
         var cut = new Cut(vmCuts.UidGenerator.Generate());
-        var vmCut = new VmCut(cut, vmCuts.Services);
+        var vmCut = new VmCut(cut, vmCuts.Name, vmCuts.Services);
 
         if (cutDataType == CutDataType.Branch)
         {
