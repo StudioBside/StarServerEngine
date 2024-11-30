@@ -12,6 +12,11 @@ public sealed class PathResolver
 
     public void SetIllustRoot(string illustRoot)
     {
+        if (Directory.Exists(illustRoot) == false)
+        {
+            return;
+        }
+
         foreach (var fileName in Directory.GetFiles(illustRoot, "*.png", SearchOption.AllDirectories))
         {
             this.illustPaths[Path.GetFileName(fileName)] = Path.GetFullPath(fileName);
