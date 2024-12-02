@@ -18,12 +18,6 @@
 
         static RestApiClient()
         {
-            ServicePointManager.UseNagleAlgorithm = false;
-            ServicePointManager.Expect100Continue = false;
-            ServicePointManager.DefaultConnectionLimit = int.MaxValue;
-            ServicePointManager.EnableDnsRoundRobin = true;
-            ServicePointManager.ReusePort = true;
-   
             HostKeeper.Instance.Initialize();
         }
 

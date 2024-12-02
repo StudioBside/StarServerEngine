@@ -3,23 +3,25 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Betalgo.Ranul.OpenAI;
+using Betalgo.Ranul.OpenAI.Managers;
+using Betalgo.Ranul.OpenAI.ObjectModels.RequestModels;
+using Betalgo.Ranul.OpenAI.ObjectModels.ResponseModels;
 using Cs.Logging;
-using OpenAI;
-using OpenAI.Managers;
-using OpenAI.ObjectModels.RequestModels;
-using OpenAI.ObjectModels.ResponseModels;
 
 public abstract class GptClient : IDisposable
 {
     public const string LimitExceedErrorCode = "rate_limit_exceeded";
 
     private const int RetryCount = 3;
+#pragma warning disable CA2213 // 삭제 가능한 필드는 삭제해야 합니다. Dispose에서 호출해도 에러나서 무시 처리 했습니다.
     private readonly OpenAIService service;
+#pragma warning restore CA2213 // 삭제 가능한 필드는 삭제해야 합니다.
     private bool disposed;
 
     public GptClient(string apiKey)
     {
-        var options = new OpenAiOptions { ApiKey = apiKey };
+        var options = new OpenAIOptions { ApiKey = apiKey };
         this.service = new OpenAIService(options);
     }
 

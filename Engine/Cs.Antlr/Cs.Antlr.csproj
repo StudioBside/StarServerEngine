@@ -1,16 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <CodeAnalysisRuleSet>..\..\BaseEnvironment\CodingStyle.ruleset</CodeAnalysisRuleSet>
     <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
-	
   <PropertyGroup>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <DebugType>Full</DebugType>
   </PropertyGroup>
-	
   <PropertyGroup>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageId>Cs.Antlr</PackageId>
@@ -28,12 +26,10 @@
     <Copyright>Copyright © 2024 StudioBside Limited</Copyright>
     <PackageTags>utility</PackageTags>
   </PropertyGroup>
-	
   <ItemGroup>
-      <None Include="..\..\Document\Images\icon.png" Pack="true" PackagePath="\" />
-      <None Include=".\README.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\Document\Images\icon.png" Pack="true" PackagePath="\" />
+    <None Include=".\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="stylecop.analyzers" Version="1.2.0-beta.556">
       <PrivateAssets>all</PrivateAssets>

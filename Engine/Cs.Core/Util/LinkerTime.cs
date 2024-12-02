@@ -16,7 +16,7 @@
 
             using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             {
-                stream.Read(buffer, 0, 2048);
+                var readbytes = stream.Read(buffer, 0, 2048);
             }
 
             var offset = BitConverter.ToInt32(buffer, PeHeaderOffset);
@@ -39,7 +39,7 @@
 
             using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
             {
-                stream.Read(buffer, 0, 2048);
+                var readbytes = stream.Read(buffer, 0, 2048);
             }
 
             var offset = BitConverter.ToInt32(buffer, PeHeaderOffset);
