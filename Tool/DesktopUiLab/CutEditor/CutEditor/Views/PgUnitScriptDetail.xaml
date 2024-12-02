@@ -30,8 +30,18 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <ui:TextBlock Grid.ColumnSpan="2"
+        <ui:TextBlock Grid.Row="0" Grid.Column="0"
             FontTypography="Title" Text="{Binding Script.FileName}"/>
+
+        <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Horizontal"
+                    HorizontalAlignment="Right">
+            <Button Content="파일 열기"
+                Command="{Binding OpenFile, Source={extensions:UtilCommands}}"
+                    CommandParameter="{Binding Script.FullPath}"/>
+            <Button Content="폴더 열기"
+                Command="{Binding OpenInExplorer, Source={extensions:UtilCommands}}"
+                    CommandParameter="{Binding Script.FullPath}"/>
+        </StackPanel>
 
         <StackPanel Grid.Row="1" Margin="10">
 
@@ -42,6 +52,8 @@
             <TextBlock LineHeight="30" Margin="0,10,0,0">
                 Loc : <Run Text="{Binding Script.Loc, Mode=OneWay}"/>
                 <LineBreak/>
+                #BattleState : <Run Text="{Binding Script.BattleStates.Count, Mode=OneWay}"/>
+                <LineBreak/>
                 #Reference : <Run Text="{Binding Script.References.Count, Mode=OneWay}"/>
             </TextBlock>
 
@@ -50,7 +62,7 @@
                     <ui:TextBlock FontTypography="Subtitle" Margin="5" Text="Reference"/>
                 </Border>
 
-                <ui:ListView ItemsSource="{Binding Script.References}" Height="400" Margin="10">
+                <ui:ListView ItemsSource="{Binding Script.References}" Height="300" Margin="10">
                     <ui:ListView.View>
                         <GridView>
                             <GridViewColumn Header="Face" Width="115">
@@ -77,6 +89,19 @@
                                 Header="UnitType"
                                 Width="150"
                                 DisplayMemberBinding="{Binding UnitType}"/>
+                        </GridView>
+                    </ui:ListView.View>
+                </ui:ListView>
+
+                <Border BorderBrush="LightGray" BorderThickness="0,1,0,0" Margin="5">
+                    <ui:TextBlock FontTypography="Subtitle" Margin="5" Text="Battle States"/>
+                </Border>
+
+                <ui:ListView ItemsSource="{Binding Script.BattleStates}" Height="300" Margin="10">
+                    <ui:ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Name" Width="Auto"
+                                            DisplayMemberBinding="{Binding Name}"/>
                         </GridView>
                     </ui:ListView.View>
                 </ui:ListView>
