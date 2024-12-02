@@ -75,8 +75,16 @@
             <ListView.View>
                 <GridView>
                     <GridViewColumn
-                        Header="FileName"
-                        DisplayMemberBinding="{Binding FileName}"/>
+                        Header="FileName">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <ui:HyperlinkButton
+                                    Command="{Binding RouteCommand, Source={extensions:PageRouter}}"
+                                    CommandParameter="{Binding}"
+                                    Content="{Binding FileName}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                     <GridViewColumn
                         Header="Loc"
                         DisplayMemberBinding="{Binding Loc}"/>

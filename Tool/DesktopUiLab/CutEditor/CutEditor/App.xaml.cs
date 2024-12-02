@@ -21,6 +21,7 @@ using NKM;
 using Shared.Templet;
 using Shared.Templet.Strings;
 using Shared.Templet.TempletTypes;
+using Shared.Templet.UnitScripts;
 using Wpf.Ui;
 using static CutEditor.Model.Enums;
 
@@ -141,6 +142,7 @@ public partial class App : Application
             .Register<PgCuts, VmCut>()
             .Register<PgCutsSummary, VmCutsSummary.CreateParam>()
             .Register<PgUnitDetail, Unit>()
+            .Register<PgUnitScriptDetail, UnitScript>()
             ;
     }
 }

@@ -1,7 +1,6 @@
 ﻿## todo
 
 - 다중 선택해서 값 변경하기
-- 컷 추가할 때 스크롤 내리기
 - 텍스트에 부분선택해서 색상 쉽게 입히기
 ```csharp
 using System.Text.RegularExpressions;
@@ -75,6 +74,7 @@ viewmodel까지 lookup하지 말아야 할 어셈블리 :
 
 ## done
 
+- 컷 추가할 때 스크롤 내리기
 - 클립보드 붙일 때 유닛 이름 파싱하기
 - 커버되지 않은 컬럼 모두 추가하기
 - camera offset 단일 초점 이미지 추가
