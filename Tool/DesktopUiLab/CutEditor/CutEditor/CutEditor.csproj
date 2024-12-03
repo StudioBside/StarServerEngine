@@ -89,6 +89,9 @@
     <Page Update="Views\PgUnitDetail.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="Views\PgBuffs.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="Views\PgUnits.xaml">
       <SubType>Designer</SubType>
     </Page>

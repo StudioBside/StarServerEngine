@@ -4,6 +4,7 @@ public enum ErrorType
 {
     All,
     Unit,
+    Buff,
     String,
 }
 

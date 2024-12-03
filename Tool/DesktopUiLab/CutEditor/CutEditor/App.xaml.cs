@@ -61,6 +61,7 @@ public partial class App : Application
         services.AddTransient<VmUnits>();
         services.AddTransient<VmErrors>();
         services.AddTransient<VmUnitScripts>();
+        services.AddTransient<VmBuffs>();
         services.AddTransient<FileLoader>();
         services.AddTransient<FileAndSnackbarLog>();
         services.AddTransient<ITempletPicker<Unit>, UnitPicker>();
@@ -143,6 +144,7 @@ public partial class App : Application
             .Register<PgCutsSummary, VmCutsSummary.CreateParam>()
             .Register<PgUnitDetail, Unit>()
             .Register<PgUnitScriptDetail, UnitScript>()
+            .Register<PgBuffDetail, BuffTemplet>()
             ;
     }
 }

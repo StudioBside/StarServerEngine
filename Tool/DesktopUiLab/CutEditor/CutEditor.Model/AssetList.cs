@@ -31,7 +31,6 @@ public sealed class AssetList
         var movRoot = config["MovRoot"] ?? throw new Exception($"MovRoot is not defined in the configuration file.");
         var slateRoot = config["SlateRoot"] ?? throw new Exception($"SlateRoot is not defined in the configuration file.");
         var spineRoot = config["SpineRoot"] ?? throw new Exception($"SpineRoot is not defined in the configuration file.");
-        var illustRoot = config["IllustRoot"] ?? throw new Exception($"IllustRoot is not defined in the configuration file.");
 
         this.unitMotions.Add(null!);
         foreach (var data in config.GetSection("UnitMotionList").GetChildren())
@@ -130,7 +129,7 @@ public sealed class AssetList
             }
         }
 
-        PathResolver.Instance.SetIllustRoot(illustRoot);
+        PathResolver.Instance.Initialize(config);
     }
 
     public static AssetList Instance { get; private set; } = null!;

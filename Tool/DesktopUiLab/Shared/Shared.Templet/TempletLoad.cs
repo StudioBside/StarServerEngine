@@ -44,6 +44,7 @@ public static class TempletLoad
         ];
         TempletLoader.BuildContainer(unitFileNames, e => new Unit(e), e => e.StrId);
         TempletLoader.BuildContainer("CLIENT_LOBBY_ITEM_TEMPLET.exported", e => new LobbyItem(e));
+        TempletLoader.BuildContainer("CLIENT_BUFF_TEMPLET.exported", e => new BuffTemplet(e));
 
         UnitScriptContainer.Instance.Load(unitScriptRoot);
     }

@@ -1,0 +1,54 @@
+﻿<Page x:Class="CutEditor.Views.PgBuffDetail"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:local="clr-namespace:CutEditor.Views"
+      xmlns:lcvt="clr-namespace:CutEditor.Converters"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:behaviors="clr-namespace:Du.Presentation.Behaviors;assembly=Du.Presentation"
+      xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
+      xmlns:extensions="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
+      xmlns:viewmodels="clr-namespace:CutEditor.ViewModel;assembly=CutEditor.ViewModel"
+      xmlns:avalon="http://icsharpcode.net/sharpdevelop/avalonedit"
+      d:DataContext="{d:DesignInstance Type=viewmodels:VmBuffDetail}"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      SnapsToDevicePixels="True"
+      UseLayoutRounding="True"
+      Title="PgStrings">
+    <Grid Margin="10">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <ui:Image Grid.Column="1" CornerRadius="5" Margin="5"
+                  BorderBrush="Black" BorderThickness="1"
+                  VerticalAlignment="Top" Width="64"
+                  Source="{Binding Templet.IconPath}"/>
+
+        <StackPanel Margin="10">
+
+            <ui:TextBlock FontTypography="Title" Margin="0,0,0,30">
+                [
+                <Run Text="{Binding Templet.Id, Mode=OneWay}"/> ]
+                <Run Text="{Binding Templet.StrId, Mode=OneWay}"/>
+            </ui:TextBlock>
+
+            <Border BorderBrush="LightGray" BorderThickness="0,1,0,0" Margin="0">
+                <ui:TextBlock FontTypography="Subtitle" Margin="5" Text="Summary"/>
+            </Border>
+
+            <TextBlock LineHeight="30" Margin="0,10,0,0">
+                이름 : <Run Text="{Binding Templet.Name, Mode=OneWay}"/>
+                <LineBreak/>
+                설명 : <Run Text="{Binding Templet.Desc, Mode=OneWay}"/>
+            </TextBlock>
+
+        </StackPanel>
+
+    </Grid>
+</Page>
