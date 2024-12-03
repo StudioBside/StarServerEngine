@@ -60,6 +60,40 @@ internal static class TempletLoader
         TempletContainer<T>.SetData(templets, strKeySelector);
     }
 
+    public static void BuildGroupContainer<T>(string filePath, string groupIdName)
+    where T : class, IGroupTemplet, new()
+    {
+        BuildGroupContainer<T>(filePath, groupIdName, strKeySelector: null);
+    }
+
+    public static void BuildGroupContainer<T>(string filePath, string groupIdName, Func<T, string>? strKeySelector)
+        where T : class, IGroupTemplet, new()
+    {
+        var fullPath = Path.Combine(TempletRootPath, filePath);
+        var json = JsonUtil.Load(fullPath);
+        if (json["Data"] is not JArray jArray)
+        {
+            Log.ErrorAndExit($"[TempletContainer] file loading failed. fileName:{filePath} type:{typeof(T).Name}");
+            return;
+        }
+
+        Dictionary<int, T> templets = new();
+        foreach (var jToken in jArray)
+        {
+            int groupId = jToken.GetInt32(groupIdName);
+            if (templets.TryGetValue(groupId, out var templet) == false)
+            {
+                templet = new T();
+                templet.LoadGroupData(groupId, jToken);
+                templets.Add(groupId, templet);
+            }
+
+            templet.Load(jToken);
+        }
+
+        TempletContainer<T>.SetData(templets, strKeySelector);
+    }
+
     //// --------------------------------------------------------------------
 
     private static Dictionary<int, T> LoadDictionary<T>(string fileName, Func<JToken, T?> factory)

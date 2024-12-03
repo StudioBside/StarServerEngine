@@ -11,6 +11,7 @@ public sealed class UnitScript : ISearchable
 {
     private readonly List<Unit> references = new();
     private readonly List<BattleState> battleStates = new();
+    private readonly List<UiState> uiStates = new();
 
     public UnitScript(string path)
     {
@@ -27,11 +28,13 @@ public sealed class UnitScript : ISearchable
         }
 
         token.GetArray("BattleStates", this.battleStates, (e, i) => new BattleState(e));
+        token.TryGetArray("UiStates", this.uiStates, (e, i) => new UiState(e));
     }
 
     public static IEnumerable<UnitScript> Values => UnitScriptContainer.Instance.Values;
     public IReadOnlyList<Unit> References => this.references;
     public IReadOnlyList<BattleState> BattleStates => this.battleStates;
+    public IReadOnlyList<UiState> UiStates => this.uiStates;
     public string FileName { get; }
     public string FullPath { get; }
     public string FullText { get; }

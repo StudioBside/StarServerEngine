@@ -20,7 +20,8 @@ public sealed class Unit : ITemplet, ISearchable
     private static readonly string AnonymousImage;
     private static readonly string MissingImage;
     private readonly string nameStringId = string.Empty;
-    private readonly string? scriptFileName;
+    private readonly string scriptFileName;
+    private readonly int immuneGroupId;
 
     static Unit()
     {
@@ -39,7 +40,8 @@ public sealed class Unit : ITemplet, ISearchable
         this.nameStringId = token.GetString("m_UnitNameString");
         this.IllustName = token.GetString("m_IllustName", null!);
         this.IllustNameUi = token.GetString("m_IllustNameUI", null!);
-        this.scriptFileName = token.GetString("m_UnitTempletFileName", null!);
+        this.scriptFileName = token.GetString("m_UnitTempletFileName");
+        this.immuneGroupId = token.GetInt32("ImmuneGroupId", 0);
     }
 
     public static IEnumerable<Unit> Values => TempletContainer<Unit>.Values;
@@ -60,6 +62,7 @@ public sealed class Unit : ITemplet, ISearchable
     public NKM_UNIT_TYPE UnitType { get; }
     public string Name { get; private set; } = string.Empty;
     public UnitScript? Script { get; private set; }
+    public BuffImmuneTemplet? ImmuneGroup { get; private set; }
     public string DebugName => $"[{this.Id}] {this.Name}";
 
     public void Join()
@@ -137,16 +140,22 @@ public sealed class Unit : ITemplet, ISearchable
             }
         }
 
-        if (string.IsNullOrEmpty(this.scriptFileName) == false)
+        this.Script = UnitScriptContainer.Instance.Find(this.scriptFileName);
+        if (this.Script is null)
         {
-            this.Script = UnitScriptContainer.Instance.Find(this.scriptFileName);
-            if (this.Script is null)
+            ErrorMessage.Add(ErrorType.Unit, $"{this.DebugName} 스크립트 파일을 찾을 수 없습니다: {this.scriptFileName}", this);
+        }
+        else
+        {
+            this.Script.AddReference(this);
+        }
+
+        if (this.immuneGroupId > 0)
+        {
+            this.ImmuneGroup = TempletContainer<BuffImmuneTemplet>.Find(this.immuneGroupId);
+            if (this.ImmuneGroup is null)
             {
-                ErrorMessage.Add(ErrorType.Unit, $"{this.DebugName} 스크립트 파일을 찾을 수 없습니다: {this.scriptFileName}", this);
-            }
-            else
-            {
-                this.Script.AddReference(this);
+                ErrorMessage.Add(ErrorType.Unit, $"{this.DebugName} 면역 그룹을 찾을 수 없습니다: {this.immuneGroupId}", this);
             }
         }
     }

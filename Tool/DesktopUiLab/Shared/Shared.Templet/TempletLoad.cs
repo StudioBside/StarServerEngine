@@ -44,7 +44,8 @@ public static class TempletLoad
         ];
         TempletLoader.BuildContainer(unitFileNames, e => new Unit(e), e => e.StrId);
         TempletLoader.BuildContainer("CLIENT_LOBBY_ITEM_TEMPLET.exported", e => new LobbyItem(e));
-        TempletLoader.BuildContainer("CLIENT_BUFF_TEMPLET.exported", e => new BuffTemplet(e));
+        TempletLoader.BuildContainer("CLIENT_BUFF_TEMPLET.exported", e => new BuffTemplet(e), e => e.StrId);
+        TempletLoader.BuildGroupContainer<BuffImmuneTemplet>("CLIENT_BUFF_IMMUNE_TEMPLET.exported", "ImmuneGroupId");
 
         UnitScriptContainer.Instance.Load(unitScriptRoot);
     }

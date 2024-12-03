@@ -121,6 +121,8 @@
                                 타입 : <Run Text="{Binding UnitType, Mode=OneWay}"/>
                                 <LineBreak/>
                                 Comment : <Run Text="{Binding Comment, Mode=OneWay}"/>
+                                <LineBreak/>
+                                버프 면역 : <Run Text="{Binding ImmuneGroup, Mode=OneWay}"/>
                                 </TextBlock>
                             </StackPanel>
                         </StackPanel>
