@@ -55,8 +55,7 @@
                            CommandParameter="{Binding Name}"/>
                 <ui:Button Margin="3" Content="수정하기" Appearance="Primary"
                            Icon="{ui:SymbolIcon Edit16}"
-                           Command="{Binding GoToCommand, Source={extensions:PageRouter}}"
-                           CommandParameter="Views/PgCuts.xaml"/>
+                           Command="{Binding GotoEditCommand}" />
             </StackPanel>
         </DockPanel>
 

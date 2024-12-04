@@ -76,10 +76,23 @@
             <ItemsControl ItemsSource="{Binding Templet.ImmuneGroup.BuffTemplets}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <ui:Image Source="{Binding IconPath}"/>
-                            <TextBlock Text="{Binding Name}"/>
-                        </StackPanel>
+                        <Grid Margin="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <ui:Image Grid.Column="0" Width="64" Source="{Binding IconPath}"/>
+                            <StackPanel Grid.Column="1">
+                                <ui:HyperlinkButton
+                                    Command="{Binding RouteCommand, Source={extensions:PageRouter}}"
+                                    CommandParameter="{Binding}"
+                                    Content="{Binding DebugName}"/>
+                                <TextBlock VerticalAlignment="Center" Margin="5,0">
+                                <Run Text="{Binding Desc, Mode=OneWay}"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

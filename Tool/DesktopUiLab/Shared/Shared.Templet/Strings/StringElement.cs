@@ -64,5 +64,10 @@
             return this.keys.Any(e => e.Contains(keyword, StringComparison.OrdinalIgnoreCase)) ||
                 this.values.Any(e => e.Contains(keyword, StringComparison.OrdinalIgnoreCase));
         }
+
+        public string GetValue(L10nType l10nType)
+        {
+            return this.values[(int)l10nType];
+        }
     }
 }

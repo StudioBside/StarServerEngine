@@ -12,7 +12,7 @@
 
     <GridView x:Key="CutGridView">
         <GridViewColumn Header="Uid" Width="Auto" DisplayMemberBinding="{Binding Cut.Uid}"/>
-        <GridViewColumn Header="Speaker" Width="100" DisplayMemberBinding="{Binding Cut.SpeakerName}"/>
+        <GridViewColumn Header="Speaker" Width="100" DisplayMemberBinding="{Binding Cut.SpeakerNameKor}"/>
         <GridViewColumn Header="Korean" Width="Auto">
             <GridViewColumn.CellTemplate>
                 <DataTemplate>

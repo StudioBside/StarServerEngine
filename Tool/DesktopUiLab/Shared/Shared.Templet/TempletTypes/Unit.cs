@@ -60,7 +60,8 @@ public sealed class Unit : ITemplet, ISearchable
     public string IllustPath { get; private set; } = string.Empty;
     public string IllustUiPath { get; private set; } = string.Empty;
     public NKM_UNIT_TYPE UnitType { get; }
-    public string Name { get; private set; } = string.Empty;
+    public string Name => this.NameElement?.Korean ?? string.Empty;
+    public StringElement? NameElement { get; private set; }
     public UnitScript? Script { get; private set; }
     public BuffImmuneTemplet? ImmuneGroup { get; private set; }
     public string DebugName => $"[{this.Id}] {this.Name}";
@@ -77,7 +78,7 @@ public sealed class Unit : ITemplet, ISearchable
             Log.ErrorAndExit("Unit.SmallImageRootPath is not set.");
         }
 
-        this.Name = StringTable.Instance.Find(this.nameStringId);
+        this.NameElement = StringTable.Instance.FindElement(this.nameStringId);
 
         if (string.IsNullOrEmpty(this.UnitFaceSmall) != false)
         {

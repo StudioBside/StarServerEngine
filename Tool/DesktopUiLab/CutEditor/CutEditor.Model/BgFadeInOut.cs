@@ -12,9 +12,9 @@ using static CutEditor.Model.Enums;
 public sealed class BgFadeInOut : ObservableObject
 {
     private BgFadeType fadeType;
-    private Color startColor = Color.White;
-    private Color endColor = Color.Black;
-    private float time;
+    private Color startColor = Color.FromArgb(alpha: 0, Color.Black);
+    private Color endColor = Color.FromArgb(alpha: 255, Color.Black);
+    private float time = 0.5f;
 
     public BgFadeType FadeType
     {

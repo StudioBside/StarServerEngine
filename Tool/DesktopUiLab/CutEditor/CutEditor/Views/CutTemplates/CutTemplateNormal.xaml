@@ -27,8 +27,7 @@
                 <StackPanel Grid.Column="1">
                     
                     <!--헤더. 컨트롤 표시 제어 및 기타 설정들. uid 표기 등.-->
-                    <DockPanel Margin="5,0" LastChildFill="True"
-                           >
+                    <DockPanel Margin="5,0" LastChildFill="True">
                         <TextBlock DockPanel.Dock="Left" Grid.Row="0" Grid.Column="0"
                                    VerticalAlignment="Center"
                                    Margin="0,0,50,0">
@@ -41,7 +40,7 @@
                         <ui:NumberBox PlaceholderText="대기시간"
                                   Width="70" Margin="0,0,10,0"
                                   SpinButtonPlacementMode="Hidden"
-                                  Value="{Binding Cut.WaitTime}"
+                                  Value="{Binding Cut.WaitTime, UpdateSourceTrigger=PropertyChanged}"
                                   FontSize="11"/>
 
 

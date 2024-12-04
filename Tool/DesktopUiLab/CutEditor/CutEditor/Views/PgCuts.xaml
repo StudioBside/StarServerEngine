@@ -21,6 +21,7 @@
     Title="PgCutScene">
     <Page.InputBindings>
         <KeyBinding Key="Delete" Command="{Binding DeleteCommand}"/>
+        <KeyBinding Key="G" Modifiers="Control" Command="{Binding ScrollByUidCommand}"/>
         <KeyBinding Key="Z" Modifiers="Control" Command="{Binding UndoCommand}"/>
         <KeyBinding Key="Y" Modifiers="Control" Command="{Binding RedoCommand}"/>
         <KeyBinding Key="S" Modifiers="Ctrl" Command="{Binding SaveCommand}"/>
@@ -136,6 +137,9 @@
                         </StackPanel>
                     </StackPanel>
                 </ui:Flyout>
+                <ui:Button Margin="3" Content="Uid 지정 이동"
+                           ToolTip="Ctrl + G"
+                           Command="{Binding ScrollByUidCommand}"/>
                 <ui:Button Margin="3" Content="찾기 / 바꾸기"
                            ToolTip="Ctrl + F"
                            Icon="{ui:SymbolIcon ArrowSwap20}"

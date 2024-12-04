@@ -51,6 +51,7 @@ public sealed class VmCuts : VmPageBase,
         this.NewCutCommand = new RelayCommand<CutDataType>(this.OnNewCut);
         this.DeletePickCommand = new RelayCommand<VmCut>(this.OnDeletePick);
         this.GoToReadPageCommand = new RelayCommand(this.OnGoToReadPage);
+        this.ScrollByUidCommand = new AsyncRelayCommand(this.OnScrollByUid);
         WeakReferenceMessenger.Default.Register<UpdatePreviewMessage>(this, this.OnUpdatePreview);
 
         this.binFilePath = config["CutBinFilePath"] ?? throw new Exception("CutBinFilePath is not set in the configuration file.");
@@ -95,6 +96,7 @@ public sealed class VmCuts : VmPageBase,
     public ICommand NewCutCommand { get; }
     public ICommand DeletePickCommand { get; } // 인자로 넘어오는 1개의 cut을 삭제
     public ICommand GoToReadPageCommand { get; } // note: 제대로 하려면 수정사항을 저장하고 넘어가야 함.
+    public ICommand ScrollByUidCommand { get; }
 
     internal CutUidGenerator UidGenerator => this.uidGenerator;
     internal IServiceProvider Services => this.services;
@@ -109,7 +111,7 @@ public sealed class VmCuts : VmPageBase,
         }
 
         var sb = new StringBuilder();
-        var tokens = text.Split('\n', StringSplitOptions.RemoveEmptyEntries);
+        var tokens = text.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
         sb.AppendLine($"다음의 텍스트를 이용해 {tokens.Length}개의 cut 데이터를 생성합니다.");
         sb.AppendLine();
         int previewCharacterCount = 60;
@@ -409,6 +411,35 @@ public sealed class VmCuts : VmPageBase,
     {
         this.services.GetRequiredService<IPageRouter>()
             .Route(new VmCutsSummary.CreateParam(this.Name));
+    }
+
+    private async Task OnScrollByUid()
+    {
+        var prompt = this.services.GetRequiredService<IUserInputProvider<string>>();
+        var uidStr = await prompt.PromptAsync("Uid로 이동", "이동할 컷의 Uid를 입력하세요.");
+        if (int.TryParse(uidStr, out var uid) == false)
+        {
+            return;
+        }
+
+        var targetCut = this.cuts.FirstOrDefault(e => e.Cut.Uid == uid);
+        if (targetCut is null)
+        {
+            Log.Warn($"{this.DebugName} 이동 대상 컷을 찾을 수 없습니다. cutUid:{uid}");
+            return;
+        }
+
+        this.selectedCuts.Clear();
+        this.selectedCuts.Add(targetCut);
+
+        var index = this.cuts.IndexOf(targetCut);
+        if (index < 0)
+        {
+            Log.Warn($"{this.DebugName} 이동 대상 컷의 인덱스를 찾을 수 없습니다. cutUid:{uid}");
+        }
+
+        var controller = this.services.GetRequiredService<ICutsListController>();
+        controller.ScrollIntoView(index);
     }
 
     public sealed record CreateParam(string FileName, long CutUid);

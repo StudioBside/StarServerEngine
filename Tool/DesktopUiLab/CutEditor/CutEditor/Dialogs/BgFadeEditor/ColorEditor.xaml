@@ -58,10 +58,9 @@
         <StackPanel Orientation="Horizontal"
                     Margin="0,0,0,10">
             <TextBlock VerticalAlignment="Center" Width="50" Text="Alpha : "/>
-            <ui:NumberBox SpinButtonPlacementMode="Hidden"
-                          ClearButtonEnabled="False"
-                          Width="80"
-                          Text="{Binding Alpha, StringFormat=F2}"/>
+            <ui:TextBox ClearButtonEnabled="False"
+                        Width="80"
+                        Text="{Binding Alpha, StringFormat=F2}"/>
         </StackPanel>
 
         <StackPanel Orientation="Horizontal"

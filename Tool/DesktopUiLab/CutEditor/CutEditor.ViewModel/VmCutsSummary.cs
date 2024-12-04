@@ -2,11 +2,14 @@
 
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
 using Cs.Core.Util;
 using Cs.Logging;
 using CutEditor.Model;
 using CutEditor.ViewModel.Detail;
 using Du.Core.Bases;
+using Du.Core.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -25,6 +28,8 @@ public sealed class VmCutsSummary : VmPageBase
 
         this.Name = param.Name;
         this.Title = this.Name;
+
+        this.GotoEditCommand = new RelayCommand(this.OnGoToEdit);
 
         this.TextFileName = CutFileIo.GetTextFileName(this.Name);
         if (File.Exists(this.TextFileName) == false)
@@ -60,6 +65,7 @@ public sealed class VmCutsSummary : VmPageBase
     public IList<VmCut> Cuts => this.cuts;
     public IList<VmCut> SelectedCuts => this.selectedCuts;
     public string TextFileName { get; }
+    public ICommand GotoEditCommand { get; }
 
     private string DebugName => $"[{this.Name}]";
 
@@ -83,6 +89,12 @@ public sealed class VmCutsSummary : VmPageBase
         //        this.DeleteCommand.NotifyCanExecuteChanged();
         //        break;
         //}
+    }
+
+    private void OnGoToEdit()
+    {
+        var router = this.services.GetRequiredService<IPageRouter>();
+        router.Route(new VmCuts.CreateParam(this.Name, CutUid: 0));
     }
 
     public sealed record CreateParam(string Name);

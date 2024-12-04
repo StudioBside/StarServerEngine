@@ -11,7 +11,8 @@ public sealed class CutOutputExcelFormat
         this.StartAnchor = null;
         this.DestAnchor = OutputTransfer.EliminateEnum(cut.JumpAnchor, DestAnchorType.None);
 
-        this.Speaker = cut.SpeakerName;
+        this.SpeakerKor = cut.SpeakerNameKor;
+        this.SpeakerJpn = cut.SpeakerNameJpn;
         this.UnitMotion = cut.UnitMotion;
         this.Emotion = OutputTransfer.EliminateEnum(cut.EmotionEffect, EmotionEffect.NONE);
         this.Korean = cut.UnitTalk.Korean;
@@ -35,7 +36,8 @@ public sealed class CutOutputExcelFormat
     public string Uid { get; }
     public DestAnchorType? DestAnchor { get; } // dest가 엑셀에서 먼저 나오는게 더 나아 보여서 앞으로 이동.
     public StartAnchorType? StartAnchor { get; }
-    public string? Speaker { get; }
+    public string? SpeakerKor { get; }
+    public string? SpeakerJpn { get; }
     public string? UnitMotion { get; }
     public EmotionEffect? Emotion { get; }
     public string Korean { get; }

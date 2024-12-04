@@ -466,7 +466,8 @@ public sealed class Cut : ObservableObject
         set => this.SetProperty(ref this.cameraOffsetTime, value);
     }
 
-    public string? SpeakerName => this.GetSpeakerName();
+    public string? SpeakerNameKor => this.GetSpeakerName(L10nType.Korean);
+    public string? SpeakerNameJpn => this.GetSpeakerName(L10nType.Japanese);
 
     public object ToOutputJsonType()
     {
@@ -678,16 +679,16 @@ public sealed class Cut : ObservableObject
         }
     }
 
-    private string? GetSpeakerName()
+    private string? GetSpeakerName(L10nType l10nType)
     {
         if (this.unitNames.Count > 0)
         {
-            return string.Join(", ", this.unitNames.Select(e => e.Korean));
+            return string.Join(", ", this.unitNames.Select(e => e.GetValue(l10nType)));
         }
 
         if (this.unit is not null)
         {
-            return this.unit.Name;
+            return this.unit.NameElement?.GetValue(l10nType);
         }
 
         return null;
