@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CutEditor.ViewModel.UndoCommands;
 
 public class VmCutPaster : ObservableObject
 {
@@ -17,8 +18,8 @@ public class VmCutPaster : ObservableObject
     {
         this.vmCuts = vmCuts;
         this.CutCommand = new RelayCommand(this.OnCut, () => this.vmCuts.SelectedCuts.Count > 0);
-        this.PasteToSelectedCommand = new RelayCommand(this.OnPasteToSelected, () => this.reserved.Count > 0);
-        this.PasteToNextCommand = new RelayCommand(this.OnPasteToNext, () => this.reserved.Count > 0);
+        this.PasteToUpsideCommand = new RelayCommand(this.OnPasteToUpside, () => this.reserved.Count > 0);
+        this.PasteToDownsideCommand = new RelayCommand(this.OnPasteToDownside, () => this.reserved.Count > 0);
         this.CancelCommand = new RelayCommand(this.OnCancel);
 
         this.reserved.CollectionChanged += this.Reserved_CollectionChanged;
@@ -28,9 +29,23 @@ public class VmCutPaster : ObservableObject
     public IList<VmCut> Reserved => this.reserved;
     public bool HasReserved => this.reserved.Count > 0;
     public IRelayCommand CutCommand { get; }
-    public IRelayCommand PasteToSelectedCommand { get; }
-    public IRelayCommand PasteToNextCommand { get; }
+    public IRelayCommand PasteToUpsideCommand { get; }
+    public IRelayCommand PasteToDownsideCommand { get; }
     public ICommand CancelCommand { get; }
+
+    public void ClearReserved()
+    {
+        this.reserved.Clear();
+    }
+
+    public void SetReserved(IEnumerable<VmCut> cuts)
+    {
+        this.reserved.Clear();
+        foreach (var cut in cuts)
+        {
+            this.reserved.Add(cut);
+        }
+    }
 
     //// --------------------------------------------------------------------------------------------
 
@@ -46,68 +61,45 @@ public class VmCutPaster : ObservableObject
 
     private void Reserved_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        this.PasteToSelectedCommand.NotifyCanExecuteChanged();
-        this.PasteToNextCommand.NotifyCanExecuteChanged();
+        this.PasteToUpsideCommand.NotifyCanExecuteChanged();
+        this.PasteToDownsideCommand.NotifyCanExecuteChanged();
         this.OnPropertyChanged(nameof(this.HasReserved));
     }
 
     private void OnCut()
     {
-        if (this.vmCuts.SelectedCuts.Count == 0)
+        var command = ReserveCut.Create(this.vmCuts);
+        if (command is null)
         {
             return;
         }
 
-        this.reserved.Clear();
-        var cuts = this.vmCuts.SelectedCuts.ToArray();
-        foreach (var cut in cuts)
-        {
-            this.reserved.Add(cut);
-            this.vmCuts.Cuts.Remove(cut);
-        }
+        command.Redo();
+        this.vmCuts.UndoController.Add(command);
     }
 
-    private void OnPasteToSelected()
+    private void OnPasteToUpside()
     {
-        if (this.reserved.Count == 0)
+        var command = PasteCut.Create(this.vmCuts, PasteCut.PasteDirection.Upside);
+        if (command is null)
         {
             return;
         }
 
-        if (this.vmCuts.SelectedCuts.Count == 0)
-        {
-            return;
-        }
-
-        var index = this.vmCuts.Cuts.IndexOf(this.vmCuts.SelectedCuts.First());
-        foreach (var cut in this.reserved)
-        {
-            this.vmCuts.Cuts.Insert(index++, cut);
-        }
-
-        this.reserved.Clear();
+        command.Redo();
+        this.vmCuts.UndoController.Add(command);
     }
     
-    private void OnPasteToNext()
+    private void OnPasteToDownside()
     {
-        if (this.reserved.Count == 0)
+        var command = PasteCut.Create(this.vmCuts, PasteCut.PasteDirection.Downside);
+        if (command is null)
         {
             return;
         }
 
-        if (this.vmCuts.SelectedCuts.Count == 0)
-        {
-            return;
-        }
-
-        var index = this.vmCuts.Cuts.IndexOf(this.vmCuts.SelectedCuts.Last()) + 1;
-
-        foreach (var cut in this.reserved)
-        {
-            this.vmCuts.Cuts.Insert(index++, cut);
-        }
-
-        this.reserved.Clear();
+        command.Redo();
+        this.vmCuts.UndoController.Add(command);
     }
 
     private void OnCancel()

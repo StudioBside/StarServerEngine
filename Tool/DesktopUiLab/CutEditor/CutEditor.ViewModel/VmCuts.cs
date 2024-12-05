@@ -1,6 +1,7 @@
 ﻿namespace CutEditor.ViewModel;
 
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Text;
 using System.Windows.Input;
@@ -21,6 +22,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
+using Shared.Templet.Strings;
 using Shared.Templet.TempletTypes;
 using static CutEditor.Model.Messages;
 using static CutEditor.ViewModel.Enums;
@@ -53,6 +55,9 @@ public sealed class VmCuts : VmPageBase,
         this.DeletePickCommand = new RelayCommand<VmCut>(this.OnDeletePick);
         this.GoToReadPageCommand = new RelayCommand(this.OnGoToReadPage);
         this.ScrollByUidCommand = new AsyncRelayCommand(this.OnScrollByUid);
+        this.BulkEditTextCommand = new AsyncRelayCommand(this.OnBulkEditText, () => this.selectedCuts.Count > 1);
+        this.BulkEditCharacterCommand = new AsyncRelayCommand(this.OnBulkEditCharacter, () => this.selectedCuts.Count > 1);
+        this.BulkEditUnitNameCommand = new AsyncRelayCommand(this.OnBulkEditUnitName, () => this.selectedCuts.Count > 1);
         WeakReferenceMessenger.Default.Register<UpdatePreviewMessage>(this, this.OnUpdatePreview);
 
         this.binFilePath = config["CutBinFilePath"] ?? throw new Exception("CutBinFilePath is not set in the configuration file.");
@@ -70,10 +75,7 @@ public sealed class VmCuts : VmPageBase,
 
         this.uidGenerator = new CutUidGenerator(this.cuts.Select(e => e.Cut));
 
-        this.selectedCuts.CollectionChanged += (s, e) =>
-        {
-            this.DeleteCommand.NotifyCanExecuteChanged();
-        };
+        this.selectedCuts.CollectionChanged += this.SelectedCuts_CollectionChanged;
 
         this.cuts.CollectionChanged += (s, e) =>
         {
@@ -84,10 +86,11 @@ public sealed class VmCuts : VmPageBase,
 
         Log.Info($"{this.Name} 파일 로딩 완료. 총 컷의 개수:{this.cuts.Count}");
     }
-
+  
     public string Name { get; }
     public IList<VmCut> Cuts => this.cuts;
     public IList<VmCut> SelectedCuts => this.selectedCuts;
+    public UndoController UndoController => this.undoController;
     public VmFindFlyout FindFlyout { get; }
     public VmCutPaster CutPaster { get; }
     public string TextFileName { get; }
@@ -99,6 +102,9 @@ public sealed class VmCuts : VmPageBase,
     public ICommand DeletePickCommand { get; } // 인자로 넘어오는 1개의 cut을 삭제
     public ICommand GoToReadPageCommand { get; } // note: 제대로 하려면 수정사항을 저장하고 넘어가야 함.
     public ICommand ScrollByUidCommand { get; }
+    public IRelayCommand BulkEditTextCommand { get; }
+    public IRelayCommand BulkEditCharacterCommand { get; }
+    public IRelayCommand BulkEditUnitNameCommand { get; }
 
     internal CutUidGenerator UidGenerator => this.uidGenerator;
     internal IServiceProvider Services => this.services;
@@ -132,6 +138,13 @@ public sealed class VmCuts : VmPageBase,
             return false;
         }
 
+        int positionIndex = this.cuts.Count - 1;
+        if (this.selectedCuts.Count > 0)
+        {
+            positionIndex = this.cuts.IndexOf(this.selectedCuts[^1]);
+        }
+
+        var targets = new List<VmCut>();
         foreach (var token in tokens)
         {
             // 유닛이름 : 텍스트 형식인 경우, 이름을 파싱해 유효한 값인지 확인
@@ -165,8 +178,21 @@ public sealed class VmCuts : VmPageBase,
                 cut.TalkTime = Cut.TalkTimeDefault;
             }
 
-            this.cuts.Add(new VmCut(cut, this.Name, this.services));
+            targets.Add(new VmCut(cut, this.Name, this.services));
         }
+
+        var command = new PasteCut(this, targets, positionIndex, PasteCut.PasteDirection.Downside)
+        {
+            ReserveOnUndo = false,
+        };
+
+        if (command is null)
+        {
+            return false;
+        }
+
+        command.Redo();
+        this.undoController.Add(command);
 
         return true;
     }
@@ -233,8 +259,19 @@ public sealed class VmCuts : VmPageBase,
         {
             case nameof(this.SelectedCuts):
                 this.DeleteCommand.NotifyCanExecuteChanged();
+                this.BulkEditTextCommand.NotifyCanExecuteChanged();
+                this.BulkEditCharacterCommand.NotifyCanExecuteChanged();
+                this.BulkEditUnitNameCommand.NotifyCanExecuteChanged();
                 break;
         }
+    }
+
+    private void SelectedCuts_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        this.DeleteCommand.NotifyCanExecuteChanged();
+        this.BulkEditTextCommand.NotifyCanExecuteChanged();
+        this.BulkEditCharacterCommand.NotifyCanExecuteChanged();
+        this.BulkEditUnitNameCommand.NotifyCanExecuteChanged();
     }
 
     private async Task OnSave()
@@ -442,6 +479,58 @@ public sealed class VmCuts : VmPageBase,
 
         var controller = this.services.GetRequiredService<ICutsListController>();
         controller.ScrollIntoView(index);
+    }
+
+    private async Task OnBulkEditUnitName()
+    {
+        var editor = this.services.GetRequiredKeyedService<IModelEditor<IList<StringElement>>>("unitName");
+        var result = await editor.EditAsync([]);
+        if (result.IsCanceled)
+        {
+            return;
+        }
+
+        foreach (var vmCut in this.selectedCuts)
+        {
+            vmCut.Cut.UnitNames.Clear();
+            if (result.Data is not null)
+            {
+                foreach (var data in result.Data!)
+                {
+                    vmCut.Cut.UnitNames.Add(data);
+                }
+            }
+        }
+    }
+
+    private async Task OnBulkEditCharacter()
+    {
+        var unitpicker = this.services.GetRequiredService<ITempletPicker<Unit>>();
+        var result = await unitpicker.Pick();
+        if (result.IsCanceled)
+        {
+            return;
+        }
+
+        foreach (var vmCut in this.selectedCuts)
+        {
+            vmCut.Cut.Unit = result.Data;
+        }
+    }
+
+    private async Task OnBulkEditText()
+    {
+        var prompt = this.services.GetRequiredService<IUserInputProvider<string>>();
+        var text = await prompt.PromptAsync("일괄 텍스트 변경", "변경할 텍스트를 입력하세요.");
+        if (string.IsNullOrEmpty(text))
+        {
+            return;
+        }
+
+        foreach (var vmCut in this.selectedCuts)
+        {
+            vmCut.Cut.UnitTalk.Korean = text;
+        }
     }
 
     public sealed record CreateParam(string FileName, long CutUid);

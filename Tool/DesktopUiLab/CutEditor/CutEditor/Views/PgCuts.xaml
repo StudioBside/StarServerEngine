@@ -202,16 +202,13 @@
                     <MenuItem Header="잘라내기"
                               Command="{Binding CutPaster.CutCommand}"/>
                     <MenuItem Header="위로 붙여넣기"
-                              Command="{Binding CutPaster.PasteToNextCommand}"/>
+                              Command="{Binding CutPaster.PasteToUpsideCommand}"/>
                     <MenuItem Header="아래에 붙여넣기"
-                              Command="{Binding CutPaster.PasteToNextCommand}"/>
+                              Command="{Binding CutPaster.PasteToDownsideCommand}"/>
                     <Separator/>
-                    <MenuItem Header="텍스트 일괄 수정"
-                              Command=""/>
-                    <MenuItem Header="캐릭터 일괄 수정"
-                              Command=""/>
-                    <MenuItem Header="UnitName 일괄 수정"
-                              Command=""/>
+                    <MenuItem Header="텍스트 일괄 수정" Command="{Binding BulkEditTextCommand}"/>
+                    <MenuItem Header="캐릭터 일괄 수정" Command="{Binding BulkEditCharacterCommand}"/>
+                    <MenuItem Header="UnitName 일괄 수정" Command="{Binding BulkEditUnitNameCommand}"/>
                 </ContextMenu>
             </ui:ListView.ContextMenu>
         </ui:ListView>

@@ -5,10 +5,12 @@ using CutEditor.Model.Interfaces;
 using Du.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
-internal sealed class DeleteCuts(VmCuts vmCuts, IReadOnlyList<VmCut> targets) : IDormammu
+internal class DeleteCuts(VmCuts vmCuts, IReadOnlyList<VmCut> targets) : IDormammu
 {
     private readonly IReadOnlyList<VmCut> cuts = vmCuts.Cuts.ToArray();
-    private readonly IReadOnlyList<VmCut> targets = targets;
+
+    protected VmCuts VmCuts => vmCuts;
+    protected IReadOnlyList<VmCut> Targets => targets;
 
     public static DeleteCuts? Create(VmCuts vmCuts)
     {
@@ -25,16 +27,16 @@ internal sealed class DeleteCuts(VmCuts vmCuts, IReadOnlyList<VmCut> targets) : 
         return new DeleteCuts(vmCuts, [deleteTarget]);
     }
 
-    public void Redo()
+    public virtual void Redo()
     {
         // 삭제된 후 선택될 항목을 결정.
-        int selectedIndex = vmCuts.Cuts.IndexOf(this.targets[0]);
+        int selectedIndex = vmCuts.Cuts.IndexOf(targets[0]);
         if (selectedIndex > 0)
         {
             selectedIndex--;
         }
 
-        foreach (var cut in this.targets)
+        foreach (var cut in targets)
         {
             vmCuts.Cuts.Remove(cut);
         }
@@ -47,7 +49,7 @@ internal sealed class DeleteCuts(VmCuts vmCuts, IReadOnlyList<VmCut> targets) : 
         controller.FocusElement(selectedIndex);
     }
 
-    public void Undo()
+    public virtual void Undo()
     {
         // Undo를 위해 삭제된 항목을 다시 추가
         int index = 0;
@@ -65,7 +67,7 @@ internal sealed class DeleteCuts(VmCuts vmCuts, IReadOnlyList<VmCut> targets) : 
 
         // 제거되었다 되살아난 항목을 다시 선택
         vmCuts.SelectedCuts.Clear();
-        foreach (var cut in this.targets)
+        foreach (var cut in targets)
         {
             vmCuts.SelectedCuts.Add(cut);
         }
