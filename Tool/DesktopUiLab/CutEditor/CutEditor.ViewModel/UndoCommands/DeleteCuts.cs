@@ -1,7 +1,9 @@
 ﻿namespace CutEditor.ViewModel.UndoCommands;
 
 using System;
+using CutEditor.Model.Interfaces;
 using Du.Core.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 
 internal sealed class DeleteCuts(VmCuts vmCuts, IReadOnlyList<VmCut> targets) : IDormammu
 {
@@ -25,12 +27,24 @@ internal sealed class DeleteCuts(VmCuts vmCuts, IReadOnlyList<VmCut> targets) : 
 
     public void Redo()
     {
+        // 삭제된 후 선택될 항목을 결정.
+        int selectedIndex = vmCuts.Cuts.IndexOf(this.targets[0]);
+        if (selectedIndex > 0)
+        {
+            selectedIndex--;
+        }
+
         foreach (var cut in this.targets)
         {
             vmCuts.Cuts.Remove(cut);
         }
 
+        var selected = vmCuts.Cuts[selectedIndex];
         vmCuts.SelectedCuts.Clear();
+        vmCuts.SelectedCuts.Add(vmCuts.Cuts[selectedIndex]);
+
+        var controller = vmCuts.Services.GetRequiredService<ICutsListController>();
+        controller.FocusElement(selectedIndex);
     }
 
     public void Undo()

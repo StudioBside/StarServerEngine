@@ -30,6 +30,8 @@
         <KeyBinding Key="D2" Modifiers="Ctrl" Command="{Binding NewCutCommand}"
                     CommandParameter="{x:Static viewmodels:Enums+CutDataType.Branch}"/>
         <KeyBinding Key="F" Modifiers="Ctrl" Command="{Binding FindFlyout.OpenCommand}"/>
+        <KeyBinding Key="X" Modifiers="Ctrl" Command="{Binding CutPaster.CutCommand}"/>
+        <KeyBinding Key="Esc" Command="{Binding CutPaster.CancelCommand}"/>
     </Page.InputBindings>
     <b:Interaction.Behaviors>
         <behaviors:PageBehavior HandleClipboard="True"/>
@@ -101,6 +103,16 @@
                 <ui:Button Margin="3" Content="선택 컷 삭제"
                            Icon="{ui:SymbolIcon Subtract16}"
                            Command="{Binding DeleteCommand}"/>
+
+                <Border Margin="10,0" Padding="10,0" BorderBrush="{StaticResource ClopboardNotifyBrush}"
+                        BorderThickness="1"
+                        Visibility="{Binding CutPaster.HasReserved, Converter={converters:BoolToVisibilityConverter}}">
+                    <TextBlock VerticalAlignment="Center" Foreground="{StaticResource ClopboardNotifyBrush}">
+                        클립보드에
+                        <Run Text="{Binding CutPaster.Reserved.Count, Mode=OneWay}"/>
+                        개 데이터
+                    </TextBlock>
+                </Border>
             </StackPanel>
 
             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Margin="5"
@@ -185,6 +197,23 @@
                 <behaviors:ListViewBehavior ReorderByDragDrop="True"/>
                 <lbh:CutsListController/>
             </b:Interaction.Behaviors>
+            <ui:ListView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="잘라내기"
+                              Command="{Binding CutPaster.CutCommand}"/>
+                    <MenuItem Header="위로 붙여넣기"
+                              Command="{Binding CutPaster.PasteToNextCommand}"/>
+                    <MenuItem Header="아래에 붙여넣기"
+                              Command="{Binding CutPaster.PasteToNextCommand}"/>
+                    <Separator/>
+                    <MenuItem Header="텍스트 일괄 수정"
+                              Command=""/>
+                    <MenuItem Header="캐릭터 일괄 수정"
+                              Command=""/>
+                    <MenuItem Header="UnitName 일괄 수정"
+                              Command=""/>
+                </ContextMenu>
+            </ui:ListView.ContextMenu>
         </ui:ListView>
         
     </Grid>

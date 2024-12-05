@@ -43,6 +43,7 @@ public sealed class VmCuts : VmPageBase,
     {
         this.param = param;
         this.FindFlyout = new VmFindFlyout(this, this.cuts);
+        this.CutPaster = new VmCutPaster(this);
         this.serviceScope = services.CreateScope();
         this.undoController = this.serviceScope.ServiceProvider.GetRequiredService<UndoController>();
         this.services = services;
@@ -88,6 +89,7 @@ public sealed class VmCuts : VmPageBase,
     public IList<VmCut> Cuts => this.cuts;
     public IList<VmCut> SelectedCuts => this.selectedCuts;
     public VmFindFlyout FindFlyout { get; }
+    public VmCutPaster CutPaster { get; }
     public string TextFileName { get; }
     public ICommand UndoCommand => this.undoController.UndoCommand;
     public ICommand RedoCommand => this.undoController.RedoCommand;
