@@ -9,7 +9,9 @@ using CommunityToolkit.Mvvm.Input;
 using CutEditor.Model;
 using CutEditor.Model.Interfaces;
 using CutEditor.ViewModel.Detail;
+using CutEditor.ViewModel.UndoCommands;
 using Du.Core.Interfaces;
+using Du.Core.Util;
 using Microsoft.Extensions.DependencyInjection;
 using NKM;
 using Shared.Templet.Strings;
@@ -22,6 +24,7 @@ public sealed class VmCut : ObservableObject
 {
     private readonly ChoiceUidGenerator choiceUidGenerator;
     private readonly IServiceProvider services;
+    private readonly UndoController undoController;
     private bool showUnitSection;
     private bool showScreenSection;
     private bool showCameraSection;
@@ -30,7 +33,7 @@ public sealed class VmCut : ObservableObject
     private bool slateFlyoutOpen;
     private bool minorityFlyoutOpen;
 
-    public VmCut(Cut cut, string cutsceneName, IServiceProvider services)
+    public VmCut(Cut cut, UndoController undoController, IServiceProvider services)
     {
         this.Cut = cut;
         cut.PropertyChanged += this.Cut_PropertyChanged;
@@ -38,7 +41,7 @@ public sealed class VmCut : ObservableObject
             ? CutDataType.Branch
             : CutDataType.Normal;
 
-        this.CutsceneName = cutsceneName;
+        this.undoController = undoController;
         this.services = services;
         this.PickUnitCommand = new AsyncRelayCommand(this.OnPickUnit);
         this.PickArcpointCommand = new AsyncRelayCommand(this.OnPickArcpoint);
@@ -72,7 +75,8 @@ public sealed class VmCut : ObservableObject
         this.SetEndFxLoopCommand = new RelayCommand<CutsceneSoundLoopControl>(e => this.Cut.EndFxLoopControl = e);
         this.EditBgFadeCommand = new AsyncRelayCommand(this.OnEditBgFade);
         this.SetTalkPositionControlCommand = new RelayCommand<TalkPositionControlType>(e => this.Cut.TalkPositionControl = e);
-        this.ClearUnitPosCommand = new RelayCommand(() => this.Cut.UnitPos = CutsceneUnitPos.NONE);
+        this.ClearUnitPosCommand = new RelayCommand(this.OnClearUnitPos);
+        this.MakeChangePosHistoryCommand = new RelayCommand<string>(this.OnMakeChangePosHistory);
 
         this.showUnitSection = cut.HasUnitData();
         this.showScreenSection = cut.HasScreenBoxData();
@@ -90,7 +94,6 @@ public sealed class VmCut : ObservableObject
         }
     }
 
-    public string CutsceneName { get; }
     public Cut Cut { get; }
     public IRelayCommand PickUnitCommand { get; }
     public ICommand PickArcpointCommand { get; }
@@ -125,6 +128,7 @@ public sealed class VmCut : ObservableObject
     public ICommand EditBgFadeCommand { get; }
     public ICommand SetTalkPositionControlCommand { get; }
     public ICommand ClearUnitPosCommand { get; }
+    public ICommand MakeChangePosHistoryCommand { get; }
     public bool ShowUnitSection
     {
         get => this.showUnitSection;
@@ -142,11 +146,6 @@ public sealed class VmCut : ObservableObject
         get => this.showCameraSection;
         set => this.SetProperty(ref this.showCameraSection, value);
     }
-
-    public string SummaryKorean => this.Cut.GetSummaryText(L10nType.Korean);
-    public string SummaryEnglish => this.Cut.GetSummaryText(L10nType.English);
-    public string SummaryJapanese => this.Cut.GetSummaryText(L10nType.Japanese);
-    public string SummaryChineseSimplified => this.Cut.GetSummaryText(L10nType.ChineseSimplified);
 
     public CutDataType DataType
     {
@@ -346,6 +345,12 @@ public sealed class VmCut : ObservableObject
 
     private void OnSetUnitMotion(string? unitMotion)
     {
+        if (unitMotion == AssetList.UnitMotionEmpty)
+        {
+            this.Cut.UnitMotion = null;
+            return;
+        }
+
         this.Cut.UnitMotion = unitMotion;
     }
 
@@ -422,5 +427,34 @@ public sealed class VmCut : ObservableObject
         }
 
         this.Cut.BgFadeInOut = result.Data;
+    }
+
+    private void OnClearUnitPos()
+    {
+        var command = SetUnitPos.Create(this, CutsceneUnitPos.NONE);
+        if (command is null)
+        {
+            return;
+        }
+
+        command.Redo();
+        this.undoController.Add(command);
+    }
+
+    private void OnMakeChangePosHistory(string? posStr)
+    {
+        if (Enum.TryParse<CutsceneUnitPos>(posStr, out var unitPos) == false)
+        {
+            return;
+        }
+
+        var command = SetUnitPos.Create(this, unitPos);
+        if (command is null)
+        {
+            return;
+        }
+
+        command.Redo();
+        this.undoController.Add(command);
     }
 }

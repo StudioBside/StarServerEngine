@@ -70,7 +70,7 @@ public sealed class VmCuts : VmPageBase,
 
         foreach (var cut in cutList)
         {
-            this.cuts.Add(new VmCut(cut, this.Name, this.services));
+            this.cuts.Add(new VmCut(cut, this.UndoController, this.services));
         }
 
         this.uidGenerator = new CutUidGenerator(this.cuts.Select(e => e.Cut));
@@ -178,7 +178,7 @@ public sealed class VmCuts : VmPageBase,
                 cut.TalkTime = Cut.TalkTimeDefault;
             }
 
-            targets.Add(new VmCut(cut, this.Name, this.services));
+            targets.Add(new VmCut(cut, this.UndoController, this.services));
         }
 
         var command = new PasteCut(this, targets, positionIndex, PasteCut.PasteDirection.Downside)

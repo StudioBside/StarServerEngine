@@ -666,6 +666,23 @@ public sealed class Cut : ObservableObject
             case nameof(this.BgFileName):
                 WeakReferenceMessenger.Default.Send(new UpdatePreviewMessage(this));
                 break;
+
+            case nameof(this.TransitionEffect):
+                if (this.transitionEffect is not null)
+                {
+                    this.WaitClick = false;
+                }
+
+                break;
+
+            case nameof(this.BgFadeInOut):
+                if (this.bgFadeInOut is not null)
+                {
+                    this.WaitClick = false;
+                    this.WaitTime = this.bgFadeInOut.Time;
+                }
+
+                break;
         }
     }
 

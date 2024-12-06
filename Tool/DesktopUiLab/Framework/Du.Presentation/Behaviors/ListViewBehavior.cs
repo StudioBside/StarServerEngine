@@ -5,7 +5,9 @@ using System.Collections;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
 using Cs.Logging;
 using Du.Core.Interfaces;
 using Du.Presentation.Util;
@@ -21,7 +23,8 @@ public sealed class ListViewBehavior : Behavior<ListView>
               new PropertyMetadata(false, OnReorderByDragDropChanged));
 
     private Point cursorStartPos;
-    private ToolTip? toolTip;
+    private AdornerLayer adornerLayer = null!;
+    private DraggedAdorner? draggedAdorner;
 
     public bool ReorderByDragDrop
     {
@@ -34,7 +37,7 @@ public sealed class ListViewBehavior : Behavior<ListView>
         this.AssociatedObject.PreviewMouseLeftButtonDown += this.AssociatedObject_PreviewMouseLeftButtonDown;
         this.AssociatedObject.PreviewMouseMove += this.AssociatedObject_PreviewMouseMove;
         this.AssociatedObject.Drop += this.AssociatedObject_Drop;
-        this.AssociatedObject.DragOver += this.AssociatedObject_DragOver;
+        this.AssociatedObject.PreviewDragOver += this.AssociatedObject_DragOver;
         this.AssociatedObject.Loaded += this.AssociatedObject_Loaded;
     }
 
@@ -43,7 +46,7 @@ public sealed class ListViewBehavior : Behavior<ListView>
         this.AssociatedObject.PreviewMouseLeftButtonDown -= this.AssociatedObject_PreviewMouseLeftButtonDown;
         this.AssociatedObject.PreviewMouseMove -= this.AssociatedObject_PreviewMouseMove;
         this.AssociatedObject.Drop -= this.AssociatedObject_Drop;
-        this.AssociatedObject.DragOver -= this.AssociatedObject_DragOver;
+        this.AssociatedObject.PreviewDragOver -= this.AssociatedObject_DragOver;
         this.AssociatedObject.Loaded -= this.AssociatedObject_Loaded;
     }
 
@@ -53,19 +56,14 @@ public sealed class ListViewBehavior : Behavior<ListView>
 
     private void AssociatedObject_DragOver(object sender, DragEventArgs e)
     {
-        ////// 커서 위치 가져오기
-        ////var position = e.GetPosition(this.AssociatedObject);
+        if (this.draggedAdorner == null)
+        {
+            return;
+        }
 
-        ////// 정보 표시를 위한 툴팁 생성
-        ////var toolTip = new ToolTip
-        ////{
-        ////    Content = $"Uid: 드래그 추가정보",
-        ////    IsOpen = true,
-        ////    Placement = System.Windows.Controls.Primitives.PlacementMode.Mouse,
-        ////};
-
-        ////// 툴팁을 커서 위치에 표시
-        ////ToolTipService.SetToolTip(this, this.toolTip);
+        var offset = e.GetPosition(this.AssociatedObject) - this.cursorStartPos;
+        this.draggedAdorner.UpdatePosition(new Point(offset.X, offset.Y));
+        e.Handled = true;
     }
 
     private void ListItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -107,9 +105,10 @@ public sealed class ListViewBehavior : Behavior<ListView>
 
     private void AssociatedObject_PreviewMouseMove(object sender, MouseEventArgs e)
     {
-        if (e.LeftButton != MouseButtonState.Pressed && this.toolTip is not null && this.toolTip.IsOpen)
+        if (e.LeftButton != MouseButtonState.Pressed && this.draggedAdorner is not null)
         {
-            this.toolTip.IsOpen = false;
+            this.adornerLayer.Remove(this.draggedAdorner);
+            this.draggedAdorner = null;
         }
 
         if (e.LeftButton != MouseButtonState.Pressed || // 마우스 버튼이 눌려있지 않음
@@ -134,24 +133,27 @@ public sealed class ListViewBehavior : Behavior<ListView>
         }
 
         var selectedItems = this.AssociatedObject.SelectedItems.Cast<object>().ToList();
-        if (this.toolTip is null)
-        {
-            this.toolTip = new ToolTip
-            {
-                Content = $"드래그 추가정보",
-                IsOpen = true,
-                Placement = System.Windows.Controls.Primitives.PlacementMode.Mouse,
-            };
 
-            // 툴팁을 커서 위치에 표시
-            ToolTipService.SetToolTip(this, this.toolTip);
+        // Capture the dragged item's visual
+        //var itemContainer = (ListViewItem)this.AssociatedObject.ItemContainerGenerator.ContainerFromIndex(_draggedIndex);
+        if (this.adornerLayer is null)
+        {
+            this.adornerLayer = AdornerLayer.GetAdornerLayer(this.AssociatedObject);
         }
+
+        var itemVisual = VisualTreeHelper.GetDescendantBounds(dragStartItem);
+        var window = Window.GetWindow(this.AssociatedObject);
+        var windowScreenPos = window.PointToScreen(new Point(0, 0));
+        var listViewScreenPos = this.AssociatedObject.PointToScreen(new Point(0, 0));
+        this.draggedAdorner = new DraggedAdorner(
+            dragStartItem, 
+            itemVisual,
+            this.adornerLayer,
+            e.GetPosition(this.AssociatedObject),
+            listViewScreenPos - windowScreenPos);
 
         try
         {
-            this.toolTip.Content = $"{this.AssociatedObject.SelectedItems.Count}개 항목 위치 이동";
-            this.toolTip.IsOpen = true;
-
             DragDrop.DoDragDrop(dragStartItem, selectedItems, DragDropEffects.Move);
         }
         catch (Exception ex)
@@ -162,9 +164,10 @@ public sealed class ListViewBehavior : Behavior<ListView>
 
     private void AssociatedObject_Drop(object sender, DragEventArgs e)
     {
-        if (this.toolTip is not null && this.toolTip.IsOpen)
+        if (this.draggedAdorner is not null)
         {
-            this.toolTip.IsOpen = false;
+            this.adornerLayer.Remove(this.draggedAdorner);
+            this.draggedAdorner = null;
         }
 
         if (e.OriginalSource.FindAncestor<ListViewItem>(out var dragStopItem) == false)
@@ -175,6 +178,11 @@ public sealed class ListViewBehavior : Behavior<ListView>
         ////handler.HandleDrop(this.AssociatedObject.DataContext, this.AssociatedObject.SelectedItems, dragStopItem.DataContext);
 
         var list = this.AssociatedObject.ItemsSource as IList ?? throw new Exception("DataContext is not IList.");
+        if (list.Count <= 1)
+        {
+            return;
+        }
+
         var selected = this.AssociatedObject.SelectedItems
             .Cast<object>()
             .ToArray();
@@ -209,7 +217,7 @@ public sealed class ListViewBehavior : Behavior<ListView>
             }
         }
 
-        Log.Info($"위치 조정: {indices} -> {dropIndex}");
+        //// Log.Info($"위치 조정: {indices} -> {dropIndex}");
 
         var movingItems = new List<object>();
         foreach (var i in itemsIndex)
@@ -243,6 +251,46 @@ public sealed class ListViewBehavior : Behavior<ListView>
         if (this.AssociatedObject.DataContext is ILoadEventReceiver receiver)
         {
             receiver.OnLoaded();
+        }
+    }
+
+    private sealed class DraggedAdorner : Adorner
+    {
+        private readonly UIElement visual;
+        private readonly Brush brush;
+        private readonly Vector listViewOffset;
+        private Point offset;
+
+        public DraggedAdorner(
+            UIElement adornedElement,
+            Rect bounds,
+            AdornerLayer adornerLayer,
+            Point initialMousePosition,
+            Vector listViewOffset)
+            : base(adornedElement)
+        {
+            this.visual = adornedElement;
+            this.brush = new VisualBrush(adornedElement) { Opacity = 0.5 };
+            this.offset = initialMousePosition;
+            this.listViewOffset = listViewOffset;
+
+            this.IsHitTestVisible = false; // Adorner가 마우스 이벤트를 잡아먹지 않게 설정
+
+            adornerLayer.Add(this);
+        }
+
+        public void UpdatePosition(Point currentMousePosition)
+        {
+            this.offset = currentMousePosition;
+            this.InvalidateVisual();
+        }
+
+        protected override void OnRender(DrawingContext drawingContext)
+        {
+            var location = this.offset + this.listViewOffset;
+
+            drawingContext.DrawRectangle(
+                this.brush, null, new Rect(location, this.AdornedElement.DesiredSize));
         }
     }
 }

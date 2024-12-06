@@ -41,12 +41,15 @@ internal class DeleteCuts(VmCuts vmCuts, IReadOnlyList<VmCut> targets) : IDormam
             vmCuts.Cuts.Remove(cut);
         }
 
-        var selected = vmCuts.Cuts[selectedIndex];
-        vmCuts.SelectedCuts.Clear();
-        vmCuts.SelectedCuts.Add(vmCuts.Cuts[selectedIndex]);
+        if (selectedIndex < vmCuts.Cuts.Count)
+        {
+            var selected = vmCuts.Cuts[selectedIndex];
+            vmCuts.SelectedCuts.Clear();
+            vmCuts.SelectedCuts.Add(vmCuts.Cuts[selectedIndex]);
 
-        var controller = vmCuts.Services.GetRequiredService<ICutsListController>();
-        controller.FocusElement(selectedIndex);
+            var controller = vmCuts.Services.GetRequiredService<ICutsListController>();
+            controller.FocusElement(selectedIndex);
+        }
     }
 
     public virtual void Undo()

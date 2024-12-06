@@ -17,7 +17,7 @@ public sealed partial class PgCuts : Page
     {
     }
 
-    public PgCuts(VmCut vmCut) : this(new VmCuts.CreateParam(vmCut.CutsceneName, vmCut.Cut.Uid))
+    public PgCuts(VmCutSummary summary) : this(new VmCuts.CreateParam(summary.CutsceneName, summary.Cut.Uid))
     {
     }
 }

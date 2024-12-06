@@ -7,6 +7,7 @@ using Shared.Templet.Images;
 
 public sealed class AssetList
 {
+    public const string UnitMotionEmpty = "없음";
     private readonly List<string> bgmFiles = new();
     private readonly List<string> sfxFiles = new();
     private readonly List<string> voiceFils = new();
@@ -32,7 +33,7 @@ public sealed class AssetList
         var slateRoot = config["SlateRoot"] ?? throw new Exception($"SlateRoot is not defined in the configuration file.");
         var spineRoot = config["SpineRoot"] ?? throw new Exception($"SpineRoot is not defined in the configuration file.");
 
-        this.unitMotions.Add(null!);
+        this.unitMotions.Add(UnitMotionEmpty);
         foreach (var data in config.GetSection("UnitMotionList").GetChildren())
         {
             if (data.Value is not null)

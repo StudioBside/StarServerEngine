@@ -15,8 +15,8 @@ using Microsoft.Extensions.DependencyInjection;
 
 public sealed class VmCutsSummary : VmPageBase
 {
-    private readonly ObservableCollection<VmCut> cuts = new();
-    private readonly ObservableCollection<VmCut> selectedCuts = new();
+    private readonly ObservableCollection<VmCutSummary> cuts = new();
+    private readonly ObservableCollection<VmCutSummary> selectedCuts = new();
     private readonly CutUidGenerator uidGenerator;
     private readonly IServiceProvider services;
     private readonly IServiceScope serviceScope;
@@ -43,7 +43,7 @@ public sealed class VmCutsSummary : VmPageBase
         json.GetArray("Data", this.cuts, (e, i) =>
         {
             var cut = new Cut(e);
-            return new VmCut(cut, this.Name, this.services);
+            return new VmCutSummary(cut, this.Name);
         });
 
         this.uidGenerator = new CutUidGenerator(this.cuts.Select(e => e.Cut));
@@ -62,8 +62,8 @@ public sealed class VmCutsSummary : VmPageBase
     }
 
     public string Name { get; }
-    public IList<VmCut> Cuts => this.cuts;
-    public IList<VmCut> SelectedCuts => this.selectedCuts;
+    public IList<VmCutSummary> Cuts => this.cuts;
+    public IList<VmCutSummary> SelectedCuts => this.selectedCuts;
     public string TextFileName { get; }
     public ICommand GotoEditCommand { get; }
 

@@ -75,25 +75,35 @@
                     </MultiBinding>
                 </ui:Button>
 
+                <!--언두 히스토리를 만들기 위해 IsChecked는 읽기 한 방향으로만 하고, 쓰기는 Command로 합니다.-->
                 <StackPanel Grid.Column="2" Grid.Row="0" Orientation="Horizontal">
                     <RadioButton MinWidth="20" VerticalAlignment="Bottom"
-                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS1}"/>
+                                 Command="{Binding MakeChangePosHistoryCommand}" CommandParameter="POS1"
+                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS1, Mode=OneWay}"/>
                     <RadioButton MinWidth="20" VerticalAlignment="Top"
-                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS6}"/>
+                                 Command="{Binding MakeChangePosHistoryCommand}" CommandParameter="POS6"
+                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS6, Mode=OneWay}"/>
                     <RadioButton MinWidth="20" VerticalAlignment="Bottom"
-                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS2}"/>
+                                 Command="{Binding MakeChangePosHistoryCommand}" CommandParameter="POS2"
+                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS2, Mode=OneWay}"/>
                     <RadioButton MinWidth="20" VerticalAlignment="Top"
-                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS7}"/>
+                                 Command="{Binding MakeChangePosHistoryCommand}" CommandParameter="POS7"
+                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS7, Mode=OneWay}"/>
                     <RadioButton MinWidth="20" VerticalAlignment="Bottom"
-                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS3}"/>
+                                 Command="{Binding MakeChangePosHistoryCommand}" CommandParameter="POS3"
+                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS3, Mode=OneWay}"/>
                     <RadioButton MinWidth="20" VerticalAlignment="Top"
-                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS8}"/>
+                                 Command="{Binding MakeChangePosHistoryCommand}" CommandParameter="POS8"
+                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS8, Mode=OneWay}"/>
                     <RadioButton MinWidth="20" VerticalAlignment="Bottom"
-                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS4}"/>
+                                 Command="{Binding MakeChangePosHistoryCommand}" CommandParameter="POS4"
+                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS4, Mode=OneWay}"/>
                     <RadioButton MinWidth="20" VerticalAlignment="Top"
-                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS9}"/>
+                                 Command="{Binding MakeChangePosHistoryCommand}" CommandParameter="POS9"
+                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS9, Mode=OneWay}"/>
                     <RadioButton MinWidth="20" VerticalAlignment="Bottom"
-                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS5}"/>
+                                 Command="{Binding MakeChangePosHistoryCommand}" CommandParameter="POS5"
+                                 IsChecked="{Binding Path=Cut.UnitPos, Converter={converters:EnumBooleanConverter}, ConverterParameter=POS5, Mode=OneWay}"/>
                     <Button ToolTip="위치 설정 삭제" Command="{Binding ClearUnitPosCommand}">
                         <ui:SymbolIcon Symbol="Delete12"/>
                     </Button>
