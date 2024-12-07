@@ -96,6 +96,7 @@ public sealed class ListViewBehavior : Behavior<ListView>
             clickedItem.IsSelected && // 현재 선택된 상태이고
             Keyboard.Modifiers.HasFlag(ModifierKeys.Control) == false && // ctrl 누른 상태 아니고
             Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) == false && // shift 누른 상태 아니고
+            this.AssociatedObject.SelectedItems.Count < this.AssociatedObject.Items.Count && // 전체 선택이 아니면서
             this.AssociatedObject.SelectedItems.Count > 1) // 선택된 아이템이 여러개일 때
         {
             e.Handled = true; // 이벤트를 무시해서 지금 선택된 리스트가 리셋되는 것을 막아준다.
