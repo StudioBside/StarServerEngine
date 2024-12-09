@@ -144,7 +144,7 @@
             {
                 return defValue;
             }
-            
+        
             return subToken.Value<int>();
         }
 

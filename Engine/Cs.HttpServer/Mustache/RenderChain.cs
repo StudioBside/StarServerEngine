@@ -1,43 +1,42 @@
-﻿namespace Cs.HttpServer.Mustache
+﻿namespace Cs.HttpServer.Mustache;
+
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Text;
+using Stubble.Core;
+using ReadOnlyViewModel = System.Collections.Generic.IReadOnlyDictionary<string, object>;
+
+public readonly struct RenderChain
 {
-    using System.IO;
-    using System.Linq;
-    using System.Net;
-    using System.Text;
-    using Stubble.Core;
-    using ReadOnlyViewModel = System.Collections.Generic.IReadOnlyDictionary<string, object>;
+    private readonly Node rootNode;
 
-    public readonly struct RenderChain
+    public RenderChain(params IMustacheSource?[] sources)
     {
-        private readonly Node rootNode;
+        Node node = null!;
 
-        public RenderChain(params IMustacheSource?[] sources)
+        foreach (var source in sources.Reverse())
         {
-            Node node = null!;
-
-            foreach (var source in sources.Reverse())
+            if (source is null)
             {
-                if (source is null)
-                {
-                    continue;
-                }
-
-                node = new Node(source, node);
+                continue;
             }
 
-            this.rootNode = node ?? throw new System.ArgumentException("sources is empty");
+            node = new Node(source, node);
         }
 
-        public void StartRender(StubbleVisitorRenderer stubble, ReadOnlyViewModel viewModel, HttpListenerResponse response)
-        {
-            using (var streamWriter = new StreamWriter(response.OutputStream, Encoding.UTF8))
-            {
-                this.rootNode.Source.Render(stubble, viewModel, this.rootNode.Next, streamWriter);
-            }
-
-            response.Close();
-        }
-
-        public sealed record Node(IMustacheSource Source, Node? Next);
+        this.rootNode = node ?? throw new System.ArgumentException("sources is empty");
     }
+
+    public void StartRender(StubbleVisitorRenderer stubble, ReadOnlyViewModel viewModel, HttpListenerResponse response)
+    {
+        using (var streamWriter = new StreamWriter(response.OutputStream, Encoding.UTF8))
+        {
+            this.rootNode.Source.Render(stubble, viewModel, this.rootNode.Next, streamWriter);
+        }
+
+        response.Close();
+    }
+
+    public sealed record Node(IMustacheSource Source, Node? Next);
 }

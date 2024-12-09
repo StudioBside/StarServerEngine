@@ -1,32 +1,31 @@
-﻿namespace Cs.Core.Util
+﻿namespace Cs.Core.Util;
+
+using System.Net.NetworkInformation;
+
+public static class NicUtil
 {
-    using System.Net.NetworkInformation;
-
-    public static class NicUtil
+    static NicUtil()
     {
-        static NicUtil()
+        NicName = string.Empty;
+        MacAddress = string.Empty;
+
+        NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
+        foreach (NetworkInterface adapter in interfaces)
         {
-            NicName = string.Empty;
-            MacAddress = string.Empty;
-
-            NetworkInterface[] interfaces = NetworkInterface.GetAllNetworkInterfaces();
-            foreach (NetworkInterface adapter in interfaces)
+            if (adapter.Supports(NetworkInterfaceComponent.IPv4) &&
+                adapter.OperationalStatus == OperationalStatus.Up &&
+                adapter.NetworkInterfaceType == NetworkInterfaceType.Ethernet &&
+                adapter.Description.StartsWith("Hyper-V") == false)
             {
-                if (adapter.Supports(NetworkInterfaceComponent.IPv4) &&
-                    adapter.OperationalStatus == OperationalStatus.Up &&
-                    adapter.NetworkInterfaceType == NetworkInterfaceType.Ethernet &&
-                    adapter.Description.StartsWith("Hyper-V") == false)
-                {
-                    NicName = adapter.Description.Replace('(', '[')
-                        .Replace(')', ']')
-                        .Replace('#', '_');
+                NicName = adapter.Description.Replace('(', '[')
+                    .Replace(')', ']')
+                    .Replace('#', '_');
 
-                    MacAddress = adapter.GetPhysicalAddress().ToString();
-                }
+                MacAddress = adapter.GetPhysicalAddress().ToString();
             }
         }
-
-        public static string NicName { get; }
-        public static string MacAddress { get; }
     }
+
+    public static string NicName { get; }
+    public static string MacAddress { get; }
 }

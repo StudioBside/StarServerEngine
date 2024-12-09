@@ -127,7 +127,7 @@
         public static string EncodeBase64(this byte[] data) => Convert.ToBase64String(data);
         public static string DecodeBase64(this string data) => Encoding.UTF8.GetString(Convert.FromBase64String(data));
         public static byte[] DecodeBase64ToBytes(this string data) => Convert.FromBase64String(data);
-        
+    
         public static string CalcMd5Checksum(this string data)
         {
             if (string.IsNullOrEmpty(data))

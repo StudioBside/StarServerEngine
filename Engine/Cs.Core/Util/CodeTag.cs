@@ -1,12 +1,11 @@
-﻿namespace Cs.Core.Util
-{
-    using System.Runtime.CompilerServices;
+﻿namespace Cs.Core.Util;
 
-    public readonly record struct CodeTag(string File, int Line)
+using System.Runtime.CompilerServices;
+
+public readonly record struct CodeTag(string File, int Line)
+{
+    public static CodeTag Build([CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
     {
-        public static CodeTag Build([CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
-        {
-            return new CodeTag(file, line);
-        }
+        return new CodeTag(file, line);
     }
 }

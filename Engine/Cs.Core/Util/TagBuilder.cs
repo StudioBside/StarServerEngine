@@ -1,7 +1,6 @@
 ﻿namespace Cs.Core.Util
 {
     using System.IO;
-    using System.Runtime.CompilerServices;
 
     public static class TagBuilder
     {

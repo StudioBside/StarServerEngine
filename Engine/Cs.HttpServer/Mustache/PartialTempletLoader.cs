@@ -1,40 +1,39 @@
-﻿namespace Cs.HttpServer.Mustache
+﻿namespace Cs.HttpServer.Mustache;
+
+using System.IO;
+using System.Text;
+using System.Threading.Tasks;
+using Stubble.Core.Interfaces;
+
+internal sealed class PartialTempletLoader : IStubbleLoader
 {
-    using System.IO;
-    using System.Text;
-    using System.Threading.Tasks;
-    using Stubble.Core.Interfaces;
+    private readonly string basePath;
 
-    internal sealed class PartialTempletLoader : IStubbleLoader
+    public PartialTempletLoader(string basePath)
     {
-        private readonly string basePath;
+        this.basePath = basePath;
+    }
 
-        public PartialTempletLoader(string basePath)
+    public IStubbleLoader Clone()
+    {
+        return new PartialTempletLoader(this.basePath);   
+    }
+
+    public string Load(string name)
+    {
+        string fullPath = Path.Combine(this.basePath, name);
+        using (var streamReader = new StreamReader(fullPath, Encoding.UTF8))
         {
-            this.basePath = basePath;
+            return streamReader.ReadToEnd();
         }
+    }
 
-        public IStubbleLoader Clone()
+    public async ValueTask<string> LoadAsync(string name)
+    {
+        string fullPath = Path.Combine(this.basePath, name);
+        using (var streamReader = new StreamReader(fullPath, Encoding.UTF8))
         {
-            return new PartialTempletLoader(this.basePath);   
-        }
-
-        public string Load(string name)
-        {
-            string fullPath = Path.Combine(this.basePath, name);
-            using (var streamReader = new StreamReader(fullPath, Encoding.UTF8))
-            {
-                return streamReader.ReadToEnd();
-            }
-        }
-
-        public async ValueTask<string> LoadAsync(string name)
-        {
-            string fullPath = Path.Combine(this.basePath, name);
-            using (var streamReader = new StreamReader(fullPath, Encoding.UTF8))
-            {
-                return await streamReader.ReadToEndAsync();
-            }
+            return await streamReader.ReadToEndAsync();
         }
     }
 }
