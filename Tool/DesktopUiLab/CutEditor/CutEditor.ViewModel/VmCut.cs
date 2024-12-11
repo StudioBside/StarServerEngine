@@ -22,9 +22,8 @@ using static Shared.Templet.Enums;
 
 public sealed class VmCut : ObservableObject
 {
+    private readonly VmCuts owner;
     private readonly ChoiceUidGenerator choiceUidGenerator;
-    private readonly IServiceProvider services;
-    private readonly UndoController undoController;
     private bool showUnitSection;
     private bool showScreenSection;
     private bool showCameraSection;
@@ -33,16 +32,15 @@ public sealed class VmCut : ObservableObject
     private bool slateFlyoutOpen;
     private bool minorityFlyoutOpen;
 
-    public VmCut(Cut cut, UndoController undoController, IServiceProvider services)
+    public VmCut(Cut cut, VmCuts owner)
     {
+        this.owner = owner;
         this.Cut = cut;
         cut.PropertyChanged += this.Cut_PropertyChanged;
         this.dataType = cut.Choices.Count > 0
             ? CutDataType.Branch
             : CutDataType.Normal;
 
-        this.undoController = undoController;
-        this.services = services;
         this.PickUnitCommand = new AsyncRelayCommand(this.OnPickUnit);
         this.PickArcpointCommand = new AsyncRelayCommand(this.OnPickArcpoint);
         this.PickBgmACommand = new AsyncRelayCommand(this.OnPickBgmA);
@@ -171,10 +169,10 @@ public sealed class VmCut : ObservableObject
         set => this.SetProperty(ref this.minorityFlyoutOpen, value);
     }
 
-    public override string ToString()
-    {
-        return $"VmCut. Uid:{this.Cut.Uid}";
-    }
+    private IServiceProvider Services => this.owner.Services;
+    private UndoController UndoController => this.owner.UndoController;
+
+    public override string ToString() => $"VmCut. Uid:{this.Cut.Uid}";
 
     //// --------------------------------------------------------------------------------------------
 
@@ -189,11 +187,13 @@ public sealed class VmCut : ObservableObject
                 this.ShowCameraSection = this.Cut.HasCameraBoxData();
                 break;
         }
+
+        this.owner.IsDirty = true;
     }
 
     private async Task OnPickUnit()
     {
-        var unitpicker = this.services.GetRequiredService<ITempletPicker<Unit>>();
+        var unitpicker = this.Services.GetRequiredService<ITempletPicker<Unit>>();
         var result = await unitpicker.Pick();
         if (result.IsCanceled)
         {
@@ -205,7 +205,7 @@ public sealed class VmCut : ObservableObject
 
     private async Task OnPickArcpoint()
     {
-        var picker = this.services.GetRequiredService<ITempletPicker<LobbyItem>>();
+        var picker = this.Services.GetRequiredService<ITempletPicker<LobbyItem>>();
         var result = await picker.Pick();
         if (result.IsCanceled)
         {
@@ -217,7 +217,7 @@ public sealed class VmCut : ObservableObject
 
     private async Task OnPickBgmA()
     {
-        var bgmpicker = this.services.GetRequiredKeyedService<IAssetPicker>("bgm");
+        var bgmpicker = this.Services.GetRequiredKeyedService<IAssetPicker>("bgm");
         var result = await bgmpicker.PickAsset();
         if (result.IsCanceled)
         {
@@ -229,7 +229,7 @@ public sealed class VmCut : ObservableObject
 
     private async Task OnPickBgmB()
     {
-        var bgmpicker = this.services.GetRequiredKeyedService<IAssetPicker>("bgm");
+        var bgmpicker = this.Services.GetRequiredKeyedService<IAssetPicker>("bgm");
         var result = await bgmpicker.PickAsset();
         if (result.IsCanceled)
         {
@@ -241,7 +241,7 @@ public sealed class VmCut : ObservableObject
 
     private async Task OnPickSfxA()
     {
-        var sfxPicker = this.services.GetRequiredKeyedService<IAssetPicker>("sfx");
+        var sfxPicker = this.Services.GetRequiredKeyedService<IAssetPicker>("sfx");
         var result = await sfxPicker.PickAsset();
         if (result.IsCanceled)
         {
@@ -253,7 +253,7 @@ public sealed class VmCut : ObservableObject
 
     private async Task OnPickSfxB()
     {
-        var sfxPicker = this.services.GetRequiredKeyedService<IAssetPicker>("sfx");
+        var sfxPicker = this.Services.GetRequiredKeyedService<IAssetPicker>("sfx");
         var result = await sfxPicker.PickAsset();
         if (result.IsCanceled)
         {
@@ -265,7 +265,7 @@ public sealed class VmCut : ObservableObject
 
     private async Task OnPickVoice()
     {
-        var voicePicker = this.services.GetRequiredKeyedService<IAssetPicker>("voice");
+        var voicePicker = this.Services.GetRequiredKeyedService<IAssetPicker>("voice");
         var result = await voicePicker.PickAsset();
         if (result.IsCanceled)
         {
@@ -277,7 +277,7 @@ public sealed class VmCut : ObservableObject
 
     private async Task OnPickAmbientSound()
     {
-        var sfxPicker = this.services.GetRequiredKeyedService<IAssetPicker>("sfx");
+        var sfxPicker = this.Services.GetRequiredKeyedService<IAssetPicker>("sfx");
         var result = await sfxPicker.PickAsset();
         if (result.IsCanceled)
         {
@@ -289,7 +289,7 @@ public sealed class VmCut : ObservableObject
 
     private async Task OnPickBgFileName()
     {
-        var bgFilePicker = this.services.GetRequiredKeyedService<IAssetPicker>("bgFile");
+        var bgFilePicker = this.Services.GetRequiredKeyedService<IAssetPicker>("bgFile");
         var result = await bgFilePicker.PickAsset(this.Cut.BgFileName);
         if (result.IsCanceled)
         {
@@ -301,7 +301,7 @@ public sealed class VmCut : ObservableObject
 
     private async Task OnPickCameraEase()
     {
-        var picker = this.services.GetRequiredService<IEnumPicker<Ease>>();
+        var picker = this.Services.GetRequiredService<IEnumPicker<Ease>>();
         var result = await picker.Pick(this.Cut.CameraEase);
         if (result.IsCanceled)
         {
@@ -313,7 +313,7 @@ public sealed class VmCut : ObservableObject
 
     private async Task OnPickCameraOffset()
     {
-        var picker = this.services.GetRequiredService<IEnumPicker<CameraOffset>>();
+        var picker = this.Services.GetRequiredService<IEnumPicker<CameraOffset>>();
         var result = await picker.Pick(this.Cut.CameraOffset);
         if (result.IsCanceled)
         {
@@ -356,7 +356,7 @@ public sealed class VmCut : ObservableObject
 
     private async Task OnSetUnitNameString()
     {
-        var editor = this.services.GetRequiredKeyedService<IModelEditor<IList<StringElement>>>("unitName");
+        var editor = this.Services.GetRequiredKeyedService<IModelEditor<IList<StringElement>>>("unitName");
         var result = await editor.EditAsync(this.Cut.UnitNames);
         if (result.IsCanceled)
         {
@@ -392,7 +392,7 @@ public sealed class VmCut : ObservableObject
             throw new Exception($"remove target is null");
         }
 
-        IUserInputProvider<string> userInputProvider = this.services.GetRequiredService<IUserInputProvider<string>>();
+        IUserInputProvider<string> userInputProvider = this.Services.GetRequiredService<IUserInputProvider<string>>();
         string defaultValue = target.Text.Korean;
         var result = await userInputProvider.PromptAsync("선택지 텍스트를 입력하세요", "선택지 텍스트", defaultValue);
         if (string.IsNullOrWhiteSpace(result))
@@ -418,7 +418,7 @@ public sealed class VmCut : ObservableObject
 
     private async Task OnEditBgFade()
     {
-        var editor = this.services.GetRequiredService<IModelEditor<BgFadeInOut>>();
+        var editor = this.Services.GetRequiredService<IModelEditor<BgFadeInOut>>();
         var result = await editor.EditAsync(this.Cut.BgFadeInOut);
 
         if (result.IsCanceled)
@@ -438,7 +438,7 @@ public sealed class VmCut : ObservableObject
         }
 
         command.Redo();
-        this.undoController.Add(command);
+        this.UndoController.Add(command);
     }
 
     private void OnMakeChangePosHistory(string? posStr)
@@ -455,6 +455,6 @@ public sealed class VmCut : ObservableObject
         }
 
         command.Redo();
-        this.undoController.Add(command);
+        this.UndoController.Add(command);
     }
 }

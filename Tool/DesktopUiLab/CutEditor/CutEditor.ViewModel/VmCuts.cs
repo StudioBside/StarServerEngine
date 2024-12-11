@@ -40,6 +40,7 @@ public sealed class VmCuts : VmPageBase,
     private readonly UndoController undoController;
     private readonly string packetExeFile;
     private readonly IServiceScope serviceScope;
+    private bool isDirty;
 
     public VmCuts(IConfiguration config, IServiceProvider services, CreateParam param)
     {
@@ -49,7 +50,7 @@ public sealed class VmCuts : VmPageBase,
         this.serviceScope = services.CreateScope();
         this.undoController = this.serviceScope.ServiceProvider.GetRequiredService<UndoController>();
         this.services = services;
-        this.SaveCommand = new AsyncRelayCommand(this.OnSave);
+        this.SaveCommand = new AsyncRelayCommand(this.OnSave, () => this.IsDirty);
         this.DeleteCommand = new RelayCommand(this.OnDelete, () => this.selectedCuts.Count > 0);
         this.NewCutCommand = new RelayCommand<CutDataType>(this.OnNewCut);
         this.DeletePickCommand = new RelayCommand<VmCut>(this.OnDeletePick);
@@ -70,7 +71,7 @@ public sealed class VmCuts : VmPageBase,
 
         foreach (var cut in cutList)
         {
-            this.cuts.Add(new VmCut(cut, this.UndoController, this.services));
+            this.cuts.Add(new VmCut(cut, this));
         }
 
         this.uidGenerator = new CutUidGenerator(this.cuts.Select(e => e.Cut));
@@ -79,6 +80,7 @@ public sealed class VmCuts : VmPageBase,
 
         this.cuts.CollectionChanged += (s, e) =>
         {
+            this.IsDirty = true;
             this.UpdatePreview(startIndex: 0);
         };
 
@@ -96,7 +98,7 @@ public sealed class VmCuts : VmPageBase,
     public string TextFileName { get; }
     public ICommand UndoCommand => this.undoController.UndoCommand;
     public ICommand RedoCommand => this.undoController.RedoCommand;
-    public ICommand SaveCommand { get; }
+    public IRelayCommand SaveCommand { get; }
     public IRelayCommand DeleteCommand { get; } // 현재 (멀티)선택한 대상을 모두 삭제
     public ICommand NewCutCommand { get; }
     public ICommand DeletePickCommand { get; } // 인자로 넘어오는 1개의 cut을 삭제
@@ -105,6 +107,12 @@ public sealed class VmCuts : VmPageBase,
     public IRelayCommand BulkEditTextCommand { get; }
     public IRelayCommand BulkEditCharacterCommand { get; }
     public IRelayCommand BulkEditUnitNameCommand { get; }
+
+    public bool IsDirty
+    {
+        get => this.isDirty;
+        set => this.SetProperty(ref this.isDirty, value);
+    }
 
     internal CutUidGenerator UidGenerator => this.uidGenerator;
     internal IServiceProvider Services => this.services;
@@ -178,7 +186,7 @@ public sealed class VmCuts : VmPageBase,
                 cut.TalkTime = Cut.TalkTimeDefault;
             }
 
-            targets.Add(new VmCut(cut, this.UndoController, this.services));
+            targets.Add(new VmCut(cut, this));
         }
 
         var command = new PasteCut(this, targets, positionIndex, PasteCut.PasteDirection.Downside)
@@ -262,6 +270,10 @@ public sealed class VmCuts : VmPageBase,
                 this.BulkEditTextCommand.NotifyCanExecuteChanged();
                 this.BulkEditCharacterCommand.NotifyCanExecuteChanged();
                 this.BulkEditUnitNameCommand.NotifyCanExecuteChanged();
+                break;
+
+            case nameof(this.IsDirty):
+                this.SaveCommand.NotifyCanExecuteChanged();
                 break;
         }
     }
