@@ -1,5 +1,6 @@
 ﻿namespace Du.Core.Bases;
 
+using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Du.Core.Interfaces;
 
@@ -17,7 +18,12 @@ public abstract class VmPageBase : ObservableObject, INavigationAware
         set => this.SetProperty(ref this.title, value);
     }
 
-    public virtual void OnNavigating(object sender, Uri uri)
+    public virtual Task<bool> CanExitPage()
+    {
+        return Task.FromResult(true);
+    }
+
+    public virtual void OnNavigating(object sender, Uri uri, CancelEventArgs args)
     {
     }
 

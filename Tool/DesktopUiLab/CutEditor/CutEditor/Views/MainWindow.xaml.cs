@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Windows;
 using CutEditor.ViewModel;
 using Du.Presentation.Extensions;
+using Du.Presentation.Util;
 using Microsoft.Extensions.DependencyInjection;
 using Wpf.Ui;
 
@@ -24,6 +25,7 @@ public partial class MainWindow : Window
         snackbarService.SetSnackbarPresenter(this.SnackbarPresenter);
 
         PageRouterExtension.Instance.SetFrame(this.MyFrame);
+        new AppExitNotifier().SetFrame(this.MyFrame); // 핸들러에 등록되면서 객체는 지워지지 않습니다.
         this.MyFrame.Navigate(new Uri("Views/PgHome.xaml", UriKind.Relative));
     }
 

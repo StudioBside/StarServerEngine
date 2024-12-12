@@ -88,8 +88,19 @@ public sealed class VmCut : ObservableObject
             {
                 this.AddChoiceOptionCommand.NotifyCanExecuteChanged();
                 this.DeleteChoiceOptionCommand.NotifyCanExecuteChanged();
+                this.owner.IsDirty = true;
             };
         }
+
+        this.Cut.PropertyChanged += (s, e) =>
+        {
+            this.owner.IsDirty = true;
+        };
+
+        this.Cut.UnitTalk.PropertyChanged += (s, e) =>
+        {
+            this.owner.IsDirty = true;
+        };
     }
 
     public Cut Cut { get; }
@@ -188,7 +199,12 @@ public sealed class VmCut : ObservableObject
                 break;
         }
 
-        this.owner.IsDirty = true;
+        if (e.PropertyName != nameof(this.ShowUnitSection) &&
+            e.PropertyName != nameof(this.ShowCameraSection) &&
+            e.PropertyName != nameof(this.ShowScreenSection))
+        {
+            this.owner.IsDirty = true;
+        }
     }
 
     private async Task OnPickUnit()

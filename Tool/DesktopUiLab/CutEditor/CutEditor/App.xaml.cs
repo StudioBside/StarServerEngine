@@ -80,6 +80,7 @@ public partial class App : Application
 
         services.AddTransient<IUserInputProvider<string>, StringInputProvider>();
         services.AddTransient<IUserInputProvider<bool>, BooleanInputProvider>();
+        services.AddTransient<IDialogProvider, DialogProvider>();
         services.AddSingleton<IContentDialogService, ContentDialogService>();
         services.AddSingleton<ISnackbarService, SnackbarService>();
         services.AddTransient<IPopupMessageNotifier, PopupMessageNotifier>();

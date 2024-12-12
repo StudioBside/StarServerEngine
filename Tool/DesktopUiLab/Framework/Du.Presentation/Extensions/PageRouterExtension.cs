@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Navigation;
+using System.Windows.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Cs.Core;
 using Du.Core.Interfaces;
@@ -17,8 +18,8 @@ public sealed class PageRouterExtension : MarkupExtension, IPageRouter
 
     public PageRouterExtension()
     {
-        this.RouteCommand = new RelayCommand<object>(this.Route);
-        this.GoToCommand = new RelayCommand<string>(this.OnGoTo);
+        this.RouteCommand = new AsyncRelayCommand<object>(this.RouteAsync);
+        this.GoToCommand = new AsyncRelayCommand<string>(this.OnGoTo);
     }
 
     public event EventHandler<object>? Navigated;
@@ -36,9 +37,21 @@ public sealed class PageRouterExtension : MarkupExtension, IPageRouter
 
     public void Route(object? parameter)
     {
+        Dispatcher.CurrentDispatcher.InvokeAsync(() => this.RouteAsync(parameter));
+    }
+
+    public async Task RouteAsync(object? parameter)
+    {
         if (parameter is null)
         {
             //Log.Warn($"route error: invalid parameter");
+            return;
+        }
+
+        if (this.frame.Content is Page pageContent &&
+           pageContent.DataContext is INavigationAware navigationAware &&
+           await navigationAware.CanExitPage() == false)
+        {
             return;
         }
 
@@ -64,9 +77,16 @@ public sealed class PageRouterExtension : MarkupExtension, IPageRouter
 
     //// ------------------------------------------------------------------------------------
 
-    private void OnGoTo(string? obj)
+    private async Task OnGoTo(string? obj)
     {
         if (string.IsNullOrEmpty(obj))
+        {
+            return;
+        }
+
+        if (this.frame.Content is Page pageContent &&
+           pageContent.DataContext is INavigationAware navigationAware &&
+           await navigationAware.CanExitPage() == false)
         {
             return;
         }
@@ -74,19 +94,17 @@ public sealed class PageRouterExtension : MarkupExtension, IPageRouter
         this.frame.Navigate(new Uri(obj, UriKind.RelativeOrAbsolute));
     }
 
-    private void Frame_Navigated(object sender, NavigationEventArgs e)
+    private void Frame_Navigating(object sender, NavigatingCancelEventArgs e)
     {
         //네비게이션 시작전 상황을 뷰모델에 알려주기
         if (this.frame.Content is Page pageContent &&
             pageContent.DataContext is INavigationAware navigationAware)
         {
-            navigationAware?.OnNavigating(sender, e.Uri);
+            navigationAware.OnNavigating(sender, e.Uri, e);
         }
-
-        this.Navigated?.Invoke(this, e.Content);
     }
 
-    private void Frame_Navigating(object sender, NavigatingCancelEventArgs e)
+    private void Frame_Navigated(object sender, NavigationEventArgs e)
     {
         //네비게이션이 완료된 상황을 뷰모델에 알려주기
         if (this.frame.Content is Page pageContent &&
@@ -94,5 +112,7 @@ public sealed class PageRouterExtension : MarkupExtension, IPageRouter
         {
             navigationAware.OnNavigated(sender, e.Uri);
         }
+
+        this.Navigated?.Invoke(this, e.Content);
     }
 }

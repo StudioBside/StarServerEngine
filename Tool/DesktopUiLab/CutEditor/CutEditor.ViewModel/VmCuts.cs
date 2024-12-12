@@ -29,7 +29,8 @@ using static CutEditor.ViewModel.Enums;
 
 public sealed class VmCuts : VmPageBase,
     IClipboardHandler,
-    ILoadEventReceiver
+    ILoadEventReceiver,
+    IAppExitHandler
 {
     private readonly CreateParam param;
     private readonly ObservableCollection<VmCut> cuts = [];
@@ -205,12 +206,28 @@ public sealed class VmCuts : VmPageBase,
         return true;
     }
 
-    public override void OnNavigating(object sender, Uri uri)
+    public override Task<bool> CanExitPage()
+    {
+        var args = new CancelEventArgs();
+        this.ConfirmLeavePage(args);
+        return Task.FromResult(args.Cancel == false);
+    }
+
+    public override void OnNavigating(object sender, Uri uri, CancelEventArgs args)
     {
         // 다른 페이지로의 네이게이션이 시작될 때 (= 지금 페이지가 닫힐 때)
         Log.Debug($"{this.DebugName} OnNavigating: {uri}");
 
-        this.serviceScope.Dispose();
+        this.ConfirmLeavePage(args);
+        if (args.Cancel == false)
+        {
+            this.serviceScope.Dispose();
+        }
+    }
+
+    void IAppExitHandler.OnClosing(CancelEventArgs args)
+    {
+        this.ConfirmLeavePage(args);
     }
 
     public void UpdatePreview(int startIndex)
@@ -274,6 +291,40 @@ public sealed class VmCuts : VmPageBase,
 
             case nameof(this.IsDirty):
                 this.SaveCommand.NotifyCanExecuteChanged();
+                break;
+        }
+    }
+
+    private void ConfirmLeavePage(CancelEventArgs args)
+    {
+        if (this.IsDirty == false)
+        {
+            return;
+        }
+
+        var sb = new StringBuilder();
+        sb.AppendLine("아직 저장하지 않은 데이터가 있습니다.");
+        sb.AppendLine("계속 진행하시겠습니까?");
+        sb.AppendLine();
+        sb.AppendLine("예: 저장하고 이동");
+        sb.AppendLine("아니오: 저장하지 않고 이동");
+        sb.AppendLine("취소: 이동 취소");
+
+        var dialogProvider = this.services.GetRequiredService<IDialogProvider>();
+        var result = dialogProvider.Show("저장", sb.ToString());
+
+        switch (result)
+        {
+            case IDialogProvider.ResultType.Primary:
+                this.SaveCommand.Execute(parameter: null);
+                break;
+
+            case IDialogProvider.ResultType.Secondary:
+                break;
+
+            case IDialogProvider.ResultType.None:
+            default:
+                args.Cancel = true;
                 break;
         }
     }
@@ -369,6 +420,8 @@ public sealed class VmCuts : VmPageBase,
         //long bsonFileSize = jObject.GetInt64("BsonFileSize");
         long binFileSize = jObject.GetInt64("BinFileSize");
         float downRate = binFileSize * 100f / textFileSize;
+
+        this.IsDirty = false;
 
         var sb = new StringBuilder();
         sb.AppendLine($"{this.DebugName} 파일을 저장했습니다.");

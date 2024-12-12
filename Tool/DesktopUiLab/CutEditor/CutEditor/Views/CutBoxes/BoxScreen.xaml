@@ -237,7 +237,8 @@
                         Visibility="{Binding Cut.BgFileName, Converter={converters:NullToVisibilityConverter}}">
                 <ui:TextBlock VerticalAlignment="Center" Text="전환시간 : "/>
                 <ui:TextBox Width="50"
-                            Text="{Binding Cut.BgChangeTime}"/>
+                            ClearButtonEnabled="False"
+                            Text="{Binding Cut.BgChangeTime, UpdateSourceTrigger=PropertyChanged}"/>
             </StackPanel>
 
             <ui:Button Margin="0,0,10,0" Content="아크포인트"

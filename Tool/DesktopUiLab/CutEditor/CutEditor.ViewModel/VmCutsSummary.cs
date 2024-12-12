@@ -19,11 +19,9 @@ public sealed class VmCutsSummary : VmPageBase
     private readonly ObservableCollection<VmCutSummary> selectedCuts = new();
     private readonly CutUidGenerator uidGenerator;
     private readonly IServiceProvider services;
-    private readonly IServiceScope serviceScope;
 
     public VmCutsSummary(IConfiguration config, IServiceProvider services, CreateParam param)
     {
-        this.serviceScope = services.CreateScope();
         this.services = services;
 
         this.Name = param.Name;
@@ -48,7 +46,7 @@ public sealed class VmCutsSummary : VmPageBase
 
         this.uidGenerator = new CutUidGenerator(this.cuts.Select(e => e.Cut));
 
-        Log.Info($"{this.Name} 파일 로딩 완료. 총 컷의 개수:{this.cuts.Count}");
+        ////Log.Info($"{this.Name} 파일 로딩 완료. 총 컷의 개수:{this.cuts.Count}");
 
         var removeTargets = this.cuts.Where(e => e.DataType == Enums.CutDataType.Normal && e.Cut.UnitTalk.Korean.Length == 0).ToArray();
         if (removeTargets.Length > 0)
@@ -66,16 +64,6 @@ public sealed class VmCutsSummary : VmPageBase
     public IList<VmCutSummary> SelectedCuts => this.selectedCuts;
     public string TextFileName { get; }
     public ICommand GotoEditCommand { get; }
-
-    private string DebugName => $"[{this.Name}]";
-
-    public override void OnNavigating(object sender, Uri uri)
-    {
-        // 다른 페이지로의 네이게이션이 시작될 때 (= 지금 페이지가 닫힐 때)
-        Log.Debug($"{this.DebugName} OnNavigating: {uri}");
-
-        this.serviceScope.Dispose();
-    }
 
     //// --------------------------------------------------------------------------------------------
 

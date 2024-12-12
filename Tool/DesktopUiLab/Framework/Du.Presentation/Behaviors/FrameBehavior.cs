@@ -64,7 +64,7 @@ public sealed class FrameBehavior : Behavior<Frame>
         if (this.AssociatedObject.Content is Page pageContent &&
             pageContent.DataContext is INavigationAware navigationAware)
         {
-            navigationAware?.OnNavigating(sender, e.Uri);
+            navigationAware.OnNavigating(sender, e.Uri, e);
         }
     }
 
