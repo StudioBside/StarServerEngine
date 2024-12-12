@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using CutEditor.Model;
 using CutEditor.Model.Interfaces;
 using CutEditor.ViewModel.Detail;
@@ -18,6 +19,7 @@ using Shared.Templet.Strings;
 using Shared.Templet.TempletTypes;
 using static CutEditor.Model.Enums;
 using static CutEditor.ViewModel.Enums;
+using static Du.Core.Messages;
 using static Shared.Templet.Enums;
 
 public sealed class VmCut : ObservableObject
@@ -88,19 +90,9 @@ public sealed class VmCut : ObservableObject
             {
                 this.AddChoiceOptionCommand.NotifyCanExecuteChanged();
                 this.DeleteChoiceOptionCommand.NotifyCanExecuteChanged();
-                this.owner.IsDirty = true;
+                WeakReferenceMessenger.Default.Send(new DataChangedMessage());
             };
         }
-
-        this.Cut.PropertyChanged += (s, e) =>
-        {
-            this.owner.IsDirty = true;
-        };
-
-        this.Cut.UnitTalk.PropertyChanged += (s, e) =>
-        {
-            this.owner.IsDirty = true;
-        };
     }
 
     public Cut Cut { get; }
@@ -187,6 +179,18 @@ public sealed class VmCut : ObservableObject
 
     //// --------------------------------------------------------------------------------------------
 
+    protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+    {
+        base.OnPropertyChanged(e);
+
+        if (e.PropertyName != nameof(this.ShowUnitSection) &&
+            e.PropertyName != nameof(this.ShowCameraSection) &&
+            e.PropertyName != nameof(this.ShowScreenSection))
+        {
+            this.owner.IsDirty = true;
+        }
+    }
+
     private void Cut_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
         switch (e.PropertyName)
@@ -197,13 +201,6 @@ public sealed class VmCut : ObservableObject
             case nameof(Model.Cut.CameraOffset):
                 this.ShowCameraSection = this.Cut.HasCameraBoxData();
                 break;
-        }
-
-        if (e.PropertyName != nameof(this.ShowUnitSection) &&
-            e.PropertyName != nameof(this.ShowCameraSection) &&
-            e.PropertyName != nameof(this.ShowScreenSection))
-        {
-            this.owner.IsDirty = true;
         }
     }
 
@@ -342,9 +339,8 @@ public sealed class VmCut : ObservableObject
     private void OnAddChoiceOption()
     {
         long newUid = this.choiceUidGenerator.Generate();
-        var newChoice = new ChoiceOption();
+        var newChoice = new ChoiceOption($"새 선택지. uid:{newUid}");
         newChoice.InitializeUid(this.Cut.Uid, newUid);
-        newChoice.Text.Korean = newChoice.UidString;
 
         this.Cut.Choices.Add(newChoice);
     }

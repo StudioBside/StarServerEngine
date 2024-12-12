@@ -11,6 +11,15 @@ public sealed class L10nText : ObservableObject, ISearchable
 {
     private readonly string[] values = new string[EnumUtil<L10nType>.Count];
 
+    public L10nText()
+    {
+    }
+
+    public L10nText(string defaultText)
+    {
+        this.values[(int)L10nType.Korean] = defaultText;
+    }
+
     public string Korean
     {
         get => this.values[(int)L10nType.Korean];

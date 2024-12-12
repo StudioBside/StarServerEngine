@@ -175,7 +175,7 @@ public sealed class CutPreview : ObservableObject
                 int index = GetIndex(buffer, this.owner.Unit);
                 if (index < 0)
                 {
-                    Log.Warn($"{this.DebugName} Invalid unit: {this.owner.Unit.Name}");
+                    //Log.Warn($"{this.DebugName} Invalid unit: {this.owner.Unit.Name}");
                     return;
                 }
 

@@ -149,6 +149,8 @@
                         </StackPanel>
                     </StackPanel>
                 </ui:Flyout>
+                <ui:Button Margin="3" Content="유닛 변환"
+                           Command="{Binding ReplaceUnitCommand}"/>
                 <ui:Button Margin="3" Content="Uid 지정 이동"
                            ToolTip="Ctrl + G"
                            Command="{Binding ScrollByUidCommand}"/>

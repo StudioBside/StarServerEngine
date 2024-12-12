@@ -7,6 +7,7 @@
     xmlns:preview="clr-namespace:CutEditor.Views.Preview"
     xmlns:views="clr-namespace:CutEditor.Views"
     xmlns:lcvt="clr-namespace:CutEditor.Converters"
+    xmlns:lctr="clr-namespace:CutEditor.Views.Controls"
     xmlns:models="clr-namespace:CutEditor.Model;assembly=CutEditor.Model"
     xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
     xmlns:behaviors="clr-namespace:Du.Presentation.Behaviors;assembly=Du.Presentation"
@@ -54,14 +55,14 @@
                                     <GridViewColumn Header="텍스트(Korean)" Width="500">
                                         <GridViewColumn.CellTemplate>
                                             <DataTemplate>
-                                                <TextBlock Text="{Binding Text.Korean, Mode=TwoWay}">
+                                                <lctr:ColorTextBlock Text="{Binding Text.Korean, Mode=OneWay}">
                                                 <!--<TextBlock.Effect>
                                                     <DropShadowEffect Color="Black" Direction="315" ShadowDepth="1" BlurRadius="0"/>
                                                 </TextBlock.Effect>-->
-                                                <b:Interaction.Behaviors>
+                                                <!--<b:Interaction.Behaviors>
                                                     <behaviors:TextBlockColorBehavior />
-                                                </b:Interaction.Behaviors>
-                                                </TextBlock>
+                                                </b:Interaction.Behaviors>-->
+                                                </lctr:ColorTextBlock>
                                             </DataTemplate>
                                         </GridViewColumn.CellTemplate>
                                     </GridViewColumn>

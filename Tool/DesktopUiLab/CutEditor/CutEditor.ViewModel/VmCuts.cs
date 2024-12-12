@@ -26,6 +26,7 @@ using Shared.Templet.Strings;
 using Shared.Templet.TempletTypes;
 using static CutEditor.Model.Messages;
 using static CutEditor.ViewModel.Enums;
+using static Du.Core.Messages;
 
 public sealed class VmCuts : VmPageBase,
     IClipboardHandler,
@@ -60,7 +61,9 @@ public sealed class VmCuts : VmPageBase,
         this.BulkEditTextCommand = new AsyncRelayCommand(this.OnBulkEditText, () => this.selectedCuts.Count > 1);
         this.BulkEditCharacterCommand = new AsyncRelayCommand(this.OnBulkEditCharacter, () => this.selectedCuts.Count > 1);
         this.BulkEditUnitNameCommand = new AsyncRelayCommand(this.OnBulkEditUnitName, () => this.selectedCuts.Count > 1);
+        this.ReplaceUnitCommand = new AsyncRelayCommand(this.OnReplaceUnit);
         WeakReferenceMessenger.Default.Register<UpdatePreviewMessage>(this, this.OnUpdatePreview);
+        WeakReferenceMessenger.Default.Register<DataChangedMessage>(this, this.OnDataChanged);
 
         this.binFilePath = config["CutBinFilePath"] ?? throw new Exception("CutBinFilePath is not set in the configuration file.");
         this.packetExeFile = config["TextFilePacker"] ?? throw new Exception("TextFilePacker is not set in the configuration file.");
@@ -89,7 +92,7 @@ public sealed class VmCuts : VmPageBase,
 
         Log.Info($"{this.Name} 파일 로딩 완료. 총 컷의 개수:{this.cuts.Count}");
     }
-  
+
     public string Name { get; }
     public IList<VmCut> Cuts => this.cuts;
     public IList<VmCut> SelectedCuts => this.selectedCuts;
@@ -108,6 +111,7 @@ public sealed class VmCuts : VmPageBase,
     public IRelayCommand BulkEditTextCommand { get; }
     public IRelayCommand BulkEditCharacterCommand { get; }
     public IRelayCommand BulkEditUnitNameCommand { get; }
+    public ICommand ReplaceUnitCommand { get; }
 
     public bool IsDirty
     {
@@ -176,8 +180,7 @@ public sealed class VmCuts : VmPageBase,
             // < ~ > 로 둘러싸인 경우 선택지 포맷으로 인식
             if (unit is null && talkText.StartsWith('<') && talkText.EndsWith('>'))
             {
-                var newChoice = new ChoiceOption();
-                newChoice.Text.Korean = talkText[1..^1];
+                var newChoice = new ChoiceOption(talkText[1..^1]);
                 cut.Choices.Add(newChoice);
             }
             else
@@ -210,7 +213,14 @@ public sealed class VmCuts : VmPageBase,
     {
         var args = new CancelEventArgs();
         this.ConfirmLeavePage(args);
-        return Task.FromResult(args.Cancel == false);
+        if (args.Cancel)
+        {
+            return Task.FromResult(false); // 이동이 취소됨. false를 리턴하고 페이지를 전환하지 못하게 막는다.
+        }
+
+        // 이동을 진행. 저장하지 않고 이동하는 경우에도 navigating 시점에 팝업이 뜨지 않게 dirty flag를 초기화한다.
+        this.IsDirty = false;
+        return Task.FromResult(true);
     }
 
     public override void OnNavigating(object sender, Uri uri, CancelEventArgs args)
@@ -222,6 +232,8 @@ public sealed class VmCuts : VmPageBase,
         if (args.Cancel == false)
         {
             this.serviceScope.Dispose();
+            WeakReferenceMessenger.Default.Unregister<UpdatePreviewMessage>(this);
+            WeakReferenceMessenger.Default.Unregister<DataChangedMessage>(this);
         }
     }
 
@@ -596,6 +608,26 @@ public sealed class VmCuts : VmPageBase,
         {
             vmCut.Cut.UnitTalk.Korean = text;
         }
+    }
+
+    private async Task OnReplaceUnit()
+    {
+        var query = this.services.GetRequiredService<IUnitReplaceQuery>();
+        var result = await query.QueryAsync(this.cuts.Select(e => e.Cut));
+
+        var command = ReplaceUnit.Create(this, result);
+        if (command is null)
+        {
+            return;
+        }
+
+        command.Redo();
+        this.undoController.Add(command);
+    }
+
+    private void OnDataChanged(object recipient, DataChangedMessage message)
+    {
+        this.IsDirty = true;
     }
 
     public sealed record CreateParam(string FileName, long CutUid);

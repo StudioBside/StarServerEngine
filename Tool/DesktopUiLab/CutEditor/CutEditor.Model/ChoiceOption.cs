@@ -1,17 +1,32 @@
 ﻿namespace CutEditor.Model;
 
+using System.ComponentModel;
 using System.Text;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
 using Cs.Core.Util;
 using CutEditor.Model.Detail;
 using Newtonsoft.Json.Linq;
 using static CutEditor.Model.Enums;
+using static Du.Core.Messages;
 using static Shared.Templet.Enums;
 
 public sealed class ChoiceOption : ObservableObject
 {
-    private readonly L10nText text = new();
+    private readonly L10nText text;
     private StartAnchorType jumpAnchor;
+
+    public ChoiceOption(string defaultText)
+    {
+        this.text = new L10nText(defaultText);
+        this.text.PropertyChanged += this.Text_PropertyChanged;
+    }
+
+    public ChoiceOption()
+    {
+        this.text = new L10nText();
+        this.text.PropertyChanged += this.Text_PropertyChanged;
+    }
 
     public long CutUid { get; private set; }
     public long ChoiceUid { get; private set; }
@@ -76,5 +91,15 @@ public sealed class ChoiceOption : ObservableObject
         }
 
         return sb.ToString();
+    }
+
+    protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+    {
+        WeakReferenceMessenger.Default.Send(new DataChangedMessage());
+    }
+
+    private void Text_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        WeakReferenceMessenger.Default.Send(new DataChangedMessage());
     }
 }

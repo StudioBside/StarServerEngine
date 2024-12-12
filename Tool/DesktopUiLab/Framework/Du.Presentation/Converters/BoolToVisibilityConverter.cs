@@ -7,9 +7,6 @@ using System.Windows.Data;
 
 public sealed class BoolToVisibilityConverter : ConverterMarkupExtension<BoolToVisibilityConverter>
 {
-    public Visibility TrueValue { get; set; } = Visibility.Visible;
-    public Visibility FalseValue { get; set; } = Visibility.Collapsed;
-
     public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
         if (value is not bool boolValue)
@@ -17,7 +14,13 @@ public sealed class BoolToVisibilityConverter : ConverterMarkupExtension<BoolToV
             return Binding.DoNothing;
         }
 
-        return boolValue ? this.TrueValue : this.FalseValue;
+        if (parameter is string stringParameter &&
+          stringParameter.Equals("Invert", StringComparison.OrdinalIgnoreCase))
+        {
+            return value == null ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        return boolValue ? Visibility.Visible : Visibility.Collapsed;
     }
 
     public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

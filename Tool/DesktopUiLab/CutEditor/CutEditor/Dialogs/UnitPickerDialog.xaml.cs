@@ -5,7 +5,6 @@ using System.Windows;
 using System.Windows.Controls;
 using Du.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
-using Shared.Templet.Base;
 using Shared.Templet.TempletTypes;
 using Wpf.Ui.Controls;
 
@@ -18,8 +17,8 @@ public partial class UnitPickerDialog : ContentDialog
     {
         this.DataContext = this;
 
-        var units = Unit.Values.Where(e => e.EnableForCutscene());
-        this.filteredList = App.Current.Services.GetRequiredService<ISearchableCollectionProvider>().Build(units);
+        var candidates = Unit.Values.Where(e => e.EnableForCutscene());
+        this.filteredList = App.Current.Services.GetRequiredService<ISearchableCollectionProvider>().Build(candidates);
         this.InitializeComponent();
     }
 

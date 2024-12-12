@@ -8,7 +8,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using Cs.Logging;
 using Du.Core.Bases;
 using Du.Core.Interfaces;
-using Du.Core.Models;
+using static Du.Core.Messages;
 
 public sealed partial class VmHome : VmPageBase
 {

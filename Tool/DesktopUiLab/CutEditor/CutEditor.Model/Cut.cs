@@ -17,6 +17,7 @@ using Shared.Templet.Strings;
 using Shared.Templet.TempletTypes;
 using static CutEditor.Model.Enums;
 using static CutEditor.Model.Messages;
+using static Du.Core.Messages;
 using static Shared.Templet.Enums;
 
 public sealed class Cut : ObservableObject
@@ -684,6 +685,8 @@ public sealed class Cut : ObservableObject
 
                 break;
         }
+
+        WeakReferenceMessenger.Default.Send(new DataChangedMessage());
     }
 
     private void UnitTalk_PropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -694,6 +697,8 @@ public sealed class Cut : ObservableObject
                 this.TalkTime = string.IsNullOrEmpty(this.UnitTalk.Korean) ? 0f : TalkTimeDefault;
                 break;
         }
+
+        WeakReferenceMessenger.Default.Send(new DataChangedMessage());
     }
 
     private string? GetSpeakerName(L10nType l10nType)

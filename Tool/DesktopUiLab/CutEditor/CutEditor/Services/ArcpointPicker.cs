@@ -1,5 +1,6 @@
 ﻿namespace CutEditor.Services;
 
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using CutEditor.Dialogs;
 using CutEditor.Model.Interfaces;
@@ -20,5 +21,10 @@ internal sealed class ArcpointPicker(IContentDialogService contentDialogService)
             ContentDialogResult.Secondary => new ITempletPicker<LobbyItem>.PickResult(null, false),
             _ => new ITempletPicker<LobbyItem>.PickResult(null, true),
         };
+    }
+
+    public Task<ITempletPicker<LobbyItem>.PickResult> Pick(IEnumerable<LobbyItem> candidates)
+    {
+        return this.Pick();
     }
 }

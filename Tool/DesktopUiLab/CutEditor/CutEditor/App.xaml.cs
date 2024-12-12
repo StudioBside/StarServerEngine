@@ -76,6 +76,7 @@ public partial class App : Application
         services.AddKeyedTransient<IAssetPicker, BgFilePicker>("bgFile");
         services.AddKeyedTransient<IModelEditor<IList<StringElement>>, UnitNameEditor>("unitName");
         services.AddTransient<IModelEditor<BgFadeInOut>, BgFadeEditor>();
+        services.AddTransient<IUnitReplaceQuery, UnitReplaceQuery>();
         services.AddScoped<UndoController>();
 
         services.AddTransient<IUserInputProvider<string>, StringInputProvider>();
