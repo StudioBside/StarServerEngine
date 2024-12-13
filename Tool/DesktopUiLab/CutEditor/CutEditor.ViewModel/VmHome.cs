@@ -9,6 +9,7 @@ using CommunityToolkit.Mvvm.Input;
 using Cs.Core.Util;
 using Cs.Logging;
 using CutEditor.Model;
+using CutEditor.Model.Detail;
 using CutEditor.Model.Interfaces;
 using CutEditor.ViewModel.Detail;
 using Du.Core.Bases;
@@ -177,7 +178,38 @@ public sealed class VmHome : VmPageBase
 
     private void OnImport(CutScene? scene)
     {
+        if (scene is null)
+        {
+            Log.Error($"argument is null");
+            return;
+        }
+        
         var picker = this.services.GetRequiredService<IFilePicker>();
         var fileName = picker.PickFile(Environment.CurrentDirectory, "엑셀 파일 (*.xlsx)|*.xlsx");
+        if (fileName is null)
+        {
+            return;
+        }
+
+        var orgCuts = CutFileIo.LoadCutData(scene.FileName);
+        if (orgCuts.Any() == false)
+        {
+            Log.Error($"파일 로딩에 실패했습니다. fileName:{CutFileIo.GetTextFileName(scene.FileName)}");
+            return;
+        }
+
+        var uidGenerator = new CutUidGenerator(orgCuts);
+        foreach (var cut in orgCuts.Where(e => e.Choices.Any()))
+        {
+            var choiceUidGenerator = new ChoiceUidGenerator(cut.Uid, cut.Choices);
+        }
+
+        var reader = this.services.GetRequiredService<IExcelFileReader>();
+        var newCuts = new List<CutOutputExcelFormat>();
+        if (reader.Read(fileName, newCuts) == false)
+        {
+            Log.Error($"엑셀 파일 읽기에 실패했습니다. fileName:{fileName}");
+            return;
+        }
     }
 }

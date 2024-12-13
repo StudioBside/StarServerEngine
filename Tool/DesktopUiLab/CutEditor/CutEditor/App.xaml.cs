@@ -67,6 +67,7 @@ public partial class App : Application
         services.AddTransient<ITempletPicker<Unit>, UnitPicker>();
         services.AddTransient<ITempletPicker<LobbyItem>, ArcpointPicker>();
         services.AddTransient<IExcelFileWriter, ExcelFileWriter>();
+        services.AddTransient<IExcelFileReader, ExcelFileReader>();
         services.AddSingleton<IEnumPicker<Ease>>(EasingGraph.Instance);
         services.AddSingleton<IEnumPicker<CameraOffset>>(CameraOffsetController.Instance);
         services.AddSingleton(CutsListController.LastInstance);

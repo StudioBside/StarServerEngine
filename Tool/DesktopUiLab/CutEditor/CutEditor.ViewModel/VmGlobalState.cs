@@ -10,6 +10,8 @@ public sealed class VmGlobalState
 {
     public static VmGlobalState Instance => Singleton<VmGlobalState>.Instance;
     public string TextFilePath { get; private set; } = string.Empty;
+    public string BinFilePath { get; private set; } = string.Empty;
+    public string PackerExeFilePath { get; private set; } = string.Empty;
 
     public void Initialize(IConfiguration config)
     {
@@ -17,5 +19,7 @@ public sealed class VmGlobalState
         StringTemplateFactory.Instance.CreateFromString("CutsOutput", templateSource);
 
         this.TextFilePath = config["CutTextFilePath"] ?? throw new Exception("CutTextFilePath is not set in the configuration file.");
+        this.BinFilePath = config["CutBinFilePath"] ?? throw new Exception("CutBinFilePath is not set in the configuration file.");
+        this.PackerExeFilePath = config["TextFilePacker"] ?? throw new Exception("TextFilePacker is not set in the configuration file.");
     }
 }

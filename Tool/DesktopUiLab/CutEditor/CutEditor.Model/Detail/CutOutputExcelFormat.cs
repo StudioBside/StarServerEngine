@@ -33,15 +33,20 @@ public sealed class CutOutputExcelFormat
         this.ChineseSimplified = choice.Text.ChineseSimplified;
     }
 
-    public string Uid { get; }
-    public DestAnchorType? DestAnchor { get; } // dest가 엑셀에서 먼저 나오는게 더 나아 보여서 앞으로 이동.
-    public StartAnchorType? StartAnchor { get; }
-    public string? SpeakerKor { get; }
-    public string? SpeakerJpn { get; }
-    public string? UnitMotion { get; }
-    public EmotionEffect? Emotion { get; }
-    public string Korean { get; }
-    public string English { get; }
-    public string Japanese { get; }
-    public string ChineseSimplified { get; }
+    public CutOutputExcelFormat()
+    {
+        // note: file에서 읽어들일 때 사용하기 때문에 빈 생성자를 만들어둡니다.
+    }
+
+    public string Uid { get; set; } = string.Empty;
+    public DestAnchorType? DestAnchor { get; set; } // dest가 엑셀에서 먼저 나오는게 더 나아 보여서 앞으로 이동.
+    public StartAnchorType? StartAnchor { get; set; }
+    public string? SpeakerKor { get; set; }
+    public string? SpeakerJpn { get; set; }
+    public string? UnitMotion { get; set; }
+    public EmotionEffect? Emotion { get; set; }
+    public string Korean { get; set; } = string.Empty;
+    public string English { get; set; } = string.Empty;
+    public string Japanese { get; set; } = string.Empty;
+    public string ChineseSimplified { get; set; } = string.Empty;
 }

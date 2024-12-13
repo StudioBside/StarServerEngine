@@ -47,7 +47,42 @@ internal static class CellExt
 
     public static bool Read(this ICell cell, object instance, PropertyInfo property)
     {
-        var type = property.PropertyType;
+        return ReadCellValue(cell, instance, property, property.PropertyType);
+    }
+
+    public static void AttachComment(this ICell cell, string message)
+    {
+        var lineCount = message.Split(new[] { Environment.NewLine }, StringSplitOptions.None).Length;
+
+        IDrawing drawing = cell.Sheet.CreateDrawingPatriarch();
+
+        var address = cell.Address;
+        var rectStart = new Point(address.Column + 1, address.Row + 1);
+        var rectEnd = new Point(rectStart.X + 2, rectStart.Y + lineCount);
+        IClientAnchor anchor = drawing.CreateAnchor(0, 0, 0, 0, rectStart.X, rectStart.Y, rectEnd.X, rectEnd.Y);
+
+        IComment comment = drawing.CreateCellComment(anchor);
+        comment.String = new XSSFRichTextString(message);
+        comment.Author = "Du.Excel";
+
+        // Assign the comment to the cell
+        cell.CellComment = comment;
+    }
+
+    private static bool ReadCellValue(this ICell cell, object instance, PropertyInfo property, Type type)
+    {
+        var underlyingType = Nullable.GetUnderlyingType(type);
+        if (underlyingType != null)
+        {
+            if (cell.CellType == CellType.Blank)
+            {
+                property.SetValue(instance, null);
+                return true;
+            }
+
+            return ReadCellValue(cell, instance, property, type.GenericTypeArguments[0]);
+        }
+
         if (type == typeof(string))
         {
             property.SetValue(instance, cell.StringCellValue);
@@ -92,24 +127,5 @@ internal static class CellExt
 
         Log.Error($"Unsupported type {type.Name}");
         return false;
-    }
-
-    public static void AttachComment(this ICell cell, string message)
-    {
-        var lineCount = message.Split(new[] { Environment.NewLine }, StringSplitOptions.None).Length;
-
-        IDrawing drawing = cell.Sheet.CreateDrawingPatriarch();
-
-        var address = cell.Address;
-        var rectStart = new Point(address.Column + 1, address.Row + 1);
-        var rectEnd = new Point(rectStart.X + 2, rectStart.Y + lineCount);
-        IClientAnchor anchor = drawing.CreateAnchor(0, 0, 0, 0, rectStart.X, rectStart.Y, rectEnd.X, rectEnd.Y);
-
-        IComment comment = drawing.CreateCellComment(anchor);
-        comment.String = new XSSFRichTextString(message);
-        comment.Author = "Du.Excel";
-
-        // Assign the comment to the cell
-        cell.CellComment = comment;
     }
 }
