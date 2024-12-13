@@ -9,6 +9,7 @@ using System.Windows.Navigation;
 using System.Windows.Threading;
 using CommunityToolkit.Mvvm.Input;
 using Cs.Core;
+using Cs.Logging;
 using Du.Core.Interfaces;
 
 public sealed class PageRouterExtension : MarkupExtension, IPageRouter
@@ -44,7 +45,7 @@ public sealed class PageRouterExtension : MarkupExtension, IPageRouter
     {
         if (parameter is null)
         {
-            //Log.Warn($"route error: invalid parameter");
+            Log.Warn($"route error: invalid parameter");
             return;
         }
 

@@ -20,7 +20,7 @@ public sealed class VmCutsSummary : VmPageBase
     private readonly CutUidGenerator uidGenerator;
     private readonly IServiceProvider services;
 
-    public VmCutsSummary(IConfiguration config, IServiceProvider services, CreateParam param)
+    public VmCutsSummary(IServiceProvider services, CreateParam param)
     {
         this.services = services;
 
@@ -91,8 +91,7 @@ public sealed class VmCutsSummary : VmPageBase
     {
         public VmPageBase Create(CreateParam param)
         {
-            var config = services.GetRequiredService<IConfiguration>();
-            return new VmCutsSummary(config, services, param);
+            return new VmCutsSummary(services, param);
         }
     }
 }

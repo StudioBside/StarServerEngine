@@ -38,6 +38,7 @@ public sealed class VmHome : VmPageBase
         this.ExportCommand = new RelayCommand<CutScene>(this.OnExport);
         this.ImportCommand = new RelayCommand<CutScene>(this.OnImport);
         this.OpenExportRootCommand = new RelayCommand(this.OnOpenExportRoot);
+        this.ToL10nPageCommand = new RelayCommand<CutScene>(this.OnToL10nPage);
 
         this.filters.Add(DefaultFilter);
         this.filteredList.SetSubFilter(e =>
@@ -73,6 +74,7 @@ public sealed class VmHome : VmPageBase
     public ICommand NewFileCommand { get; }
     public ICommand ExportCommand { get; }
     public ICommand ImportCommand { get; }
+    public ICommand ToL10nPageCommand { get; }
     public ICommand OpenExportRootCommand { get; }
 
     public void AddCutScenes(IEnumerable<CutScene> cutScenes)
@@ -211,5 +213,17 @@ public sealed class VmHome : VmPageBase
             Log.Error($"엑셀 파일 읽기에 실패했습니다. fileName:{fileName}");
             return;
         }
+    }
+
+    private void OnToL10nPage(CutScene? scene)
+    {
+        if (scene is null)
+        {
+            Log.Error($"argument is null");
+            return;
+        }
+
+        this.services.GetRequiredService<IPageRouter>()
+            .Route(new VmL10n.CreateParam(scene.FileName));
     }
 }

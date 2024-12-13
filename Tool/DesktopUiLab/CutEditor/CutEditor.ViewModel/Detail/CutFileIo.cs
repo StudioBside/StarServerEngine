@@ -21,13 +21,13 @@ internal sealed class CutFileIo
         return Path.Combine(VmGlobalState.Instance.BinFilePath, $"CLIENT_{name}.bytes");
     }
 
-    public static IEnumerable<Cut> LoadCutData(string cutsceneName)
+    public static IReadOnlyList<Cut> LoadCutData(string cutsceneName)
     {
         var textFileName = GetTextFileName(cutsceneName);
         if (File.Exists(textFileName) == false)
         {
             Log.Debug($"cutscene file not found: {textFileName}");
-            return Enumerable.Empty<Cut>();
+            return Array.Empty<Cut>();
         }
 
         var result = new List<Cut>();

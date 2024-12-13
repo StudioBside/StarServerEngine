@@ -119,7 +119,7 @@
                                                CommandParameter="{Binding}"/>
 
                                     <ui:Button Content="번역 적용" Margin="10,0"
-                                               Command="{Binding DataContext.ImportCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                               Command="{Binding DataContext.ToL10nPageCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
                                                CommandParameter="{Binding}"/>
 
                                 </StackPanel>

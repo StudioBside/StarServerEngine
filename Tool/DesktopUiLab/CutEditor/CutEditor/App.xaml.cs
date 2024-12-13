@@ -57,6 +57,7 @@ public partial class App : Application
         services.AddSingleton<IPageRouter>(PageRouterExtension.Instance);
         services.AddTransient<VmCuts.Factory>();
         services.AddTransient<VmCutsSummary.Factory>();
+        services.AddTransient<VmL10n.Factory>();
         services.AddTransient<VmStrings>();
         services.AddTransient<VmUnits>();
         services.AddTransient<VmErrors>();
@@ -145,6 +146,7 @@ public partial class App : Application
             .Register<PgCuts, CutScene>()
             .Register<PgCuts, VmCutSummary>()
             .Register<PgCutsSummary, VmCutsSummary.CreateParam>()
+            .Register<PgL10n, VmL10n.CreateParam>()
             .Register<PgUnitDetail, Unit>()
             .Register<PgUnitScriptDetail, UnitScript>()
             .Register<PgBuffDetail, BuffTemplet>()
