@@ -35,6 +35,11 @@ public sealed class RestApiClient
         this.authorization = $"Basic {authInfoEnc}";
     }
 
+    public void SetBearerAutohrization(string token)
+    {
+        this.authorization = $"Bearer {token}";
+    }
+
     public async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request)
     {
         try

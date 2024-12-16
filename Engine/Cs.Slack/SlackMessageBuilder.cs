@@ -4,11 +4,14 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Net.Http;
+    using System.Net.Http.Json;
+    using System.Text;
     using Cs.Core.Util;
     using Cs.HttpClient;
     using Cs.Logging;
     using Cs.Slack.Abstracts;
     using Cs.Slack.Elements;
+    using Cs.Slack.Responses;
 
     public sealed class SlackMessageBuilder : IDisposable
     {
@@ -27,10 +30,10 @@
             this.endpoints = new SlackEndpoint[] { endpoint };
         }
 
-        public string UserName { get; set; }
+        public string UserName { get; set; } = string.Empty;
         public string IconEmoji { get; set; } = ":desktop_computer:";
-        public string Text { get; set; }
-        public SnippetData Snippet { get; set; }
+        public string Text { get; set; } = string.Empty;
+        public SnippetData? Snippet { get; set; }
         public List<Attachment> Attachments { get; } = new();
         public List<IBlock> Blocks { get; } = new();
         private bool HasAnyEndpont => this.endpoints != null && this.endpoints.Length > 0;
@@ -85,27 +88,49 @@
 
         private void SendSnippet(SlackEndpoint endpoint)
         {
+            var contents = Encoding.UTF8.GetBytes(this.Snippet!.Content);
+
             var parameters = new Dictionary<string, string>
             {
                 { "token", endpoint.Token },
-                { "channels", endpoint.Channel },
-                { "title", this.Snippet.Title },
-                { "content", this.Snippet.Content },
-                { "filetype", "text" },
+                { "filename", this.Snippet.Title },
+                { "length", $"{contents.Length}" },
             };
 
-            if (string.IsNullOrEmpty(this.Text) == false)
+            var getUrlResponse = ApiClient.PostAsync("files.getUploadURLExternal", new FormUrlEncodedContent(parameters)).Result;
+            if (getUrlResponse.IsSuccessStatusCode == false)
             {
-                parameters.Add("text", this.Text);
+                Log.Error($"[SlackMessageBuilder] files.getUploadURLExternal. response:{getUrlResponse}");
             }
 
-            var response = ApiClient.PostAsync("files.upload", new FormUrlEncodedContent(parameters)).Result;
-            if (response.IsSuccessStatusCode == false)
+            var uploadUrlResult = getUrlResponse.Content.ReadFromJsonAsync<GetUploadUrlResponse>().Result;
+            if (uploadUrlResult is null || uploadUrlResult.Ok == false)
             {
-                Log.Error($"[SlackMessageBuilder] files.upload fail. response:{response}");
+                Log.Error($"[SlackMessageBuilder] files.getUploadURLExternal fail. error:{uploadUrlResult?.Error}");
+                return;
             }
 
-            Log.Info($"sending slack snippet. response code:{response.StatusCode} resonPhrase:{response.ReasonPhrase}");
+            var uploadClient = new RestApiClient(uploadUrlResult.UploadUrl);
+            var uploadResponse = uploadClient.PostAsync(string.Empty, new ByteArrayContent(contents)).Result;
+            if (uploadResponse.IsSuccessStatusCode == false)
+            {
+                Log.Error($"[SlackMessageBuilder] file upload fail. response:{uploadResponse}");
+            }
+
+            parameters = new Dictionary<string, string>
+            {
+                { "token", endpoint.Token },
+                { "files", $"[{{\"id\":\"{uploadUrlResult.FileId}\"}}]" },
+                { "channel_id", endpoint.Channel },
+            };
+
+            var completeResponse = ApiClient.PostAsync("files.completeUploadExternal", new FormUrlEncodedContent(parameters)).Result;
+            if (completeResponse.IsSuccessStatusCode == false)
+            {
+                Log.Error($"[SlackMessageBuilder] files.completeUploadExternal fail. response:{completeResponse}");
+            }
+
+            Log.Info($"sending slack snippet. response code:{completeResponse.StatusCode} resonPhrase:{completeResponse.ReasonPhrase}");
         }
 
         private void SendMessage(SlackEndpoint endpoint)

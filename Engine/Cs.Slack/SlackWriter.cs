@@ -10,7 +10,7 @@ namespace Cs.Slack
         private readonly SlackMessageBuilder slackBuilder;
 
         public SlackWriter(string icon)
-            : this(icon, title: null)
+            : this(icon, title: string.Empty)
         {
         }
 
@@ -20,7 +20,7 @@ namespace Cs.Slack
             this.slackBuilder.UserName = SlackGlobalSetting.UserName;
             this.slackBuilder.IconEmoji = icon;
 
-            // note: titleÀº sectionÀ» Ãß°¡ÇÏ¸é ¹«½ÃµË´Ï´Ù. section±îÁö ¾È¾²°í ½ÍÀº °£¼ÒÇÑ ¹öÀüÀÏ ¶§ »ç¿ëÇÕ´Ï´Ù.
+            // note: titleì€ sectionì„ ì¶”ê°€í•˜ë©´ ë¬´ì‹œë©ë‹ˆë‹¤. sectionê¹Œì§€ ì•ˆì“°ê³  ì‹¶ì€ ê°„ì†Œí•œ ë²„ì „ì¼ ë•Œ ì‚¬ìš©í•©ë‹ˆë‹¤.
             if (string.IsNullOrEmpty(title) == false)
             {
                 this.WriteBoldLine(title);

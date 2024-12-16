@@ -10,10 +10,10 @@
     public sealed class Attachment
     {
         [JsonProperty(PropertyName = "author_name")]
-        public string AuthorName { get; set; }
-        public string Title { get; set; }
-        public string Text { get; set; }
-        public string Color { get; set; }
+        public string AuthorName { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
+        public string Text { get; set; } = string.Empty;
+        public string Color { get; set; } = string.Empty;
         public List<IBlock> Blocks { get; set; } = new List<IBlock>();
 
         public void AddDivider()

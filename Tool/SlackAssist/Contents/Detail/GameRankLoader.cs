@@ -40,7 +40,7 @@ internal class GameRankLoader
         builder.Write($"매출 순위 (출처:<{rankData.Source}|{rankData.SourceHost}>. {rankData.Date:yyyy-MM-dd}일 기준.)");
         message.Blocks.Add(builder.FlushToSectionBlock());
 
-        foreach (var game in rankData.Ranks.Take(10))
+        foreach (var game in rankData.Ranks.Take(15))
         {
             builder.WriteLine($"{game.Ranking}. *<{game.SummaryPageUrl}|{game.Title}>*");
             builder.WriteLine($"별점 : {game.StarGrade} [{ToStarMark(game.StarGrade)}]");
@@ -67,12 +67,12 @@ internal class GameRankLoader
             int fullCount = (int)value;
             for (int i = 0; i < fullCount; i++)
             {
-                writer.Write(":star_full:");
+                writer.Write("★");
             }
 
             if ((value - fullCount) > 0.01f)
             {
-                writer.Write(":star_half:");
+                writer.Write("☆");
             }
 
             return sb.ToString();
