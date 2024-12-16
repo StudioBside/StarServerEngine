@@ -128,6 +128,14 @@ public static class Enums
         Pos2x,
     }
 
+    public enum L10nMappingType
+    {
+        Normal,
+        MissingImported, // 원본에 있으나 번역본에 없음 (원본이 추가된 경우)
+        MissingOrigin, // 원본에 없으나 번역본에 있음 (원본이 삭제된 경우)
+        TextChanged, // 원본과 번역본이 다름
+    }
+
     public static bool IsIn(this Ease self)
     {
         return self switch

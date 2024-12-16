@@ -10,7 +10,12 @@ using NPOI.XSSF.UserModel;
 
 public sealed class ExcelFileReader : IExcelFileReader
 {
-    bool IExcelFileReader.Read<T>(string filePath, IList<T> collection)
+    public bool Read<T>(string filePath, IList<T> collection) where T : new()
+    {
+        return this.Read(filePath, new HashSet<string>(), collection);
+    }
+
+    public bool Read<T>(string filePath, ISet<string> headers, IList<T> collection) where T : new()
     {
         var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
         var propertyMap = new PropertyInfo[properties.Length]; // index가 cellIndex와 일치하도록 정렬.
@@ -35,7 +40,8 @@ public sealed class ExcelFileReader : IExcelFileReader
                 return false;
             }
 
-            var header = cell.ToString();
+            var header = cell.StringCellValue;
+            headers.Add(header);
             var propertyInfo = properties.FirstOrDefault(x => x.Name == header);
             if (propertyInfo == null)
             {

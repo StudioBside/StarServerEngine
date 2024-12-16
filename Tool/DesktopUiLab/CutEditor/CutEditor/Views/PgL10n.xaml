@@ -52,9 +52,6 @@
                            Icon="{ui:SymbolIcon Copy16}"
                            Command="{Binding CopyToClipboard, Source={extensions:UtilCommands}}"
                            CommandParameter="{Binding Name}"/>
-                <ui:Button Margin="3" Content="불러오기" Appearance="Primary"
-                           Icon="{ui:SymbolIcon FolderOpen16}"
-                           Command="{Binding LoadFileCommand}" />
             </StackPanel>
         </DockPanel>
 
@@ -81,28 +78,78 @@
                 </Grid.RowDefinitions>
                 <ui:TextBlock Margin="0,0,0,10" FontTypography="Subtitle" Text="{Binding Name}"/>
 
-                <ui:ListView Grid.Row="1" ItemsSource="{Binding OriginCuts}">
+                <ui:ListView Grid.Row="1" ItemsSource="{Binding Mappings}">
                     <ListView.View>
                         <GridView>
-                            <GridViewColumn Header="Uid" Width="50" DisplayMemberBinding="{Binding Uid}"/>
-                            <GridViewColumn Header="Korean" Width="200" DisplayMemberBinding="{Binding UnitTalk.Korean}"/>
-                            <GridViewColumn Header="English" Width="200" DisplayMemberBinding="{Binding UnitTalk.English}"/>
-                            <GridViewColumn Header="Japanese" Width="200" DisplayMemberBinding="{Binding UnitTalk.Japanese}"/>
-                            <GridViewColumn Header="Chinese" Width="200" DisplayMemberBinding="{Binding UnitTalk.ChineseSimplified}"/>
+                            <GridViewColumn Header="Uid" Width="50" DisplayMemberBinding="{Binding UidStr}"/>
+                            <GridViewColumn Header="Korean" Width="200" DisplayMemberBinding="{Binding L10NText.Korean}"/>
+                            <GridViewColumn Header="English" Width="200" DisplayMemberBinding="{Binding L10NText.English}"/>
+                            <GridViewColumn Header="Japanese" Width="200" DisplayMemberBinding="{Binding L10NText.Japanese}"/>
+                            <GridViewColumn Header="Chinese" Width="200" DisplayMemberBinding="{Binding L10NText.ChineseSimplified}"/>
                         </GridView>
                     </ListView.View>
                 </ui:ListView>
             </Grid>
 
             <!--오른쪽 : 임포트 데이터 정보 출력-->
-            <Grid Grid.Row="0" Grid.Column="1" Margin="10">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <ui:TextBlock Margin="0,0,0,10" FontTypography="Subtitle" Text="{Binding ImportFileName}"/>
+            <StackPanel Grid.Row="0" Grid.Column="1" Margin="10">
 
-            </Grid>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                    <ui:Button Content="불러오기" Margin="0,0,10,0"
+                           Icon="{ui:SymbolIcon FolderOpen16}"
+                           Command="{Binding LoadFileCommand}" />
+                    <ui:TextBlock VerticalAlignment="Center" FontTypography="Subtitle" Text="{Binding ImportFileName}"/>
+                </StackPanel>
+
+                <StackPanel Margin="10" Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Margin="0,0,10,0" Text="데이터 존재 확인 : "/>
+                    <CheckBox Content="English" IsEnabled="False"
+                              IsChecked="{Binding HasEnglish}"/>
+                    <CheckBox Content="Japanese" IsEnabled="False"
+                              IsChecked="{Binding HasJapanese}"/>
+                    <CheckBox Content="Chinese(Simplified)" IsEnabled="False"
+                              IsChecked="{Binding HasChineseSimplified}"/>
+                </StackPanel>
+
+                <StackPanel Margin="10">
+                    <ui:InfoBar Severity="Success"
+                            Message="안녕"
+                            IsOpen="True"
+                            Margin="0,0,0,10"
+                            IsClosable="False" />
+
+                    <TextBlock VerticalAlignment="Center" TextBlock.LineHeight="25">
+                        - 매칭 성공 : 
+                        <Run Text="{Binding StatCountNormal, Mode=OneWay}"/>
+                        <LineBreak/>
+                        - 원본 삭제 : 
+                        <Run Text="{Binding StatCountMissingOrigin, Mode=OneWay}"/>
+                        <LineBreak/>
+                        - 원본 추가 : 
+                        <Run Text="{Binding StatCountMissingImported, Mode=OneWay}"/>
+                        <LineBreak/>
+                        - 원본 변경 : 
+                        <Run Text="{Binding StatCountTextChanged, Mode=OneWay}"/>
+                    </TextBlock>
+
+                    <StackPanel Margin="10" Orientation="Horizontal">
+                        <TextBlock VerticalAlignment="Center" Margin="0,0,10,0" Text="적용 대상 언어 : "/>
+                        
+                        <RadioButton Content="English"
+                                 IsEnabled="{Binding HasEnglish}"/>
+                        <RadioButton Content="Japanese"
+                                 IsEnabled="{Binding HasJapanese}"/>
+                        <RadioButton Content="Chinese(Simplified)"
+                                 IsEnabled="{Binding HasChineseSimplified}"/>
+
+                        <ui:Button Content="적용하기" Appearance="Primary" Margin="30, 0"
+                           Icon="{ui:SymbolIcon Save16}"
+                           Command="{Binding LoadFileCommand}" />
+                    </StackPanel>
+
+                </StackPanel>
+
+            </StackPanel>
 
 
             <!--하단 : 로그 메세지 출력-->
