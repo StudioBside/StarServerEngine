@@ -12,6 +12,11 @@ public sealed class EnumBooleanConverter : ConverterMarkupExtension<EnumBooleanC
 {
     public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
+        if (value is null)
+        {
+            return DependencyProperty.UnsetValue;
+        }
+
         var parameterString = parameter as string;
         if (parameterString == null)
         {
@@ -33,6 +38,12 @@ public sealed class EnumBooleanConverter : ConverterMarkupExtension<EnumBooleanC
         if (parameterString == null)
         {
             return DependencyProperty.UnsetValue;
+        }
+
+        var underlyingType = Nullable.GetUnderlyingType(targetType);
+        if (underlyingType is not null)
+        {
+            targetType = underlyingType;
         }
 
         return Enum.Parse(targetType, parameterString);

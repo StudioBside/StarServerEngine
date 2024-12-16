@@ -4,6 +4,7 @@ using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CutEditor.Model.Detail;
 using static CutEditor.Model.Enums;
+using static Shared.Templet.Enums;
 
 public sealed class L10nMapping : ObservableObject
 {
@@ -40,6 +41,19 @@ public sealed class L10nMapping : ObservableObject
     {
         get => this.mappingType;
         set => this.SetProperty(ref this.mappingType, value);
+    }
+
+    public bool ApplyData(L10nType l10nType)
+    {
+        if (this.imported == null)
+        {
+            return false;
+        }
+
+        var newValue = this.imported.Get(l10nType);
+        var oldValue = this.l10nText.Set(l10nType, newValue);
+
+        return oldValue != newValue;
     }
 
     //// -----------------------------------------------------------------------------------------

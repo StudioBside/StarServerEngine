@@ -17,6 +17,7 @@ using Du.Core.Bases;
 using Du.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using static CutEditor.Model.Enums;
+using static Shared.Templet.Enums;
 
 public sealed class VmL10n : VmPageBase
 {
@@ -32,6 +33,9 @@ public sealed class VmL10n : VmPageBase
     private bool hasEnglish;
     private bool hasJapanese;
     private bool hasChineseSimplified;
+    private bool isSuccessful;
+    private string importResult = string.Empty;
+    private L10nType? loadingType;
 
     public VmL10n(IServiceProvider services, CreateParam param)
     {
@@ -40,6 +44,7 @@ public sealed class VmL10n : VmPageBase
         this.Name = param.Name;
         this.Title = this.Name;
         this.LoadFileCommand = new RelayCommand(this.OnLoadFile);
+        this.ApplyDataCommand = new RelayCommand(this.OnApplyData, () => this.LoadingType != null);
 
         this.TextFileName = CutFileIo.GetTextFileName(this.Name);
         var cutList = CutFileIo.LoadCutData(this.Name);
@@ -79,12 +84,13 @@ public sealed class VmL10n : VmPageBase
             }
         }
 
-        this.WriteLog($"전체 데이터 {this.originCuts.Count}개. 기본형 {normalCut}개, 선택지 {branchCut}개.");
+        this.WriteLog($"컷신 이름:{this.Name} 전체 데이터 {this.originCuts.Count}개. 기본형 {normalCut}개, 선택지 {branchCut}개.");
     }
 
     public string Name { get; }
     public string TextFileName { get; }
     public ICommand LoadFileCommand { get; }
+    public IRelayCommand ApplyDataCommand { get; }
     public IEnumerable<L10nMapping> Mappings => this.mappings.Values;
     public IList<string> LogMessages => this.logMessages;
     public string? ImportFileName => Path.GetFileName(this.importFilePath);
@@ -117,6 +123,24 @@ public sealed class VmL10n : VmPageBase
     public int StatCountMissingImported => this.mappingStat[(int)L10nMappingType.MissingImported];
     public int StatCountTextChanged => this.mappingStat[(int)L10nMappingType.TextChanged];
 
+    public bool IsSuccessful
+    {
+        get => this.isSuccessful;
+        set => this.SetProperty(ref this.isSuccessful, value);
+    }
+
+    public string ImportResult
+    {
+        get => this.importResult;
+        set => this.SetProperty(ref this.importResult, value);
+    }
+
+    public L10nType? LoadingType
+    {
+        get => this.loadingType;
+        set => this.SetProperty(ref this.loadingType, value);
+    }
+
     //// --------------------------------------------------------------------------------------------
 
     protected override void OnPropertyChanged(PropertyChangedEventArgs e)
@@ -127,6 +151,10 @@ public sealed class VmL10n : VmPageBase
         {
             case nameof(this.ImportFilePath):
                 this.OnPropertyChanged(nameof(this.ImportFileName));
+                break;
+
+            case nameof(this.LoadingType):
+                this.ApplyDataCommand.NotifyCanExecuteChanged();
                 break;
         }
     }
@@ -144,6 +172,7 @@ public sealed class VmL10n : VmPageBase
         this.importedMappings.Clear();
         this.importedHeaders.Clear();
         Array.Clear(this.mappingStat);
+        this.LoadingType = null;
 
         foreach (var mapping in this.mappings.Values)
         {
@@ -156,6 +185,8 @@ public sealed class VmL10n : VmPageBase
             Log.Error($"엑셀 파일 읽기에 실패했습니다. fileName:{this.importFilePath}");
             return;
         }
+
+        this.WriteLog($"번역데이터 파일 로딩: {this.ImportFileName}");
 
         this.HasEnglish = this.importedHeaders.Contains("English");
         this.HasJapanese = this.importedHeaders.Contains("Japanese");
@@ -185,10 +216,49 @@ public sealed class VmL10n : VmPageBase
             }
         }
 
+        this.IsSuccessful = this.mappings.Count == this.mappingStat[(int)L10nMappingType.Normal];
+        this.ImportResult = this.IsSuccessful
+            ? "모든 데이터의 uid 및 텍스트가 일치합니다."
+            : "데이터 불일치. 확인이 필요합니다.";
+
+        this.WriteLog(this.ImportResult);
+
         this.OnPropertyChanged(nameof(this.StatCountNormal));
         this.OnPropertyChanged(nameof(this.StatCountMissingOrigin));
         this.OnPropertyChanged(nameof(this.StatCountMissingImported));
         this.OnPropertyChanged(nameof(this.StatCountTextChanged));
+    }
+
+    private void OnApplyData()
+    {
+        if (this.loadingType == null || this.loadingType == L10nType.Korean)
+        {
+            this.WriteLog($"번역을 적용할 언어타입 지정이 올바르지 않습니다. loadingType:{this.loadingType}");
+            return;
+        }
+
+        int changedCount = 0;
+        foreach (var mapping in this.mappings.Values.Where(e => e.Imported != null))
+        {
+            if (mapping.ApplyData(this.loadingType.Value))
+            {
+                ++changedCount;
+            }
+        }
+
+        if (changedCount == 0)
+        {
+            this.WriteLog("적용할 변경사항이 없습니다.");
+            return;
+        }
+
+        if (CutFileIo.SaveCutData(this.Name, this.originCuts.Values) == false)
+        {
+            this.WriteLog("저장에 실패했습니다.");
+            return;
+        }
+
+        this.WriteLog($"번역 적용 완료. 대상 언어:{this.loadingType.Value} 변경된 데이터 {changedCount}개.");
     }
 
     private void WriteLog(string message)

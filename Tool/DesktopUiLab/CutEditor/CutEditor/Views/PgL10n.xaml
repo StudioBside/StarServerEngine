@@ -9,6 +9,7 @@
       xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
       xmlns:behaviors="clr-namespace:Du.Presentation.Behaviors;assembly=Du.Presentation"
       xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
+      xmlns:libconverters="clr-namespace:Du.WpfLib.LibConverters;assembly=Du.WpfLib"
       xmlns:extensions="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
       xmlns:viewmodels="clr-namespace:CutEditor.ViewModel;assembly=CutEditor.ViewModel"
       d:DataContext="{d:DesignInstance Type=viewmodels:VmCutsSummary}"
@@ -111,9 +112,11 @@
                               IsChecked="{Binding HasChineseSimplified}"/>
                 </StackPanel>
 
-                <StackPanel Margin="10">
-                    <ui:InfoBar Severity="Success"
-                            Message="안녕"
+                <StackPanel Margin="10" Visibility="{Binding ImportFileName, Converter={converters:NullToVisibilityConverter}}">
+                    <ui:InfoBar Severity="{Binding IsSuccessful,
+                        Converter={libconverters:BoolToSeverityConverter},
+                        ConverterParameter=Warning}"
+                            Message="{Binding ImportResult}"
                             IsOpen="True"
                             Margin="0,0,0,10"
                             IsClosable="False" />
@@ -135,16 +138,28 @@
                     <StackPanel Margin="10" Orientation="Horizontal">
                         <TextBlock VerticalAlignment="Center" Margin="0,0,10,0" Text="적용 대상 언어 : "/>
                         
-                        <RadioButton Content="English"
-                                 IsEnabled="{Binding HasEnglish}"/>
-                        <RadioButton Content="Japanese"
-                                 IsEnabled="{Binding HasJapanese}"/>
-                        <RadioButton Content="Chinese(Simplified)"
-                                 IsEnabled="{Binding HasChineseSimplified}"/>
+                        <RadioButton 
+                            Content="English"
+                            IsEnabled="{Binding HasEnglish}"
+                            IsChecked="{Binding LoadingType,
+                            Converter={converters:EnumBooleanConverter},
+                            ConverterParameter=English}"/>
+                        <RadioButton
+                            Content="Japanese"
+                            IsEnabled="{Binding HasJapanese}"
+                            IsChecked="{Binding LoadingType,
+                            Converter={converters:EnumBooleanConverter},
+                            ConverterParameter=Japanese}"/>
+                        <RadioButton
+                            Content="Chinese(Simplified)"
+                            IsEnabled="{Binding HasChineseSimplified}"
+                            IsChecked="{Binding LoadingType,
+                            Converter={converters:EnumBooleanConverter},
+                            ConverterParameter=ChineseSimplified}"/>
 
                         <ui:Button Content="적용하기" Appearance="Primary" Margin="30, 0"
                            Icon="{ui:SymbolIcon Save16}"
-                           Command="{Binding LoadFileCommand}" />
+                           Command="{Binding ApplyDataCommand}" />
                     </StackPanel>
 
                 </StackPanel>

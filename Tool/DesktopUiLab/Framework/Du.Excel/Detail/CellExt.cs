@@ -2,7 +2,6 @@
 
 using System;
 using System.Drawing;
-using System.Linq;
 using System.Reflection;
 using Cs.Logging;
 using NPOI.SS.UserModel;

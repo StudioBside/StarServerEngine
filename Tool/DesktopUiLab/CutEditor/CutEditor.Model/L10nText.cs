@@ -70,6 +70,15 @@ public sealed class L10nText : ObservableObject, ISearchable
         return this.values[(int)l10nType];
     }
 
+    public string Set(L10nType l10nType, string value)
+    {
+        var oldValue = this.values[(int)l10nType];
+        this.values[(int)l10nType] = value;
+
+        this.OnPropertyChanged(l10nType.ToString());
+        return oldValue;
+    }
+
     public override string ToString() => this.values[(int)L10nType.Korean];
 
     internal void Load(JToken token, string prefix)
