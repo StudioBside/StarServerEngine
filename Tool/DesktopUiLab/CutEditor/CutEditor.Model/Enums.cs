@@ -136,6 +136,12 @@ public static class Enums
         TextChanged, // 원본과 번역본이 다름
     }
 
+    public enum SearchCombinationType
+    {
+        And,
+        Or,
+    }
+
     public static bool IsIn(this Ease self)
     {
         return self switch

@@ -19,7 +19,8 @@ using Microsoft.Extensions.DependencyInjection;
 using static CutEditor.Model.Enums;
 using static Shared.Templet.Enums;
 
-public sealed class VmL10n : VmPageBase
+public sealed class VmL10n : VmPageBase,
+    IFileDropHandler
 {
     private readonly Dictionary<long/*uid*/, Cut> originCuts = new();
     private readonly Dictionary<string/*uidStr*/, L10nMapping> mappings = new();
@@ -29,6 +30,8 @@ public sealed class VmL10n : VmPageBase
     private readonly ObservableCollection<string> logMessages = new();
     private readonly IServiceProvider services;
     private readonly int[] mappingStat = new int[EnumUtil<L10nMappingType>.Count];
+    private string name = string.Empty;
+    private string textFileName = string.Empty;
     private string? importFilePath;
     private bool hasEnglish;
     private bool hasJapanese;
@@ -40,55 +43,12 @@ public sealed class VmL10n : VmPageBase
     public VmL10n(IServiceProvider services, CreateParam param)
     {
         this.services = services;
-
-        this.Name = param.Name;
-        this.Title = this.Name;
         this.LoadFileCommand = new RelayCommand(this.OnLoadFile);
         this.ApplyDataCommand = new RelayCommand(this.OnApplyData, () => this.LoadingType != null);
 
-        this.TextFileName = CutFileIo.GetTextFileName(this.Name);
-        var cutList = CutFileIo.LoadCutData(this.Name);
-        if (cutList.Count == 0)
-        {
-            Log.Warn($"{this.Name} 파일에 컷이 없습니다.");
-            return;
-        }
-
-        var uidGenerator = new CutUidGenerator(cutList);
-        foreach (var cut in cutList.Where(e => e.Choices.Any()))
-        {
-            var choiceUidGenerator = new ChoiceUidGenerator(cut.Uid, cut.Choices);
-        }
-
-        this.originCuts = cutList.ToDictionary(e => e.Uid);
-
-        int normalCut = 0;
-        int branchCut = 0;
-        foreach (var cut in cutList)
-        {
-            L10nMapping mapping;
-            if (cut.Choices.Count == 0)
-            {
-                mapping = new L10nMapping(cut);
-                this.mappings.Add(mapping.UidStr, mapping);
-                ++normalCut;
-            }
-            else
-            {
-                foreach (var choice in cut.Choices)
-                {
-                    mapping = new L10nMapping(cut, choice);
-                    this.mappings.Add(mapping.UidStr, mapping);
-                    ++branchCut;
-                }
-            }
-        }
-
-        this.WriteLog($"컷신 이름:{this.Name} 전체 데이터 {this.originCuts.Count}개. 기본형 {normalCut}개, 선택지 {branchCut}개.");
+        this.LoadOriginData(param.Name);
     }
 
-    public string Name { get; }
-    public string TextFileName { get; }
     public ICommand LoadFileCommand { get; }
     public IRelayCommand ApplyDataCommand { get; }
     public IEnumerable<L10nMapping> Mappings => this.mappings.Values;
@@ -118,6 +78,18 @@ public sealed class VmL10n : VmPageBase
         set => this.SetProperty(ref this.hasChineseSimplified, value);
     }
 
+    public string Name
+    {
+        get => this.name;
+        set => this.SetProperty(ref this.name, value);
+    }
+
+    public string TextFileName
+    {
+        get => this.textFileName;
+        set => this.SetProperty(ref this.textFileName, value);
+    }
+
     public int StatCountNormal => this.mappingStat[(int)L10nMappingType.Normal];
     public int StatCountMissingOrigin => this.mappingStat[(int)L10nMappingType.MissingOrigin];
     public int StatCountMissingImported => this.mappingStat[(int)L10nMappingType.MissingImported];
@@ -139,6 +111,22 @@ public sealed class VmL10n : VmPageBase
     {
         get => this.loadingType;
         set => this.SetProperty(ref this.loadingType, value);
+    }
+
+    void IFileDropHandler.HandleDroppedFiles(string[] files)
+    {
+        foreach (var file in files)
+        {
+            this.WriteLog($"파일 드롭: {file}");
+        }
+
+        if (files.Length == 1)
+        {
+            this.ProcessSingleFileDrop(files[0]);
+            return;
+        }
+
+        this.ProcessMultiFileDrop(files);
     }
 
     //// --------------------------------------------------------------------------------------------
@@ -265,6 +253,62 @@ public sealed class VmL10n : VmPageBase
     {
         var formatted = $"[{DateTime.Now:HH:mm:ss}] {message}";
         this.logMessages.Add(formatted);
+    }
+
+    private void LoadOriginData(string name)
+    {
+        var cutList = CutFileIo.LoadCutData(name);
+        if (cutList.Count == 0)
+        {
+            Log.Warn($"{name} 파일에 컷이 없습니다.");
+            return;
+        }
+
+        var uidGenerator = new CutUidGenerator(cutList);
+        foreach (var cut in cutList.Where(e => e.Choices.Any()))
+        {
+            var choiceUidGenerator = new ChoiceUidGenerator(cut.Uid, cut.Choices);
+        }
+
+        this.originCuts.Clear();
+        this.mappings.Clear();
+
+        this.Name = name;
+        this.Title = this.Name;
+        this.TextFileName = CutFileIo.GetTextFileName(this.Name);
+
+        int normalCut = 0;
+        int branchCut = 0;
+        foreach (var cut in cutList)
+        {
+            L10nMapping mapping;
+            if (cut.Choices.Count == 0)
+            {
+                mapping = new L10nMapping(cut);
+                this.mappings.Add(mapping.UidStr, mapping);
+                ++normalCut;
+            }
+            else
+            {
+                foreach (var choice in cut.Choices)
+                {
+                    mapping = new L10nMapping(cut, choice);
+                    this.mappings.Add(mapping.UidStr, mapping);
+                    ++branchCut;
+                }
+            }
+        }
+
+        this.WriteLog($"컷신 이름:{this.Name} 전체 데이터 {this.originCuts.Count}개. 기본형 {normalCut}개, 선택지 {branchCut}개.");
+    }
+
+    private void ProcessSingleFileDrop(string file)
+    {
+        var nameOnly = Path.GetFileNameWithoutExtension(file);
+    }
+
+    private void ProcessMultiFileDrop(IReadOnlyList<string> files)
+    {
     }
 
     public sealed record CreateParam(string Name);

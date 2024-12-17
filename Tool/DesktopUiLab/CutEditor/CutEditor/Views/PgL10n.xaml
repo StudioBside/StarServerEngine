@@ -80,6 +80,9 @@
                 <ui:TextBlock Margin="0,0,0,10" FontTypography="Subtitle" Text="{Binding Name}"/>
 
                 <ui:ListView Grid.Row="1" ItemsSource="{Binding Mappings}">
+                    <b:Interaction.Behaviors>
+                        <behaviors:FileDropBehavior/>
+                    </b:Interaction.Behaviors>
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Header="Uid" Width="50" DisplayMemberBinding="{Binding UidStr}"/>

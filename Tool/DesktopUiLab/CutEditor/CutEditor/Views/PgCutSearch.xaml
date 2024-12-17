@@ -1,0 +1,93 @@
+﻿<Page
+    x:Class="CutEditor.Views.PgCutSearch"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+    xmlns:local="clr-namespace:CutEditor.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:extensions="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
+    xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
+    xmlns:models="clr-namespace:CutEditor.Model;assembly=CutEditor.Model"
+    xmlns:viewmodels="clr-namespace:CutEditor.ViewModel;assembly=CutEditor.ViewModel"
+    d:DataContext="{d:DesignInstance Type=viewmodels:VmCutSearch}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <Page.InputBindings>
+        <KeyBinding Key="Return"
+                    Command="{Binding RouteCommand, Source={extensions:PageRouter}}"
+                    CommandParameter="{Binding SelectedCutScene}"/>
+    </Page.InputBindings>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" /> <!--타이틀-->
+            <RowDefinition Height="Auto" /> <!--검색어 입력-->
+            <RowDefinition Height="*" /> <!--컷신 리스트-->
+            <RowDefinition Height="Auto" /> <!--버튼 패널-->
+        </Grid.RowDefinitions>
+
+        <!--상단 패널-->
+        <DockPanel Grid.Row="0">
+        </DockPanel>
+
+        <!--검색 필터 영역-->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <ListView Grid.Column="0"
+                         ItemsSource="{Binding SearchResultGroups}">
+                
+            </ListView>
+            
+            <StackPanel Grid.Column="1">
+                <TextBlock Margin="10,0,0,0" Text="조건 적용 방식 : "/>
+                <StackPanel Margin="10,0,0,0" Orientation="Horizontal">
+                    <RadioButton Content="And" MinWidth="80"/>
+                    <RadioButton Content="Or" MinWidth="80"/>
+                </StackPanel>
+
+                <ui:Button Margin="3" Content="+ 텍스트 조건"/>
+                <ui:Button Margin="3" Content="+ 유닛 조건"/>
+
+                <ui:Button Margin="3" Appearance="Primary" Content="검색 시작"
+                     Icon="{ui:SymbolIcon Search16}"
+                           />
+
+                <ui:Button Margin="3" Content="목록으로"
+                     Icon="{ui:SymbolIcon ArrowStepBack16}"
+                     Command="{Binding GoToCommand, Source={extensions:PageRouter}}"
+                     CommandParameter="Views/PgHome.xaml"/>
+            </StackPanel>
+        </Grid>
+
+        <!--데이터 리스트-->
+        <ui:ListView
+            Grid.Row="2"
+            ItemsSource="{Binding FilteredFiles}"
+            Margin="0,10,0,0"
+            ScrollViewer.VerticalScrollBarVisibility="Auto"
+            SelectedItem="{Binding SelectedCutScene}"
+            SelectionMode="Single">
+            <ListView.View>
+                <GridView>
+                </GridView>
+            </ListView.View>
+            <b:Interaction.Triggers>
+                <b:EventTrigger EventName="MouseDoubleClick">
+                    <b:InvokeCommandAction
+                        Command="{Binding RouteCommand, Source={extensions:PageRouter}}"
+                        CommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=ListView}}">
+                    </b:InvokeCommandAction>
+                </b:EventTrigger>
+            </b:Interaction.Triggers>
+        </ui:ListView>
+      
+    </Grid>
+</Page>

@@ -63,6 +63,7 @@ public partial class App : Application
         services.AddTransient<VmErrors>();
         services.AddTransient<VmUnitScripts>();
         services.AddTransient<VmBuffs>();
+        services.AddTransient<VmCutSearch>();
         services.AddTransient<FileLoader>();
         services.AddTransient<FileAndSnackbarLog>();
         services.AddTransient<ITempletPicker<Unit>, UnitPicker>();

@@ -148,7 +148,8 @@
                         Orientation="Horizontal">
                 <ui:Button Margin="0,0,10,0"
                            Content="전체 검색"
-                           IsEnabled="False"/>
+                           Command="{Binding GoToCommand, Source={extensions:PageRouter}}"
+                           CommandParameter="Views/PgCutSearch.xaml" />
                 <ui:Button Margin="0,0,10,0"
                            Content="시스템 스트링"
                            Command="{Binding GoToCommand, Source={extensions:PageRouter}}"

@@ -25,6 +25,7 @@ public sealed class ListViewBehavior : Behavior<ListView>
     private Point cursorStartPos;
     private AdornerLayer adornerLayer = null!;
     private DraggedAdorner? draggedAdorner;
+    private bool readyToDrag;
 
     public bool ReorderByDragDrop
     {
@@ -90,7 +91,12 @@ public sealed class ListViewBehavior : Behavior<ListView>
 
     private void AssociatedObject_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
-        this.cursorStartPos = e.GetPosition(relativeTo: null);
+        // TextBox 영역 클릭 시 무시
+        if (e.OriginalSource.FindAncestor<TextBox>(out var textBox))
+        {
+            this.readyToDrag = false;
+            return;
+        }
 
         if (e.OriginalSource.FindAncestor<ListViewItem>(out var clickedItem) && // 아이템 클릭 했을 때
             clickedItem.IsSelected && // 현재 선택된 상태이고
@@ -100,12 +106,21 @@ public sealed class ListViewBehavior : Behavior<ListView>
             this.AssociatedObject.SelectedItems.Count > 1) // 선택된 아이템이 여러개일 때
         {
             e.Handled = true; // 이벤트를 무시해서 지금 선택된 리스트가 리셋되는 것을 막아준다.
+            this.readyToDrag = false;
             return;
         }
+
+        this.cursorStartPos = e.GetPosition(relativeTo: null);
+        this.readyToDrag = true;
     }
 
     private void AssociatedObject_PreviewMouseMove(object sender, MouseEventArgs e)
     {
+        if (this.readyToDrag == false)
+        {
+            return;
+        }
+
         if (e.LeftButton != MouseButtonState.Pressed && this.draggedAdorner is not null)
         {
             this.adornerLayer.Remove(this.draggedAdorner);
@@ -116,12 +131,14 @@ public sealed class ListViewBehavior : Behavior<ListView>
             e.OriginalSource.FindAncestor<ListViewItem>(out var dragStartItem) == false || // 대상 아이템을 찾을 수 없음
             this.AssociatedObject.SelectedItems.Count == 0) // 선택된 아이템이 없음
         {
+            this.readyToDrag = false;
             return;
         }
 
         // 마우스가 현재 선택된 아이템 위에 있지 않으면 리턴
         if (this.AssociatedObject.SelectedItems.Contains(dragStartItem.DataContext) == false)
         {
+            this.readyToDrag = false;
             return;
         }
 
@@ -165,6 +182,8 @@ public sealed class ListViewBehavior : Behavior<ListView>
 
     private void AssociatedObject_Drop(object sender, DragEventArgs e)
     {
+        this.readyToDrag = false;
+
         if (this.draggedAdorner is not null)
         {
             this.adornerLayer.Remove(this.draggedAdorner);
@@ -242,6 +261,7 @@ public sealed class ListViewBehavior : Behavior<ListView>
         foreach (var item in movingItems)
         {
             list.Insert(dropIndex, item);
+            this.AssociatedObject.SelectedItems.Add(item);
         }
 
         e.Handled = true;

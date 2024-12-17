@@ -314,7 +314,7 @@ public sealed class VmCuts : VmPageBase,
 
         var sb = new StringBuilder();
         sb.AppendLine("아직 저장하지 않은 데이터가 있습니다.");
-        sb.AppendLine("계속 진행하시겠습니까?");
+        sb.AppendLine("저장하시겠습니까?");
         sb.AppendLine();
         sb.AppendLine("예: 저장하고 이동");
         sb.AppendLine("아니오: 저장하지 않고 이동");

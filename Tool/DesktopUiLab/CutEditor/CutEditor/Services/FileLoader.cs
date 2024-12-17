@@ -1,24 +1,16 @@
 ﻿namespace CutEditor.Services;
 
-using System;
 using System.Collections.Generic;
-using System.IO;
 using Cs.Core.Util;
 using Cs.Logging;
 using CutEditor.Model;
 using CutEditor.ViewModel;
-using Microsoft.Extensions.Configuration;
 
-internal sealed class FileLoader(VmHome vmHome, IConfiguration config)
+internal sealed class FileLoader(VmHome vmHome)
 {
     public void Load()
     {
-        var path = config.GetValue<string>("CutSceneDataFile") ?? throw new Exception("CutSceneDataFile is not set in the configuration file.");
-        if (!File.Exists(path))
-        {
-            Log.ErrorAndExit($"cutscene file not found: {path}");
-        }
-
+        var path = VmGlobalState.Instance.CutSceneDataFilePath;
         Log.Debug($"Loading files from {path}");
 
         var list = new List<CutScene>();
