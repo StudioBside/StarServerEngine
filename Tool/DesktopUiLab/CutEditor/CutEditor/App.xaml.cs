@@ -81,6 +81,7 @@ public partial class App : Application
         services.AddTransient<IModelEditor<BgFadeInOut>, BgFadeEditor>();
         services.AddTransient<IUnitReplaceQuery, UnitReplaceQuery>();
         services.AddScoped<UndoController>();
+        services.AddSingleton<IClipboardWrapper, ClipboardWrapper>();
 
         services.AddTransient<IUserInputProvider<string>, StringInputProvider>();
         services.AddTransient<IUserInputProvider<bool>, BooleanInputProvider>();

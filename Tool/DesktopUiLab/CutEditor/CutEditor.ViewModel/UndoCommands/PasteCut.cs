@@ -1,7 +1,6 @@
 ﻿namespace CutEditor.ViewModel.UndoCommands;
 
 using System;
-using Cs.Logging;
 using CutEditor.Model.Interfaces;
 using Du.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,13 +27,12 @@ internal sealed class PasteCut(
             return null;
         }
 
-        if (vmCuts.SelectedCuts.Count != 1)
+        int positionIndex = vmCuts.Cuts.Count - 1; // 선택컷이 없으면 마지막에 붙인다.
+        if (vmCuts.SelectedCuts.Count > 0)
         {
-            Log.Warn($"컷을 붙여넣으려면 현재 선택된 컷이 하나여야 합니다. 현재 선택된 컷 수: {vmCuts.SelectedCuts.Count}");
-            return null;
+            positionIndex = vmCuts.Cuts.IndexOf(vmCuts.SelectedCuts[0]);
         }
 
-        int positionIndex = vmCuts.Cuts.IndexOf(vmCuts.SelectedCuts[0]);
         return new PasteCut(vmCuts, vmCuts.CutPaster.Reserved.ToArray(), positionIndex, direction);
     }
 

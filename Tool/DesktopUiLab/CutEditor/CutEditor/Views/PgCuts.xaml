@@ -34,7 +34,7 @@
         <KeyBinding Key="Esc" Command="{Binding CutPaster.CancelCommand}"/>
     </Page.InputBindings>
     <b:Interaction.Behaviors>
-        <behaviors:PageBehavior HandleClipboard="True"/>
+        <behaviors:PageBehavior HandleKeyDown="True"/>
     </b:Interaction.Behaviors>
     <Page.Resources>
         <ResourceDictionary>

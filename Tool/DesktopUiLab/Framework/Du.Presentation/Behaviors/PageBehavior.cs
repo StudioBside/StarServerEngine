@@ -17,23 +17,10 @@ public class PageBehavior : Behavior<Page>
               typeof(PageBehavior),
               new PropertyMetadata(false, OnHandleKeyDownChanged));
 
-    public static readonly DependencyProperty HandleClipboardProperty =
-          DependencyProperty.Register(
-              "HandleClipboard",
-              typeof(bool),
-              typeof(PageBehavior),
-              new PropertyMetadata(false, OnHandleClipboardChanged));
-
     public bool HandleKeyDown
     {
         get => (bool)this.GetValue(HandleKeyDownProperty);
         set => this.SetValue(HandleKeyDownProperty, value);
-    }
-
-    public bool HandleClipboard
-    {
-        get => (bool)this.GetValue(HandleClipboardProperty);
-        set => this.SetValue(HandleClipboardProperty, value);
     }
 
     protected override void OnAttached()
@@ -52,10 +39,6 @@ public class PageBehavior : Behavior<Page>
     {
     }
 
-    private static void OnHandleClipboardChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    {
-    }
-
     private async void AssociatedObject_PreviewKeyDown(object sender, KeyEventArgs e)
     {
         if (e.Key < Key.A || e.Key > Key.Z)
@@ -69,22 +52,14 @@ public class PageBehavior : Behavior<Page>
             return;
         }
 
-        char key = e.Key.ToString().ToLower()[0];
-        bool ctrl = Keyboard.Modifiers.HasFlag(ModifierKeys.Control);
-        bool shift = Keyboard.Modifiers.HasFlag(ModifierKeys.Shift);
-        bool alt = Keyboard.Modifiers.HasFlag(ModifierKeys.Alt);
-
-        if (this.HandleClipboard && ctrl && key == 'v' &&
-            this.AssociatedObject.DataContext is IClipboardHandler clipboardHandler &&
-            Clipboard.ContainsText())
-        {
-            e.Handled = await clipboardHandler.HandlePastedTextAsync(Clipboard.GetText());
-            return;
-        }
-
         if (this.HandleKeyDown &&
             this.AssociatedObject.DataContext is IKeyDownHandler handler)
         {
+            char key = e.Key.ToString().ToLower()[0];
+            bool ctrl = Keyboard.Modifiers.HasFlag(ModifierKeys.Control);
+            bool shift = Keyboard.Modifiers.HasFlag(ModifierKeys.Shift);
+            bool alt = Keyboard.Modifiers.HasFlag(ModifierKeys.Alt);
+
             e.Handled = await handler.HandleKeyDownAsync(key, ctrl, shift, alt);
         }
     }

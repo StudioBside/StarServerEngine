@@ -29,7 +29,7 @@ using static CutEditor.ViewModel.Enums;
 using static Du.Core.Messages;
 
 public sealed class VmCuts : VmPageBase,
-    IClipboardHandler,
+    IKeyDownHandler,
     ILoadEventReceiver,
     IAppExitHandler
 {
@@ -120,7 +120,125 @@ public sealed class VmCuts : VmPageBase,
     internal CutUidGenerator UidGenerator => this.uidGenerator;
     internal IServiceProvider Services => this.services;
     private string DebugName => $"[{this.Name}]";
-    async Task<bool> IClipboardHandler.HandlePastedTextAsync(string text)
+    public override Task<bool> CanExitPage()
+    {
+        var args = new CancelEventArgs();
+        this.ConfirmLeavePage(args);
+        if (args.Cancel)
+        {
+            return Task.FromResult(false); // 이동이 취소됨. false를 리턴하고 페이지를 전환하지 못하게 막는다.
+        }
+
+        // 이동을 진행. 저장하지 않고 이동하는 경우에도 navigating 시점에 팝업이 뜨지 않게 dirty flag를 초기화한다.
+        this.IsDirty = false;
+        return Task.FromResult(true);
+    }
+
+    public override void OnNavigating(object sender, Uri uri, CancelEventArgs args)
+    {
+        // 다른 페이지로의 네이게이션이 시작될 때 (= 지금 페이지가 닫힐 때)
+        Log.Debug($"{this.DebugName} OnNavigating: {uri}");
+
+        this.ConfirmLeavePage(args);
+        if (args.Cancel == false)
+        {
+            this.serviceScope.Dispose();
+            WeakReferenceMessenger.Default.Unregister<UpdatePreviewMessage>(this);
+            WeakReferenceMessenger.Default.Unregister<DataChangedMessage>(this);
+        }
+    }
+
+    void IAppExitHandler.OnClosing(CancelEventArgs args)
+    {
+        this.ConfirmLeavePage(args);
+    }
+
+    public void UpdatePreview(int startIndex)
+    {
+        Log.Debug($"{this.DebugName} preview 업데이트 시작. startIndex:{startIndex}");
+
+        Cut? prevCut = startIndex > 0
+            ? this.cuts[startIndex - 1].Cut
+            : null;
+
+        for (int i = startIndex; i < this.cuts.Count; i++)
+        {
+            this.cuts[i].Cut.Preview.Calculate(prevCut);
+            prevCut = this.cuts[i].Cut;
+        }
+    }
+
+    public void OnLoaded()
+    {
+        if (this.param.CutUid == 0)
+        {
+            return;
+        }
+
+        var targetUid = this.param.CutUid;
+        var targetCut = this.cuts.FirstOrDefault(e => e.Cut.Uid == targetUid);
+        if (targetCut is null)
+        {
+            Log.Warn($"{this.DebugName} 네비게이션 대상 컷을 찾을 수 없습니다. cutUid:{targetUid}");
+            return;
+        }
+
+        this.selectedCuts.Clear();
+        this.selectedCuts.Add(targetCut);
+
+        var index = this.cuts.IndexOf(targetCut);
+        if (index < 0)
+        {
+            Log.Warn($"{this.DebugName} 네비게이션 대상 컷의 인덱스를 찾을 수 없습니다. cutUid:{targetUid}");
+            return;
+        }
+
+        var controller = this.services.GetRequiredService<ICutsListController>();
+        controller.ScrollIntoView(index);
+    }
+
+    Task<bool> IKeyDownHandler.HandleKeyDownAsync(char key, bool ctrl, bool shift, bool alt)
+    {
+        if (ctrl && key == 'v')
+        {
+            if (this.CutPaster.HasReserved)
+            {
+                this.CutPaster.PasteToDownsideCommand.Execute(parameter: null);
+                return Task.FromResult(true);
+            }
+
+            var clipboardWrapper = this.services.GetRequiredService<IClipboardWrapper>();
+            if (clipboardWrapper.ContainsText())
+            {
+                return this.HandlePastedTextAsync(clipboardWrapper.GetText());
+            }
+        }
+
+        return Task.FromResult(false);
+    }
+    
+    //// --------------------------------------------------------------------------------------------
+
+    protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+    {
+        base.OnPropertyChanged(e);
+
+        switch (e.PropertyName)
+        {
+            case nameof(this.SelectedCuts):
+                this.DeleteCommand.NotifyCanExecuteChanged();
+                this.BulkEditTextCommand.NotifyCanExecuteChanged();
+                this.BulkEditCharacterCommand.NotifyCanExecuteChanged();
+                this.BulkEditUnitNameCommand.NotifyCanExecuteChanged();
+                break;
+
+            case nameof(this.IsDirty):
+                this.SaveCommand.NotifyCanExecuteChanged();
+                break;
+        }
+    }
+
+    private async Task<bool> HandlePastedTextAsync(string text)
     {
         text = text.Trim();
 
@@ -205,104 +323,6 @@ public sealed class VmCuts : VmPageBase,
         this.undoController.Add(command);
 
         return true;
-    }
-
-    public override Task<bool> CanExitPage()
-    {
-        var args = new CancelEventArgs();
-        this.ConfirmLeavePage(args);
-        if (args.Cancel)
-        {
-            return Task.FromResult(false); // 이동이 취소됨. false를 리턴하고 페이지를 전환하지 못하게 막는다.
-        }
-
-        // 이동을 진행. 저장하지 않고 이동하는 경우에도 navigating 시점에 팝업이 뜨지 않게 dirty flag를 초기화한다.
-        this.IsDirty = false;
-        return Task.FromResult(true);
-    }
-
-    public override void OnNavigating(object sender, Uri uri, CancelEventArgs args)
-    {
-        // 다른 페이지로의 네이게이션이 시작될 때 (= 지금 페이지가 닫힐 때)
-        Log.Debug($"{this.DebugName} OnNavigating: {uri}");
-
-        this.ConfirmLeavePage(args);
-        if (args.Cancel == false)
-        {
-            this.serviceScope.Dispose();
-            WeakReferenceMessenger.Default.Unregister<UpdatePreviewMessage>(this);
-            WeakReferenceMessenger.Default.Unregister<DataChangedMessage>(this);
-        }
-    }
-
-    void IAppExitHandler.OnClosing(CancelEventArgs args)
-    {
-        this.ConfirmLeavePage(args);
-    }
-
-    public void UpdatePreview(int startIndex)
-    {
-        Log.Debug($"{this.DebugName} preview 업데이트 시작. startIndex:{startIndex}");
-
-        Cut? prevCut = startIndex > 0
-            ? this.cuts[startIndex - 1].Cut
-            : null;
-
-        for (int i = startIndex; i < this.cuts.Count; i++)
-        {
-            this.cuts[i].Cut.Preview.Calculate(prevCut);
-            prevCut = this.cuts[i].Cut;
-        }
-    }
-
-    public void OnLoaded()
-    {
-        if (this.param.CutUid == 0)
-        {
-            return;
-        }
-
-        var targetUid = this.param.CutUid;
-        var targetCut = this.cuts.FirstOrDefault(e => e.Cut.Uid == targetUid);
-        if (targetCut is null)
-        {
-            Log.Warn($"{this.DebugName} 네비게이션 대상 컷을 찾을 수 없습니다. cutUid:{targetUid}");
-            return;
-        }
-
-        this.selectedCuts.Clear();
-        this.selectedCuts.Add(targetCut);
-
-        var index = this.cuts.IndexOf(targetCut);
-        if (index < 0)
-        {
-            Log.Warn($"{this.DebugName} 네비게이션 대상 컷의 인덱스를 찾을 수 없습니다. cutUid:{targetUid}");
-            return;
-        }
-
-        var controller = this.services.GetRequiredService<ICutsListController>();
-        controller.ScrollIntoView(index);
-    }
-
-    //// --------------------------------------------------------------------------------------------
-
-    protected override void OnPropertyChanged(PropertyChangedEventArgs e)
-    {
-        base.OnPropertyChanged(e);
-
-        switch (e.PropertyName)
-        {
-            case nameof(this.SelectedCuts):
-                this.DeleteCommand.NotifyCanExecuteChanged();
-                this.BulkEditTextCommand.NotifyCanExecuteChanged();
-                this.BulkEditCharacterCommand.NotifyCanExecuteChanged();
-                this.BulkEditUnitNameCommand.NotifyCanExecuteChanged();
-                break;
-
-            case nameof(this.IsDirty):
-                this.SaveCommand.NotifyCanExecuteChanged();
-                break;
-        }
     }
 
     private void ConfirmLeavePage(CancelEventArgs args)
