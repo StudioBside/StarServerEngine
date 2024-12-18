@@ -83,6 +83,8 @@ csharp_style_expression_bodied_accessors = true:silent
 csharp_style_expression_bodied_lambdas = true:silent
 csharp_style_expression_bodied_local_functions = false:silent
 
+csharp_style_namespace_declarations = file_scoped:suggestion
+
 [*.vb]
 #### 명명 스타일 ####
 
