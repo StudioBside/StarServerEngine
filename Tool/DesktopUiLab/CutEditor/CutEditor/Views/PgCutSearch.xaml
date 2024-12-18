@@ -149,7 +149,7 @@
                                     <TextBlock>
                                         <b:Interaction.Behaviors>
                                             <behaviors:HighlightTextBehavior
-                                                Text="{Binding Cut.UnitTalk.Korean}"
+                                                Text="{Binding ResultText}"
                                                 KeywordList="{Binding Keywords}"/>
                                         </b:Interaction.Behaviors>
                                     </TextBlock>

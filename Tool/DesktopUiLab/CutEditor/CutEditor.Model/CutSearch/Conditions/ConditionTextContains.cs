@@ -18,6 +18,7 @@ public sealed class ConditionTextContains : ObservableObject,
 
     public bool IsTarget(Cut cut)
     {
-        return cut.UnitTalk.IsTarget(this.SearchKeyword);
+        return cut.UnitTalk.IsTarget(this.SearchKeyword) ||
+            cut.Choices.Any(e => e.Text.IsTarget(this.searchKeyword));
     }
 }
