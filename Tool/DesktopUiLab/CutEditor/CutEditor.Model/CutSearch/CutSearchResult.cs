@@ -1,14 +1,15 @@
 ﻿namespace CutEditor.Model.CutSearch;
 
-using System;
-using System.Collections.Generic;
-
 public sealed class CutSearchResult
 {
-    private readonly Cut cut;
-
-    public CutSearchResult(Cut cut)
+    public CutSearchResult(CutScene cutScene, Cut cut, IEnumerable<string> keywords)
     {
-        this.cut = cut;
+        this.CutScene = cutScene;
+        this.Cut = cut;
+        this.Keywords = keywords;
     }
+
+    public CutScene CutScene { get; }
+    public Cut Cut { get; }
+    public IEnumerable<string> Keywords { get; }
 }

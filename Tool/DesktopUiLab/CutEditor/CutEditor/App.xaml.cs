@@ -5,6 +5,7 @@ using System.Windows;
 using Cs.Logging;
 using CutEditor.Behaviors;
 using CutEditor.Model;
+using CutEditor.Model.CutSearch;
 using CutEditor.Model.Interfaces;
 using CutEditor.Services;
 using CutEditor.ViewModel;
@@ -52,9 +53,9 @@ public partial class App : Application
         services.AddTransient<IConfiguration>(_ => config);
 
         services.AddTransient<VmMain>();
-        services.AddSingleton<VmHome>();
         services.AddSingleton<AssetList>();
         services.AddSingleton<IPageRouter>(PageRouterExtension.Instance);
+        services.AddTransient<VmHome>();
         services.AddTransient<VmCuts.Factory>();
         services.AddTransient<VmCutsSummary.Factory>();
         services.AddTransient<VmL10n.Factory>();
@@ -63,8 +64,7 @@ public partial class App : Application
         services.AddTransient<VmErrors>();
         services.AddTransient<VmUnitScripts>();
         services.AddTransient<VmBuffs>();
-        services.AddTransient<VmCutSearch>();
-        services.AddTransient<FileLoader>();
+        services.AddSingleton<VmCutSearch>();
         services.AddTransient<FileAndSnackbarLog>();
         services.AddTransient<ITempletPicker<Unit>, UnitPicker>();
         services.AddTransient<ITempletPicker<LobbyItem>, ArcpointPicker>();
@@ -129,8 +129,7 @@ public partial class App : Application
         VmGlobalState.Instance.Initialize(config);
         TempletLoad.Execute(config);
 
-        var loader = this.Services.GetRequiredService<FileLoader>();
-        loader.Load();
+        CutSceneContainer.Instance.Load(VmGlobalState.Instance.CutSceneDataFilePath);
 
         if (Directory.Exists(ImageHelper.ThumbnailRoot) == false)
         {
@@ -147,6 +146,7 @@ public partial class App : Application
             .Register<PgCuts, VmCuts.CreateParam>()
             .Register<PgCuts, CutScene>()
             .Register<PgCuts, VmCutSummary>()
+            .Register<PgCuts, CutSearchResult>()
             .Register<PgCutsSummary, VmCutsSummary.CreateParam>()
             .Register<PgL10n, VmL10n.CreateParam>()
             .Register<PgUnitDetail, Unit>()

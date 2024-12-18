@@ -20,7 +20,6 @@ public sealed class VmHome : VmPageBase
 {
     private const string ExportRoot = "./Export";
     private const string DefaultFilter = "[All]";
-    private readonly List<CutScene> cutScenes = new();
     private readonly HashSet<string> filters = new();
     private readonly IServiceProvider services;
     private readonly ISearchableCollection<CutScene> filteredList;
@@ -32,7 +31,8 @@ public sealed class VmHome : VmPageBase
     {
         this.Title = "컷신 목록";
         this.services = services;
-        this.filteredList = services.GetRequiredService<ISearchableCollectionProvider>().Build(this.cutScenes);
+        this.filteredList = services.GetRequiredService<ISearchableCollectionProvider>()
+            .Build(CutSceneContainer.Instance.CutScenes);
         this.ReadPickedCommand = new RelayCommand<CutScene>(this.OnReadPicked);
         this.NewFileCommand = new AsyncRelayCommand(this.OnNewFile);
         this.ExportCommand = new RelayCommand<CutScene>(this.OnExport);
@@ -41,6 +41,11 @@ public sealed class VmHome : VmPageBase
         this.ToL10nPageCommand = new RelayCommand<CutScene>(this.OnToL10nPage);
 
         this.filters.Add(DefaultFilter);
+        foreach (var filter in CutSceneContainer.Instance.CutScenes.Select(e => e.CutsceneFilter).Distinct())
+        {
+            this.filters.Add(filter);
+        }
+
         this.filteredList.SetSubFilter(e =>
         {
             return this.selectedFilter == DefaultFilter || e.CutsceneFilter == this.selectedFilter;
@@ -76,19 +81,6 @@ public sealed class VmHome : VmPageBase
     public ICommand ImportCommand { get; }
     public ICommand ToL10nPageCommand { get; }
     public ICommand OpenExportRootCommand { get; }
-
-    public void AddCutScenes(IEnumerable<CutScene> cutScenes)
-    {
-        this.cutScenes.Clear();
-        this.cutScenes.AddRange(cutScenes);
-
-        foreach (var filter in cutScenes.Select(e => e.CutsceneFilter).Distinct())
-        {
-            this.filters.Add(filter);
-        }
-                
-        this.filteredList.Refresh();
-    }
 
     //// --------------------------------------------------------------------------------------------
 

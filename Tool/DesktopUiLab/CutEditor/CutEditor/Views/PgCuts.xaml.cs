@@ -2,6 +2,7 @@
 
 using System.Windows.Controls;
 using CutEditor.Model;
+using CutEditor.Model.CutSearch;
 using CutEditor.ViewModel;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -18,6 +19,10 @@ public sealed partial class PgCuts : Page
     }
 
     public PgCuts(VmCutSummary summary) : this(new VmCuts.CreateParam(summary.CutsceneName, summary.Cut.Uid))
+    {
+    }
+
+    public PgCuts(CutSearchResult search) : this(new VmCuts.CreateParam(search.CutScene.FileName, search.Cut.Uid))
     {
     }
 }

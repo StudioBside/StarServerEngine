@@ -23,11 +23,19 @@ using static Shared.Templet.Enums;
 public sealed class Cut : ObservableObject
 {
     public const float TalkTimeDefault = 0.03f;
+    private static readonly HashSet<string> StringIdConstList = new()
+    {
+        "CURRENT_CHARACTER",
+        "CURRENT_PARENT",
+        "CURRENT_PARENT1",
+        "CURRENT_PARENT2",
+    };
 
     private readonly L10nText unitTalk = new();
     private readonly ObservableCollection<ChoiceOption> choices = new();
     private readonly ObservableCollection<StringElement> unitNames = new();
     private readonly CutPreview preview;
+    private readonly bool constructorFinished;
     private string? contentsTag;
     private string? cutsceneStrId;
     private bool waitClick = true;
@@ -96,10 +104,14 @@ public sealed class Cut : ObservableObject
 
         // unktTalk 변경될 때 talkTime 값을 변경하기 위해 이벤트 수신
         this.unitTalk.PropertyChanged += this.UnitTalk_PropertyChanged;
+
+        this.constructorFinished = true;
     }
 
     public Cut(JToken token) : this(token.GetInt64("Uid", 0))
     {
+        this.constructorFinished = false;
+
         this.contentsTag = token.GetString("ContentsTag", null!);
         this.cutsceneStrId = token.GetString("CutsceneStrId", null!);
         this.waitClick = token.GetBool("WaitClick", true);
@@ -194,7 +206,7 @@ public sealed class Cut : ObservableObject
             this.jumpAnchor = Enum.Parse<DestAnchorType>(anchorStr);
         }
 
-        if (string.IsNullOrEmpty(this.unitStrId) == false)
+        if (string.IsNullOrEmpty(this.unitStrId) == false && StringIdConstList.Contains(this.unitStrId) == false)
         {
             this.unit = TempletContainer<Unit>.Find(this.unitStrId);
             if (this.unit is null)
@@ -211,6 +223,8 @@ public sealed class Cut : ObservableObject
                 Log.Error($"로비 아이템 템플릿을 찾을 수 없습니다. ArcpointId:{this.arcpointId}");
             }
         }
+
+        this.constructorFinished = true;
     }
 
     public long Uid { get; private set; }
@@ -686,7 +700,10 @@ public sealed class Cut : ObservableObject
                 break;
         }
 
-        WeakReferenceMessenger.Default.Send(new DataChangedMessage());
+        if (this.constructorFinished)
+        {
+            WeakReferenceMessenger.Default.Send(new DataChangedMessage());
+        }
     }
 
     private void UnitTalk_PropertyChanged(object? sender, PropertyChangedEventArgs e)

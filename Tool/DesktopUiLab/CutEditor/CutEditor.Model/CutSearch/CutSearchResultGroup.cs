@@ -1,23 +1,20 @@
 ﻿namespace CutEditor.Model.CutSearch;
 
-using System;
 using System.Collections.Generic;
+using Cs.Logging;
 
 public sealed class CutSearchResultGroup
 {
-    private readonly List<CutSearchResult> results = new();
+    private readonly List<Cut> results = new();
 
-    public CutSearchResultGroup(string cutsceneName)
+    public CutSearchResultGroup(CutScene cutScene, IReadOnlyList<Cut> cuts)
     {
-        this.CutsceneName = cutsceneName;
+        this.CutScene = cutScene;
+        this.results.AddRange(cuts);
+
+        Log.Debug($"cutscene:{cutScene.FileName} #result:{this.results.Count}");
     }
 
-    public string CutsceneName { get; }
-
-    public IEnumerable<CutSearchResult> Results => this.results;
-
-    public void AddResult(CutSearchResult result)
-    {
-        this.results.Add(result);
-    }
+    public CutScene CutScene { get; }
+    public IEnumerable<Cut> Results => this.results;
 }
