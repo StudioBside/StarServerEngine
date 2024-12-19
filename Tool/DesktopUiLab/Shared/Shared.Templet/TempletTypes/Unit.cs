@@ -22,6 +22,8 @@ public sealed class Unit : ITemplet, ISearchable
     private readonly string nameStringId = string.Empty;
     private readonly string scriptFileName;
     private readonly int immuneGroupId;
+    private readonly List<string> skillIdList = new();
+    private readonly List<SkillTemplet> skillTemplets = new();
 
     static Unit()
     {
@@ -42,6 +44,7 @@ public sealed class Unit : ITemplet, ISearchable
         this.IllustNameUi = token.GetString("m_IllustNameUI", null!);
         this.scriptFileName = token.GetString("m_UnitTempletFileName");
         this.immuneGroupId = token.GetInt32("ImmuneGroupId", 0);
+        token.TryGetArray("m_listSkill", this.skillIdList);
     }
 
     public static IEnumerable<Unit> Values => TempletContainer<Unit>.Values;
@@ -64,6 +67,7 @@ public sealed class Unit : ITemplet, ISearchable
     public StringElement? NameElement { get; private set; }
     public UnitScript? Script { get; private set; }
     public BuffImmuneTemplet? ImmuneGroup { get; private set; }
+    public IReadOnlyList<SkillTemplet> SkillTemplets => this.skillTemplets;
     public string DebugName => $"[{this.Id}] {this.Name}";
 
     public void Join()
@@ -158,6 +162,18 @@ public sealed class Unit : ITemplet, ISearchable
             {
                 ErrorMessage.Add(ErrorType.Unit, $"{this.DebugName} 면역 그룹을 찾을 수 없습니다: {this.immuneGroupId}", this);
             }
+        }
+
+        foreach (var skillId in this.skillIdList)
+        {
+            if (TempletContainer<SkillTemplet>.TryGet(skillId, out var skillTemplet) == false)
+            {
+                ErrorMessage.Add(ErrorType.Unit, $"{this.DebugName} 스킬을 찾을 수 없습니다: {skillId}", this);
+                continue;
+            }
+
+            this.skillTemplets.Add(skillTemplet);
+            skillTemplet.AddReference(this);
         }
     }
 

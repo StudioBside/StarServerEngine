@@ -20,6 +20,11 @@ public static class TextBlockExt
             return;
         }
 
+        // <b> 태그는 그냥 무시합니다
+        text = text
+            .Replace("<b>", string.Empty)
+            .Replace("</b>", string.Empty);
+
         textBlock.Inlines.Clear();
 
         string pattern = @"<color=#(?<color>[0-9A-Fa-f]{6})>(?<text>.*?)<\/color>";

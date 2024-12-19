@@ -29,10 +29,10 @@
 
                 <StackPanel Grid.Column="1">
                     <!--헤더. 추가버튼 위치-->
-                    <DockPanel Grid.Row="0" Margin="5,7" LastChildFill="True">
+                    <DockPanel Grid.Row="0" LastChildFill="True">
                         <TextBlock DockPanel.Dock="Left" Grid.Row="0" Grid.Column="0"
                                    VerticalAlignment="Center"
-                                   Margin="0,0,50,0">
+                                   Margin="5,0,50,0">
                             <Run>Uid : </Run>
                             <Run Text="{Binding Cut.Uid, Mode=OneWay}" />
                         </TextBlock>

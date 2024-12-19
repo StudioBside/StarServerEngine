@@ -41,6 +41,9 @@
             <MenuItem Header="유닛 스크립트" 
                       Command="{Binding GoToCommand, Source={extensions:PageRouter}}"
                       CommandParameter="Views/PgUnitScripts.xaml"/>
+            <MenuItem Header="스킬 목록" 
+                      Command="{Binding GoToCommand, Source={extensions:PageRouter}}"
+                      CommandParameter="Views/PgSkills.xaml"/>
             <MenuItem Header="버프 목록" 
                       Command="{Binding GoToCommand, Source={extensions:PageRouter}}"
                       CommandParameter="Views/PgBuffs.xaml"/>

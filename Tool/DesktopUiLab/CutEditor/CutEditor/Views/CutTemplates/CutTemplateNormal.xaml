@@ -27,10 +27,10 @@
                 <StackPanel Grid.Column="1">
                     
                     <!--헤더. 컨트롤 표시 제어 및 기타 설정들. uid 표기 등.-->
-                    <DockPanel Margin="5,0" LastChildFill="True">
+                    <DockPanel LastChildFill="True" Background="{StaticResource CutHeaderBrush}">
                         <TextBlock DockPanel.Dock="Left" Grid.Row="0" Grid.Column="0"
                                    VerticalAlignment="Center"
-                                   Margin="0,0,50,0">
+                                   Margin="5,0,50,0">
                             <Run>Uid : </Run>
                             <Run Text="{Binding Cut.Uid, Mode=OneWay}" />
                         </TextBlock>
@@ -38,6 +38,7 @@
                         <ui:ToggleSwitch Content="WaitClick" Margin="0,0,10,0"
                                      IsChecked="{Binding Cut.WaitClick}"/>
                         <ui:NumberBox PlaceholderText="대기시간"
+                                      Background="{StaticResource HeaderControlBrush}"
                                   Width="70" Margin="0,0,10,0"
                                   SpinButtonPlacementMode="Hidden"
                                   Value="{Binding Cut.WaitTime, UpdateSourceTrigger=PropertyChanged}"
@@ -60,7 +61,7 @@
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Cut.JumpAnchor}" Value="{x:Static models:Enums+DestAnchorType.None}">
                                             <Setter Property="Content" Value="도착 앵커"/>
-                                            <Setter Property="Background" Value="White"/>
+                                            <Setter Property="Background" Value="{StaticResource HeaderControlBrush}"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -87,7 +88,7 @@
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Cut.CutsceneClear}" Value="{x:Static nkm:CutsceneClearType.NONE}">
                                             <Setter Property="Content" Value="컷신 클리어"/>
-                                            <Setter Property="Background" Value="White"/>
+                                            <Setter Property="Background" Value="{StaticResource HeaderControlBrush}"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -149,7 +150,7 @@
                                         <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding Cut.HasMinorityData}" Value="False">
-                                                <Setter Property="Background" Value="White"/>
+                                                <Setter Property="Background" Value="{StaticResource HeaderControlBrush}"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
@@ -157,6 +158,7 @@
                             </ui:Button>
 
                             <Button Content="X" Margin="0,0,10,0"
+                                    Background="{StaticResource HeaderControlBrush}"
                                 Command="{Binding DataContext.DeletePickCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
                                 CommandParameter="{Binding .}"/>
                         </StackPanel>

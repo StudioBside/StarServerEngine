@@ -61,6 +61,7 @@ public partial class App : Application
         services.AddTransient<VmL10n.Factory>();
         services.AddTransient<VmStrings>();
         services.AddTransient<VmUnits>();
+        services.AddTransient<VmSkills>();
         services.AddTransient<VmErrors>();
         services.AddTransient<VmUnitScripts>();
         services.AddTransient<VmBuffs>();

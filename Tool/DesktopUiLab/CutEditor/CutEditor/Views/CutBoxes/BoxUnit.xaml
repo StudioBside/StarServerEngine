@@ -23,8 +23,7 @@
     </UserControl.Resources>
 
     <!--컨트롤 : 유닛-->
-    <Border Background="{StaticResource UnitBoxBrush}"
-            Visibility="{Binding ShowUnitSection, Converter={converters:BoolToVisibilityConverter}}">
+    <Border Visibility="{Binding ShowUnitSection, Converter={converters:BoolToVisibilityConverter}}">
         <!--컨트롤이 많으니까 3덩어리 정도로 나눠서 별도의 Grid로 묶어줍니다.-->
         <StackPanel Orientation="Horizontal">
 

@@ -33,6 +33,7 @@ public sealed class BuffTemplet : ITemplet, ISearchable
     public string Desc { get; private set; } = string.Empty;
     public string IconPath { get; private set; } = string.Empty;
     public string DebugName => $"[{this.Id} {this.Name}]";
+    public string DebugId => $"[{this.Id} {this.StrId}]";
 
     bool ISearchable.IsTarget(string keyword)
     {
@@ -46,15 +47,6 @@ public sealed class BuffTemplet : ITemplet, ISearchable
     {
         this.Name = StringTable.Instance.Find(this.nameId);
         this.Desc = StringTable.Instance.Find(this.descId);
-        if (this.Name == this.nameId)
-        {
-            ErrorMessage.Add(ErrorType.Buff, $"{this.DebugName} 이름 스트링이 지정되지 않았습니다. nameId:{this.nameId}");
-        }
-
-        if (this.Desc == this.descId)
-        {
-            ErrorMessage.Add(ErrorType.Buff, $"{this.DebugName} 설명 스트링이 지정되지 않았습니다. descId:{this.descId}");
-        }
 
         if (PathResolver.Instance.TryGetBuffPath(this.iconName, out var path))
         {
@@ -62,11 +54,20 @@ public sealed class BuffTemplet : ITemplet, ISearchable
         }
         else
         {
-            ErrorMessage.Add(ErrorType.Buff, $"{this.DebugName} 아이콘 파일이 존재하지 않습니다. iconName:{this.iconName}");
+            ErrorMessage.Add(ErrorType.Buff, $"{this.DebugId} 아이콘 파일이 존재하지 않습니다. iconName:{this.iconName}");
         }
     }
 
     public void Validate()
     {
+        if (this.Name == this.nameId)
+        {
+            ErrorMessage.Add(ErrorType.Buff, $"{this.DebugId} 이름 스트링이 지정되지 않았습니다. nameId:{this.nameId}");
+        }
+
+        if (this.Desc == this.descId)
+        {
+            ErrorMessage.Add(ErrorType.Buff, $"{this.DebugId} 설명 스트링이 지정되지 않았습니다. descId:{this.descId}");
+        }
     }
 }

@@ -9,6 +9,7 @@ public sealed class PathResolver
 {
     private readonly Dictionary<string/*fileName*/, string/*fullPath*/> illustPaths = new(StringComparer.CurrentCultureIgnoreCase);
     private readonly Dictionary<string/*fileName*/, string/*fullPath*/> buffPaths = new(StringComparer.CurrentCultureIgnoreCase);
+    private readonly Dictionary<string/*fileName*/, string/*fullPath*/> skillPaths = new(StringComparer.CurrentCultureIgnoreCase);
 
     public static PathResolver Instance => Singleton<PathResolver>.Instance;
 
@@ -31,6 +32,15 @@ public sealed class PathResolver
                 this.buffPaths[Path.GetFileName(fileName)] = Path.GetFullPath(fileName);
             }
         }
+
+        var skillIconRoot = config["SkillIconRoot"] ?? throw new Exception($"SkillIconRoot is not defined in the configuration file.");
+        if (Directory.Exists(skillIconRoot))
+        {
+            foreach (var fileName in Directory.GetFiles(skillIconRoot, "*.png", SearchOption.AllDirectories))
+            {
+                this.skillPaths[Path.GetFileName(fileName)] = Path.GetFullPath(fileName);
+            }
+        }
     }
 
     public bool TryGetIllustPath(string fileName, [NotNullWhen(true)] out string? fullPath)
@@ -41,5 +51,10 @@ public sealed class PathResolver
     public bool TryGetBuffPath(string fileName, [NotNullWhen(true)] out string? fullPath)
     {
         return this.buffPaths.TryGetValue(fileName, out fullPath);
+    }
+
+    public bool TryGetSkillPath(string fileName, [NotNullWhen(true)] out string? fullPath)
+    {
+        return this.skillPaths.TryGetValue(fileName, out fullPath);
     }
 }

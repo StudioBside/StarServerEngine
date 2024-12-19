@@ -3,7 +3,7 @@
 
     <!-- 색상 정의 -->
     <!--컷 아이템 하위 박스 색상-->
-    <Color x:Key="UnitBoxColor">#DCDCDD</Color>
+    <Color x:Key="UnitBoxColor">#fff</Color>
     <Color x:Key="ScreenBoxColor">#C5C3C6</Color>
     <Color x:Key="CameraBoxColor">#EFF6E0</Color>
     <Color x:Key="SoundBoxColor">#AEC3B0</Color>
@@ -15,7 +15,7 @@
     <Color x:Key="HasValueColor">#f0f0dd</Color>
 
     <!--컷 아이템 타입 : 브랜치 컷-->
-    <Color x:Key="BranchCutColor">#E8F1F2</Color>
+    <Color x:Key="BranchCutColor">#ffeaea</Color>
 
     <!--(점프/리워드)앵커 정보-->
     <Color x:Key="AnchorColor">#164e8b</Color>
@@ -26,8 +26,12 @@
     <!--텍스트 박스에 값이 없을 때 배경색 변경-->
     <Color x:Key="EmptyTextColor">#f0e0e0</Color>
 
+    <!--클립보드에 박스 reserve 알림-->
     <Color x:Key="ClopboardNotifyColor">DarkOrange</Color>
 
+    <!--컷 데이터 헤더 색상-->
+    <Color x:Key="CutHeaderColor">#C5CCD9</Color>
+    <Color x:Key="HeaderControlColor">#E1ECF2</Color>
 
     <!-- SolidColorBrush 정의 -->
     <SolidColorBrush x:Key="UnitBoxBrush" Color="{StaticResource UnitBoxColor}"/>
@@ -41,6 +45,8 @@
     <SolidColorBrush x:Key="PickedGraphBrush" Color="{StaticResource PickedGraphColor}"/>
     <SolidColorBrush x:Key="EmptyTextBrush" Color="{StaticResource EmptyTextColor}"/>
     <SolidColorBrush x:Key="ClopboardNotifyBrush" Color="{StaticResource ClopboardNotifyColor}"/>
+    <SolidColorBrush x:Key="CutHeaderBrush" Color="{StaticResource CutHeaderColor}"/>
+    <SolidColorBrush x:Key="HeaderControlBrush" Color="{StaticResource HeaderControlColor}"/>
 
     <!-- 바둑판 무늬 DrawingBrush 정의 -->
     <DrawingBrush x:Key="CheckerboardBrush" TileMode="Tile" Viewport="0,0,15,15" ViewportUnits="Absolute">

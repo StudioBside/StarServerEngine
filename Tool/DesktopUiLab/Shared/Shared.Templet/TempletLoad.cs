@@ -35,17 +35,24 @@ public static class TempletLoad
         var fullPath = Path.Combine(templetRoot, "CLIENT_STRING_KOR.exported");
         StringTable.Instance.Load(fullPath);
 
-        string[] unitFileNames =
+        string[] fileNames =
         [
             "CLIENT_UNIT_TEMPLET_BASE1.exported",
             "CLIENT_UNIT_TEMPLET_BASE2.exported",
             "CLIENT_UNIT_TEMPLET_BASE3.exported",
             "CLIENT_UNIT_TEMPLET_BASE4.exported",
         ];
-        TempletLoader.BuildContainer(unitFileNames, e => new Unit(e), e => e.StrId);
+        TempletLoader.BuildContainer(fileNames, e => new Unit(e), e => e.StrId);
         TempletLoader.BuildContainer("CLIENT_LOBBY_ITEM_TEMPLET.exported", e => new LobbyItem(e));
         TempletLoader.BuildContainer("CLIENT_BUFF_TEMPLET.exported", e => new BuffTemplet(e), e => e.StrId);
         TempletLoader.BuildGroupContainer<BuffImmuneTemplet>("CLIENT_BUFF_IMMUNE_TEMPLET.exported", "ImmuneGroupId");
+
+        fileNames =
+        [
+            "SKILL/CLIENT_SKILL_TEMPLET_1.exported",
+            "SKILL/CLIENT_SKILL_TEMPLET_2.exported",
+        ];
+        TempletLoader.BuildContainer(fileNames, e => new SkillTemplet(e), e => e.StrId);
 
         UnitScriptContainer.Instance.Load(unitScriptRoot);
     }
