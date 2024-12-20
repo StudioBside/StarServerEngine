@@ -3,6 +3,9 @@
 using System;
 using System.Collections;
 using System.ComponentModel;
+using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
+using Cs.Logging;
 using Du.Core.Bases;
 using Du.Core.Interfaces;
 using Shared.Templet.Strings;
@@ -42,6 +45,8 @@ public sealed class VmStrings : VmPageBase
 
     public int FilteredCount => this.filteredList.FilteredCount;
     public int TotalCount => StringTable.Instance.UniqueCount;
+    public ICommand ExportCommand => new RelayCommand(this.OnExport);
+
     public string SearchKeyword
     {
         get => this.searchKeyword;
@@ -99,5 +104,10 @@ public sealed class VmStrings : VmPageBase
                 this.OnPropertyChanged(nameof(this.FilteredCount));
                 break;
         }
+    }
+
+    private void OnExport()
+    {
+        Log.Debug($"Exporting strings to Excel format.");
     }
 }
