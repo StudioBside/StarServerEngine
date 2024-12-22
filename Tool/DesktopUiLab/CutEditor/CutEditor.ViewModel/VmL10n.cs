@@ -22,7 +22,7 @@ using static Shared.Templet.Enums;
 public sealed class VmL10n : VmPageBase,
     IFileDropHandler
 {
-    private readonly Dictionary<long/*uid*/, Cut> originCuts = new();
+    private readonly List<Cut> originCuts = new();
     private readonly Dictionary<string/*uidStr*/, L10nMapping> mappings = new();
     private readonly ObservableCollection<CutOutputExcelFormat> importedCuts = new();
     private readonly List<CutOutputExcelFormat> importedMappings = new();
@@ -240,7 +240,7 @@ public sealed class VmL10n : VmPageBase,
             return;
         }
 
-        if (CutFileIo.SaveCutData(this.Name, this.originCuts.Values) == false)
+        if (CutFileIo.SaveCutData(this.Name, this.originCuts) == false)
         {
             this.WriteLog("저장에 실패했습니다.");
             return;
@@ -273,6 +273,7 @@ public sealed class VmL10n : VmPageBase,
         this.originCuts.Clear();
         this.mappings.Clear();
 
+        this.originCuts.AddRange(cutList);
         this.Name = name;
         this.Title = this.Name;
         this.TextFileName = CutFileIo.GetTextFileName(this.Name);
