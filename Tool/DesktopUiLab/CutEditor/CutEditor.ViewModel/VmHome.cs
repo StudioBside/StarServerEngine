@@ -138,8 +138,14 @@ public sealed class VmHome : VmPageBase
         }
 
         var current = ServiceTime.Recent;
-        var fileName = $"{ExportRoot}/{scene.FileName}_{current.ToFileString()}.xlsx";
+        var fileName = $"{ExportRoot}/{scene.FileName}.xlsx";
         var nameOnly = Path.GetFileNameWithoutExtension(fileName);
+
+        // 동일한 이름의 파일이 존재한다면 삭제.
+        if (File.Exists(fileName))
+        {
+            File.Delete(fileName);
+        }
 
         var cuts = CutFileIo.LoadCutData(scene.FileName);
         if (cuts.Any() == false)

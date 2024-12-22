@@ -23,9 +23,7 @@ public sealed class VmL10n : VmPageBase,
     IFileDropHandler
 {
     private readonly List<Cut> originCuts = new();
-    private readonly Dictionary<string/*uidStr*/, L10nMapping> mappings = new();
-    private readonly ObservableCollection<CutOutputExcelFormat> importedCuts = new();
-    private readonly List<CutOutputExcelFormat> importedMappings = new();
+    private readonly ObservableCollection<L10nMapping> mappings = new();
     private readonly HashSet<string> importedHeaders = new();
     private readonly ObservableCollection<string> logMessages = new();
     private readonly IServiceProvider services;
@@ -51,7 +49,7 @@ public sealed class VmL10n : VmPageBase,
 
     public ICommand LoadFileCommand { get; }
     public IRelayCommand ApplyDataCommand { get; }
-    public IEnumerable<L10nMapping> Mappings => this.mappings.Values;
+    public IEnumerable<L10nMapping> Mappings => this.mappings;
     public IList<string> LogMessages => this.logMessages;
     public string? ImportFileName => Path.GetFileName(this.importFilePath);
     public string? ImportFilePath
@@ -150,71 +148,13 @@ public sealed class VmL10n : VmPageBase,
     private void OnLoadFile()
     {
         var picker = this.services.GetRequiredService<IFilePicker>();
-        this.ImportFilePath = picker.PickFile(Environment.CurrentDirectory, "엑셀 파일 (*.xlsx)|*.xlsx");
-        if (this.importFilePath is null)
+        var filePath = picker.PickFile(Environment.CurrentDirectory, "엑셀 파일 (*.xlsx)|*.xlsx");
+        if (filePath is null)
         {
             return;
         }
-
-        this.importedCuts.Clear();
-        this.importedMappings.Clear();
-        this.importedHeaders.Clear();
-        Array.Clear(this.mappingStat);
-        this.LoadingType = null;
-
-        foreach (var mapping in this.mappings.Values)
-        {
-            mapping.Imported = null;
-        }
-
-        var reader = this.services.GetRequiredService<IExcelFileReader>();
-        if (reader.Read(this.importFilePath, this.importedHeaders, this.importedCuts) == false)
-        {
-            Log.Error($"엑셀 파일 읽기에 실패했습니다. fileName:{this.importFilePath}");
-            return;
-        }
-
-        this.WriteLog($"번역데이터 파일 로딩: {this.ImportFileName}");
-
-        this.HasEnglish = this.importedHeaders.Contains("English");
-        this.HasJapanese = this.importedHeaders.Contains("Japanese");
-        this.HasChineseSimplified = this.importedHeaders.Contains("ChineseSimplified");
-
-        // -------------------- mapping data --------------------
-        foreach (var imported in this.importedCuts)
-        {
-            if (this.mappings.TryGetValue(imported.Uid, out var mapping) == false)
-            {
-                this.WriteLog($"컷을 찾을 수 없습니다. uid:{imported.Uid}");
-                this.importedMappings.Add(imported);
-                ++this.mappingStat[(int)L10nMappingType.MissingOrigin];
-                continue;
-            }
-
-            mapping.Imported = imported;
-            ++this.mappingStat[(int)mapping.MappingType];
-
-            if (mapping.MappingType == L10nMappingType.TextChanged)
-            {
-                var sb = new StringBuilder();
-                sb.AppendLine($"[Uid:{mapping.UidStr}] 한글 텍스트가 일치하지 않습니다.");
-                sb.AppendLine($"  원본: {mapping.L10NText.Korean}");
-                sb.Append($"  번역본: {imported.Korean}");
-                this.WriteLog(sb.ToString());
-            }
-        }
-
-        this.IsSuccessful = this.mappings.Count == this.mappingStat[(int)L10nMappingType.Normal];
-        this.ImportResult = this.IsSuccessful
-            ? "모든 데이터의 uid 및 텍스트가 일치합니다."
-            : "데이터 불일치. 확인이 필요합니다.";
-
-        this.WriteLog(this.ImportResult);
-
-        this.OnPropertyChanged(nameof(this.StatCountNormal));
-        this.OnPropertyChanged(nameof(this.StatCountMissingOrigin));
-        this.OnPropertyChanged(nameof(this.StatCountMissingImported));
-        this.OnPropertyChanged(nameof(this.StatCountTextChanged));
+        
+        this.ImportFile(filePath);
     }
 
     private void OnApplyData()
@@ -226,7 +166,7 @@ public sealed class VmL10n : VmPageBase,
         }
 
         int changedCount = 0;
-        foreach (var mapping in this.mappings.Values.Where(e => e.Imported != null))
+        foreach (var mapping in this.mappings.Where(e => e.Imported != null))
         {
             if (mapping.ApplyData(this.loadingType.Value))
             {
@@ -255,13 +195,13 @@ public sealed class VmL10n : VmPageBase,
         this.logMessages.Add(formatted);
     }
 
-    private void LoadOriginData(string name)
+    private bool LoadOriginData(string name)
     {
         var cutList = CutFileIo.LoadCutData(name);
         if (cutList.Count == 0)
         {
-            Log.Warn($"{name} 파일에 컷이 없습니다.");
-            return;
+            Log.Warn($"{name} 파일 로딩 실패.");
+            return false;
         }
 
         var uidGenerator = new CutUidGenerator(cutList);
@@ -286,7 +226,7 @@ public sealed class VmL10n : VmPageBase,
             if (cut.Choices.Count == 0)
             {
                 mapping = new L10nMapping(cut);
-                this.mappings.Add(mapping.UidStr, mapping);
+                this.mappings.Add(mapping);
                 ++normalCut;
             }
             else
@@ -294,22 +234,96 @@ public sealed class VmL10n : VmPageBase,
                 foreach (var choice in cut.Choices)
                 {
                     mapping = new L10nMapping(cut, choice);
-                    this.mappings.Add(mapping.UidStr, mapping);
+                    this.mappings.Add(mapping);
                     ++branchCut;
                 }
             }
         }
 
         this.WriteLog($"컷신 이름:{this.Name} 전체 데이터 {this.originCuts.Count}개. 기본형 {normalCut}개, 선택지 {branchCut}개.");
+        return true;
     }
 
     private void ProcessSingleFileDrop(string file)
     {
         var nameOnly = Path.GetFileNameWithoutExtension(file);
+        if (this.LoadOriginData(nameOnly) == false)
+        {
+            return;
+        }
+
+        this.ImportFile(file);
     }
 
     private void ProcessMultiFileDrop(IReadOnlyList<string> files)
     {
+    }
+
+    private bool ImportFile(string fileFullPath)
+    {
+        this.ImportFilePath = null;
+
+        this.importedHeaders.Clear();
+        Array.Clear(this.mappingStat);
+        this.LoadingType = null;
+
+        foreach (var mapping in this.mappings)
+        {
+            mapping.Imported = null;
+        }
+
+        var reader = this.services.GetRequiredService<IExcelFileReader>();
+        var importedCuts = new List<CutOutputExcelFormat>();
+        if (reader.Read(fileFullPath, this.importedHeaders, importedCuts) == false)
+        {
+            Log.Error($"엑셀 파일 읽기에 실패했습니다. fileName:{fileFullPath}");
+            return false;
+        }
+
+        this.WriteLog($"번역데이터 파일 로딩: {this.ImportFileName}");
+
+        this.HasEnglish = this.importedHeaders.Contains("English");
+        this.HasJapanese = this.importedHeaders.Contains("Japanese");
+        this.HasChineseSimplified = this.importedHeaders.Contains("ChineseSimplified");
+
+        var dicMappings = this.mappings.ToDictionary(e => e.UidStr);
+        // -------------------- mapping data --------------------
+        foreach (var imported in importedCuts)
+        {
+            if (dicMappings.TryGetValue(imported.Uid, out var mapping) == false)
+            {
+                this.WriteLog($"컷을 찾을 수 없습니다. uid:{imported.Uid}");
+                ++this.mappingStat[(int)L10nMappingType.MissingOrigin];
+                continue;
+            }
+
+            mapping.Imported = imported;
+            ++this.mappingStat[(int)mapping.MappingType];
+
+            if (mapping.MappingType == L10nMappingType.TextChanged)
+            {
+                var sb = new StringBuilder();
+                sb.AppendLine($"[Uid:{mapping.UidStr}] 한글 텍스트가 일치하지 않습니다.");
+                sb.AppendLine($"  원본: {mapping.L10NText.Korean}");
+                sb.Append($"  번역본: {imported.Korean}");
+                this.WriteLog(sb.ToString());
+            }
+        }
+
+        this.ImportFilePath = fileFullPath;
+        this.IsSuccessful = this.mappings.Count == this.mappingStat[(int)L10nMappingType.Normal];
+        this.ImportResult = this.IsSuccessful
+            ? "모든 데이터의 uid 및 텍스트가 일치합니다."
+            : "데이터 불일치. 확인이 필요합니다.";
+
+        this.WriteLog(this.ImportResult);
+
+        this.OnPropertyChanged(nameof(this.StatCountNormal));
+        this.OnPropertyChanged(nameof(this.StatCountMissingOrigin));
+        this.OnPropertyChanged(nameof(this.StatCountMissingImported));
+        this.OnPropertyChanged(nameof(this.StatCountTextChanged));
+
+        return true;
     }
 
     public sealed record CreateParam(string Name);

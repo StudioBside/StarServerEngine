@@ -26,7 +26,7 @@ internal sealed class CutFileIo
         var textFileName = GetTextFileName(cutsceneName);
         if (File.Exists(textFileName) == false)
         {
-            Log.Debug($"cutscene file not found: {textFileName}");
+            Log.Warn($"cutscene file not found: {textFileName}");
             return Array.Empty<Cut>();
         }
 
