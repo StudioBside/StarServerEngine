@@ -11,9 +11,11 @@ public sealed class StringTable
 {
     private readonly Dictionary<string, StringElement> uniqueElements = new();
     private readonly Dictionary<string, StringElement> allKeysElements = new();
+    private readonly Dictionary<string, StringElementSet> elementSets = new();
 
     public static StringTable Instance => Singleton<StringTable>.Instance;
     public IEnumerable<StringElement> Elements => this.uniqueElements.Values;
+    public IEnumerable<string> CategoryNames => this.elementSets.Keys;
     public int UniqueCount => this.uniqueElements.Count;
 
     public string Find(string key)
@@ -35,30 +37,46 @@ public sealed class StringTable
 
     internal void Load(string fullPath)
     {
-        var json = JsonUtil.Load(fullPath);
-        if (json["Data"] is not JArray jArray)
+        var l10nRoot = Path.Combine(fullPath, "L10N");
+        foreach (var file in Directory.EnumerateFiles(l10nRoot, "*.exported", SearchOption.TopDirectoryOnly))
         {
-            Log.ErrorAndExit($"[StringTable] file loading failed. fileName:{fullPath}");
-            return;
-        }
-
-        foreach (var token in jArray)
-        {
-            var element = new StringElement(token);
-            if (element == null)
+            var json = JsonUtil.Load(file);
+            if (json["Data"] is not JArray jArray)
             {
-                continue;
+                Log.ErrorAndExit($"[StringTable] file loading failed. fileName:{file}");
+                return;
             }
 
-            this.uniqueElements.Add(element.PrimeKey, element);
-            foreach (var key in element.Keys)
+            var categoryName = Path.GetFileNameWithoutExtension(file).Split('_')[^1];
+            if (string.IsNullOrEmpty(categoryName))
             {
-                if (this.allKeysElements.ContainsKey(key))
+                Log.ErrorAndExit($"[StringTable] categoryName is empty. fileName:{file}");
+                return;
+            }
+
+            var set = new StringElementSet(categoryName);
+            this.elementSets.Add(categoryName, set);
+
+            foreach (var token in jArray)
+            {
+                var element = new StringElement(token, categoryName);
+                if (element == null)
                 {
-                    Log.ErrorAndExit($"[StringTable] duplicated key. key:{key}");
+                    continue;
                 }
 
-                this.allKeysElements.Add(key, element);
+                this.uniqueElements.Add(element.PrimeKey, element);
+                foreach (var key in element.Keys)
+                {
+                    if (this.allKeysElements.ContainsKey(key))
+                    {
+                        Log.ErrorAndExit($"[StringTable] duplicated key. key:{key}");
+                    }
+
+                    this.allKeysElements.Add(key, element);
+                }
+
+                set.Add(element);
             }
         }
 

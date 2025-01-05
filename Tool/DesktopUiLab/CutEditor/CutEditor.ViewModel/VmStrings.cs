@@ -12,6 +12,7 @@ using Shared.Templet.Strings;
 
 public sealed class VmStrings : VmPageBase
 {
+    private const string DefaultFilter = "[All]";
     private readonly IServiceProvider services;
     private readonly ISearchableCollection<StringElement> filteredList;
     private StringElement? selectedItem;
@@ -21,12 +22,19 @@ public sealed class VmStrings : VmPageBase
     private bool showEnglish = false;
     private bool showChinese = false;
     private bool showDupeOnly = false;
+    private string selectedFilter = DefaultFilter;
 
     public VmStrings(IServiceProvider services, ISearchableCollectionProvider provider)
     {
         this.services = services;
         this.Title = "시스템 스트링 리스트";
         this.filteredList = provider.Build(StringTable.Instance.Elements);
+        this.Filters = new string[] { DefaultFilter }.Concat(StringTable.Instance.CategoryNames).ToArray();
+
+        this.filteredList.SetSubFilter(e =>
+        {
+            return this.selectedFilter == DefaultFilter || e.CategoryName == this.selectedFilter;
+        });
     }
 
     public IEnumerable FilteredList
@@ -43,9 +51,10 @@ public sealed class VmStrings : VmPageBase
         }
     }
 
-    public int FilteredCount => this.filteredList.FilteredCount;
+    public int FilteredCount => this.filteredList.SourceCount;
     public int TotalCount => StringTable.Instance.UniqueCount;
     public ICommand ExportCommand => new RelayCommand(this.OnExport);
+    public IReadOnlyList<string> Filters { get; }
 
     public string SearchKeyword
     {
@@ -89,6 +98,12 @@ public sealed class VmStrings : VmPageBase
         set => this.SetProperty(ref this.selectedItem, value);
     }
 
+    public string SelectedFilter
+    {
+        get => this.selectedFilter;
+        set => this.SetProperty(ref this.selectedFilter, value);
+    }
+
     //// --------------------------------------------------------------------------------------------
 
     protected override void OnPropertyChanged(PropertyChangedEventArgs e)
@@ -99,6 +114,7 @@ public sealed class VmStrings : VmPageBase
         {
             case nameof(this.SearchKeyword):
             case nameof(this.ShowDupeOnly):
+            case nameof(this.SelectedFilter):
                 this.filteredList.Refresh(this.searchKeyword);
                 this.OnPropertyChanged(nameof(this.FilteredList));
                 this.OnPropertyChanged(nameof(this.FilteredCount));

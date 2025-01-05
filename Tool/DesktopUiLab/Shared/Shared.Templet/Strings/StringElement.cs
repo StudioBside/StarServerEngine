@@ -13,8 +13,10 @@
         private readonly List<string> keys = new();
         private readonly string[] values = new string[EnumUtil<L10nType>.Count];
 
-        public StringElement(JToken token)
+        public StringElement(JToken token, string categoryName)
         {
+            this.CategoryName = categoryName;
+
             if (token.TryGetString("Key", out var key))
             {
                 this.keys.Add(key);
@@ -45,8 +47,11 @@
                     this.values[i] = string.Empty;
                 }
             }
+
+            this.CategoryName = string.Empty;
         }
 
+        public string CategoryName { get; }
         public string PrimeKey => this.keys.First();
         public int KeyCount => this.keys.Count;
         public IEnumerable<string> Keys => this.keys;

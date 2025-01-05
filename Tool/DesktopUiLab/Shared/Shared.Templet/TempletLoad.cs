@@ -32,8 +32,7 @@ public static class TempletLoad
         Unit.ImageRootPath = unitImageRoot;
         LobbyItem.ImageRootPath = lobbyThumbnailRoot;
 
-        var fullPath = Path.Combine(templetRoot, "CLIENT_STRING_KOR.exported");
-        StringTable.Instance.Load(fullPath);
+        StringTable.Instance.Load(templetRoot);
 
         string[] fileNames =
         [
