@@ -11,7 +11,8 @@ public sealed class SingleTextSet
     public static SingleTextSet Empty { get; } = new SingleTextSet();
 
     public string ValueEng { get; set; } = string.Empty;
-    public string ValueChn { get; set; } = string.Empty;
+    public string ValueChnS { get; set; } = string.Empty;
+    public string ValueChnT { get; set; } = string.Empty;
     public string ValueJpn { get; set; } = string.Empty;
 
     public DateTime CreatedAt { get; set; }
@@ -65,7 +66,8 @@ public sealed class SingleTextSet
         return type switch
         {
             L10nType.Eng => this.ValueEng,
-            L10nType.Chn => this.ValueChn,
+            L10nType.ChnS => this.ValueChnS,
+            L10nType.ChnT => this.ValueChnT,
             L10nType.Jpn => this.ValueJpn,
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null),
         };
@@ -78,8 +80,11 @@ public sealed class SingleTextSet
             case L10nType.Eng:
                 this.ValueEng = value;
                 break;
-            case L10nType.Chn:
-                this.ValueChn = value;
+            case L10nType.ChnS:
+                this.ValueChnS = value;
+                break;
+            case L10nType.ChnT:
+                this.ValueChnT = value;
                 break;
             case L10nType.Jpn:
                 this.ValueJpn = value;

@@ -19,7 +19,8 @@ public sealed class GptTranslator(string apiKey) : GptClient(apiKey)
     public enum TranslationMode
     {
         ToEnglish,
-        ToChinese,
+        ToChineseSimplified,
+        ToChineseTraditional,
         ToJapanese,
     }
 
@@ -58,7 +59,8 @@ public sealed class GptTranslator(string apiKey) : GptClient(apiKey)
 
                 break;
 
-            case TranslationMode.ToChinese:
+            case TranslationMode.ToChineseSimplified:
+            case TranslationMode.ToChineseTraditional:
                 if (IsAlphaNumeric(source) == false && // 원본이 영문이 아닌데
                     string.IsNullOrEmpty(translated) == false && // 번역문을 제대로 받아왔고
                     IsAlphaNumeric(translated)) // 번역문이 영문이라면
@@ -193,7 +195,8 @@ public sealed class GptTranslator(string apiKey) : GptClient(apiKey)
         return mode switch
         {
             TranslationMode.ToEnglish => "English",
-            TranslationMode.ToChinese => "Chinese",
+            TranslationMode.ToChineseSimplified => "Chinese(Simplified)",
+            TranslationMode.ToChineseTraditional => "Chinese(Traditional)",
             TranslationMode.ToJapanese => "Japanese",
             _ => throw new NotImplementedException(),
         };
