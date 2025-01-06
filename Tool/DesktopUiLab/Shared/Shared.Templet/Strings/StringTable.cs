@@ -11,11 +11,11 @@ public sealed class StringTable
 {
     private readonly Dictionary<string, StringElement> uniqueElements = new();
     private readonly Dictionary<string, StringElement> allKeysElements = new();
-    private readonly Dictionary<string, StringElementSet> elementSets = new();
+    private readonly Dictionary<string, StringCategory> categories = new();
 
     public static StringTable Instance => Singleton<StringTable>.Instance;
     public IEnumerable<StringElement> Elements => this.uniqueElements.Values;
-    public IEnumerable<string> CategoryNames => this.elementSets.Keys;
+    public IEnumerable<string> CategoryNames => this.categories.Keys;
     public int UniqueCount => this.uniqueElements.Count;
 
     public string Find(string key)
@@ -33,6 +33,11 @@ public sealed class StringTable
     public bool TryGetElement(string key, [MaybeNullWhen(false)] out StringElement element)
     {
         return this.allKeysElements.TryGetValue(key, out element);
+    }
+
+    public bool TryGetCategory(string name, [MaybeNullWhen(false)] out StringCategory category)
+    {
+        return this.categories.TryGetValue(name, out category);
     }
 
     internal void Load(string fullPath)
@@ -54,8 +59,8 @@ public sealed class StringTable
                 return;
             }
 
-            var set = new StringElementSet(categoryName);
-            this.elementSets.Add(categoryName, set);
+            var set = new StringCategory(categoryName);
+            this.categories.Add(categoryName, set);
 
             foreach (var token in jArray)
             {

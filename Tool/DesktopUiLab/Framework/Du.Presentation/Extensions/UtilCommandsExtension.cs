@@ -26,6 +26,13 @@ public sealed class UtilCommandsExtension : MarkupExtension
                 path = Path.GetFullPath(path);
             }
 
+            if (Directory.Exists(path))
+            {
+                // 디렉토리인 경우: 탐색기에서 해당 경로가 열린 상태로 보여준다.
+                Process.Start("explorer.exe", path);
+                return;
+            }
+
             Process.Start("explorer.exe", $"/select,\"{path}\"");
         });
 

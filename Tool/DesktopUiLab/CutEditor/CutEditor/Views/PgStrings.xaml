@@ -157,6 +157,11 @@
                        Content="번역 파일 추출"/>
 
                 <ui:Button Margin="0,0,10,0"
+                           Content="추출파일 폴더 열기"
+                           Command="{Binding OpenInExplorer, Source={extensions:UtilCommands}}"
+                           CommandParameter="{Binding ExportRoot}"/>
+
+                <ui:Button Margin="0,0,10,0"
                            IsEnabled="False"
                        Content="번역 파일 적용"/>
 

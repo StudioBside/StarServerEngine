@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 
 public sealed class VmGlobalState
 {
+    public const string ExportRoot = "./Export";
     public static VmGlobalState Instance => Singleton<VmGlobalState>.Instance;
     public string TextFilePath { get; private set; } = string.Empty;
     public string BinFilePath { get; private set; } = string.Empty;

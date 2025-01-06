@@ -1,15 +1,14 @@
 ﻿namespace Shared.Templet.Strings;
 
-using System;
 using System.Collections.Generic;
 using Cs.Logging;
 
-internal sealed class StringElementSet
+public sealed class StringCategory
 {
     private readonly Dictionary<string, StringElement> uniqueElements = new();
     private readonly Dictionary<string, StringElement> allKeysElements = new();
 
-    public StringElementSet(string name)
+    public StringCategory(string name)
     {
         this.Name = name;
     }

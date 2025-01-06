@@ -156,7 +156,8 @@
                            CommandParameter="Views/PgStrings.xaml" />
                 <ui:Button Margin="0,0,10,0"
                            Content="추출파일 폴더 열기"
-                           Command="{Binding OpenExportRootCommand}"/>
+                           Command="{Binding OpenInExplorer, Source={extensions:UtilCommands}}"
+                           CommandParameter="{Binding ExportRoot}"/>
             </StackPanel>
 
             

@@ -18,7 +18,6 @@ using Microsoft.Extensions.DependencyInjection;
 
 public sealed class VmHome : VmPageBase
 {
-    private const string ExportRoot = "./Export";
     private const string DefaultFilter = "[All]";
     private readonly HashSet<string> filters = new();
     private readonly IServiceProvider services;
@@ -37,7 +36,6 @@ public sealed class VmHome : VmPageBase
         this.NewFileCommand = new AsyncRelayCommand(this.OnNewFile);
         this.ExportCommand = new RelayCommand<CutScene>(this.OnExport);
         this.ImportCommand = new RelayCommand<CutScene>(this.OnImport);
-        this.OpenExportRootCommand = new RelayCommand(this.OnOpenExportRoot);
         this.ToL10nPageCommand = new RelayCommand<CutScene>(this.OnToL10nPage);
 
         this.filters.Add(DefaultFilter);
@@ -62,6 +60,7 @@ public sealed class VmHome : VmPageBase
     public IEnumerable<string> Filters => this.filters;
     public int FilteredCount => this.filteredList.FilteredCount;
     public int TotalCount => this.filteredList.SourceCount;
+    public string ExportRoot => VmGlobalState.ExportRoot;
 
     public string SearchKeyword
     {
@@ -80,7 +79,6 @@ public sealed class VmHome : VmPageBase
     public ICommand ExportCommand { get; }
     public ICommand ImportCommand { get; }
     public ICommand ToL10nPageCommand { get; }
-    public ICommand OpenExportRootCommand { get; }
 
     //// --------------------------------------------------------------------------------------------
 
@@ -137,8 +135,7 @@ public sealed class VmHome : VmPageBase
             return;
         }
 
-        var current = ServiceTime.Recent;
-        var fileName = $"{ExportRoot}/{scene.FileName}.xlsx";
+        var fileName = $"{this.ExportRoot}/{scene.FileName}.xlsx";
         var nameOnly = Path.GetFileNameWithoutExtension(fileName);
 
         // 동일한 이름의 파일이 존재한다면 삭제.
@@ -168,12 +165,6 @@ public sealed class VmHome : VmPageBase
         }
 
         Log.Info($"파일 생성 완료. fileName:{nameOnly}");
-    }
-
-    private void OnOpenExportRoot()
-    {
-        var fullPath = Path.GetFullPath(ExportRoot);
-        Process.Start("explorer.exe", fullPath);
     }
 
     private void OnImport(CutScene? scene)

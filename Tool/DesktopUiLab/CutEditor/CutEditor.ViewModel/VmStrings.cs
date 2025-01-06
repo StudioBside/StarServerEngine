@@ -6,8 +6,11 @@ using System.ComponentModel;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using Cs.Logging;
+using CutEditor.Model;
+using CutEditor.Model.Detail;
 using Du.Core.Bases;
 using Du.Core.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 using Shared.Templet.Strings;
 
 public sealed class VmStrings : VmPageBase
@@ -30,6 +33,7 @@ public sealed class VmStrings : VmPageBase
         this.Title = "시스템 스트링 리스트";
         this.filteredList = provider.Build(StringTable.Instance.Elements);
         this.Filters = new string[] { DefaultFilter }.Concat(StringTable.Instance.CategoryNames).ToArray();
+        this.ExportCommand = new RelayCommand(this.OnExport, () => this.selectedFilter != DefaultFilter);
 
         this.filteredList.SetSubFilter(e =>
         {
@@ -51,10 +55,11 @@ public sealed class VmStrings : VmPageBase
         }
     }
 
-    public int FilteredCount => this.filteredList.SourceCount;
-    public int TotalCount => StringTable.Instance.UniqueCount;
-    public ICommand ExportCommand => new RelayCommand(this.OnExport);
+    public int FilteredCount => this.filteredList.FilteredCount;
+    public int TotalCount => this.filteredList.SourceCount;
+    public IRelayCommand ExportCommand { get; }
     public IReadOnlyList<string> Filters { get; }
+    public string ExportRoot => VmGlobalState.ExportRoot;
 
     public string SearchKeyword
     {
@@ -118,12 +123,43 @@ public sealed class VmStrings : VmPageBase
                 this.filteredList.Refresh(this.searchKeyword);
                 this.OnPropertyChanged(nameof(this.FilteredList));
                 this.OnPropertyChanged(nameof(this.FilteredCount));
+
+                this.ExportCommand.NotifyCanExecuteChanged();
                 break;
         }
     }
 
     private void OnExport()
     {
-        Log.Debug($"Exporting strings to Excel format.");
+        if (this.selectedFilter == DefaultFilter)
+        {
+            Log.Error($"필터에서 추출할 카테고리를 선택해야 합니다.");
+            return;
+        }
+
+        if (StringTable.Instance.TryGetCategory(this.selectedFilter, out var category) == false)
+        {
+            Log.Error($"시스템 스트링 카테고리를 찾을 수 없습니다. category:{this.selectedFilter}");
+            return;
+        }
+
+        Log.Debug($"시스템 스트링 추출. category:{category.Name}");
+        var fileName = $"{this.ExportRoot}/SYSTEM_STRING_{category.Name}.xlsx";
+        var nameOnly = Path.GetFileNameWithoutExtension(fileName);
+
+        // 동일한 이름의 파일이 존재한다면 삭제.
+        if (File.Exists(fileName))
+        {
+            File.Delete(fileName);
+        }
+ 
+        var writer = this.services.GetRequiredService<IExcelFileWriter>();
+        if (writer.Write(fileName, category.Elements.Select(e => new StringOutputExcelFormat(e))) == false)
+        {
+            Log.Error($"파일 생성에 실패했습니다. fileName:{nameOnly}");
+            return;
+        }
+
+        Log.Info($"파일 생성 완료. fileName:{nameOnly}");
     }
 }
