@@ -54,12 +54,12 @@ jobs:
     - name: pack
       #run: dotnet pack -p:projectid=${{env.PROJECT_NAME}} -p:PackageVersion=${{env.PACKAGE_VERSION}} -c ${{env.BUILD_CONFIGURATION}} --no-build --no-restore
       # ^ gpt가 알려준 명령인데, 종속이 걸린 프로젝트의 package까지 같이 만들어준다.
-      run: dotnet pack ./Engine/${{env.PROJECT_NAME}}/${{env.PROJECT_NAME}}.csproj -p:PackageVersion=${{env.PACKAGE_VERSION}} -c ${{env.BUILD_CONFIGURATION}} --no-build --no-restore
+      run: dotnet pack ./Tool/${{env.PROJECT_NAME}}/${{env.PROJECT_NAME}}.csproj -p:PackageVersion=${{env.PACKAGE_VERSION}} -c ${{env.BUILD_CONFIGURATION}} --no-build --no-restore
         
     - name: gather artifacts
       run: |
         mkdir ${{env.ARTIFACT_PATH}}
-        cp -r ./Engine/${{env.PROJECT_NAME}}/bin/Release/*.nupkg ${{env.ARTIFACT_PATH}}
+        cp -r ./Tool/${{env.PROJECT_NAME}}/bin/Release/*.nupkg ${{env.ARTIFACT_PATH}}
       shell: bash
         
     - name: upload artifact
