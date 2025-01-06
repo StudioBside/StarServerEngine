@@ -16,7 +16,6 @@ public sealed class SingleTextSet
 
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
-    //// public long AccessCount { get; set; } // 수정 없이 읽기만 해도 갱신하려고 했는데, 현재는 노선을 변경. deprecated.
 
     public static bool TryLoad(string jsonString, [MaybeNullWhen(false)] out SingleTextSet result)
     {
