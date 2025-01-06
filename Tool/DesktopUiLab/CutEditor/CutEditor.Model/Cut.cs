@@ -18,7 +18,7 @@ using Shared.Templet.TempletTypes;
 using static CutEditor.Model.Enums;
 using static CutEditor.Model.Messages;
 using static Du.Core.Messages;
-using static Shared.Templet.Enums;
+using static StringStorage.Enums;
 
 public sealed class Cut : ObservableObject
 {
@@ -481,8 +481,8 @@ public sealed class Cut : ObservableObject
         set => this.SetProperty(ref this.cameraOffsetTime, value);
     }
 
-    public string? SpeakerNameKor => this.GetSpeakerName(L10nType.Korean);
-    public string? SpeakerNameJpn => this.GetSpeakerName(L10nType.Japanese);
+    public string? SpeakerNameKor => this.GetSpeakerName(L10nType.Kor);
+    public string? SpeakerNameJpn => this.GetSpeakerName(L10nType.Jpn);
 
     public object ToOutputJsonType()
     {
@@ -508,10 +508,10 @@ public sealed class Cut : ObservableObject
             CameraEase = OutputTransfer.EliminateEnum(this.cameraEase, Ease.Unset),
             CameraOffsetTime = OutputTransfer.EliminateEnum(this.cameraOffsetTime, CameraOffsetTime.NONE),
             EmotionEffect = OutputTransfer.EliminateEnum(this.emotionEffect, EmotionEffect.NONE),
-            UnitTalk_KOR = this.unitTalk.AsNullable(L10nType.Korean),
-            UnitTalk_ENG = this.unitTalk.AsNullable(L10nType.English),
-            UnitTalk_JPN = this.unitTalk.AsNullable(L10nType.Japanese),
-            UnitTalk_CHN = this.unitTalk.AsNullable(L10nType.ChineseSimplified),
+            UnitTalk_KOR = this.unitTalk.AsNullable(L10nType.Kor),
+            UnitTalk_ENG = this.unitTalk.AsNullable(L10nType.Eng),
+            UnitTalk_JPN = this.unitTalk.AsNullable(L10nType.Jpn),
+            UnitTalk_CHN = this.unitTalk.AsNullable(L10nType.ChnS),
             TalkTime = CutOutputJsonFormat.EliminateZero(this.talkTime),
             TalkPositionControl = OutputTransfer.EliminateEnum(this.talkPositionControl, TalkPositionControlType.NONE),
             TalkAppend = OutputTransfer.EliminateFalse(this.talkAppend),

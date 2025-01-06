@@ -17,7 +17,7 @@ using Du.Core.Bases;
 using Du.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using static CutEditor.Model.Enums;
-using static Shared.Templet.Enums;
+using static StringStorage.Enums;
 
 public sealed class VmL10n : VmPageBase,
     IFileDropHandler
@@ -159,7 +159,7 @@ public sealed class VmL10n : VmPageBase,
 
     private void OnApplyData()
     {
-        if (this.loadingType == null || this.loadingType == L10nType.Korean)
+        if (this.loadingType == null || this.loadingType == L10nType.Kor)
         {
             this.WriteLog($"번역을 적용할 언어타입 지정이 올바르지 않습니다. loadingType:{this.loadingType}");
             return;

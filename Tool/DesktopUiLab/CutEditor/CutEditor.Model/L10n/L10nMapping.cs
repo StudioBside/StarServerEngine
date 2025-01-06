@@ -4,7 +4,7 @@ using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CutEditor.Model.Detail;
 using static CutEditor.Model.Enums;
-using static Shared.Templet.Enums;
+using static StringStorage.Enums;
 
 public sealed class L10nMapping : ObservableObject
 {

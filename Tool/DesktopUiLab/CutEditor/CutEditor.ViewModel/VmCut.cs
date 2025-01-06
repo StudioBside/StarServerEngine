@@ -20,7 +20,6 @@ using Shared.Templet.TempletTypes;
 using static CutEditor.Model.Enums;
 using static CutEditor.ViewModel.Enums;
 using static Du.Core.Messages;
-using static Shared.Templet.Enums;
 
 public sealed class VmCut : ObservableObject
 {

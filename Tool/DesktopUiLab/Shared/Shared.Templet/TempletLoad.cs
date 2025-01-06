@@ -6,6 +6,7 @@ using Shared.Templet.Base;
 using Shared.Templet.Strings;
 using Shared.Templet.TempletTypes;
 using Shared.Templet.UnitScripts;
+using StringStorage.SystemStrings;
 
 public static class TempletLoad
 {
@@ -26,12 +27,14 @@ public static class TempletLoad
         var bgImageRoot = config["BgImageRoot"] ?? throw new Exception("BgImageRoot is not set in the configuration file.");
         var lobbyThumbnailRoot = config["LobbyThumbnailRoot"] ?? throw new Exception("LobbyThumbnailRoot is not set in the configuration file.");
         var unitScriptRoot = config["UnitScriptRoot"] ?? throw new Exception($"UnitScriptRoot is not defined in the configuration file.");
+        var stringDbPath = config["StringDbPath"] ?? throw new Exception("StringDbPath is not set in the configuration file.");
 
         TempletLoader.TempletRootPath = templetRoot;
         Unit.SmallImageRootPath = unitSmallImageRoot;
         Unit.ImageRootPath = unitImageRoot;
         LobbyItem.ImageRootPath = lobbyThumbnailRoot;
 
+        SystemStringReader.Instance.Initialize(stringDbPath);
         StringTable.Instance.Load(templetRoot);
 
         string[] fileNames =

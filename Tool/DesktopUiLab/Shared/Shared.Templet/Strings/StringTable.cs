@@ -6,6 +6,7 @@ using Cs.Core;
 using Cs.Core.Util;
 using Cs.Logging;
 using Newtonsoft.Json.Linq;
+using StringStorage.SystemStrings;
 
 public sealed class StringTable
 {
@@ -40,9 +41,9 @@ public sealed class StringTable
         return this.categories.TryGetValue(name, out category);
     }
 
-    internal void Load(string fullPath)
+    internal void Load(string texTempletPath)
     {
-        var l10nRoot = Path.Combine(fullPath, "L10N");
+        var l10nRoot = Path.Combine(texTempletPath, "L10N");
         foreach (var file in Directory.EnumerateFiles(l10nRoot, "*.exported", SearchOption.TopDirectoryOnly))
         {
             var json = JsonUtil.Load(file);
@@ -62,9 +63,14 @@ public sealed class StringTable
             var set = new StringCategory(categoryName);
             this.categories.Add(categoryName, set);
 
+            if (SystemStringReader.Instance.TryGetDb(categoryName, out var l10nDb) == false)
+            {
+                Log.Warn($"[StringTable] l10nDb 를 찾을 수 없습니다. categoryName:{categoryName}");
+            }
+
             foreach (var token in jArray)
             {
-                var element = new StringElement(token, categoryName);
+                var element = new StringElement(token, categoryName, l10nDb);
                 if (element == null)
                 {
                     continue;

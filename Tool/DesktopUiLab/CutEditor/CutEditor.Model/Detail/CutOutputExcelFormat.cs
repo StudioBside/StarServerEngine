@@ -2,7 +2,7 @@
 
 using NKM;
 using static CutEditor.Model.Enums;
-using static Shared.Templet.Enums;
+using static StringStorage.Enums;
 
 public sealed class CutOutputExcelFormat
 {
@@ -55,10 +55,10 @@ public sealed class CutOutputExcelFormat
     {
         return l10nType switch
         {
-            L10nType.Korean => this.Korean,
-            L10nType.English => this.English,
-            L10nType.Japanese => this.Japanese,
-            L10nType.ChineseSimplified => this.ChineseSimplified,
+            L10nType.Kor => this.Korean,
+            L10nType.Eng => this.English,
+            L10nType.Jpn => this.Japanese,
+            L10nType.ChnS => this.ChineseSimplified,
             _ => string.Empty,
         };
     }
