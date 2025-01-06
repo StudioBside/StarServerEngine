@@ -11,8 +11,10 @@ using Cs.Logging;
 
 public sealed class GptTranslator(string apiKey) : GptClient(apiKey)
 {
+    private static readonly string PrimaryModelName = Models.Gpt_4o;
+    private static readonly string SecondaryModelName = Models.Gpt_3_5_Turbo_0125;
     private long apiCallCount;
-    private string modelName = Models.Gpt_3_5_Turbo_0125;
+    private string modelName = PrimaryModelName;
 
     public enum TranslationMode
     {
@@ -175,10 +177,10 @@ public sealed class GptTranslator(string apiKey) : GptClient(apiKey)
 
     protected override void OnError(Error error)
     {
-        if (error.Code == LimitExceedErrorCode && this.modelName == Models.Gpt_3_5_Turbo_0125)
+        if (error.Code == LimitExceedErrorCode && this.modelName == PrimaryModelName)
         {
             var prevName = this.modelName;
-            this.modelName = Models.Gpt_3_5_Turbo_1106;
+            this.modelName = SecondaryModelName;
             Log.Warn($"API 호출 제한을 초과해 ai model을 변경합니다. {prevName} -> {this.modelName}");
 
             // 기억했던 에러코드를 삭제하고 계속 처리를 진행하게 만든다.
