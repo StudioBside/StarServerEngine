@@ -23,13 +23,6 @@ using static StringStorage.Enums;
 public sealed class Cut : ObservableObject
 {
     public const float TalkTimeDefault = 0.03f;
-    private static readonly HashSet<string> StringIdConstList = new()
-    {
-        "CURRENT_CHARACTER",
-        "CURRENT_PARENT",
-        "CURRENT_PARENT1",
-        "CURRENT_PARENT2",
-    };
 
     private readonly L10nText unitTalk = new();
     private readonly ObservableCollection<ChoiceOption> choices = new();
@@ -206,7 +199,7 @@ public sealed class Cut : ObservableObject
             this.jumpAnchor = Enum.Parse<DestAnchorType>(anchorStr);
         }
 
-        if (string.IsNullOrEmpty(this.unitStrId) == false && StringIdConstList.Contains(this.unitStrId) == false)
+        if (string.IsNullOrEmpty(this.unitStrId) == false && Unit.IsConstStringId(this.unitStrId) == false)
         {
             this.unit = TempletContainer<Unit>.Find(this.unitStrId);
             if (this.unit is null)

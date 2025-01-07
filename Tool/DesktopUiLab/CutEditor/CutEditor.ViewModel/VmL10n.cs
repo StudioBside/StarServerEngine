@@ -38,13 +38,11 @@ public sealed class VmL10n : VmPageBase,
     private string importResult = string.Empty;
     private L10nType? loadingType;
 
-    public VmL10n(IServiceProvider services, CreateParam param)
+    public VmL10n(IServiceProvider services)
     {
         this.services = services;
         this.LoadFileCommand = new RelayCommand(this.OnLoadFile);
         this.ApplyDataCommand = new RelayCommand(this.OnApplyData, () => this.LoadingType != null);
-
-        this.LoadOriginData(param.Name);
     }
 
     public ICommand LoadFileCommand { get; }
@@ -180,7 +178,7 @@ public sealed class VmL10n : VmPageBase,
             return;
         }
 
-        if (CutFileIo.SaveCutData(this.Name, this.originCuts) == false)
+        if (CutFileIo.SaveCutData(this.Name, this.originCuts, isShorten: false) == false)
         {
             this.WriteLog("저장에 실패했습니다.");
             return;
@@ -324,15 +322,5 @@ public sealed class VmL10n : VmPageBase,
         this.OnPropertyChanged(nameof(this.StatCountTextChanged));
 
         return true;
-    }
-
-    public sealed record CreateParam(string Name);
-
-    public sealed class Factory(IServiceProvider services)
-    {
-        public VmPageBase Create(CreateParam param)
-        {
-            return new VmL10n(services, param);
-        }
     }
 }

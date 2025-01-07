@@ -34,8 +34,11 @@ public static class TempletLoad
         Unit.ImageRootPath = unitImageRoot;
         LobbyItem.ImageRootPath = lobbyThumbnailRoot;
 
-        SystemStringReader.Instance.Initialize(stringDbPath);
-        StringTable.Instance.Load(templetRoot);
+        using (var stringReader = new SystemStringReader())
+        {
+            stringReader.Initialize(stringDbPath);
+            StringTable.Instance.Load(templetRoot, stringReader);
+        }
 
         string[] fileNames =
         [

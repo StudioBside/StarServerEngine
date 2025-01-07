@@ -70,6 +70,11 @@ public sealed class Unit : ITemplet, ISearchable
     public IReadOnlyList<SkillTemplet> SkillTemplets => this.skillTemplets;
     public string DebugName => $"[{this.Id}] {this.Name}";
 
+    public static bool IsConstStringId(string strId)
+    {
+        return Enum.TryParse<UnitIdConst>(strId, out _);
+    }
+
     public void Join()
     {
         if (string.IsNullOrEmpty(ImageRootPath))

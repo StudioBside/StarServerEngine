@@ -8,6 +8,7 @@
     xmlns:local="clr-namespace:CutEditor.Dialogs"
     xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
     xmlns:extensions="clr-namespace:Du.Presentation.Extensions;assembly=Du.Presentation"
+    xmlns:nkm="clr-namespace:NKM;assembly=Shared.Templet"
     mc:Ignorable="d" 
     d:DataContext="{d:DesignInstance Type=local:UnitPickerDialog}"
     d:DesignHeight="450" d:DesignWidth="800"
@@ -23,57 +24,91 @@
     <ui:ContentDialog.Resources>
         <Style BasedOn="{StaticResource {x:Type ui:ContentDialog}}" TargetType="{x:Type local:UnitPickerDialog}" />
     </ui:ContentDialog.Resources>
-    
-    <Grid Width="700">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="400"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
 
-        <ui:TextBox Grid.Row="0"
+    <StackPanel>
+        <TabControl MinWidth="650">
+            <TabItem>
+                <TabItem.Header>
+                    <TextBlock Text="유닛 템플릿" />
+                </TabItem.Header>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="400"/>
+                    </Grid.RowDefinitions>
+
+                    <ui:TextBox Grid.Row="0"
                     Margin="0,0,0,10"
                     PlaceholderText="검색어 입력.."
                     Text="{Binding SearchKeyword, UpdateSourceTrigger=PropertyChanged}"
                     extensions:FocusExtension.IsFocused="True">
-            <ui:TextBox.Icon>
-                <ui:IconSourceElement>
-                    <ui:SymbolIconSource Symbol="Search12"/>
-                </ui:IconSourceElement>
-            </ui:TextBox.Icon>
-        </ui:TextBox>
+                        <ui:TextBox.Icon>
+                            <ui:IconSourceElement>
+                                <ui:SymbolIconSource Symbol="Search12"/>
+                            </ui:IconSourceElement>
+                        </ui:TextBox.Icon>
+                    </ui:TextBox>
 
-        <ui:ListView Grid.Row="1" ItemsSource="{Binding FilteredFiles}"
+                    <ui:ListView Grid.Row="1" ItemsSource="{Binding FilteredFiles}"
                      SelectedItem="{Binding SelectedUnit, Mode=TwoWay}"
                      SelectionMode="Single" BorderBrush="LightGray">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Id}" Width="Auto"/>
-                    <GridViewColumn Header="Image" Width="90">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <ui:Image Source="{Binding SmallImageFullPath}"
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Id}" Width="Auto"/>
+                                <GridViewColumn Header="Image" Width="90">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <ui:Image Source="{Binding SmallImageFullPath}"
                                           CornerRadius="8" BorderThickness="0.5" BorderBrush="Gray"/>
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn Header="Name" Width="200"
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="Name" Width="200"
                                     DisplayMemberBinding="{Binding Name}"/>
-                    <GridViewColumn Header="Comment" Width="200"
+                                <GridViewColumn Header="Comment" Width="200"
                                     DisplayMemberBinding="{Binding Comment}"/>
-                    <GridViewColumn Header="Type" Width="100"
+                                <GridViewColumn Header="Type" Width="100"
                                     DisplayMemberBinding="{Binding UnitType}"/>
-                </GridView>
-            </ListView.View>
-        </ui:ListView>
+                            </GridView>
+                        </ListView.View>
+                    </ui:ListView>
+                </Grid>
+            </TabItem>
+
+            <TabItem>
+                <TabItem.Header>
+                    <TextBlock Text="상수 데이터" />
+                </TabItem.Header>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="400"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <ui:ListView Grid.Row="1"
+                             ItemsSource="{Binding Source={extensions:EnumValues {x:Type nkm:NKMOpenEnums+UnitIdConst}}}"
+                             SelectedItem="{Binding SelectedConst, Mode=TwoWay}"
+                             SelectionMode="Single" BorderBrush="LightGray">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Const" DisplayMemberBinding="{Binding .}" Width="Auto"/>
+                                <GridViewColumn Header="Desc" DisplayMemberBinding="{Binding ., Converter={converters:EnumDescriptionConverter}}" Width="Auto"/>
+                            </GridView>
+                        </ListView.View>
+                    </ui:ListView>
+                </Grid>
+            </TabItem>
+        </TabControl>
 
         <ui:InfoBar Grid.Row="2" Margin="0,10,0,0"
-                    x:Name="InfoBarWarning"
-                    Severity="Warning"
-                    Title="Note"
-                    Message="유닛을 선택해야 합니다."
-                    IsOpen="True"
-                    Visibility="Collapsed"/>
-
-    </Grid>
+            x:Name="InfoBarWarning"
+            Severity="Warning"
+            Title="Note"
+            Message="유닛을 선택해야 합니다."
+            IsOpen="True"
+            Visibility="Collapsed"/>       
+    </StackPanel>
 </ui:ContentDialog>

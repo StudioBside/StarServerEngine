@@ -110,6 +110,10 @@
                                                Command="{Binding RouteCommand, Source={extensions:PageRouter}}"
                                                CommandParameter="{Binding}"/>
 
+                                    <ui:Button Content="편집 (단축)" Margin="10,0"
+                                               Command="{Binding DataContext.EditShortenCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                               CommandParameter="{Binding}"/>
+
                                     <ui:Button Content="읽기" Margin="10,0"
                                                Command="{Binding DataContext.ReadPickedCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
                                                CommandParameter="{Binding}"/>
@@ -117,11 +121,6 @@
                                     <ui:Button Content="번역 파일 추출" Margin="10,0"
                                                Command="{Binding DataContext.ExportCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
                                                CommandParameter="{Binding}"/>
-
-                                    <ui:Button Content="번역 적용" Margin="10,0"
-                                               Command="{Binding DataContext.ToL10nPageCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
-                                               CommandParameter="{Binding}"/>
-
                                 </StackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
@@ -158,6 +157,10 @@
                            Content="추출파일 폴더 열기"
                            Command="{Binding OpenInExplorer, Source={extensions:UtilCommands}}"
                            CommandParameter="{Binding ExportRoot}"/>
+                <ui:Button Content="번역 적용" Margin="10,0"
+                           Command="{Binding GoToCommand, Source={extensions:PageRouter}}"
+                           CommandParameter="Views/PgL10n.xaml"/>
+
             </StackPanel>
 
             

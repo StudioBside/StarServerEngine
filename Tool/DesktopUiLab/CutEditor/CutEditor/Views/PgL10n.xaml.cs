@@ -6,9 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 public sealed partial class PgL10n : Page
 {
-    public PgL10n(VmL10n.CreateParam param)
+    public PgL10n()
     {
         this.InitializeComponent();
-        this.DataContext = App.Current.Services.GetRequiredService<VmL10n.Factory>().Create(param);
+        this.DataContext = App.Current.Services.GetRequiredService<VmL10n>();
     }
 }

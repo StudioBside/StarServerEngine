@@ -35,8 +35,7 @@ public sealed class VmHome : VmPageBase
         this.ReadPickedCommand = new RelayCommand<CutScene>(this.OnReadPicked);
         this.NewFileCommand = new AsyncRelayCommand(this.OnNewFile);
         this.ExportCommand = new RelayCommand<CutScene>(this.OnExport);
-        this.ImportCommand = new RelayCommand<CutScene>(this.OnImport);
-        this.ToL10nPageCommand = new RelayCommand<CutScene>(this.OnToL10nPage);
+        this.EditShortenCommand = new AsyncRelayCommand<CutScene>(this.OnEditShorten);
 
         this.filters.Add(DefaultFilter);
         foreach (var filter in CutSceneContainer.Instance.CutScenes.Select(e => e.CutsceneFilter).Distinct())
@@ -77,8 +76,7 @@ public sealed class VmHome : VmPageBase
     public ICommand ReadPickedCommand { get; }
     public ICommand NewFileCommand { get; }
     public ICommand ExportCommand { get; }
-    public ICommand ImportCommand { get; }
-    public ICommand ToL10nPageCommand { get; }
+    public ICommand EditShortenCommand { get; }
 
     //// --------------------------------------------------------------------------------------------
 
@@ -147,7 +145,7 @@ public sealed class VmHome : VmPageBase
         var cuts = CutFileIo.LoadCutData(scene.FileName);
         if (cuts.Any() == false)
         {
-            Log.Error($"파일 로딩에 실패했습니다. fileName:{CutFileIo.GetTextFileName(scene.FileName)}");
+            Log.Error($"파일 로딩에 실패했습니다. fileName:{CutFileIo.GetTextFileName(scene.FileName, isShorten: false)}");
             return;
         }
 
@@ -167,44 +165,7 @@ public sealed class VmHome : VmPageBase
         Log.Info($"파일 생성 완료. fileName:{nameOnly}");
     }
 
-    private void OnImport(CutScene? scene)
-    {
-        if (scene is null)
-        {
-            Log.Error($"argument is null");
-            return;
-        }
-        
-        var picker = this.services.GetRequiredService<IFilePicker>();
-        var fileName = picker.PickFile(Environment.CurrentDirectory, "엑셀 파일 (*.xlsx)|*.xlsx");
-        if (fileName is null)
-        {
-            return;
-        }
-
-        var orgCuts = CutFileIo.LoadCutData(scene.FileName);
-        if (orgCuts.Any() == false)
-        {
-            Log.Error($"파일 로딩에 실패했습니다. fileName:{CutFileIo.GetTextFileName(scene.FileName)}");
-            return;
-        }
-
-        var uidGenerator = new CutUidGenerator(orgCuts);
-        foreach (var cut in orgCuts.Where(e => e.Choices.Any()))
-        {
-            var choiceUidGenerator = new ChoiceUidGenerator(cut.Uid, cut.Choices);
-        }
-
-        var reader = this.services.GetRequiredService<IExcelFileReader>();
-        var newCuts = new List<CutOutputExcelFormat>();
-        if (reader.Read(fileName, newCuts) == false)
-        {
-            Log.Error($"엑셀 파일 읽기에 실패했습니다. fileName:{fileName}");
-            return;
-        }
-    }
-
-    private void OnToL10nPage(CutScene? scene)
+    private async Task OnEditShorten(CutScene? scene)
     {
         if (scene is null)
         {
@@ -212,7 +173,21 @@ public sealed class VmHome : VmPageBase
             return;
         }
 
-        this.services.GetRequiredService<IPageRouter>()
-            .Route(new VmL10n.CreateParam(scene.FileName));
+        var fileName = CutFileIo.GetTextFileName(scene.FileName, isShorten: true);
+        if (File.Exists(fileName) == false)
+        {
+            var prompt = this.services.GetRequiredService<IUserInputProvider<bool>>();
+            var result = await prompt.PromptAsync($"[{scene.Title}]는 단축 컷신이 없습니다", "새 파일을 생성하시겠습니까?");
+            if (result == false)
+            {
+                return;
+            }
+        }
+
+        var router = this.services.GetRequiredService<IPageRouter>();
+        router.Route(new VmCuts.CreateParam(scene.FileName, CutUid: 0)
+        {
+            IsShorten = true,
+        });
     }
 }

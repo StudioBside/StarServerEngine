@@ -67,9 +67,18 @@ public sealed class VmCuts : VmPageBase,
         this.packetExeFile = config["TextFilePacker"] ?? throw new Exception("TextFilePacker is not set in the configuration file.");
 
         this.Name = param.FileName;
-        this.Title = this.Name;
-        this.TextFileName = CutFileIo.GetTextFileName(this.Name);
-        var cutList = CutFileIo.LoadCutData(this.Name);
+        this.IsShorten = param.IsShorten;
+        if (this.IsShorten)
+        {
+            this.Title = $"{this.Name} (단축)";
+        }
+        else
+        {
+            this.Title = $"{this.Name}";
+        }
+
+        this.TextFileName = CutFileIo.GetTextFileName(this.Name, param.IsShorten);
+        var cutList = CutFileIo.LoadCutData(this.Name, param.IsShorten);
 
         foreach (var cut in cutList)
         {
@@ -88,10 +97,11 @@ public sealed class VmCuts : VmPageBase,
 
         this.UpdatePreview(startIndex: 0);
 
-        Log.Info($"{this.Name} 파일 로딩 완료. 총 컷의 개수:{this.cuts.Count}");
+        Log.Info($"{this.Title} 파일 로딩 완료. 총 컷의 개수:{this.cuts.Count}");
     }
 
     public string Name { get; }
+    public bool IsShorten { get; }
     public IList<VmCut> Cuts => this.cuts;
     public IList<VmCut> SelectedCuts => this.selectedCuts;
     public UndoController UndoController => this.undoController;
@@ -373,7 +383,7 @@ public sealed class VmCuts : VmPageBase,
         ////using var waiting = await waitingNotifier.StartWait($"{this.DebugName} 저장 중...");
         ////await Task.Delay(3000);
         await Task.Delay(0);
-        if (CutFileIo.SaveCutData(this.Name, this.cuts.Select(e => e.Cut)) == false)
+        if (CutFileIo.SaveCutData(this.Name, this.cuts.Select(e => e.Cut), this.IsShorten) == false)
         {
             Log.Error($"{this.DebugName} 저장 실패");
             return;
@@ -539,7 +549,10 @@ public sealed class VmCuts : VmPageBase,
         this.IsDirty = true;
     }
 
-    public sealed record CreateParam(string FileName, long CutUid);
+    public sealed record CreateParam(string FileName, long CutUid)
+    {
+        public bool IsShorten { get; init; }
+    }
 
     public sealed class Factory(IServiceProvider services)
     {

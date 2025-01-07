@@ -48,8 +48,6 @@ public partial class App : Application
             //.AddJsonFile("appsettings.local.json", optional: true)
             .Build();
 
-        VerifyConfiguration(config);
-
         services.AddTransient<IConfiguration>(_ => config);
 
         services.AddTransient<VmMain>();
@@ -58,7 +56,7 @@ public partial class App : Application
         services.AddTransient<VmHome>();
         services.AddTransient<VmCuts.Factory>();
         services.AddTransient<VmCutsSummary.Factory>();
-        services.AddTransient<VmL10n.Factory>();
+        services.AddTransient<VmL10n>();
         services.AddTransient<VmStrings>();
         services.AddTransient<VmUnits>();
         services.AddTransient<VmSkills>();
@@ -99,25 +97,6 @@ public partial class App : Application
         return services.BuildServiceProvider();
     }
 
-    private static void VerifyConfiguration(IConfiguration config)
-    {
-        if (config["CutTextFilePath"] is null)
-        {
-            Log.ErrorAndExit("CutTextFilePath is not set in appsettings.json");
-        }
-
-        if (config["CutBinFilePath"] is null)
-        {
-            Log.ErrorAndExit("CutBinFilePath is not set in appsettings.json");
-        }
-
-        var textFilePacker = config["TextFilePacker"] ?? throw new Exception("TextFilePacker is not set in appsettings.json");
-        if (File.Exists(textFilePacker) == false)
-        {
-            Log.ErrorAndExit($"TextFilePacker does not exist. config:{textFilePacker}");
-        }
-    }
-
     private void Initialize()
     {
         Log.Initialize(this.Services.GetService<FileAndSnackbarLog>(), LogLevelConfig.All);
@@ -149,7 +128,6 @@ public partial class App : Application
             .Register<PgCuts, VmCutSummary>()
             .Register<PgCuts, CutSearchResult>()
             .Register<PgCutsSummary, VmCutsSummary.CreateParam>()
-            .Register<PgL10n, VmL10n.CreateParam>()
             .Register<PgUnitDetail, Unit>()
             .Register<PgUnitScriptDetail, UnitScript>()
             .Register<PgBuffDetail, BuffTemplet>()

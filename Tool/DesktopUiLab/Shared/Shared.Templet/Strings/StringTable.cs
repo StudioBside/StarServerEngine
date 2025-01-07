@@ -41,7 +41,7 @@ public sealed class StringTable
         return this.categories.TryGetValue(name, out category);
     }
 
-    internal void Load(string texTempletPath)
+    internal void Load(string texTempletPath, SystemStringReader stringReader)
     {
         var l10nRoot = Path.Combine(texTempletPath, "L10N");
         foreach (var file in Directory.EnumerateFiles(l10nRoot, "*.exported", SearchOption.TopDirectoryOnly))
@@ -63,7 +63,7 @@ public sealed class StringTable
             var set = new StringCategory(categoryName);
             this.categories.Add(categoryName, set);
 
-            if (SystemStringReader.Instance.TryGetDb(categoryName, out var l10nDb) == false)
+            if (stringReader.TryGetDb(categoryName, out var l10nDb) == false)
             {
                 Log.Warn($"[StringTable] l10nDb 를 찾을 수 없습니다. categoryName:{categoryName}");
             }

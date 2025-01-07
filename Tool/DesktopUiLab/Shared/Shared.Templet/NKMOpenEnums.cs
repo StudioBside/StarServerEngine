@@ -2,6 +2,8 @@
 
 namespace NKM
 {
+    using System.ComponentModel;
+
     public static class NKMOpenEnums
     {
         public enum NKM_UNIT_TYPE : short
@@ -15,6 +17,16 @@ namespace NKM
             NUT_MERCENARY,  // 서포터 (여정 플레이 불가능, 여정 중 영입 가능, 여정 전투 참여 가능)
             NUT_NPC,        // NPC (컷씬에서만 등장)
             NUT_ORBITAL_ARRAY,  // 오비탈 스킬에 사용하는 유닛
+        }
+
+        public enum UnitIdConst
+        {
+            [Description("구원자")]
+            CURRENT_CHARACTER,
+            [Description("부모1")]
+            CURRENT_PARENT1,
+            [Description("부모2")]
+            CURRENT_PARENT2,
         }
 
         //// -----------------------------------------------------------------------------------------------

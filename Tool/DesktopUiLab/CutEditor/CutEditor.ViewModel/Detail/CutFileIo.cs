@@ -13,12 +13,7 @@ internal sealed class CutFileIo
 {
     public static string GetTextFileName(string cutsceneName)
     {
-        return Path.Combine(VmGlobalState.Instance.TextFilePath, $"CLIENT_{cutsceneName}.exported");
-    }
-
-    public static string GetBinFileName(string name)
-    {
-        return Path.Combine(VmGlobalState.Instance.BinFilePath, $"CLIENT_{name}.bytes");
+        return Path.Combine(VmGlobalState.Instance.GetTextFilePath(isShorten: false), $"CLIENT_{cutsceneName}.exported");
     }
 
     public static IReadOnlyList<Cut> LoadCutData(string cutsceneName)
@@ -37,7 +32,29 @@ internal sealed class CutFileIo
         return result;
     }
 
-    public static bool SaveCutData(string cutsceneName, IEnumerable<Cut> cuts)
+    public static string GetTextFileName(string cutsceneName, bool isShorten)
+    {
+        var fileName = isShorten ? $"CLIENT_SHORTEN_{cutsceneName}.exported" : $"CLIENT_{cutsceneName}.exported";
+        return Path.Combine(VmGlobalState.Instance.GetTextFilePath(isShorten), fileName);
+    }
+
+    public static IReadOnlyList<Cut> LoadCutData(string cutsceneName, bool isShorten)
+    {
+        var textFileName = GetTextFileName(cutsceneName, isShorten);
+        if (File.Exists(textFileName) == false)
+        {
+            Log.Warn($"cutscene file not found: {textFileName}");
+            return Array.Empty<Cut>();
+        }
+
+        var result = new List<Cut>();
+        var json = JsonUtil.Load(textFileName);
+        json.GetArray("Data", result, (e, i) => new Cut(e));
+
+        return result;
+    }
+
+    public static bool SaveCutData(string cutsceneName, IEnumerable<Cut> cuts, bool isShorten)
     {
         if (P4Commander.TryCreate(out var p4Commander) == false)
         {
@@ -81,7 +98,7 @@ internal sealed class CutFileIo
 
         template.Add("model", model);
 
-        var textFilePath = GetTextFileName(cutsceneName);
+        var textFilePath = GetTextFileName(cutsceneName, isShorten);
         if (File.Exists(textFilePath))
         {
             File.SetAttributes(textFilePath, FileAttributes.Normal);
@@ -98,7 +115,7 @@ internal sealed class CutFileIo
         }
 
         // -------------------------- save binary file --------------------------
-        var binFilePath = GetBinFileName(cutsceneName);
+        var binFilePath = GetBinFileName(cutsceneName, isShorten);
         if (OutProcess.Run(VmGlobalState.Instance.PackerExeFilePath, $"\"{textFilePath}\" \"{binFilePath}\"", out string result) == false)
         {
             Log.Error($"{cutsceneName} binary 파일 생성 실패.\result:{result}");
@@ -151,5 +168,13 @@ internal sealed class CutFileIo
 
             return true;
         }
+    }
+
+    //// --------------------------------------------------------------------------------------------
+
+    private static string GetBinFileName(string name, bool isShorten)
+    {
+        var fileName = isShorten ? $"CLIENT_SHORTEN_{name}.bytes" : $"CLIENT_{name}.bytes";
+        return Path.Combine(VmGlobalState.Instance.GetBinFilePath(isShorten), fileName);
     }
 }

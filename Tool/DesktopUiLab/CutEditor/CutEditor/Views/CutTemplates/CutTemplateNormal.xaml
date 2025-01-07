@@ -52,32 +52,24 @@
                         <CheckBox Content="유닛" Background="{StaticResource UnitBoxBrush}"
                                 IsChecked="{Binding ShowUnitSection}" MinWidth="70"/>
 
-                        <ui:DropDownButton Margin="0,0,10,0">
-                            <!--값이 없을 때는 한글 표기. 값이 있을때는 배경색을 다르게 표기-->
-                            <ui:DropDownButton.Style>
-                                <Style TargetType="ui:DropDownButton" BasedOn="{StaticResource {x:Type ui:DropDownButton}}">
-                                    <Setter Property="Content" Value="{Binding Cut.JumpAnchor}"/>
+                        <TextBlock VerticalAlignment="Center" Text="도착 앵커 : "/>
+                        <ComboBox
+                            Margin="0,0,10,0"
+                            IsEditable="True"
+                            ItemsSource="{Binding Source={extensions:EnumValues {x:Type models:Enums+DestAnchorType}}}"
+                            SelectedValue="{Binding Cut.JumpAnchor, Mode=TwoWay}"
+                            Height="34">
+                            <ComboBox.Style>
+                                <Style TargetType="ComboBox" BasedOn="{StaticResource {x:Type ComboBox}}">
                                     <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Cut.JumpAnchor}" Value="{x:Static models:Enums+DestAnchorType.None}">
-                                            <Setter Property="Content" Value="도착 앵커"/>
+                                        <DataTrigger Binding="{Binding SelectedValue, RelativeSource={RelativeSource Self}}" Value="{x:Static models:Enums+DestAnchorType.None}">
                                             <Setter Property="Background" Value="{StaticResource HeaderControlBrush}"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
-                            </ui:DropDownButton.Style>
-                            <ui:DropDownButton.Flyout>
-                                <ContextMenu ItemsSource="{Binding Source={extensions:EnumValues {x:Type models:Enums+DestAnchorType}}}">
-                                    <ContextMenu.ItemTemplate>
-                                        <DataTemplate>
-                                            <MenuItem Header="{Binding .}"
-                                      Command="{Binding DataContext.SetAnchorCommand, RelativeSource={RelativeSource AncestorType=ListViewItem}}"
-                                      CommandParameter="{Binding .}"/>
-                                        </DataTemplate>
-                                    </ContextMenu.ItemTemplate>
-                                </ContextMenu>
-                            </ui:DropDownButton.Flyout>
-                        </ui:DropDownButton>
+                            </ComboBox.Style>
+                        </ComboBox>
 
                         <ui:DropDownButton Margin="0,0,10,0">
                             <!--값이 없을 때는 한글 표기. 값이 있을때는 배경색을 다르게 표기-->

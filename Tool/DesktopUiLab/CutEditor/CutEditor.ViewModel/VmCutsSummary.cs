@@ -29,7 +29,7 @@ public sealed class VmCutsSummary : VmPageBase
 
         this.GotoEditCommand = new RelayCommand(this.OnGoToEdit);
 
-        this.TextFileName = CutFileIo.GetTextFileName(this.Name);
+        this.TextFileName = CutFileIo.GetTextFileName(this.Name, param.IsShorten);
         if (File.Exists(this.TextFileName) == false)
         {
             Log.Debug($"cutscene file not found: {this.TextFileName}");
@@ -85,7 +85,10 @@ public sealed class VmCutsSummary : VmPageBase
         router.Route(new VmCuts.CreateParam(this.Name, CutUid: 0));
     }
 
-    public sealed record CreateParam(string Name);
+    public sealed record CreateParam(string Name)
+    {
+        public bool IsShorten { get; init; }
+    }
 
     public sealed class Factory(IServiceProvider services)
     {
