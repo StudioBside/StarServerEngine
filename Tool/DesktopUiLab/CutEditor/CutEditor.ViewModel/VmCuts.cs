@@ -501,7 +501,7 @@ public sealed class VmCuts : VmPageBase,
 
     private async Task OnBulkEditCharacter()
     {
-        var unitpicker = this.services.GetRequiredService<ITempletPicker<Unit>>();
+        var unitpicker = this.services.GetRequiredService<IGeneralPicker<Unit>>();
         var result = await unitpicker.Pick();
         if (result.IsCanceled)
         {

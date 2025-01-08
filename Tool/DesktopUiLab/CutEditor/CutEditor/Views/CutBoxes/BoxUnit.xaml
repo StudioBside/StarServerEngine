@@ -67,11 +67,26 @@
                                            Command="{Binding PickUnitCommand}" Padding="0" CornerRadius="8"
                                            Width="80" Height="80"
                                            VerticalAlignment="Stretch">
-                    <MultiBinding Converter="{lcvt:PathToImageConverter}">
-                        <Binding Path="Cut.Unit.SmallImageFullPath" />
-                        <Binding Source="유닛 선택"/>
-                        <Binding Source="CornerRadius:8;BorderBrush:Black;BorderThickness:1"/>
-                    </MultiBinding>
+                    <ui:Button.Style>
+                        <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
+                            <Setter Property="Content" Value="유닛 선택"/>
+                            <Setter Property="Background" Value="White"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Cut.Unit, Converter={converters:NullToBooleanConverter}}" Value="True">
+                                    <Setter Property="Content">
+                                        <Setter.Value>
+                                            <ui:Image CornerRadius="8" BorderBrush="Black" BorderThickness="1"
+                                                      Source="{Binding Cut.Unit.SmallImageFullPath}"/>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Cut.UnitIdConst, Converter={converters:NullToBooleanConverter}}" Value="True">
+                                    <Setter Property="Content" Value="{Binding Cut.UnitIdConst, Converter={converters:EnumDescriptionConverter}}"/>
+                                    <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ui:Button.Style>
                 </ui:Button>
 
                 <!--언두 히스토리를 만들기 위해 IsChecked는 읽기 한 방향으로만 하고, 쓰기는 Command로 합니다.-->
@@ -137,6 +152,25 @@
                             </ContextMenu>
                         </ui:DropDownButton.Flyout>
                     </ui:DropDownButton>
+
+                    <!--<TextBlock VerticalAlignment="Center" Text="모션 : "/>
+                    <ComboBox
+                        Margin="0,0,10,0"
+                        IsEditable="True"
+                        ItemsSource="{Binding Source={StaticResource AssetListInstance}, Path=UnitMotions}"
+                        SelectedValue="{Binding Cut.UnitMotion}"
+                        Height="34">
+                        <ComboBox.Style>
+                            <Style TargetType="ComboBox" BasedOn="{StaticResource {x:Type ComboBox}}">
+                                <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Cut.UnitMotion}" Value="{x:Null}">
+                                        <Setter Property="Background" Value="White"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ComboBox.Style>
+                    </ComboBox>-->
 
                     <!--EmotionEffect 설정 버튼-->
                     <ui:DropDownButton Margin="0,0,10,0">

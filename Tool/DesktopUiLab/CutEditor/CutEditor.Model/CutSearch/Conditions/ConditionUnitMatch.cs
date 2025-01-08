@@ -39,7 +39,7 @@ public sealed class ConditionUnitMatch : ObservableObject,
 
     private async Task OnSelectUnit()
     {
-        var unitpicker = this.services.GetRequiredService<ITempletPicker<Unit>>();
+        var unitpicker = this.services.GetRequiredService<IGeneralPicker<Unit>>();
         var result = await unitpicker.Pick();
         if (result.IsCanceled)
         {

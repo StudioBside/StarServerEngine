@@ -10,6 +10,11 @@ public sealed class EnumDescriptionConverter : ConverterMarkupExtension<EnumDesc
 {
     public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
+        if (value is null)
+        {
+            return DependencyProperty.UnsetValue;
+        }
+
         if (Enum.IsDefined(value.GetType(), value) == false)
         {
             return DependencyProperty.UnsetValue;

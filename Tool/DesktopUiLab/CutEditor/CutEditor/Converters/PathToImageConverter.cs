@@ -7,6 +7,15 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Du.Presentation.Converters;
 
+/// <summary>
+/// 이미지 경로를 이미지로 변환하는 다중 값 변환기입니다.
+/// <MultiBinding Converter="{lcvt:PathToImageConverter}">
+///     <Binding Path="Cut.Unit.SmallImageFullPath" />
+///     <Binding Source="유닛 선택"/>
+///     <Binding Source="CornerRadius:8;BorderBrush:Black;BorderThickness:1"/>
+/// </MultiBinding>
+/// </summary>
+[Obsolete("사용하지는 않습니다. MultiValueConverterMarkupExtension 상속 구현의 예시를 위해서만 남겨둡니다.")]
 public class PathToImageConverter : MultiValueConverterMarkupExtension<PathToImageConverter>
 {
     public override object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)

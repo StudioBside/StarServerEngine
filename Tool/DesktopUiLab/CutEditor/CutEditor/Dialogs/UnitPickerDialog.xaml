@@ -76,7 +76,7 @@
                 </Grid>
             </TabItem>
 
-            <TabItem>
+            <TabItem Visibility="{Binding EnableIdConst, Converter={converters:BoolToVisibilityConverter}}">
                 <TabItem.Header>
                     <TextBlock Text="상수 데이터" />
                 </TabItem.Header>

@@ -18,6 +18,7 @@ using Shared.Templet.TempletTypes;
 using static CutEditor.Model.Enums;
 using static CutEditor.Model.Messages;
 using static Du.Core.Messages;
+using static NKM.NKMOpenEnums;
 using static StringStorage.Enums;
 
 public sealed class Cut : ObservableObject
@@ -46,6 +47,7 @@ public sealed class Cut : ObservableObject
     private EmotionEffect emotionEffect;
     private string? unitStrId; // 로딩할 때만 쓰고, 변경이 있을 땐 쓰지 않음. 
     private Unit? unit;
+    private UnitIdConst? unitIdConst;
     private bool unitQuickSet;
     private CutsceneUnitPos unitPos;
     private float talkTime;
@@ -199,12 +201,19 @@ public sealed class Cut : ObservableObject
             this.jumpAnchor = Enum.Parse<DestAnchorType>(anchorStr);
         }
 
-        if (string.IsNullOrEmpty(this.unitStrId) == false && Unit.IsConstStringId(this.unitStrId) == false)
+        if (string.IsNullOrEmpty(this.unitStrId) == false)
         {
-            this.unit = TempletContainer<Unit>.Find(this.unitStrId);
-            if (this.unit is null)
+            if (Enum.TryParse<UnitIdConst>(this.unitStrId, out var unitIdConst))
             {
-                Log.Error($"유닛 템플릿을 찾을 수 없습니다. UnitStrId:{this.unitStrId}");
+                this.unitIdConst = unitIdConst;
+            }
+            else
+            {
+                this.unit = TempletContainer<Unit>.Find(this.unitStrId);
+                if (this.unit is null)
+                {
+                    Log.Error($"유닛 템플릿을 찾을 수 없습니다. UnitStrId:{this.unitStrId}");
+                }
             }
         }
 
@@ -235,7 +244,13 @@ public sealed class Cut : ObservableObject
     public Unit? Unit
     {
         get => this.unit;
-        set => this.SetProperty(ref this.unit, value);
+        set => this.SetProperty(this.unit, value, this.OnSetUnit);
+    }
+
+    public UnitIdConst? UnitIdConst
+    {
+        get => this.unitIdConst;
+        set => this.SetProperty(this.unitIdConst, value, this.OnSetUnitIdConst);
     }
 
     public LobbyItem? Arcpoint
@@ -477,6 +492,9 @@ public sealed class Cut : ObservableObject
     public string? SpeakerNameKor => this.GetSpeakerName(L10nType.Kor);
     public string? SpeakerNameJpn => this.GetSpeakerName(L10nType.Jpn);
 
+    private bool HasUnitId => this.unit is not null || this.unitIdConst is not null;
+    private string? FinalUnitId => this.unit?.StrId ?? this.unitIdConst?.ToString();
+
     public object ToOutputJsonType()
     {
         var result = new CutOutputJsonFormat
@@ -494,7 +512,7 @@ public sealed class Cut : ObservableObject
             StartBgmFileName = this.startBgmFileName,
             StartFxSoundName = this.startFxSoundName,
             CutsceneClear = OutputTransfer.EliminateEnum(this.cutsceneClear, CutsceneClearType.NONE),
-            UnitStrId = this.unit?.StrId,
+            UnitStrId = this.FinalUnitId,
             UnitQuickSet = OutputTransfer.EliminateFalse(this.unitQuickSet),
             UnitPos = OutputTransfer.EliminateEnum(this.unitPos, CutsceneUnitPos.NONE),
             CameraOffset = OutputTransfer.EliminateEnum(this.cameraOffset, CameraOffset.NONE),
@@ -622,7 +640,7 @@ public sealed class Cut : ObservableObject
             string.IsNullOrEmpty(this.endFxSoundName) == false ||
             this.endFxLoopControl != CutsceneSoundLoopControl.NONE ||
             this.emotionEffect != EmotionEffect.NONE ||
-            this.unit is not null ||
+            this.HasUnitId ||
             this.unitPos != CutsceneUnitPos.NONE ||
             string.IsNullOrEmpty(this.unitMotion) == false ||
             string.IsNullOrEmpty(this.talkVoice) == false ||
@@ -669,6 +687,7 @@ public sealed class Cut : ObservableObject
 
             case nameof(this.CameraOffset):
             case nameof(this.Unit):
+            case nameof(this.UnitIdConst):
             case nameof(this.UnitPos):
             case nameof(this.CutsceneClear):
             case nameof(this.BgFileName):
@@ -718,11 +737,24 @@ public sealed class Cut : ObservableObject
             return string.Join(", ", this.unitNames.Select(e => e.GetValue(l10nType)));
         }
 
-        if (this.unit is not null)
-        {
-            return this.unit.NameElement?.GetValue(l10nType);
-        }
+        return this.FinalUnitId;
+    }
 
-        return null;
+    private void OnSetUnit(Unit? unit)
+    {
+        this.unit = unit;
+        if (unit is not null)
+        {
+            this.UnitIdConst = null;
+        }
+    }
+
+    private void OnSetUnitIdConst(UnitIdConst? unitIdConst)
+    {
+        this.unitIdConst = unitIdConst;
+        if (unitIdConst is not null)
+        {
+            this.unit = null;
+        }
     }
 }

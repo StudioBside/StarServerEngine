@@ -24,9 +24,9 @@ namespace NKM
             [Description("구원자")]
             CURRENT_CHARACTER,
             [Description("부모1")]
-            CURRENT_PARENT1,
+            PARENT_CHARACTER1,
             [Description("부모2")]
-            CURRENT_PARENT2,
+            PARENT_CHARACTER2,
         }
 
         //// -----------------------------------------------------------------------------------------------

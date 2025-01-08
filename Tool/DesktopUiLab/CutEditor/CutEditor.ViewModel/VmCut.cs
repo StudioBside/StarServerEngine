@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using CutEditor.Model;
+using CutEditor.Model.Detail;
 using CutEditor.Model.Interfaces;
 using CutEditor.ViewModel.Detail;
 using CutEditor.ViewModel.UndoCommands;
@@ -205,19 +206,32 @@ public sealed class VmCut : ObservableObject
 
     private async Task OnPickUnit()
     {
-        var unitpicker = this.Services.GetRequiredService<ITempletPicker<Unit>>();
+        var unitpicker = this.Services.GetRequiredService<IGeneralPicker<UnitVariant>>();
+        unitpicker.SetCurrentValues(new UnitVariant(this.Cut.Unit, this.Cut.UnitIdConst));
         var result = await unitpicker.Pick();
         if (result.IsCanceled)
         {
             return;
         }
 
-        this.Cut.Unit = result.Data;
+        if (result.Data is null)
+        {
+            this.Cut.Unit = null;
+            this.Cut.UnitIdConst = null;
+        }
+        else if (result.Data.Unit is not null)
+        {
+            this.Cut.Unit = result.Data.Unit;
+        }
+        else if (result.Data.UnitIdConst is not null)
+        {
+            this.Cut.UnitIdConst = result.Data.UnitIdConst;
+        }
     }
 
     private async Task OnPickArcpoint()
     {
-        var picker = this.Services.GetRequiredService<ITempletPicker<LobbyItem>>();
+        var picker = this.Services.GetRequiredService<IGeneralPicker<LobbyItem>>();
         var result = await picker.Pick();
         if (result.IsCanceled)
         {
