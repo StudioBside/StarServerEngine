@@ -24,7 +24,6 @@ public sealed class VmL10n : VmPageBase,
 {
     private readonly List<Cut> originCuts = new();
     private readonly ObservableCollection<L10nMapping> mappings = new();
-    private readonly HashSet<string> importedHeaders = new();
     private readonly ObservableCollection<string> logMessages = new();
     private readonly IServiceProvider services;
     private readonly int[] mappingStat = new int[EnumUtil<L10nMappingType>.Count];
@@ -37,6 +36,7 @@ public sealed class VmL10n : VmPageBase,
     private bool isSuccessful;
     private string importResult = string.Empty;
     private L10nType? loadingType;
+    private L10nSourceType l10nSourceType = L10nSourceType.CutsceneShorten;
 
     public VmL10n(IServiceProvider services)
     {
@@ -107,6 +107,12 @@ public sealed class VmL10n : VmPageBase,
     {
         get => this.loadingType;
         set => this.SetProperty(ref this.loadingType, value);
+    }
+
+    public L10nSourceType L10nSourcetype
+    {
+        get => this.l10nSourceType;
+        set => this.SetProperty(ref this.l10nSourceType, value);
     }
 
     void IFileDropHandler.HandleDroppedFiles(string[] files)
@@ -261,7 +267,6 @@ public sealed class VmL10n : VmPageBase,
     {
         this.ImportFilePath = null;
 
-        this.importedHeaders.Clear();
         Array.Clear(this.mappingStat);
         this.LoadingType = null;
 
@@ -272,7 +277,8 @@ public sealed class VmL10n : VmPageBase,
 
         var reader = this.services.GetRequiredService<IExcelFileReader>();
         var importedCuts = new List<CutOutputExcelFormat>();
-        if (reader.Read(fileFullPath, this.importedHeaders, importedCuts) == false)
+        var importedHeaders = new HashSet<string>();
+        if (reader.Read(fileFullPath, importedHeaders, importedCuts) == false)
         {
             Log.Error($"엑셀 파일 읽기에 실패했습니다. fileName:{fileFullPath}");
             return false;
@@ -280,9 +286,9 @@ public sealed class VmL10n : VmPageBase,
 
         this.WriteLog($"번역데이터 파일 로딩: {this.ImportFileName}");
 
-        this.HasEnglish = this.importedHeaders.Contains("English");
-        this.HasJapanese = this.importedHeaders.Contains("Japanese");
-        this.HasChineseSimplified = this.importedHeaders.Contains("ChineseSimplified");
+        this.HasEnglish = importedHeaders.Contains("English");
+        this.HasJapanese = importedHeaders.Contains("Japanese");
+        this.HasChineseSimplified = importedHeaders.Contains("ChineseSimplified");
 
         var dicMappings = this.mappings.ToDictionary(e => e.UidStr);
         // -------------------- mapping data --------------------
