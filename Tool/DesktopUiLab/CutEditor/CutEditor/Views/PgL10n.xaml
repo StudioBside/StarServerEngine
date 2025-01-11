@@ -99,7 +99,7 @@
                                     <GridViewColumn Header="Korean" Width="200" DisplayMemberBinding="{Binding L10NText.Korean}"/>
                                     <GridViewColumn Header="English" Width="200" DisplayMemberBinding="{Binding L10NText.English}"/>
                                     <GridViewColumn Header="Japanese" Width="200" DisplayMemberBinding="{Binding L10NText.Japanese}"/>
-                                    <GridViewColumn Header="Chinese" Width="200" DisplayMemberBinding="{Binding L10NText.ChineseSimplified}"/>
+                                    <GridViewColumn Header="Chinese.S" Width="200" DisplayMemberBinding="{Binding L10NText.ChineseSimplified}"/>
                                 </GridView>
                             </ListView.View>
                         </ui:ListView>
@@ -117,9 +117,6 @@
             <StackPanel Grid.Row="0" Grid.Column="1" Margin="10">
 
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                    <ui:Button Content="불러오기" Margin="0,0,10,0"
-                           Icon="{ui:SymbolIcon FolderOpen16}"
-                           Command="{Binding LoadFileCommand}" />
                     <ui:TextBlock VerticalAlignment="Center" FontTypography="Subtitle" Text="{Binding ImportFileName}"/>
                 </StackPanel>
 

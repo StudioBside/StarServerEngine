@@ -128,7 +128,7 @@ public static class Enums
         Pos2x,
     }
 
-    public enum L10nMappingType
+    public enum L10nMappingState
     {
         Normal,
         MissingImported, // 원본에 있으나 번역본에 없음 (원본이 추가된 경우)

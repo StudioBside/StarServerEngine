@@ -2,46 +2,48 @@
 
 using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CutEditor.Model;
 using CutEditor.Model.Detail;
 using static CutEditor.Model.Enums;
 using static StringStorage.Enums;
 
-public sealed class L10nMapping : ObservableObject
+public sealed class L10nMappingNormal : ObservableObject, IL10nMapping
 {
     private readonly Cut cut;
-    private readonly ChoiceOption? choice;
     private readonly L10nText l10nText;
     private CutOutputExcelFormat? imported;
-    private L10nMappingType mappingType;
+    private L10nMappingState mappingState;
 
-    public L10nMapping(Cut cut)
+    public L10nMappingNormal(Cut cut)
     {
         this.UidStr = cut.Uid.ToString();
         this.cut = cut;
         this.l10nText = cut.UnitTalk;
     }
 
-    public L10nMapping(Cut cut, ChoiceOption choice)
+    public L10nMappingNormal(Cut cut, ChoiceOption choice)
     {
         this.UidStr = choice.UidString;
         this.cut = cut;
-        this.choice = choice;
         this.l10nText = choice.Text;
     }
 
     public string UidStr { get; }
     public L10nText L10NText => this.l10nText;
+    public Cut Cut => this.cut;
     public CutOutputExcelFormat? Imported
     {
         get => this.imported;
         set => this.SetProperty(ref this.imported, value);
     }
 
-    public L10nMappingType MappingType
+    public L10nMappingState MappingState
     {
-        get => this.mappingType;
-        set => this.SetProperty(ref this.mappingType, value);
+        get => this.mappingState;
+        set => this.SetProperty(ref this.mappingState, value);
     }
+
+    L10nText IL10nMapping.L10NText => throw new NotImplementedException();
 
     public bool ApplyData(L10nType l10nType)
     {
@@ -65,24 +67,24 @@ public sealed class L10nMapping : ObservableObject
         switch (e.PropertyName)
         {
             case nameof(this.Imported):
-                this.CalcMappingType();
+                this.CalcMappingState();
                 break;
         }
     }
 
-    private void CalcMappingType()
+    private void CalcMappingState()
     {
         if (this.imported == null)
         {
-            this.MappingType = L10nMappingType.MissingImported;
+            this.mappingState = L10nMappingState.MissingImported;
         }
         else if (this.imported.Korean != this.l10nText.Korean)
         {
-            this.MappingType = L10nMappingType.TextChanged;
+            this.mappingState = L10nMappingState.TextChanged;
         }
         else
         {
-            this.MappingType = L10nMappingType.Normal;
+            this.mappingState = L10nMappingState.Normal;
         }
     }
 }
