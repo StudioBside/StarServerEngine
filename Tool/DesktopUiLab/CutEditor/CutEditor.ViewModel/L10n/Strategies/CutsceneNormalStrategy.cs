@@ -56,7 +56,7 @@ internal sealed class CutsceneNormalStrategy : IL10nStrategy
             {
                 var sb = new StringBuilder();
                 sb.AppendLine($"[Uid:{mapping.UidStr}] 한글 텍스트가 일치하지 않습니다.");
-                sb.AppendLine($"  원본: {mapping.L10NText.Korean}");
+                sb.AppendLine($"  원본: {mapping.L10nText.Korean}");
                 sb.Append($"  번역본: {imported.Korean}");
                 viewModel.WriteLog(sb.ToString());
             }

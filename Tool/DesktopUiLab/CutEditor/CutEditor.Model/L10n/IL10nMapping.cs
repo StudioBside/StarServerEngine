@@ -1,6 +1,5 @@
 ﻿namespace CutEditor.Model.L10n;
 
-using CutEditor.Model;
 using static CutEditor.Model.Enums;
 using static StringStorage.Enums;
 
@@ -9,9 +8,8 @@ using static StringStorage.Enums;
 /// </summary>
 public interface IL10nMapping
 {
-    L10nText L10NText { get; }
-    L10nMappingState MappingState { get; }
     string UidStr { get; }
+    L10nMappingState MappingState { get; }
 
     bool ApplyData(L10nType l10nType);
 }

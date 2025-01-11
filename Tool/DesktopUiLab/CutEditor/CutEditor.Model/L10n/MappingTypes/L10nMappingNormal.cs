@@ -29,7 +29,7 @@ public sealed class L10nMappingNormal : ObservableObject, IL10nMapping
     }
 
     public string UidStr { get; }
-    public L10nText L10NText => this.l10nText;
+    public L10nText L10nText => this.l10nText;
     public Cut Cut => this.cut;
     public CutOutputExcelFormat? Imported
     {
@@ -42,8 +42,6 @@ public sealed class L10nMappingNormal : ObservableObject, IL10nMapping
         get => this.mappingState;
         set => this.SetProperty(ref this.mappingState, value);
     }
-
-    L10nText IL10nMapping.L10NText => throw new NotImplementedException();
 
     public bool ApplyData(L10nType l10nType)
     {
