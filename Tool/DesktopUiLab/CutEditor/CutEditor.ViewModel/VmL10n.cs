@@ -28,13 +28,15 @@ public sealed class VmL10n : VmPageBase,
     private bool isSuccessful;
     private string importResult = string.Empty;
     private L10nType? loadingType;
-    private IL10nStrategy strategy = new CutsceneNormalStrategy();
+    private IL10nStrategy strategy;
 
     public VmL10n(IServiceProvider services)
     {
         this.services = services;
         this.ApplyDataCommand = new RelayCommand(this.OnApplyData, () => this.LoadingType != null);
         this.ClearLogCommand = new RelayCommand(this.logMessages.Clear);
+
+        this.strategy = new CutsceneNormalStrategy(this);
     }
 
     public IServiceProvider Services => this.services;
@@ -152,7 +154,7 @@ public sealed class VmL10n : VmPageBase,
             return;
         }
 
-        if (this.strategy.SourceCount == 0)
+        if (this.strategy.Mappings.Count == 0)
         {
             this.WriteLog("적용할 데이터가 없습니다.");
             return;
@@ -188,12 +190,12 @@ public sealed class VmL10n : VmPageBase,
     {
         IL10nStrategy newStrategy = sourceType switch
         {
-            L10nSourceType.CutsceneNormal => new CutsceneNormalStrategy(),
-            L10nSourceType.SystemString => new SystemStringStrategy(),
+            L10nSourceType.CutsceneNormal => new CutsceneNormalStrategy(this),
+            L10nSourceType.SystemString => new SystemStringStrategy(this),
             _ => throw new NotSupportedException($"지원하지 않는 타입입니다. type:{sourceType}"),
         };
 
-        bool success = newStrategy.LoadOriginData(name, this);
+        bool success = newStrategy.LoadOriginData(name);
         if (success == false)
         {
             this.WriteLog("원본 데이터 로딩에 실패했습니다.");
@@ -254,14 +256,14 @@ public sealed class VmL10n : VmPageBase,
         this.LoadingType = null;
 
         var importedHeaders = new HashSet<string>();
-        this.strategy.ImportFile(fileFullPath, this, importedHeaders);
+        this.strategy.ImportFile(fileFullPath, importedHeaders);
 
         this.HasEnglish = importedHeaders.Contains("English");
         this.HasJapanese = importedHeaders.Contains("Japanese");
         this.HasChineseSimplified = importedHeaders.Contains("ChineseSimplified");
 
         this.ImportFilePath = fileFullPath;
-        this.IsSuccessful = this.strategy.SourceCount == this.strategy.Statistics[(int)L10nMappingState.Normal];
+        this.IsSuccessful = this.strategy.Mappings.Count == this.strategy.Statistics[(int)L10nMappingState.Normal];
         this.ImportResult = this.IsSuccessful
             ? "모든 데이터의 uid 및 텍스트가 일치합니다."
             : "데이터 불일치. 확인이 필요합니다.";

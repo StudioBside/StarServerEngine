@@ -3,7 +3,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
-using Cs.Core.Util;
 using Cs.Logging;
 using CutEditor.Model.Detail;
 using CutEditor.Model.L10n;
@@ -12,17 +11,13 @@ using Du.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using static CutEditor.Model.Enums;
 
-internal sealed class CutsceneNormalStrategy : IL10nStrategy
+internal sealed class CutsceneNormalStrategy(VmL10n viewModel) : L10nStrategyBase(L10nSourceType.CutsceneNormal)
 {
     private readonly ObservableCollection<L10nMappingNormal> mappings = new();
-    private readonly int[] statistics = new int[EnumUtil<L10nMappingState>.Count];
 
-    public L10nSourceType SourceType => L10nSourceType.CutsceneNormal;
-    public IEnumerable<IL10nMapping> Mappings => this.mappings;
-    public int SourceCount => this.mappings.Count;
-    public IReadOnlyList<int> Statistics => this.statistics;
+    public override IReadOnlyList<IL10nMapping> Mappings => this.mappings;
 
-    public bool LoadOriginData(string name, VmL10n viewModel)
+    public override bool LoadOriginData(string name)
     {
         var cutList = CutFileIo.LoadCutData(name, isShorten: false);
         if (cutList.Count == 0)
@@ -64,7 +59,7 @@ internal sealed class CutsceneNormalStrategy : IL10nStrategy
         return true;
     }
 
-    public bool ImportFile(string fileFullPath, VmL10n viewModel, ISet<string> importedHeaders)
+    public override bool ImportFile(string fileFullPath, ISet<string> importedHeaders)
     {
         foreach (var mapping in this.mappings)
         {
@@ -80,19 +75,19 @@ internal sealed class CutsceneNormalStrategy : IL10nStrategy
         }
 
         var dicMappings = this.mappings.ToDictionary(e => e.UidStr);
-        Array.Clear(this.statistics);
+        this.ClearStatistics();
         // -------------------- mapping data --------------------
         foreach (var imported in importedCuts)
         {
             if (dicMappings.TryGetValue(imported.Uid, out var mapping) == false)
             {
                 viewModel.WriteLog($"컷을 찾을 수 없습니다. uid:{imported.Uid}");
-                ++this.statistics[(int)L10nMappingState.MissingOrigin];
+                this.IncreaseStatistics(L10nMappingState.MissingOrigin);
                 continue;
             }
 
             mapping.SetImported(imported);
-            ++this.statistics[(int)mapping.MappingState];
+            this.IncreaseStatistics(mapping.MappingState);
 
             if (mapping.MappingState == L10nMappingState.TextChanged)
             {
@@ -107,7 +102,7 @@ internal sealed class CutsceneNormalStrategy : IL10nStrategy
         return true;
     }
 
-    public bool SaveToFile(string name)
+    public override bool SaveToFile(string name)
     {
         return CutFileIo.SaveCutData(name, this.mappings.Select(e => e.Cut), isShorten: false);
     }

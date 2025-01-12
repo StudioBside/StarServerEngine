@@ -3,27 +3,23 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Cs.Core.Util;
 using Cs.Logging;
 using CutEditor.Model.Detail;
 using CutEditor.Model.L10n;
 using CutEditor.Model.L10n.MappingTypes;
 using Du.Core.Interfaces;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Templet.Strings;
 using static CutEditor.Model.Enums;
 
-internal sealed class SystemStringStrategy : IL10nStrategy
+internal sealed class SystemStringStrategy(VmL10n viewModel) : L10nStrategyBase(L10nSourceType.SystemString)
 {
     private readonly ObservableCollection<L10nMappingString> mappings = new();
-    private readonly int[] statistics = new int[EnumUtil<L10nMappingState>.Count];
 
-    public L10nSourceType SourceType => L10nSourceType.SystemString;
-    public IEnumerable<IL10nMapping> Mappings => this.mappings;
-    public int SourceCount => this.mappings.Count;
-    public IReadOnlyList<int> Statistics => this.statistics;
+    public override IReadOnlyList<IL10nMapping> Mappings => this.mappings;
 
-    public bool LoadOriginData(string name, VmL10n viewModel)
+    public override bool LoadOriginData(string name)
     {
         var categoryName = name.Split('_')[^1];
         if (StringTable.Instance.TryGetCategory(categoryName, out var category) == false)
@@ -37,11 +33,11 @@ internal sealed class SystemStringStrategy : IL10nStrategy
             this.mappings.Add(new L10nMappingString(element.PrimeKey, element));
         }
 
-        viewModel.WriteLog($"시스템 스트링 카테골:{name} 전체 데이터 {this.mappings.Count}개.");
+        viewModel.WriteLog($"시스템 스트링 카테고리:{name} 전체 데이터 {this.mappings.Count}개.");
         return true;
     }
 
-    public bool ImportFile(string fileFullPath, VmL10n viewModel, ISet<string> importedHeaders)
+    public override bool ImportFile(string fileFullPath, ISet<string> importedHeaders)
     {
         foreach (var mapping in this.mappings)
         {
@@ -58,26 +54,28 @@ internal sealed class SystemStringStrategy : IL10nStrategy
 
         // key로 매핑하지 않고, 한글 텍스트 자체로 매핑합니다.
         var dicMappings = this.mappings.ToDictionary(e => e.SourceData.Korean);
-        Array.Clear(this.statistics);
+        this.ClearStatistics();
         // -------------------- mapping data --------------------
         foreach (var imported in importedCuts)
         {
             if (dicMappings.TryGetValue(imported.Korean, out var mapping) == false)
             {
                 Log.Warn($"매핑되지 않은 데이터입니다. key:{imported.Korean}");
-                ++this.statistics[(int)L10nMappingState.MissingOrigin];
+                this.IncreaseStatistics(L10nMappingState.MissingOrigin);
                 continue;
             }
        
             mapping.SetImported(imported);
-            ++this.statistics[(int)mapping.MappingState];
+            this.IncreaseStatistics(mapping.MappingState);
         }
 
         return true;
     }
 
-    public bool SaveToFile(string name)
+    public override bool SaveToFile(string name)
     {
-        throw new NotImplementedException();
+        var config = viewModel.Services.GetRequiredService<IConfiguration>();
+        var stringDbPath = config["StringDbPath"] ?? throw new Exception("StringDbPath is not set in the configuration file.");
+        return true;
     }
 }
