@@ -3,17 +3,12 @@
 using System.Collections.Generic;
 using Cs.Logging;
 
-public sealed class StringCategory
+public sealed class StringCategory(string name)
 {
     private readonly Dictionary<string, StringElement> uniqueElements = new();
     private readonly Dictionary<string, StringElement> allKeysElements = new();
 
-    public StringCategory(string name)
-    {
-        this.Name = name;
-    }
-
-    public string Name { get; }
+    public string Name { get; } = name;
     public IEnumerable<StringElement> Elements => this.uniqueElements.Values;
     public int UniqueCount => this.uniqueElements.Count;
 

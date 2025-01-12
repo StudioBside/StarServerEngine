@@ -9,7 +9,7 @@
     using StringStorage.Translation;
     using static StringStorage.Enums;
 
-    public sealed class StringElement : ISearchable
+    public sealed class StringElement : ISearchable, IL10nText
     {
         private readonly List<string> keys = new();
         private readonly string[] values = new string[EnumUtil<L10nType>.Count];
@@ -74,9 +74,16 @@
                 this.values.Any(e => e.Contains(keyword, StringComparison.OrdinalIgnoreCase));
         }
 
-        public string GetValue(L10nType l10nType)
+        public string Get(L10nType l10nType)
         {
             return this.values[(int)l10nType];
+        }
+
+        public string Set(L10nType l10nType, string value)
+        {
+            var oldValue = this.values[(int)l10nType];
+            this.values[(int)l10nType] = value;
+            return oldValue;
         }
     }
 }

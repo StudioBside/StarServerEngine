@@ -3,19 +3,14 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Security.AccessControl;
-using System.Text;
+using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
-using Cs.Core.Util;
-using Cs.Logging;
-using CutEditor.Model.Detail;
 using CutEditor.Model.L10n;
 using CutEditor.ViewModel.Detail;
 using CutEditor.ViewModel.L10n;
 using CutEditor.ViewModel.L10n.Strategies;
 using Du.Core.Bases;
 using Du.Core.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
 using static CutEditor.Model.Enums;
 using static StringStorage.Enums;
 
@@ -39,10 +34,12 @@ public sealed class VmL10n : VmPageBase,
     {
         this.services = services;
         this.ApplyDataCommand = new RelayCommand(this.OnApplyData, () => this.LoadingType != null);
+        this.ClearLogCommand = new RelayCommand(this.logMessages.Clear);
     }
 
     public IServiceProvider Services => this.services;
     public IRelayCommand ApplyDataCommand { get; }
+    public ICommand ClearLogCommand { get; }
     public IEnumerable<IL10nMapping> Mappings => this.strategy.Mappings;
     public IList<string> LogMessages => this.logMessages;
     public string? ImportFileName => Path.GetFileName(this.importFilePath);
@@ -189,9 +186,10 @@ public sealed class VmL10n : VmPageBase,
 
     private bool LoadOriginData(string name, L10nSourceType sourceType)
     {
-        var newStrategy = sourceType switch
+        IL10nStrategy newStrategy = sourceType switch
         {
             L10nSourceType.CutsceneNormal => new CutsceneNormalStrategy(),
+            L10nSourceType.SystemString => new SystemStringStrategy(),
             _ => throw new NotSupportedException($"지원하지 않는 타입입니다. type:{sourceType}"),
         };
 

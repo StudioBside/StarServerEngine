@@ -45,14 +45,6 @@
                            Icon="{ui:SymbolIcon ArrowStepBack16}"
                            Command="{Binding GoToCommand, Source={extensions:PageRouter}}"
                            CommandParameter="Views/PgHome.xaml"/>
-                <ui:Button Margin="3" Content="파일 열기"
-                           Icon="{ui:SymbolIcon Code16}"
-                           Command="{Binding OpenFile, Source={extensions:UtilCommands}}"
-                           CommandParameter="{Binding TextFileName}"/>
-                <ui:Button Margin="3" Content="이름 복사"
-                           Icon="{ui:SymbolIcon Copy16}"
-                           Command="{Binding CopyToClipboard, Source={extensions:UtilCommands}}"
-                           CommandParameter="{Binding Name}"/>
             </StackPanel>
         </DockPanel>
 
@@ -68,7 +60,7 @@
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
             <!--왼쪽 : 원본 데이터 정보 출력-->
@@ -84,7 +76,7 @@
                     <TabControl.ItemContainerStyle>
                         <Style BasedOn="{StaticResource {x:Type TabItem}}" TargetType="TabItem">
                             <Setter Property="Visibility" Value="Visible"/>
-                            <Setter Property="IsEnabled" Value="True"/>
+                            <Setter Property="IsEnabled" Value="False"/>
                         </Style>
                     </TabControl.ItemContainerStyle>
 
@@ -96,10 +88,10 @@
                             <ListView.View>
                                 <GridView>
                                     <GridViewColumn Header="Uid" Width="50" DisplayMemberBinding="{Binding UidStr}"/>
-                                    <GridViewColumn Header="Korean" Width="200" DisplayMemberBinding="{Binding L10NText.Korean}"/>
-                                    <GridViewColumn Header="English" Width="200" DisplayMemberBinding="{Binding L10NText.English}"/>
-                                    <GridViewColumn Header="Japanese" Width="200" DisplayMemberBinding="{Binding L10NText.Japanese}"/>
-                                    <GridViewColumn Header="Chinese.S" Width="200" DisplayMemberBinding="{Binding L10NText.ChineseSimplified}"/>
+                                    <GridViewColumn Header="Korean" Width="300" DisplayMemberBinding="{Binding SourceData.Korean}"/>
+                                    <GridViewColumn Header="English" Width="300" DisplayMemberBinding="{Binding SourceData.English}"/>
+                                    <GridViewColumn Header="Japanese" Width="300" DisplayMemberBinding="{Binding SourceData.Japanese}"/>
+                                    <GridViewColumn Header="Chinese.S" Width="300" DisplayMemberBinding="{Binding SourceData.ChineseSimplified}"/>
                                 </GridView>
                             </ListView.View>
                         </ui:ListView>
@@ -109,6 +101,20 @@
                     </TabItem>
 
                     <TabItem Header="시스템 스트링">
+                        <ui:ListView Grid.Row="1" ItemsSource="{Binding Mappings}">
+                            <b:Interaction.Behaviors>
+                                <behaviors:FileDropBehavior/>
+                            </b:Interaction.Behaviors>
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="PrimeKey" Width="100" DisplayMemberBinding="{Binding UidStr}"/>
+                                    <GridViewColumn Header="Korean" Width="280" DisplayMemberBinding="{Binding SourceData.Korean}"/>
+                                    <GridViewColumn Header="English" Width="280" DisplayMemberBinding="{Binding SourceData.English}"/>
+                                    <GridViewColumn Header="Japanese" Width="280" DisplayMemberBinding="{Binding SourceData.Japanese}"/>
+                                    <GridViewColumn Header="Chinese.S" Width="280" DisplayMemberBinding="{Binding SourceData.ChineseSimplified}"/>
+                                </GridView>
+                            </ListView.View>
+                        </ui:ListView>
                     </TabItem>
                 </TabControl>
             </Grid>
@@ -122,12 +128,18 @@
 
                 <StackPanel Margin="10" Orientation="Horizontal">
                     <TextBlock VerticalAlignment="Center" Margin="0,0,10,0" Text="데이터 존재 확인 : "/>
-                    <CheckBox Content="English" IsEnabled="False"
-                              IsChecked="{Binding HasEnglish}"/>
-                    <CheckBox Content="Japanese" IsEnabled="False"
-                              IsChecked="{Binding HasJapanese}"/>
-                    <CheckBox Content="Chinese(Simplified)" IsEnabled="False"
-                              IsChecked="{Binding HasChineseSimplified}"/>
+                    <CheckBox 
+                        MinWidth="90"
+                        Content="English" IsEnabled="False"
+                        IsChecked="{Binding HasEnglish}"/>
+                    <CheckBox
+                        MinWidth="100"
+                        Content="Japanese" IsEnabled="False"
+                        IsChecked="{Binding HasJapanese}"/>
+                    <CheckBox
+                        MinWidth="100"
+                        Content="Chinese.S" IsEnabled="False"
+                        IsChecked="{Binding HasChineseSimplified}"/>
                 </StackPanel>
 
                 <StackPanel Margin="10" Visibility="{Binding ImportFileName, Converter={converters:NullToVisibilityConverter}}">
@@ -157,36 +169,44 @@
                         <TextBlock VerticalAlignment="Center" Margin="0,0,10,0" Text="적용 대상 언어 : "/>
                         
                         <RadioButton 
+                            MinWidth="90"
                             Content="English"
                             IsEnabled="{Binding HasEnglish}"
                             IsChecked="{Binding LoadingType,
                             Converter={converters:EnumBooleanConverter},
                             ConverterParameter=Eng}"/>
                         <RadioButton
+                            MinWidth="100"
                             Content="Japanese"
                             IsEnabled="{Binding HasJapanese}"
                             IsChecked="{Binding LoadingType,
                             Converter={converters:EnumBooleanConverter},
                             ConverterParameter=Jpn}"/>
                         <RadioButton
-                            Content="Chinese(Simplified)"
+                            MinWidth="100"
+                            Content="Chinese.S"
                             IsEnabled="{Binding HasChineseSimplified}"
                             IsChecked="{Binding LoadingType,
                             Converter={converters:EnumBooleanConverter},
                             ConverterParameter=ChnS}"/>
 
-                        <ui:Button Content="적용하기" Appearance="Primary" Margin="30, 0"
+                    </StackPanel>
+                    <ui:Button Content="적용하기" Appearance="Primary" Margin="0,0,30,0" HorizontalAlignment="Right"
                            Icon="{ui:SymbolIcon Save16}"
                            Command="{Binding ApplyDataCommand}" />
-                    </StackPanel>
-
                 </StackPanel>
 
             </StackPanel>
 
 
             <!--하단 : 로그 메세지 출력-->
-            <ListView Grid.Row="1" Grid.ColumnSpan="2" Margin="10" ItemsSource="{Binding LogMessages}"/>
+            <Grid Grid.Row="1" Grid.ColumnSpan="2" Margin="10">
+                <ListView ItemsSource="{Binding LogMessages}"/>
+                <ui:Button HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10"
+                           Icon="{ui:SymbolIcon Delete12}"
+                           Content="삭제"
+                           Command="{Binding ClearLogCommand}"/>
+            </Grid>
         </Grid>
     </Grid>
 </Page>

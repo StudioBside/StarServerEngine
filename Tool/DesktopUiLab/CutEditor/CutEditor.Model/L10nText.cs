@@ -7,7 +7,7 @@ using Newtonsoft.Json.Linq;
 using Shared.Interfaces;
 using static StringStorage.Enums;
 
-public sealed class L10nText : ObservableObject, ISearchable
+public sealed class L10nText : ObservableObject, ISearchable, IL10nText
 {
     private readonly string[] values = new string[EnumUtil<L10nType>.Count];
 

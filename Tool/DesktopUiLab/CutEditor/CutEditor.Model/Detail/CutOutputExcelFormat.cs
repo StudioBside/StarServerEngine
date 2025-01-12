@@ -1,10 +1,11 @@
 ﻿﻿namespace CutEditor.Model.Detail;
 
 using NKM;
+using Shared.Interfaces;
 using static CutEditor.Model.Enums;
 using static StringStorage.Enums;
 
-public sealed class CutOutputExcelFormat
+public sealed class CutOutputExcelFormat : IL10nText
 {
     public CutOutputExcelFormat(Cut cut)
     {
@@ -50,6 +51,7 @@ public sealed class CutOutputExcelFormat
     public string English { get; set; } = string.Empty;
     public string Japanese { get; set; } = string.Empty;
     public string ChineseSimplified { get; set; } = string.Empty;
+    public string ChineseTraditional { get; set; } = string.Empty;
 
     public string Get(L10nType l10nType)
     {
@@ -59,6 +61,7 @@ public sealed class CutOutputExcelFormat
             L10nType.Eng => this.English,
             L10nType.Jpn => this.Japanese,
             L10nType.ChnS => this.ChineseSimplified,
+            L10nType.ChnT => this.ChineseTraditional,
             _ => string.Empty,
         };
     }

@@ -24,8 +24,4 @@
     <ProjectReference Include="..\Shared.Interfaces\Shared.Interfaces.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="StringStorage" Version="0.0.3" />
-  </ItemGroup>
-
 </Project>
