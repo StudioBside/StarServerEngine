@@ -68,7 +68,7 @@ jobs:
     - name: gather artifacts
       run: |
         mkdir ${{env.ARTIFACT_PATH}}
-        cp -r ./Tool/${{env.PROJECT_NAME}}/bin/Release/*.nupkg ${{env.ARTIFACT_PATH}}
+        cp -r ./${{env.PROJECT_PATH}}/${{env.PROJECT_NAME}}/bin/Release/*.nupkg ${{env.ARTIFACT_PATH}}
       shell: bash
         
     - name: upload artifact
