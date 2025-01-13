@@ -6,6 +6,10 @@ name: publish nuget (github only)
 on: 
   workflow_dispatch:
     inputs:
+      category:
+        description: 'Category(Project path)'
+        required: true
+        default: 'Engine'
       project:
         description: 'Project name'
         required: true
@@ -19,6 +23,7 @@ env:
   BUILD_CONFIGURATION: Release
   ARTIFACT_PATH: ./Artifacts
   PACKAGE_VERSION: ${{ github.event.inputs.version }}
+  PROJECT_PATH: ${{ github.event.inputs.category }}
   PROJECT_NAME: ${{ github.event.inputs.project }}
 
 jobs:
@@ -39,8 +44,6 @@ jobs:
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 9.0.x
 
     - name: Restore dependencies
       run: dotnet restore
@@ -54,7 +57,11 @@ jobs:
     - name: pack
       #run: dotnet pack -p:projectid=${{env.PROJECT_NAME}} -p:PackageVersion=${{env.PACKAGE_VERSION}} -c ${{env.BUILD_CONFIGURATION}} --no-build --no-restore
       # ^ gpt가 알려준 명령인데, 종속이 걸린 프로젝트의 package까지 같이 만들어준다.
-      run: dotnet pack ./Tool/${{env.PROJECT_NAME}}/${{env.PROJECT_NAME}}.csproj -p:PackageVersion=${{env.PACKAGE_VERSION}} -c ${{env.BUILD_CONFIGURATION}} --no-build --no-restore
+      run: |
+        dotnet pack ./${{env.PROJECT_PATH}}/${{env.PROJECT_NAME}}/${{env.PROJECT_NAME}}.csproj \
+        -p:PackageVersion=${{env.PACKAGE_VERSION}} \
+        -c ${{env.BUILD_CONFIGURATION}} \
+        --no-build --no-restore
         
     - name: gather artifacts
       run: |
@@ -82,4 +89,7 @@ jobs:
 
     - name: push
       # 지금은 개인키를 secret에 등록해 사용. 다른 방법이 있는가?
-      run : dotnet nuget push ${{env.ARTIFACT_PATH}}/**/*.nupkg --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json --api-key ${{ secrets.PRIVATE_ACCESS_TOKEN }}
+      run : |
+        dotnet nuget push ${{env.ARTIFACT_PATH}}/**/*.nupkg \
+        --source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json \
+        --api-key ${{ secrets.PRIVATE_ACCESS_TOKEN }}
