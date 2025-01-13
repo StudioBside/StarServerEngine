@@ -1,6 +1,6 @@
 ﻿namespace CutEditor.Model.L10n.MappingTypes;
 
-using CutEditor.Model.Detail;
+using CutEditor.Model.ExcelFormats;
 using Shared.Interfaces;
 using Shared.Templet.Strings;
 using static StringStorage.Enums;

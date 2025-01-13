@@ -11,27 +11,6 @@ using Newtonsoft.Json.Linq;
 
 internal sealed class CutFileIo
 {
-    public static string GetTextFileName(string cutsceneName)
-    {
-        return Path.Combine(VmGlobalState.Instance.GetTextFilePath(isShorten: false), $"CLIENT_{cutsceneName}.exported");
-    }
-
-    public static IReadOnlyList<Cut> LoadCutData(string cutsceneName)
-    {
-        var textFileName = GetTextFileName(cutsceneName);
-        if (File.Exists(textFileName) == false)
-        {
-            Log.Warn($"cutscene file not found: {textFileName}");
-            return Array.Empty<Cut>();
-        }
-
-        var result = new List<Cut>();
-        var json = JsonUtil.Load(textFileName);
-        json.GetArray("Data", result, (e, i) => new Cut(e));
-
-        return result;
-    }
-
     public static string GetTextFileName(string cutsceneName, bool isShorten)
     {
         var fileName = isShorten ? $"CLIENT_SHORTEN_{cutsceneName}.exported" : $"CLIENT_{cutsceneName}.exported";

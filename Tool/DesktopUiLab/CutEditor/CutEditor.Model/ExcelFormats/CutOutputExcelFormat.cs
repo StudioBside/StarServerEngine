@@ -1,11 +1,12 @@
-﻿﻿namespace CutEditor.Model.Detail;
+﻿namespace CutEditor.Model.ExcelFormats;
 
+using CutEditor.Model.Detail;
 using NKM;
 using Shared.Interfaces;
 using static CutEditor.Model.Enums;
 using static StringStorage.Enums;
 
-public sealed class CutOutputExcelFormat : IL10nText
+public class CutOutputExcelFormat : IL10nText
 {
     public CutOutputExcelFormat(Cut cut)
     {

@@ -6,6 +6,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:local="clr-namespace:CutEditor.Views"
+      xmlns:services="clr-namespace:CutEditor.Services"
       xmlns:lcvt="clr-namespace:CutEditor.Converters"
       xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
       xmlns:behaviors="clr-namespace:Du.Presentation.Behaviors;assembly=Du.Presentation"
@@ -159,8 +160,8 @@
                 <ui:Button Margin="0,0,10,0"
                            Content="추출파일 폴더 열기"
                            Command="{Binding OpenInExplorer, Source={extensions:UtilCommands}}"
-                           CommandParameter="{Binding ExportRoot}"/>
-
+                           CommandParameter="{Binding ExportRoot, Source={services:DataExposure}}"/>
+                
                 <ui:Button Margin="0,0,10,0"
                            IsEnabled="False"
                        Content="번역 파일 적용"/>

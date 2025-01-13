@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"    
     xmlns:local="clr-namespace:CutEditor"
+    xmlns:services="clr-namespace:CutEditor.Services"
     xmlns:behaviors="clr-namespace:Du.Presentation.Behaviors;assembly=Du.Presentation"
     xmlns:converters="clr-namespace:Du.Presentation.Converters;assembly=Du.Presentation"
     xmlns:viewmodels="clr-namespace:CutEditor.ViewModel;assembly=CutEditor.ViewModel"
@@ -29,36 +30,55 @@
 
         <Menu x:Name="MainMenu"
               Visibility="{Binding ShowMenu, Converter={converters:BoolToVisibilityConverter}}">
-            <MenuItem Header="컷신 목록"
-                      Command="{Binding GoToCommand, Source={extensions:PageRouter}}"
-                      CommandParameter="Views/PgHome.xaml"/>
-            <MenuItem Header="시스템 스트링" 
-                      Command="{Binding GoToCommand, Source={extensions:PageRouter}}"
-                      CommandParameter="Views/PgStrings.xaml"/>
-            <MenuItem Header="유닛 목록" 
+            <MenuItem Header="컷신 / 텍스트">
+                <MenuItem
+                    Header="컷신 목록"
+                    Command="{Binding GoToCommand, Source={extensions:PageRouter}}"
+                    CommandParameter="Views/PgHome.xaml"/>
+                <MenuItem
+                    Header="시스템 스트링"
+                    Command="{Binding GoToCommand, Source={extensions:PageRouter}}"
+                    CommandParameter="Views/PgStrings.xaml" />
+                <MenuItem
+                    Header="번역 적용"
+                    Command="{Binding GoToCommand, Source={extensions:PageRouter}}"
+                    CommandParameter="Views/PgL10n.xaml"/>
+                <MenuItem
+                    Header="전체 검색"
+                    Command="{Binding GoToCommand, Source={extensions:PageRouter}}"
+                    CommandParameter="Views/PgCutSearch.xaml" />
+                <MenuItem
+                    Header="추출 파일 폴더 열기"
+                    Command="{Binding OpenInExplorer, Source={extensions:UtilCommands}}"
+                    CommandParameter="{Binding ExportRoot, Source={services:DataExposure}}"/>
+            </MenuItem>
+
+            <MenuItem Header="데이터 센터">
+                <MenuItem Header="유닛 목록" 
                       Command="{Binding GoToCommand, Source={extensions:PageRouter}}"
                       CommandParameter="Views/PgUnits.xaml"/>
-            <MenuItem Header="유닛 스크립트" 
+                <MenuItem Header="유닛 스크립트" 
                       Command="{Binding GoToCommand, Source={extensions:PageRouter}}"
                       CommandParameter="Views/PgUnitScripts.xaml"/>
-            <MenuItem Header="스킬 목록" 
+                <MenuItem Header="스킬 목록" 
                       Command="{Binding GoToCommand, Source={extensions:PageRouter}}"
                       CommandParameter="Views/PgSkills.xaml"/>
-            <MenuItem Header="버프 목록" 
+                <MenuItem Header="버프 목록" 
                       Command="{Binding GoToCommand, Source={extensions:PageRouter}}"
                       CommandParameter="Views/PgBuffs.xaml"/>
-            <MenuItem Header="" 
+                <MenuItem Header="" 
                       Command="{Binding GoToCommand, Source={extensions:PageRouter}}"
                       CommandParameter="Views/PgErrors.xaml">
-                <MenuItem.HeaderTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock VerticalAlignment="Center" Text="템플릿 오류"/>
-                            <ui:InfoBadge Margin="5,-2" Severity="Critical"
+                    <MenuItem.HeaderTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock VerticalAlignment="Center" Text="템플릿 오류"/>
+                                <ui:InfoBadge Margin="5,-2" Severity="Critical"
                                           Value="{Binding Count, Source={singletons:ErrorMessages}}" />
-                        </StackPanel>
-                    </DataTemplate>
-                </MenuItem.HeaderTemplate>
+                            </StackPanel>
+                        </DataTemplate>
+                    </MenuItem.HeaderTemplate>
+                </MenuItem>
             </MenuItem>
         </Menu>
 

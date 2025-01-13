@@ -10,6 +10,7 @@ using Cs.Core.Util;
 using Cs.Logging;
 using CutEditor.Model;
 using CutEditor.Model.Detail;
+using CutEditor.Model.ExcelFormats;
 using CutEditor.Model.Interfaces;
 using CutEditor.ViewModel.Detail;
 using Du.Core.Bases;
@@ -36,6 +37,7 @@ public sealed class VmHome : VmPageBase
         this.NewFileCommand = new AsyncRelayCommand(this.OnNewFile);
         this.ExportCommand = new RelayCommand<CutScene>(this.OnExport);
         this.EditShortenCommand = new AsyncRelayCommand<CutScene>(this.OnEditShorten);
+        this.ExportShortenCommand = new RelayCommand(this.OnExportShorten);
 
         this.filters.Add(DefaultFilter);
         foreach (var filter in CutSceneContainer.Instance.CutScenes.Select(e => e.CutsceneFilter).Distinct())
@@ -59,7 +61,6 @@ public sealed class VmHome : VmPageBase
     public IEnumerable<string> Filters => this.filters;
     public int FilteredCount => this.filteredList.FilteredCount;
     public int TotalCount => this.filteredList.SourceCount;
-    public string ExportRoot => VmGlobalState.ExportRoot;
 
     public string SearchKeyword
     {
@@ -77,6 +78,7 @@ public sealed class VmHome : VmPageBase
     public ICommand NewFileCommand { get; }
     public ICommand ExportCommand { get; }
     public ICommand EditShortenCommand { get; }
+    public ICommand ExportShortenCommand { get; }
 
     //// --------------------------------------------------------------------------------------------
 
@@ -133,7 +135,7 @@ public sealed class VmHome : VmPageBase
             return;
         }
 
-        var fileName = $"{this.ExportRoot}/{scene.FileName}.xlsx";
+        var fileName = $"{VmGlobalState.ExportRoot}/{scene.FileName}.xlsx";
         var nameOnly = Path.GetFileNameWithoutExtension(fileName);
 
         // 동일한 이름의 파일이 존재한다면 삭제.
@@ -142,7 +144,7 @@ public sealed class VmHome : VmPageBase
             File.Delete(fileName);
         }
 
-        var cuts = CutFileIo.LoadCutData(scene.FileName);
+        var cuts = CutFileIo.LoadCutData(scene.FileName, isShorten: false);
         if (cuts.Any() == false)
         {
             Log.Error($"파일 로딩에 실패했습니다. fileName:{CutFileIo.GetTextFileName(scene.FileName, isShorten: false)}");
@@ -155,7 +157,7 @@ public sealed class VmHome : VmPageBase
             var choiceUidGenerator = new ChoiceUidGenerator(cut.Uid, cut.Choices);
         }
 
-        var writer = this.services.GetRequiredService<IExcelFileWriter>();
+        using var writer = this.services.GetRequiredService<IExcelFileWriter>();
         if (writer.Write(fileName, cuts.SelectMany(e => e.ToOutputExcelType())) == false)
         {
             Log.Error($"파일 생성에 실패했습니다. fileName:{nameOnly}");
@@ -163,6 +165,47 @@ public sealed class VmHome : VmPageBase
         }
 
         Log.Info($"파일 생성 완료. fileName:{nameOnly}");
+    }
+
+    private void OnExportShorten()
+    {
+        var outputFileName = Path.Combine(VmGlobalState.ExportRoot, VmGlobalState.ShortenExportFileName);
+        using var writer = this.services.GetRequiredService<IExcelFileWriter>();
+        if (writer.CreateSheet<ShortenCutOutputExcelFormat>(outputFileName) == false)
+        {
+            Log.Error($"파일 생성에 실패했습니다. fileName:{VmGlobalState.ShortenExportFileName}");
+            return;
+        }
+
+        foreach (var cutscene in CutSceneContainer.Instance.CutScenes)
+        {
+            var fileName = CutFileIo.GetTextFileName(cutscene.FileName, isShorten: true);
+            if (File.Exists(fileName) == false)
+            {
+                continue;
+            }
+
+            var cuts = CutFileIo.LoadCutData(cutscene.FileName, isShorten: true);
+            var uidGenerator = new CutUidGenerator(cuts);
+            foreach (var cut in cuts.Where(e => e.Choices.Any()))
+            {
+                var choiceUidGenerator = new ChoiceUidGenerator(cut.Uid, cut.Choices);
+            }
+
+            if (writer.AppendToSheet(cuts.SelectMany(e => e.ToShortenOutputExcelType(cutscene.FileName))) == false)
+            {
+                Log.Error($"엑셀 시트에 데이터를 적을 수 없습니다. 컷신이름:{cutscene.FileName}");
+                return;
+            }
+        }
+
+        if (writer.CloseSheet<ShortenCutOutputExcelFormat>() == false)
+        {
+            Log.Error($"엑셀 시트를 닫을 수 없습니다. fileName:{VmGlobalState.ShortenExportFileName}");
+            return;
+        }
+
+        Log.Info($"파일 생성 완료. fileName:{VmGlobalState.ShortenExportFileName}");
     }
 
     private async Task OnEditShorten(CutScene? scene)

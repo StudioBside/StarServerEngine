@@ -1,4 +1,4 @@
-﻿﻿namespace CutEditor.Model.Detail;
+﻿namespace CutEditor.Model.ExcelFormats;
 
 using Shared.Interfaces;
 using Shared.Templet.Strings;

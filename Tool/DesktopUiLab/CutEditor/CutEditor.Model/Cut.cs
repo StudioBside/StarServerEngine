@@ -9,6 +9,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using Cs.Core.Util;
 using Cs.Logging;
 using CutEditor.Model.Detail;
+using CutEditor.Model.ExcelFormats;
 using CutEditor.Model.Preview;
 using Newtonsoft.Json.Linq;
 using NKM;
@@ -591,6 +592,21 @@ public sealed class Cut : ObservableObject
         }
 
         yield return new CutOutputExcelFormat(this);
+    }
+
+    public IEnumerable<ShortenCutOutputExcelFormat> ToShortenOutputExcelType(string fileName)
+    {
+        if (this.choices.Count > 0)
+        {
+            foreach (var choice in this.choices)
+            {
+                yield return new ShortenCutOutputExcelFormat(choice, fileName);
+            }
+
+            yield break;
+        }
+
+        yield return new ShortenCutOutputExcelFormat(this, fileName);
     }
 
     public string GetSummaryText(L10nType l10nType)

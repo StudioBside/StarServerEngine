@@ -1,32 +1,59 @@
 ﻿namespace Du.Excel;
 
+using System.IO;
 using System.Reflection;
 using Cs.Core.Util;
 using Du.Core.Interfaces;
 using Du.Excel.Detail;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using Log = Cs.Logging.Log;
 
 public sealed class ExcelFileWriter : IExcelFileWriter
 {
+    private readonly Dictionary<string, SheetContext> openedSheets = new();
+    private FileStream? fileStream;
+    private IWorkbook? workbook;
+
     public bool Write<T>(string filePath, IEnumerable<T> collection)
     {
+        if (this.CreateSheet<T>(filePath) == false)
+        {
+            return false;
+        }
+
+        if (this.AppendToSheet(collection) == false)
+        {
+            return false;
+        }
+
+        return this.CloseSheet<T>();
+    }
+
+    public bool CreateSheet<T>(string filePath)
+    {
+        var typeName = typeof(T).Name;
+        if (this.openedSheets.ContainsKey(typeName))
+        {
+            Log.Warn($"Sheet '{typeName}' already opened.");
+            return false;
+        }
+
         FileSystem.GuaranteePath(filePath);
 
-        var typeName = typeof(T).Name;
         var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
         // create excel file
-        using var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write);
+        this.fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write);
 
-        IWorkbook workbook = new XSSFWorkbook();
-        ISheet excelSheet = workbook.CreateSheet(typeName);
+        this.workbook = new XSSFWorkbook();
+        ISheet excelSheet = this.workbook.CreateSheet(typeName);
 
         IRow row = excelSheet.CreateRow(0);
         int columnIndex = 0;
 
         // 헤더(컬럼 이름)에는 별도의 스타일을 적용
-        var style = workbook.CreateCellStyle();
+        var style = this.workbook.CreateCellStyle();
         style.FillForegroundColor = NPOI.HSSF.Util.HSSFColor.Grey25Percent.Index;
         style.FillPattern = FillPattern.SolidForeground;
 
@@ -47,8 +74,19 @@ public sealed class ExcelFileWriter : IExcelFileWriter
             columnIndex++;
         }
 
-        // 데이터 생성
-        int rowIndex = 1;
+        this.openedSheets.Add(typeName, new SheetContext(excelSheet, properties));
+        return true;
+    }
+
+    public bool AppendToSheet<T>(IEnumerable<T> collection)
+    {
+        var typeName = typeof(T).Name;
+        if (this.openedSheets.TryGetValue(typeName, out var context) == false)
+        {
+            Log.Warn($"Sheet '{typeName}' not opened.");
+            return false;
+        }
+
         foreach (var data in collection)
         {
             if (data is null)
@@ -56,24 +94,68 @@ public sealed class ExcelFileWriter : IExcelFileWriter
                 continue;
             }
 
-            row = excelSheet.CreateRow(rowIndex);
+            var row = context.CreateRow();
             int cellIndex = 0;
-            foreach (var propertyInfo in properties)
+            foreach (var propertyInfo in context.Properties)
             {
                 row.CreateCell(cellIndex).Write(data, propertyInfo);
                 cellIndex++;
             }
-
-            rowIndex++;
         }
-
-        for (columnIndex = 0; columnIndex < properties.Length; columnIndex++)
-        {
-            excelSheet.AutoSizeColumn(columnIndex);
-        }
-
-        workbook.Write(stream);
 
         return true;
+    }
+
+    public bool CloseSheet<T>()
+    {
+        if (this.workbook is null)
+        {
+            Log.Warn("Workbook not created.");
+            return false;
+        }
+
+        var typeName = typeof(T).Name;
+        if (this.openedSheets.TryGetValue(typeName, out var context) == false)
+        {
+            Log.Warn($"Sheet '{typeName}' not opened.");
+            return false;
+        }
+
+        for (int columnIndex = 0; columnIndex < context.Properties.Count; columnIndex++)
+        {
+            context.Sheet.AutoSizeColumn(columnIndex);
+        }
+
+        this.workbook.Write(this.fileStream);
+        return true;
+    }
+
+    public void Dispose()
+    {
+        if (this.workbook is not null)
+        {
+            this.workbook.Close();
+            this.workbook.Dispose();
+            this.workbook = null;
+        }
+
+        if (this.fileStream is not null)
+        {
+            this.fileStream.Close();
+            this.fileStream.Dispose();
+            this.fileStream = null;
+        }
+    }
+
+    //// ---------------------------------------------------------------------------------------------
+
+    private sealed class SheetContext(ISheet sheet, IReadOnlyList<PropertyInfo> properties)
+    {
+        private int nextRowIndex = 1;
+
+        public ISheet Sheet { get; } = sheet;
+        public IReadOnlyList<PropertyInfo> Properties { get; } = properties;
+
+        public IRow CreateRow() => this.Sheet.CreateRow(this.nextRowIndex++);
     }
 }

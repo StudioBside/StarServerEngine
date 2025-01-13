@@ -94,7 +94,7 @@ public sealed class VmCutSearch : VmPageBase
 
         foreach (var cutscene in CutSceneContainer.Instance.CutScenes)
         {
-            var cuts = CutFileIo.LoadCutData(cutscene.FileName);
+            var cuts = CutFileIo.LoadCutData(cutscene.FileName, isShorten: false);
             var uidGenerator = new CutUidGenerator(cuts);
             foreach (var cut in cuts.Where(e => e.Choices.Any()))
             {

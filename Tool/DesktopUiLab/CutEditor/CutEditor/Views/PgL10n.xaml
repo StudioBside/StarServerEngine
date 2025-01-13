@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:local="clr-namespace:CutEditor.Views"
+      xmlns:services="clr-namespace:CutEditor.Services"
       xmlns:lcvt="clr-namespace:CutEditor.Converters"
       xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
       xmlns:behaviors="clr-namespace:Du.Presentation.Behaviors;assembly=Du.Presentation"
@@ -41,10 +42,16 @@
             <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Margin="5"
                         HorizontalAlignment="Right">
 
-                <ui:Button Margin="3" Content="목록으로"
-                           Icon="{ui:SymbolIcon ArrowStepBack16}"
-                           Command="{Binding GoToCommand, Source={extensions:PageRouter}}"
-                           CommandParameter="Views/PgHome.xaml"/>
+                <ui:Button 
+                    Margin="3" Content="추출 파일 폴더 열기"
+                    Command="{Binding OpenInExplorer, Source={extensions:UtilCommands}}"
+                    CommandParameter="{Binding ExportRoot, Source={services:DataExposure}}"/>
+
+                <ui:Button
+                    Margin="3" Content="목록으로"
+                    Icon="{ui:SymbolIcon ArrowStepBack16}"
+                    Command="{Binding GoToCommand, Source={extensions:PageRouter}}"
+                    CommandParameter="Views/PgHome.xaml"/>
             </StackPanel>
         </DockPanel>
 

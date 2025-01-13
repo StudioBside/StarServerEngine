@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.Input;
 using Cs.Logging;
 using CutEditor.Model;
 using CutEditor.Model.Detail;
+using CutEditor.Model.ExcelFormats;
 using Du.Core.Bases;
 using Du.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
@@ -59,7 +60,6 @@ public sealed class VmStrings : VmPageBase
     public int TotalCount => this.filteredList.SourceCount;
     public IRelayCommand ExportCommand { get; }
     public IReadOnlyList<string> Filters { get; }
-    public string ExportRoot => VmGlobalState.ExportRoot;
 
     public string SearchKeyword
     {
@@ -144,7 +144,7 @@ public sealed class VmStrings : VmPageBase
         }
 
         Log.Debug($"시스템 스트링 추출. category:{category.Name}");
-        var fileName = $"{this.ExportRoot}/SYSTEM_STRING_{category.Name}.xlsx";
+        var fileName = $"{VmGlobalState.ExportRoot}/SYSTEM_STRING_{category.Name}.xlsx";
         var nameOnly = Path.GetFileNameWithoutExtension(fileName);
 
         // 동일한 이름의 파일이 존재한다면 삭제.

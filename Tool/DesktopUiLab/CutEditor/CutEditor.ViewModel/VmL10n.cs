@@ -20,7 +20,6 @@ public sealed class VmL10n : VmPageBase,
     private readonly ObservableCollection<string> logMessages = new();
     private readonly IServiceProvider services;
     private string name = string.Empty;
-    private string textFileName = string.Empty;
     private string? importFilePath;
     private bool hasEnglish;
     private bool hasJapanese;
@@ -73,12 +72,6 @@ public sealed class VmL10n : VmPageBase,
     {
         get => this.name;
         set => this.SetProperty(ref this.name, value);
-    }
-
-    public string TextFileName
-    {
-        get => this.textFileName;
-        set => this.SetProperty(ref this.textFileName, value);
     }
 
     public int StatCountNormal => this.strategy.Statistics[(int)L10nMappingState.Normal];
@@ -177,7 +170,7 @@ public sealed class VmL10n : VmPageBase,
             return;
         }
 
-        if (this.strategy.SaveToFile(this.Name) == false)
+        if (this.strategy.SaveToFile(this.Name, this.loadingType.Value) == false)
         {
             this.WriteLog("적용에 실패했습니다.");
             return;
@@ -208,7 +201,6 @@ public sealed class VmL10n : VmPageBase,
 
         this.Name = name;
         this.Title = this.Name;
-        this.TextFileName = CutFileIo.GetTextFileName(this.Name);
         return true;
     }
 
@@ -220,7 +212,7 @@ public sealed class VmL10n : VmPageBase,
         var sourceType = nameOnly switch
         {
             _ when nameOnly.StartsWith("SYSTEM_STRING_") => L10nSourceType.SystemString,
-            _ when nameOnly.Contains("SHORTEN_") => L10nSourceType.CutsceneShorten,
+            _ when nameOnly.StartsWith("SHORTEN_") => L10nSourceType.CutsceneShorten,
             _ => L10nSourceType.CutsceneNormal,
         };
 

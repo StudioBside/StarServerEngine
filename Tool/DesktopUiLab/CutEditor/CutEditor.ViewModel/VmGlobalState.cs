@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 public sealed class VmGlobalState
 {
     public const string ExportRoot = "./Export";
+    public const string ShortenExportFileName = "SHORTEN_CUT_ALL.xlsx";
 
     private string textfilepath = string.Empty;
     private string binfilepath = string.Empty;

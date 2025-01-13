@@ -1,6 +1,7 @@
 ﻿namespace CutEditor.ViewModel.L10n;
 
 using CutEditor.Model.L10n;
+using static StringStorage.Enums;
 
 internal interface IL10nStrategy
 {
@@ -10,5 +11,5 @@ internal interface IL10nStrategy
 
     bool LoadOriginData(string name);
     bool ImportFile(string fileFullPath, ISet<string> importedHeaders);
-    bool SaveToFile(string name);
+    bool SaveToFile(string name, L10nType l10nType);
 }

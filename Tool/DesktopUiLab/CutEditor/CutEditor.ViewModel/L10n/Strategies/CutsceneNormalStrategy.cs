@@ -4,12 +4,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 using Cs.Logging;
-using CutEditor.Model.Detail;
+using CutEditor.Model.ExcelFormats;
 using CutEditor.Model.L10n;
 using CutEditor.ViewModel.Detail;
 using Du.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using static CutEditor.Model.Enums;
+using static StringStorage.Enums;
 
 internal sealed class CutsceneNormalStrategy(VmL10n viewModel) : L10nStrategyBase(L10nSourceType.CutsceneNormal)
 {
@@ -102,7 +103,7 @@ internal sealed class CutsceneNormalStrategy(VmL10n viewModel) : L10nStrategyBas
         return true;
     }
 
-    public override bool SaveToFile(string name)
+    public override bool SaveToFile(string name, L10nType l10nType)
     {
         return CutFileIo.SaveCutData(name, this.mappings.Select(e => e.Cut), isShorten: false);
     }

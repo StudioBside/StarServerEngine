@@ -1,7 +1,7 @@
 ﻿namespace CutEditor.Model.L10n;
 
 using CutEditor.Model;
-using CutEditor.Model.Detail;
+using CutEditor.Model.ExcelFormats;
 using Shared.Interfaces;
 using static StringStorage.Enums;
 

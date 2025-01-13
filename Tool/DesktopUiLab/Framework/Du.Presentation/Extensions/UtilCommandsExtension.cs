@@ -21,7 +21,7 @@ public sealed class UtilCommandsExtension : MarkupExtension
             }
 
             // note: 절대경로여야 한다.
-            if (path.Contains(":") == false)
+            if (path.Contains(':') == false)
             {
                 path = Path.GetFullPath(path);
             }
@@ -44,7 +44,7 @@ public sealed class UtilCommandsExtension : MarkupExtension
             }
 
             // note: 절대경로여야 한다.
-            if (path.Contains(":") == false)
+            if (path.Contains(':') == false)
             {
                 path = Path.GetFullPath(path);
             }

@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="StringStorage" Version="0.0.3" />
+	  <PackageReference Include="Cs.Core" Version="[0.0.10,)" />
+	  <PackageReference Include="StringStorage" Version="0.0.4" />
   </ItemGroup>
 </Project>

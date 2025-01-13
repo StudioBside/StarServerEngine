@@ -4,18 +4,21 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Cs.Logging;
-using CutEditor.Model.Detail;
+using CutEditor.Model.ExcelFormats;
 using CutEditor.Model.L10n;
 using CutEditor.Model.L10n.MappingTypes;
 using Du.Core.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Templet.Strings;
+using StringStorage.SystemStrings;
 using static CutEditor.Model.Enums;
+using static StringStorage.Enums;
 
 internal sealed class SystemStringStrategy(VmL10n viewModel) : L10nStrategyBase(L10nSourceType.SystemString)
 {
     private readonly ObservableCollection<L10nMappingString> mappings = new();
+    private string categoryName = string.Empty;
 
     public override IReadOnlyList<IL10nMapping> Mappings => this.mappings;
 
@@ -33,7 +36,8 @@ internal sealed class SystemStringStrategy(VmL10n viewModel) : L10nStrategyBase(
             this.mappings.Add(new L10nMappingString(element.PrimeKey, element));
         }
 
-        viewModel.WriteLog($"시스템 스트링 카테고리:{name} 전체 데이터 {this.mappings.Count}개.");
+        this.categoryName = categoryName;
+        viewModel.WriteLog($"시스템 스트링 카테고리:{this.categoryName} 전체 데이터 {this.mappings.Count}개.");
         return true;
     }
 
@@ -72,10 +76,26 @@ internal sealed class SystemStringStrategy(VmL10n viewModel) : L10nStrategyBase(
         return true;
     }
 
-    public override bool SaveToFile(string name)
+    public override bool SaveToFile(string name, L10nType l10nType)
     {
         var config = viewModel.Services.GetRequiredService<IConfiguration>();
         var stringDbPath = config["StringDbPath"] ?? throw new Exception("StringDbPath is not set in the configuration file.");
+
+        if (SystemStringWriter.Create(stringDbPath, this.categoryName, out var writer) == false)
+        {
+            Log.Error($"시스템 스트링 database에 연결할 수 없습니다. categoryName:{this.categoryName}");
+            return false;
+        }
+
+        using (writer)
+        {
+            foreach (var mapping in this.mappings)
+            {
+                var newValue = mapping.SourceData.Get(l10nType);
+                writer.Upsert(mapping.SourceData.Korean, l10nType, newValue);
+            }
+        }
+
         return true;
     }
 }

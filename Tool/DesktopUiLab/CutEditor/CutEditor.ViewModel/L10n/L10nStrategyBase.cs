@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using Cs.Core.Util;
 using CutEditor.Model.L10n;
 using static CutEditor.Model.Enums;
+using static StringStorage.Enums;
 
 public abstract class L10nStrategyBase(L10nSourceType sourceType) : IL10nStrategy
 {
@@ -16,7 +17,7 @@ public abstract class L10nStrategyBase(L10nSourceType sourceType) : IL10nStrateg
 
     public abstract bool ImportFile(string fileFullPath, ISet<string> importedHeaders);
     public abstract bool LoadOriginData(string name);
-    public abstract bool SaveToFile(string name);
+    public abstract bool SaveToFile(string name, L10nType l10nType);
 
     //// ------------------------------------------------------------------------
 
