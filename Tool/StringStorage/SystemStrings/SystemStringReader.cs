@@ -7,25 +7,24 @@ using Cs.Core;
 using Cs.Logging;
 using StringStorage.Translation;
 
+/// <summary>
+/// root 경로에 존재하는 zip 파일을 모두 연결해두는 (=모든 카테고리를 읽는) 클래스.
+/// </summary>
 public sealed class SystemStringReader : IDisposable
 {
     private readonly Dictionary<string /*category*/, L10nReadOnlyDb> dbList = new();
-    private string rootPath = string.Empty;
-    public static SystemStringReader Instance => Singleton<SystemStringReader>.Instance;
     public bool Initialize(string dbRoot)
     {
-        this.rootPath = dbRoot;
-
         // root에 존재하는 zip 파일을 대상으로 초기 로딩
-        var zipFiles = Directory.GetFiles(this.rootPath, "*.zip");
+        var zipFiles = Directory.GetFiles(dbRoot, "*.zip");
         foreach (var zipFile in zipFiles)
         {
             var category = Path.GetFileNameWithoutExtension(zipFile);
-            var db = new L10nReadOnlyDb(Path.Combine(this.rootPath, category));
+            var db = new L10nReadOnlyDb(Path.Combine(dbRoot, category));
             this.dbList.Add(category, db);
         }
 
-        Log.Debug($"SystemStringReader.Initialize. rootPath:{this.rootPath} dbList:{this.dbList.Count}");
+        Log.Debug($"SystemStringReader.Initialize. rootPath:{dbRoot} dbList:{this.dbList.Count}");
         return true;
     }
 
