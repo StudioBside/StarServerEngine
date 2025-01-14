@@ -40,7 +40,7 @@ public sealed class VmCutsSummary : VmPageBase
         var json = JsonUtil.Load(this.TextFileName);
         json.GetArray("Data", this.cuts, (e, i) =>
         {
-            var cut = new Cut(e);
+            var cut = new Cut(e, this.Name);
             return new VmCutSummary(cut, this.Name);
         });
 

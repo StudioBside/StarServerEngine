@@ -153,30 +153,7 @@ public sealed class VmL10n : VmPageBase,
             return;
         }
 
-        int changedCount;
-
-        changedCount = 0;
-        foreach (var mapping in this.Mappings)
-        {
-            if (mapping.ApplyData(this.loadingType.Value))
-            {
-                ++changedCount;
-            }
-        }
-
-        if (changedCount == 0)
-        {
-            this.WriteLog("적용할 변경사항이 없습니다.");
-            return;
-        }
-
-        if (this.strategy.SaveToFile(this.Name, this.loadingType.Value) == false)
-        {
-            this.WriteLog("적용에 실패했습니다.");
-            return;
-        }
-
-        this.WriteLog($"번역 적용 완료. 대상 언어:{this.loadingType.Value} 변경된 데이터 {changedCount}개.");
+        this.strategy.SaveToFile(this.Name, this.loadingType.Value);
     }
 
     private bool LoadOriginData(string name, L10nSourceType sourceType)
@@ -184,6 +161,7 @@ public sealed class VmL10n : VmPageBase,
         IL10nStrategy newStrategy = sourceType switch
         {
             L10nSourceType.CutsceneNormal => new CutsceneNormalStrategy(this),
+            L10nSourceType.CutsceneShorten => new CutsceneShortenStrategy(this),
             L10nSourceType.SystemString => new SystemStringStrategy(this),
             _ => throw new NotSupportedException($"지원하지 않는 타입입니다. type:{sourceType}"),
         };

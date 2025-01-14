@@ -17,5 +17,6 @@ public sealed class ShortenCutOutputExcelFormat : CutOutputExcelFormat
         // note: file에서 읽어들일 때 사용하기 때문에 빈 생성자를 만들어둡니다.
     }
 
+    public string FileAndUid => $"{this.FileName} ({this.Uid})";
     public string FileName { get; set; } = string.Empty;
 }

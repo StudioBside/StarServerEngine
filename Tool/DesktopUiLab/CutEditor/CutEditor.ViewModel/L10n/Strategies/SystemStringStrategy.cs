@@ -78,6 +78,21 @@ internal sealed class SystemStringStrategy(VmL10n viewModel) : L10nStrategyBase(
 
     public override bool SaveToFile(string name, L10nType l10nType)
     {
+        int changedCount = 0;
+        foreach (var mapping in this.mappings)
+        {
+            if (mapping.ApplyData(l10nType))
+            {
+                ++changedCount;
+            }
+        }
+
+        if (changedCount == 0)
+        {
+            viewModel.WriteLog("적용할 변경사항이 없습니다.");
+            return false;
+        }
+
         var config = viewModel.Services.GetRequiredService<IConfiguration>();
         var stringDbPath = config["StringDbPath"] ?? throw new Exception("StringDbPath is not set in the configuration file.");
 

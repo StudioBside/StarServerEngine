@@ -104,7 +104,7 @@ public sealed class Cut : ObservableObject
         this.constructorFinished = true;
     }
 
-    public Cut(JToken token) : this(token.GetInt64("Uid", 0))
+    public Cut(JToken token, string debugName) : this(token.GetInt64("Uid", 0))
     {
         this.constructorFinished = false;
 
@@ -213,7 +213,7 @@ public sealed class Cut : ObservableObject
                 this.unit = TempletContainer<Unit>.Find(this.unitStrId);
                 if (this.unit is null)
                 {
-                    Log.Error($"유닛 템플릿을 찾을 수 없습니다. UnitStrId:{this.unitStrId}");
+                    Log.Error($"{debugName} 유닛 템플릿을 찾을 수 없습니다. UnitStrId:{this.unitStrId}");
                 }
             }
         }
@@ -223,7 +223,7 @@ public sealed class Cut : ObservableObject
             this.arcpoint = TempletContainer<LobbyItem>.Find(this.arcpointId);
             if (this.arcpoint is null)
             {
-                Log.Error($"로비 아이템 템플릿을 찾을 수 없습니다. ArcpointId:{this.arcpointId}");
+                Log.Error($"{debugName} 로비 아이템 템플릿을 찾을 수 없습니다. ArcpointId:{this.arcpointId}");
             }
         }
 

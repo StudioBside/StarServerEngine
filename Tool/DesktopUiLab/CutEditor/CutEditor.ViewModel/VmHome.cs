@@ -13,6 +13,7 @@ using CutEditor.Model.Detail;
 using CutEditor.Model.ExcelFormats;
 using CutEditor.Model.Interfaces;
 using CutEditor.ViewModel.Detail;
+using CutEditor.ViewModel.L10n;
 using Du.Core.Bases;
 using Du.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
@@ -177,24 +178,11 @@ public sealed class VmHome : VmPageBase
             return;
         }
 
-        foreach (var cutscene in CutSceneContainer.Instance.CutScenes)
+        foreach (var (fileName, cuts) in ShortenCuts.LoadAll())
         {
-            var fileName = CutFileIo.GetTextFileName(cutscene.FileName, isShorten: true);
-            if (File.Exists(fileName) == false)
+            if (writer.AppendToSheet(cuts.SelectMany(e => e.ToShortenOutputExcelType(fileName))) == false)
             {
-                continue;
-            }
-
-            var cuts = CutFileIo.LoadCutData(cutscene.FileName, isShorten: true);
-            var uidGenerator = new CutUidGenerator(cuts);
-            foreach (var cut in cuts.Where(e => e.Choices.Any()))
-            {
-                var choiceUidGenerator = new ChoiceUidGenerator(cut.Uid, cut.Choices);
-            }
-
-            if (writer.AppendToSheet(cuts.SelectMany(e => e.ToShortenOutputExcelType(cutscene.FileName))) == false)
-            {
-                Log.Error($"엑셀 시트에 데이터를 적을 수 없습니다. 컷신이름:{cutscene.FileName}");
+                Log.Error($"엑셀 시트에 데이터를 적을 수 없습니다. 컷신이름:{fileName}");
                 return;
             }
         }

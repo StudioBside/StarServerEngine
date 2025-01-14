@@ -38,19 +38,16 @@ internal sealed class CutsceneNormalStrategy(VmL10n viewModel) : L10nStrategyBas
         this.mappings.Clear();
         foreach (var cut in cutList)
         {
-            L10nMappingNormal mapping;
             if (cut.Choices.Count == 0)
             {
-                mapping = new L10nMappingNormal(cut);
-                this.mappings.Add(mapping);
+                this.mappings.Add(new L10nMappingNormal(cut));
                 ++normalCut;
             }
             else
             {
                 foreach (var choice in cut.Choices)
                 {
-                    mapping = new L10nMappingNormal(cut, choice);
-                    this.mappings.Add(mapping);
+                    this.mappings.Add(new L10nMappingNormal(cut, choice));
                     ++branchCut;
                 }
             }
@@ -105,6 +102,28 @@ internal sealed class CutsceneNormalStrategy(VmL10n viewModel) : L10nStrategyBas
 
     public override bool SaveToFile(string name, L10nType l10nType)
     {
-        return CutFileIo.SaveCutData(name, this.mappings.Select(e => e.Cut), isShorten: false);
+        int changedCount = 0;
+        foreach (var mapping in this.mappings)
+        {
+            if (mapping.ApplyData(l10nType))
+            {
+                ++changedCount;
+            }
+        }
+
+        if (changedCount == 0)
+        {
+            viewModel.WriteLog("적용할 변경사항이 없습니다.");
+            return false;
+        }
+
+        if (CutFileIo.SaveCutData(name, this.mappings.Select(e => e.Cut), isShorten: false) == false)
+        {
+            viewModel.WriteLog("적용에 실패했습니다.");
+            return false;
+        }
+
+        viewModel.WriteLog($"번역 적용 완료. 대상 언어:{l10nType} 변경된 데이터 {changedCount}개.");
+        return true;
     }
 }

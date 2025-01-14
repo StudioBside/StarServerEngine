@@ -2,7 +2,6 @@
 
 using Shared.Interfaces;
 using static CutEditor.Model.Enums;
-using static StringStorage.Enums;
 
 /// <summary>
 /// 번역 데이터 타입에 따라 다른 구현을 추상화하는 인터페이스. 
@@ -13,6 +12,4 @@ public interface IL10nMapping
     IL10nText SourceData { get; }
     IL10nText? ImportedData { get; }
     L10nMappingState MappingState { get; }
-
-    bool ApplyData(L10nType l10nType);
 }

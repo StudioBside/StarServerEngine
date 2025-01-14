@@ -105,6 +105,21 @@
                     </TabItem>
 
                     <TabItem Header="단축 컷신">
+                        <ui:ListView Grid.Row="1" ItemsSource="{Binding Mappings}">
+                            <b:Interaction.Behaviors>
+                                <behaviors:FileDropBehavior/>
+                            </b:Interaction.Behaviors>
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="FileName" Width="180" DisplayMemberBinding="{Binding FileName}"/>
+                                    <GridViewColumn Header="Uid" Width="50" DisplayMemberBinding="{Binding UidStr}"/>
+                                    <GridViewColumn Header="Korean" Width="250" DisplayMemberBinding="{Binding SourceData.Korean}"/>
+                                    <GridViewColumn Header="English" Width="250" DisplayMemberBinding="{Binding SourceData.English}"/>
+                                    <GridViewColumn Header="Japanese" Width="250" DisplayMemberBinding="{Binding SourceData.Japanese}"/>
+                                    <GridViewColumn Header="Chinese.S" Width="250" DisplayMemberBinding="{Binding SourceData.ChineseSimplified}"/>
+                                </GridView>
+                            </ListView.View>
+                        </ui:ListView>
                     </TabItem>
 
                     <TabItem Header="시스템 스트링">

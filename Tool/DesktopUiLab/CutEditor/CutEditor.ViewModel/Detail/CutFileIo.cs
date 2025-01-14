@@ -28,7 +28,7 @@ internal sealed class CutFileIo
 
         var result = new List<Cut>();
         var json = JsonUtil.Load(textFileName);
-        json.GetArray("Data", result, (e, i) => new Cut(e));
+        json.GetArray("Data", result, (e, i) => new Cut(e, cutsceneName));
 
         return result;
     }
