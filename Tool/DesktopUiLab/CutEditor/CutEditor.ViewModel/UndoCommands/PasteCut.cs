@@ -10,7 +10,8 @@ internal sealed class PasteCut(
     VmCuts vmCuts,
     IReadOnlyList<VmCut> targets,
     int positionIndex,
-    PasteDirection direction) : IDormammu
+    PasteDirection direction,
+    bool reReserveWhenUndo) : IDormammu
 {
     public enum PasteDirection
     {
@@ -18,9 +19,7 @@ internal sealed class PasteCut(
         Downside,
     }
 
-    public bool ReserveOnUndo { get; init; } = true;
-
-    public static PasteCut? Create(VmCuts vmCuts, PasteDirection direction)
+    public static PasteCut? Create(VmCuts vmCuts, PasteDirection direction, bool reReserve)
     {
         if (vmCuts.CutPaster.Reserved.Count == 0)
         {
@@ -33,7 +32,7 @@ internal sealed class PasteCut(
             positionIndex = vmCuts.Cuts.IndexOf(vmCuts.SelectedCuts[0]);
         }
 
-        return new PasteCut(vmCuts, vmCuts.CutPaster.Reserved.ToArray(), positionIndex, direction);
+        return new PasteCut(vmCuts, vmCuts.CutPaster.Reserved.ToArray(), positionIndex, direction, reReserve);
     }
 
     public void Redo()
@@ -84,7 +83,7 @@ internal sealed class PasteCut(
         var controller = vmCuts.Services.GetRequiredService<ICutsListController>();
         controller.FocusElement(selectedIndex);
 
-        if (this.ReserveOnUndo)
+        if (reReserveWhenUndo)
         {
             // 클립보드 텍스트에서 붙여넣은 경우는 undo할 때 reserve에 유지하지 않는다.
             vmCuts.CutPaster.SetReserved(targets);

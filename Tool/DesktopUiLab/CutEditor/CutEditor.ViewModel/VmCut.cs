@@ -10,7 +10,6 @@ using CommunityToolkit.Mvvm.Messaging;
 using CutEditor.Model;
 using CutEditor.Model.Detail;
 using CutEditor.Model.Interfaces;
-using CutEditor.ViewModel.Detail;
 using CutEditor.ViewModel.UndoCommands;
 using Du.Core.Interfaces;
 using Du.Core.Util;
@@ -25,7 +24,6 @@ using static Du.Core.Messages;
 public sealed class VmCut : ObservableObject
 {
     private readonly VmCuts owner;
-    private readonly ChoiceUidGenerator choiceUidGenerator;
     private bool showUnitSection;
     private bool showScreenSection;
     private bool showCameraSection;
@@ -33,6 +31,7 @@ public sealed class VmCut : ObservableObject
     private bool screenCrashFlyoutOpen;
     private bool slateFlyoutOpen;
     private bool minorityFlyoutOpen;
+    private long choiceUidSeed;
 
     public VmCut(Cut cut, VmCuts owner)
     {
@@ -82,7 +81,10 @@ public sealed class VmCut : ObservableObject
         this.showScreenSection = cut.HasScreenBoxData();
         this.ShowCameraSection = cut.HasCameraBoxData();
 
-        this.choiceUidGenerator = new(cut.Uid, cut.Choices);
+        if (cut.Choices.Count > 0)
+        {
+            this.choiceUidSeed = cut.Choices.Max(x => x.ChoiceUid);
+        }
 
         if (this.Cut.Choices is ObservableCollection<ChoiceOption> choices)
         {
@@ -351,9 +353,8 @@ public sealed class VmCut : ObservableObject
 
     private void OnAddChoiceOption()
     {
-        long newUid = this.choiceUidGenerator.Generate();
-        var newChoice = new ChoiceOption($"새 선택지. uid:{newUid}");
-        newChoice.InitializeUid(this.Cut.Uid, newUid);
+        long newUid = ++this.choiceUidSeed;
+        var newChoice = new ChoiceOption(this.Cut.Uid, newUid, $"새 선택지. uid:{newUid}");
 
         this.Cut.Choices.Add(newChoice);
     }

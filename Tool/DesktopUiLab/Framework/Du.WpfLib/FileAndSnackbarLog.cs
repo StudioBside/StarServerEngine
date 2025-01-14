@@ -40,20 +40,17 @@ public sealed class FileAndSnackbarLog : ILogProvider, IDisposable
 
     public void Info(string message)
     {
-        this.WriteLine($"[INFO] {message}");
+        this.WriteLine($"[INFO] {message}"); 
 
-        if (this.snackbarService.GetSnackbarPresenter() is not null)
-        {
-            // Info는 파란색. 시인성 위해 Secondary(흰색)
-            this.snackbarService.Show("Info", message, ControlAppearance.Secondary, icon: null, Duration);
-        }
+        // Info는 파란색. 시인성 위해 Secondary(흰색) 사용
+        this.TryShowSnackbarMessage("Info", message, ControlAppearance.Secondary);
     }
 
     public void Warn(string message)
     {
         this.WriteLine($"[WARN] {message}");
-        // Caution은 주황색. 시인성 위해 Secondary(흰색)
-        this.snackbarService.Show("Warn", message, ControlAppearance.Secondary, icon: null, Duration);
+        // Caution은 주황색. 시인성 위해 Secondary(흰색) 사용
+        this.TryShowSnackbarMessage("Warn", message, ControlAppearance.Secondary);
     }
 
     [DoesNotReturn]
@@ -67,8 +64,8 @@ public sealed class FileAndSnackbarLog : ILogProvider, IDisposable
     public void Error(string message)
     {
         this.WriteLine($"[ERROR] {message}");
-        // Danger는 붉은색. 시인성 위해 Dark(검정)
-        this.snackbarService.Show("Error", message, ControlAppearance.Dark, icon: null, Duration);
+        // Danger는 붉은색. 시인성 위해 Dark(검정) 사용
+        this.TryShowSnackbarMessage("Error", message, ControlAppearance.Dark);
     }
 
     string ILogProvider.BuildTag(string file, int line)
@@ -85,5 +82,18 @@ public sealed class FileAndSnackbarLog : ILogProvider, IDisposable
         this.fileStream.Write(buffer);
 
         this.fileStream.Flush();
+    }
+
+    private void TryShowSnackbarMessage(string title, string message, ControlAppearance appearance)
+    {
+        if (this.snackbarService.GetSnackbarPresenter() is null)
+        {
+            return;
+        }
+
+        UIThreadHelper.ExecuteOnUIThread(() =>
+        {
+            this.snackbarService.Show(title, message, appearance, icon: null, Duration);
+        });
     }
 }

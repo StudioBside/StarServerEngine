@@ -166,32 +166,33 @@ public sealed class VmHome : VmPageBase
     {
         var notifier = this.services.GetRequiredService<IUserWaitingNotifier>();
         using var closer = await notifier.StartWait("단축 컷신 파일을 생성 중입니다...");
-        await Task.Delay(500);
-
-        var outputFileName = Path.Combine(VmGlobalState.ExportRoot, VmGlobalState.ShortenExportFileName);
-        using var writer = this.services.GetRequiredService<IExcelFileWriter>();
-        if (writer.CreateSheet<ShortenCutOutputExcelFormat>(outputFileName) == false)
+        await Task.Run(() =>
         {
-            Log.Error($"파일 생성에 실패했습니다. fileName:{VmGlobalState.ShortenExportFileName}");
-            return;
-        }
-
-        foreach (var (fileName, cuts) in ShortenCuts.LoadAll())
-        {
-            if (writer.AppendToSheet(cuts.SelectMany(e => e.ToShortenOutputExcelType(fileName))) == false)
+            var outputFileName = Path.Combine(VmGlobalState.ExportRoot, VmGlobalState.ShortenExportFileName);
+            using var writer = this.services.GetRequiredService<IExcelFileWriter>();
+            if (writer.CreateSheet<ShortenCutOutputExcelFormat>(outputFileName) == false)
             {
-                Log.Error($"엑셀 시트에 데이터를 적을 수 없습니다. 컷신이름:{fileName}");
+                Log.Error($"파일 생성에 실패했습니다. fileName:{VmGlobalState.ShortenExportFileName}");
                 return;
             }
-        }
 
-        if (writer.CloseSheet<ShortenCutOutputExcelFormat>() == false)
-        {
-            Log.Error($"엑셀 시트를 닫을 수 없습니다. fileName:{VmGlobalState.ShortenExportFileName}");
-            return;
-        }
+            foreach (var (fileName, cuts) in ShortenCuts.LoadAll())
+            {
+                if (writer.AppendToSheet(cuts.SelectMany(e => e.ToShortenOutputExcelType(fileName))) == false)
+                {
+                    Log.Error($"엑셀 시트에 데이터를 적을 수 없습니다. 컷신이름:{fileName}");
+                    return;
+                }
+            }
 
-        Log.Info($"파일 생성 완료. fileName:{VmGlobalState.ShortenExportFileName}");
+            if (writer.CloseSheet<ShortenCutOutputExcelFormat>() == false)
+            {
+                Log.Error($"엑셀 시트를 닫을 수 없습니다. fileName:{VmGlobalState.ShortenExportFileName}");
+                return;
+            }
+
+            Log.Info($"파일 생성 완료. fileName:{VmGlobalState.ShortenExportFileName}");
+        });
     }
 
     private async Task OnEditShorten(CutScene? scene)

@@ -1,7 +1,6 @@
 ﻿namespace CutEditor.Model;
 
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Text;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
@@ -17,20 +16,24 @@ public sealed class ChoiceOption : ObservableObject
     private readonly L10nText text;
     private StartAnchorType jumpAnchor;
 
-    public ChoiceOption(string defaultText)
+    public ChoiceOption(long cutUid, long choiceUid, string defaultText)
     {
+        this.CutUid = cutUid;
+        this.ChoiceUid = choiceUid;
         this.text = new L10nText(defaultText);
         this.text.PropertyChanged += this.Text_PropertyChanged;
     }
 
-    public ChoiceOption()
+    public ChoiceOption(long cutUid, long choiceUid)
     {
+        this.CutUid = cutUid;
+        this.ChoiceUid = choiceUid;
         this.text = new L10nText();
         this.text.PropertyChanged += this.Text_PropertyChanged;
     }
 
-    public long CutUid { get; private set; }
-    public long ChoiceUid { get; private set; }
+    public long CutUid { get; }
+    public long ChoiceUid { get; }
     public L10nText Text => this.text;
     public string UidString => $"{this.CutUid}-{this.ChoiceUid}";
     public StartAnchorType JumpAnchor
@@ -39,19 +42,12 @@ public sealed class ChoiceOption : ObservableObject
         set => this.SetProperty(ref this.jumpAnchor, value);
     }
 
-    public void InitializeUid(long cutUid, long choiceUid)
-    {
-        this.CutUid = cutUid;
-        this.ChoiceUid = choiceUid;
-    }
-
     //// -----------------------------------------------------------------------------------------
 
     internal static ChoiceOption? Load(JToken token, long cutUid)
     {
-        var result = new ChoiceOption();
-        result.CutUid = cutUid;
-        result.ChoiceUid = token.GetInt64("Uid", 0);
+        var result = new ChoiceOption(cutUid, token.GetInt64("Uid"));
+
         result.text.Load(token, "JumpAnchorStringId");
         result.jumpAnchor = token.GetEnum("JumpAnchorId", StartAnchorType.None);
 

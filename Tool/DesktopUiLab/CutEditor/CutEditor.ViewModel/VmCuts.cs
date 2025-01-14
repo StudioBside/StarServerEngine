@@ -26,6 +26,7 @@ using Shared.Templet.Strings;
 using Shared.Templet.TempletTypes;
 using static CutEditor.Model.Messages;
 using static CutEditor.ViewModel.Enums;
+using static CutEditor.ViewModel.UndoCommands.PasteCut;
 using static Du.Core.Messages;
 
 public sealed class VmCuts : VmPageBase,
@@ -304,7 +305,7 @@ public sealed class VmCuts : VmPageBase,
             // < ~ > 로 둘러싸인 경우 선택지 포맷으로 인식
             if (unit is null && talkText.StartsWith('<') && talkText.EndsWith('>'))
             {
-                var newChoice = new ChoiceOption(talkText[1..^1]);
+                var newChoice = new ChoiceOption(cut.Uid, choiceUid: 1, talkText[1..^1]);
                 cut.Choices.Add(newChoice);
             }
             else
@@ -317,16 +318,7 @@ public sealed class VmCuts : VmPageBase,
             targets.Add(new VmCut(cut, this));
         }
 
-        var command = new PasteCut(this, targets, positionIndex, PasteCut.PasteDirection.Downside)
-        {
-            ReserveOnUndo = false,
-        };
-
-        if (command is null)
-        {
-            return false;
-        }
-
+        var command = new PasteCut(this, targets, positionIndex, PasteDirection.Downside, reReserveWhenUndo: false);
         command.Redo();
         this.undoController.Add(command);
 

@@ -23,10 +23,12 @@ namespace NKM
         {
             [Description("구원자")]
             CURRENT_CHARACTER,
+            [Description("계승 합류")]
+            CURRENT_PARENT,
             [Description("부모1")]
-            PARENT_CHARACTER1,
+            CURRENT_PARENT1,
             [Description("부모2")]
-            PARENT_CHARACTER2,
+            CURRENT_PARENT2,
         }
 
         //// -----------------------------------------------------------------------------------------------
