@@ -17,12 +17,6 @@ public sealed record ShortenCuts(string FileName, IReadOnlyList<Cut> Cuts)
             }
 
             var cuts = CutFileIo.LoadCutData(cutscene.FileName, isShorten: true);
-            var uidGenerator = new CutUidGenerator(cuts);
-            foreach (var cut in cuts.Where(e => e.Choices.Any()))
-            {
-                var choiceUidGenerator = new ChoiceUidGenerator(cut.Uid, cut.Choices);
-            }
-
             yield return new ShortenCuts(cutscene.FileName, cuts);
         }
     }

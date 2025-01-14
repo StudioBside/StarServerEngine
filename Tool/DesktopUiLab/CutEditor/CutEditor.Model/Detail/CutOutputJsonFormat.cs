@@ -38,7 +38,7 @@ internal class CutOutputJsonFormat
     public string? UnitTalk_KOR { get; set; }
     public string? UnitTalk_ENG { get; set; }
     public string? UnitTalk_JPN { get; set; }
-    public string? UnitTalk_CHN { get; set; }
+    public string? UnitTalk_CHNS { get; set; }
     public float? TalkTime { get; set; }
     public TalkPositionControlType? TalkPositionControl { get; set; }
     public ChoiceOutputFormat[]? JumpAnchorData { get; set; }
@@ -56,6 +56,7 @@ internal class CutOutputJsonFormat
     public SlateControlType? SlateControlType { get; set; }
     public int? SlateSectionNo { get; set; }
     public string? AmbientSound { get; set; }
+    public bool? NicknameInput { get; set; }
     public ImageNameFadeEffect? ImageNameFadeIn { get; set; }
     public ImageNameFadeEffect? ImageNameFadeOut { get; set; }
     public string? ImageName { get; set; }

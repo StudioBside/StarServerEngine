@@ -27,12 +27,6 @@ internal sealed class CutsceneNormalStrategy(VmL10n viewModel) : L10nStrategyBas
             return false;
         }
 
-        var uidGenerator = new CutUidGenerator(cutList);
-        foreach (var cut in cutList.Where(e => e.Choices.Any()))
-        {
-            var choiceUidGenerator = new ChoiceUidGenerator(cut.Uid, cut.Choices);
-        }
-
         int normalCut = 0;
         int branchCut = 0;
         this.mappings.Clear();

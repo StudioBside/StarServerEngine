@@ -36,12 +36,11 @@ public sealed class VmCuts : VmPageBase,
     private readonly CreateParam param;
     private readonly ObservableCollection<VmCut> cuts = [];
     private readonly ObservableCollection<VmCut> selectedCuts = [];
-    private readonly CutUidGenerator uidGenerator;
     private readonly IServiceProvider services;
     private readonly UndoController undoController;
-    private readonly string packetExeFile;
     private readonly IServiceScope serviceScope;
     private bool isDirty;
+    private long uidSeed;
 
     public VmCuts(IConfiguration config, IServiceProvider services, CreateParam param)
     {
@@ -64,8 +63,6 @@ public sealed class VmCuts : VmPageBase,
         WeakReferenceMessenger.Default.Register<UpdatePreviewMessage>(this, this.OnUpdatePreview);
         WeakReferenceMessenger.Default.Register<DataChangedMessage>(this, this.OnDataChanged);
 
-        this.packetExeFile = config["TextFilePacker"] ?? throw new Exception("TextFilePacker is not set in the configuration file.");
-
         this.Name = param.FileName;
         this.IsShorten = param.IsShorten;
         if (this.IsShorten)
@@ -85,7 +82,7 @@ public sealed class VmCuts : VmPageBase,
             this.cuts.Add(new VmCut(cut, this));
         }
 
-        this.uidGenerator = new CutUidGenerator(this.cuts.Select(e => e.Cut));
+        this.uidSeed = cutList.Max(e => e.Uid);
 
         this.selectedCuts.CollectionChanged += this.SelectedCuts_CollectionChanged;
 
@@ -127,7 +124,6 @@ public sealed class VmCuts : VmPageBase,
         set => this.SetProperty(ref this.isDirty, value);
     }
 
-    internal CutUidGenerator UidGenerator => this.uidGenerator;
     internal IServiceProvider Services => this.services;
     private string DebugName => $"[{this.Name}]";
     public override Task<bool> CanExitPage()
@@ -226,7 +222,9 @@ public sealed class VmCuts : VmPageBase,
 
         return Task.FromResult(false);
     }
-    
+
+    public Cut CreateNewCut() => new Cut(++this.uidSeed);
+
     //// --------------------------------------------------------------------------------------------
 
     protected override void OnPropertyChanged(PropertyChangedEventArgs e)
@@ -300,7 +298,7 @@ public sealed class VmCuts : VmPageBase,
                 }
             }
 
-            var cut = new Cut(this.uidGenerator.Generate());
+            var cut = this.CreateNewCut();
             cut.Unit = unit;
 
             // < ~ > 로 둘러싸인 경우 선택지 포맷으로 인식

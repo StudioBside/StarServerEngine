@@ -152,12 +152,6 @@ public sealed class VmHome : VmPageBase
             return;
         }
 
-        var uidGenerator = new CutUidGenerator(cuts);
-        foreach (var cut in cuts.Where(e => e.Choices.Any()))
-        {
-            var choiceUidGenerator = new ChoiceUidGenerator(cut.Uid, cut.Choices);
-        }
-
         using var writer = this.services.GetRequiredService<IExcelFileWriter>();
         if (writer.Write(fileName, cuts.SelectMany(e => e.ToOutputExcelType())) == false)
         {

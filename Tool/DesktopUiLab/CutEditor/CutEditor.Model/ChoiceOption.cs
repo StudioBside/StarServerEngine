@@ -1,6 +1,7 @@
 ﻿namespace CutEditor.Model;
 
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Text;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
@@ -46,9 +47,10 @@ public sealed class ChoiceOption : ObservableObject
 
     //// -----------------------------------------------------------------------------------------
 
-    internal static ChoiceOption? Load(JToken token, int index)
+    internal static ChoiceOption? Load(JToken token, long cutUid)
     {
         var result = new ChoiceOption();
+        result.CutUid = cutUid;
         result.ChoiceUid = token.GetInt64("Uid", 0);
         result.text.Load(token, "JumpAnchorStringId");
         result.jumpAnchor = token.GetEnum("JumpAnchorId", StartAnchorType.None);
@@ -64,7 +66,7 @@ public sealed class ChoiceOption : ObservableObject
             JumpAnchorStringId_KOR = this.text.AsNullable(L10nType.Korean),
             JumpAnchorStringId_ENG = this.text.AsNullable(L10nType.English),
             JumpAnchorStringId_JPN = this.text.AsNullable(L10nType.Japanese),
-            JumpAnchorStringId_CHN = this.text.AsNullable(L10nType.ChineseSimplified),
+            JumpAnchorStringId_CHNS = this.text.AsNullable(L10nType.ChineseSimplified),
         };
 
         if (this.JumpAnchor != StartAnchorType.None)

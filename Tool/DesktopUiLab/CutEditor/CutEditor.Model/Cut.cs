@@ -104,7 +104,7 @@ public sealed class Cut : ObservableObject
         this.constructorFinished = true;
     }
 
-    public Cut(JToken token, string debugName) : this(token.GetInt64("Uid", 0))
+    public Cut(JToken token, string debugName) : this(token.GetInt64("Uid"))
     {
         this.constructorFinished = false;
 
@@ -133,7 +133,7 @@ public sealed class Cut : ObservableObject
         this.talkTime = token.GetFloat("TalkTime", 0f);
         this.unitStrId = token.GetString("UnitStrId", null!);
         this.talkPositionControl = token.GetEnum("TalkPositionControl", TalkPositionControlType.NONE);
-        token.TryGetArray("JumpAnchorData", this.choices, ChoiceOption.Load);
+        token.TryGetArray("JumpAnchorData", this.choices, (e, i) => ChoiceOption.Load(e, this.Uid));
         this.talkAppend = token.GetBool("TalkAppend", false);
         this.unitMotion = token.GetString("UnitMotion", null!);
         this.talkVoice = token.GetString("TalkVoice", null!);
@@ -523,7 +523,7 @@ public sealed class Cut : ObservableObject
             UnitTalk_KOR = this.unitTalk.AsNullable(L10nType.Korean),
             UnitTalk_ENG = this.unitTalk.AsNullable(L10nType.English),
             UnitTalk_JPN = this.unitTalk.AsNullable(L10nType.Japanese),
-            UnitTalk_CHN = this.unitTalk.AsNullable(L10nType.ChineseSimplified),
+            UnitTalk_CHNS = this.unitTalk.AsNullable(L10nType.ChineseSimplified),
             TalkTime = CutOutputJsonFormat.EliminateZero(this.talkTime),
             TalkPositionControl = OutputTransfer.EliminateEnum(this.talkPositionControl, TalkPositionControlType.NONE),
             TalkAppend = OutputTransfer.EliminateFalse(this.talkAppend),
@@ -540,6 +540,7 @@ public sealed class Cut : ObservableObject
             SlateControlType = OutputTransfer.EliminateEnum(this.slateControlType, SlateControlType.NONE),
             SlateSectionNo = OutputTransfer.EliminateZeroInt(this.slateSectionNo),
             AmbientSound = this.ambientSound,
+            NicknameInput = OutputTransfer.EliminateFalse(this.nicknameInput),
             ImageNameFadeIn = OutputTransfer.EliminateEnum(this.imageNameFadeIn, ImageNameFadeEffect.NONE),
             ImageNameFadeOut = OutputTransfer.EliminateEnum(this.imageNameFadeOut, ImageNameFadeEffect.NONE),
             ImageName = this.imageName,
@@ -617,20 +618,6 @@ public sealed class Cut : ObservableObject
         }
 
         return this.unitTalk.Get(l10nType);
-    }
-
-    public void ResetOldDataUid(long uid)
-    {
-        if (this.Uid != 0)
-        {
-            Log.Warn($"기존 uid가 새로운 값으로 변경됩니다. uid:{this.Uid} -> {uid}");
-        }
-
-        this.Uid = uid;
-        foreach (var choice in this.choices)
-        {
-            choice.InitializeUid(this.Uid, choice.ChoiceUid);
-        }
     }
 
     public bool HasScreenBoxData()

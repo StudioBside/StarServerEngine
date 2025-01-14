@@ -22,7 +22,7 @@ public sealed class ExcelFileReader : IExcelFileReader
         properties = properties.Where(x => x.CanWrite).ToArray();
 
         var propertyMap = new PropertyInfo[properties.Length]; // index가 cellIndex와 일치하도록 정렬.
-        using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+        using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         IWorkbook workbook = new XSSFWorkbook(stream);
         ISheet excelSheet = workbook.GetSheetAt(0);
 

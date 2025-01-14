@@ -3,13 +3,11 @@
 using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CutEditor.Model;
-using CutEditor.ViewModel.Detail;
 using static CutEditor.ViewModel.Enums;
 using static StringStorage.Enums;
 
 public sealed class VmCutSummary : ObservableObject
 {
-    private readonly ChoiceUidGenerator choiceUidGenerator;
     private CutDataType dataType;
 
     public VmCutSummary(Cut cut, string cutsceneName)
@@ -21,7 +19,6 @@ public sealed class VmCutSummary : ObservableObject
             : CutDataType.Normal;
 
         this.CutsceneName = cutsceneName;
-        this.choiceUidGenerator = new(cut.Uid, cut.Choices);
     }
 
     public string CutsceneName { get; }

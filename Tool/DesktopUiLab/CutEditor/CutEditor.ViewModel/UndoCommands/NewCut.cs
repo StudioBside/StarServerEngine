@@ -1,7 +1,6 @@
 ﻿namespace CutEditor.ViewModel.UndoCommands;
 
 using System;
-using CutEditor.Model;
 using Du.Core.Interfaces;
 using static CutEditor.ViewModel.Enums;
 
@@ -15,7 +14,7 @@ internal sealed class NewCut(VmCuts vmCuts, int index, VmCut newCut) : IDormammu
             index = vmCuts.Cuts.IndexOf(vmCuts.SelectedCuts[^1]) + 1;
         }
 
-        var cut = new Cut(vmCuts.UidGenerator.Generate());
+        var cut = vmCuts.CreateNewCut();
         var vmCut = new VmCut(cut, vmCuts);
 
         if (cutDataType == CutDataType.Branch)
