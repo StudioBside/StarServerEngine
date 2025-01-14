@@ -18,6 +18,9 @@ public sealed class ExcelFileReader : IExcelFileReader
     public bool Read<T>(string filePath, ISet<string> headers, IList<T> collection) where T : new()
     {
         var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        // setter가 없는 읽기 전용 프로퍼티는 제외.
+        properties = properties.Where(x => x.CanWrite).ToArray();
+
         var propertyMap = new PropertyInfo[properties.Length]; // index가 cellIndex와 일치하도록 정렬.
         using var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
         IWorkbook workbook = new XSSFWorkbook(stream);

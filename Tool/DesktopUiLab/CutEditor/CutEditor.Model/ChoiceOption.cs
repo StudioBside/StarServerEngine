@@ -61,10 +61,10 @@ public sealed class ChoiceOption : ObservableObject
         var result = new ChoiceOutputFormat
         {
             Uid = this.ChoiceUid,
-            JumpAnchorStringId_KOR = this.text.AsNullable(L10nType.Kor),
-            JumpAnchorStringId_ENG = this.text.AsNullable(L10nType.Eng),
-            JumpAnchorStringId_JPN = this.text.AsNullable(L10nType.Jpn),
-            JumpAnchorStringId_CHN = this.text.AsNullable(L10nType.ChnS),
+            JumpAnchorStringId_KOR = this.text.AsNullable(L10nType.Korean),
+            JumpAnchorStringId_ENG = this.text.AsNullable(L10nType.English),
+            JumpAnchorStringId_JPN = this.text.AsNullable(L10nType.Japanese),
+            JumpAnchorStringId_CHN = this.text.AsNullable(L10nType.ChineseSimplified),
         };
 
         if (this.JumpAnchor != StartAnchorType.None)

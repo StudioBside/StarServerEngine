@@ -101,6 +101,8 @@ public sealed class VmL10n : VmPageBase,
 
     void IFileDropHandler.HandleDroppedFiles(string[] files)
     {
+        this.logMessages.Clear();
+
         foreach (var file in files)
         {
             this.WriteLog($"파일 드롭: {file}");
@@ -141,7 +143,7 @@ public sealed class VmL10n : VmPageBase,
 
     private void OnApplyData()
     {
-        if (this.loadingType == null || this.loadingType == L10nType.Kor)
+        if (this.loadingType == null || this.loadingType == L10nType.Korean)
         {
             this.WriteLog($"번역을 적용할 언어타입 지정이 올바르지 않습니다. loadingType:{this.loadingType}");
             return;

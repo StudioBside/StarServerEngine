@@ -196,21 +196,21 @@
                             IsEnabled="{Binding HasEnglish}"
                             IsChecked="{Binding LoadingType,
                             Converter={converters:EnumBooleanConverter},
-                            ConverterParameter=Eng}"/>
+                            ConverterParameter=English}"/>
                         <RadioButton
                             MinWidth="100"
                             Content="Japanese"
                             IsEnabled="{Binding HasJapanese}"
                             IsChecked="{Binding LoadingType,
                             Converter={converters:EnumBooleanConverter},
-                            ConverterParameter=Jpn}"/>
+                            ConverterParameter=Japanese}"/>
                         <RadioButton
                             MinWidth="100"
                             Content="Chinese.S"
                             IsEnabled="{Binding HasChineseSimplified}"
                             IsChecked="{Binding LoadingType,
                             Converter={converters:EnumBooleanConverter},
-                            ConverterParameter=ChnS}"/>
+                            ConverterParameter=ChineseSimplified}"/>
 
                     </StackPanel>
                     <ui:Button Content="적용하기" Appearance="Primary" Margin="0,0,30,0" HorizontalAlignment="Right"

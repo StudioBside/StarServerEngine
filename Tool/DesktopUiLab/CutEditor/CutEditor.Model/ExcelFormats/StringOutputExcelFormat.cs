@@ -1,6 +1,6 @@
 ﻿namespace CutEditor.Model.ExcelFormats;
 
-using Shared.Interfaces;
+using CutEditor.Model.Interfaces;
 using Shared.Templet.Strings;
 using static StringStorage.Enums;
 
@@ -32,11 +32,11 @@ public sealed class StringOutputExcelFormat : IL10nText
     {
         return l10nType switch
         {
-            L10nType.Kor => this.Korean,
-            L10nType.Eng => this.English,
-            L10nType.Jpn => this.Japanese,
-            L10nType.ChnS => this.ChineseSimplified,
-            L10nType.ChnT => this.ChineseTraditional,
+            L10nType.Korean => this.Korean,
+            L10nType.English => this.English,
+            L10nType.Japanese => this.Japanese,
+            L10nType.ChineseSimplified => this.ChineseSimplified,
+            L10nType.ChineseTraditional => this.ChineseTraditional,
             _ => throw new ArgumentOutOfRangeException(nameof(l10nType), l10nType, message: null),
         };
     }

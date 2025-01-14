@@ -1,7 +1,7 @@
 ﻿namespace CutEditor.Model.L10n;
 
 using System;
-using Shared.Interfaces;
+using CutEditor.Model.Interfaces;
 using static CutEditor.Model.Enums;
 
 public abstract class L10nMappingBase

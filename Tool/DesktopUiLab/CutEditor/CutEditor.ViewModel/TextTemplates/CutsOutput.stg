@@ -1,11 +1,11 @@
 ﻿writeFile(model) ::= <<
 {
-    "$schema" :"../../../../../DataSchema/Exported.jsonc",
-    "$comment": "name: <model.OutputFile>",
-    "_Version": 0,
-    "Data": [
-        <model.Rows:{row | <row>};separator=",\n">
-    ]
+  "$schema": "../../../../../DataSchema/Exported.jsonc",
+  "$comment": "name: <model.OutputFile>",
+  "_Version": 1,
+  "Data": [
+    <model.Rows:{row | <row>};separator=",\n">
+  ]
 }
 >>
 

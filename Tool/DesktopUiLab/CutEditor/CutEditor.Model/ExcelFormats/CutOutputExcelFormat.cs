@@ -1,8 +1,8 @@
 ﻿namespace CutEditor.Model.ExcelFormats;
 
 using CutEditor.Model.Detail;
+using CutEditor.Model.Interfaces;
 using NKM;
-using Shared.Interfaces;
 using static CutEditor.Model.Enums;
 using static StringStorage.Enums;
 
@@ -58,11 +58,11 @@ public class CutOutputExcelFormat : IL10nText
     {
         return l10nType switch
         {
-            L10nType.Kor => this.Korean,
-            L10nType.Eng => this.English,
-            L10nType.Jpn => this.Japanese,
-            L10nType.ChnS => this.ChineseSimplified,
-            L10nType.ChnT => this.ChineseTraditional,
+            L10nType.Korean => this.Korean,
+            L10nType.English => this.English,
+            L10nType.Japanese => this.Japanese,
+            L10nType.ChineseSimplified => this.ChineseSimplified,
+            L10nType.ChineseTraditional => this.ChineseTraditional,
             _ => string.Empty,
         };
     }

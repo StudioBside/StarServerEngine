@@ -2,7 +2,7 @@
 
 using CutEditor.Model;
 using CutEditor.Model.ExcelFormats;
-using Shared.Interfaces;
+using CutEditor.Model.Interfaces;
 using static StringStorage.Enums;
 
 public sealed class L10nMappingNormal : L10nMappingBase, IL10nMapping

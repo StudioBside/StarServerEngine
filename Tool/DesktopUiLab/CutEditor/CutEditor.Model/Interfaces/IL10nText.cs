@@ -1,4 +1,4 @@
-﻿namespace Shared.Interfaces;
+﻿namespace CutEditor.Model.Interfaces;
 
 using static StringStorage.Enums;
 

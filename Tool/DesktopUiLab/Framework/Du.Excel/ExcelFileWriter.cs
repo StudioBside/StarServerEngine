@@ -42,6 +42,8 @@ public sealed class ExcelFileWriter : IExcelFileWriter
         FileSystem.GuaranteePath(filePath);
 
         var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        // setter가 없는 읽기 전용 프로퍼티는 제외.
+        properties = properties.Where(x => x.CanWrite).ToArray();
 
         // create excel file
         this.fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write);

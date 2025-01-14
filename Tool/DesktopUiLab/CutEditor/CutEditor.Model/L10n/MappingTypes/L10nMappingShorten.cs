@@ -2,7 +2,7 @@
 
 using CutEditor.Model;
 using CutEditor.Model.ExcelFormats;
-using Shared.Interfaces;
+using CutEditor.Model.Interfaces;
 using static StringStorage.Enums;
 
 public sealed class L10nMappingShorten : L10nMappingBase, IL10nMapping
@@ -49,6 +49,11 @@ public sealed class L10nMappingShorten : L10nMappingBase, IL10nMapping
     {
         this.importedData = imported;
         this.CalcMappingState();
+    }
+
+    public override string ToString()
+    {
+        return this.FileAndUid;
     }
 
     //// -----------------------------------------------------------------------------------------

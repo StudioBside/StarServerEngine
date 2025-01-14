@@ -106,9 +106,9 @@ internal sealed class CutsceneShortenStrategy(VmL10n viewModel) : L10nStrategyBa
         foreach (var (fileName, mappings) in this.mappingsByFile)
         {
             int changedCount = 0;
-            foreach (var mapping in this.mappings)
+            foreach (var mapping in mappings)
             {
-                if (mapping.ApplyData(l10nType) == false)
+                if (mapping.ApplyData(l10nType))
                 {
                     ++changedCount;
                 }
@@ -119,9 +119,10 @@ internal sealed class CutsceneShortenStrategy(VmL10n viewModel) : L10nStrategyBa
                 continue;
             }
 
-            if (CutFileIo.SaveCutData(name, this.mappings.Select(e => e.Cut), isShorten: true) == false)
+            Log.Debug($"단축 컷신 번역 적용. 파일명:{fileName} 업데이트 데이터 개수:{changedCount}");
+            if (CutFileIo.SaveCutData(fileName, mappings.Select(e => e.Cut), isShorten: true) == false)
             {
-                Log.Error($"{name} 파일 저장 실패.");
+                Log.Error($"{fileName} 파일 저장 실패.");
                 continue;
             }
 

@@ -38,7 +38,7 @@ public sealed class VmHome : VmPageBase
         this.NewFileCommand = new AsyncRelayCommand(this.OnNewFile);
         this.ExportCommand = new RelayCommand<CutScene>(this.OnExport);
         this.EditShortenCommand = new AsyncRelayCommand<CutScene>(this.OnEditShorten);
-        this.ExportShortenCommand = new RelayCommand(this.OnExportShorten);
+        this.ExportShortenCommand = new AsyncRelayCommand(this.OnExportShorten);
 
         this.filters.Add(DefaultFilter);
         foreach (var filter in CutSceneContainer.Instance.CutScenes.Select(e => e.CutsceneFilter).Distinct())
@@ -168,8 +168,12 @@ public sealed class VmHome : VmPageBase
         Log.Info($"파일 생성 완료. fileName:{nameOnly}");
     }
 
-    private void OnExportShorten()
+    private async Task OnExportShorten()
     {
+        var notifier = this.services.GetRequiredService<IUserWaitingNotifier>();
+        using var closer = await notifier.StartWait("단축 컷신 파일을 생성 중입니다...");
+        await Task.Delay(500);
+
         var outputFileName = Path.Combine(VmGlobalState.ExportRoot, VmGlobalState.ShortenExportFileName);
         using var writer = this.services.GetRequiredService<IExcelFileWriter>();
         if (writer.CreateSheet<ShortenCutOutputExcelFormat>(outputFileName) == false)

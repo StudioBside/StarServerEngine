@@ -43,7 +43,7 @@ internal sealed class CutFileIo
 
         if (p4Commander.Stream.Contains("/alpha"))
         {
-            // 컷 데이터파일은 현재 p4 설저상 임포트(import+) 되어있어서, depot address에는 dev로 표기됩니다.
+            // 컷 데이터파일은 현재 p4 설정상 임포트(import+) 되어있어서, depot address에는 dev로 표기됩니다.
             p4Commander = p4Commander with { Stream = "//stream/dev" };
         }
 

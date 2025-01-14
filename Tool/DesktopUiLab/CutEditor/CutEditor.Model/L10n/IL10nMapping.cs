@@ -1,6 +1,6 @@
 ﻿namespace CutEditor.Model.L10n;
 
-using Shared.Interfaces;
+using CutEditor.Model.Interfaces;
 using static CutEditor.Model.Enums;
 
 /// <summary>

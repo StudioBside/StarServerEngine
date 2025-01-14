@@ -3,8 +3,10 @@
 using System.Runtime.CompilerServices;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Cs.Core.Util;
+using CutEditor.Model.Interfaces;
 using Newtonsoft.Json.Linq;
 using Shared.Interfaces;
+using Shared.Templet.Strings;
 using static StringStorage.Enums;
 
 public sealed class L10nText : ObservableObject, ISearchable, IL10nText
@@ -17,37 +19,46 @@ public sealed class L10nText : ObservableObject, ISearchable, IL10nText
 
     public L10nText(string defaultText)
     {
-        this.values[(int)L10nType.Kor] = defaultText;
+        this.values[(int)L10nType.Korean] = defaultText;
+    }
+
+    public L10nText(StringElement stringElement)
+    {
+        this.values[(int)L10nType.Korean] = stringElement.Korean;
+        this.values[(int)L10nType.English] = stringElement.English;
+        this.values[(int)L10nType.Japanese] = stringElement.Japanese;
+        this.values[(int)L10nType.ChineseSimplified] = stringElement.ChineseSimplified;
+        this.values[(int)L10nType.ChineseTraditional] = stringElement.ChineseTraditional;
     }
 
     public string Korean
     {
-        get => this.values[(int)L10nType.Kor];
-        set => this.SetAndNotify(L10nType.Kor, value);
+        get => this.values[(int)L10nType.Korean];
+        set => this.SetAndNotify(L10nType.Korean, value);
     }
 
     public string English
     {
-        get => this.values[(int)L10nType.Eng];
-        set => this.SetAndNotify(L10nType.Eng, value);
+        get => this.values[(int)L10nType.English];
+        set => this.SetAndNotify(L10nType.English, value);
     }
 
     public string Japanese
     {
-        get => this.values[(int)L10nType.Jpn];
-        set => this.SetAndNotify(L10nType.Jpn, value);
+        get => this.values[(int)L10nType.Japanese];
+        set => this.SetAndNotify(L10nType.Japanese, value);
     }
 
     public string ChineseSimplified
     {
-        get => this.values[(int)L10nType.ChnS];
-        set => this.SetAndNotify(L10nType.ChnS, value);
+        get => this.values[(int)L10nType.ChineseSimplified];
+        set => this.SetAndNotify(L10nType.ChineseSimplified, value);
     }
 
     public string ChineseTraditional
     {
-        get => this.values[(int)L10nType.ChnT];
-        set => this.SetAndNotify(L10nType.ChnT, value);
+        get => this.values[(int)L10nType.ChineseTraditional];
+        set => this.SetAndNotify(L10nType.ChineseTraditional, value);
     }
 
     public bool HasData => this.values.Any(e => string.IsNullOrEmpty(e) == false);
@@ -79,16 +90,26 @@ public sealed class L10nText : ObservableObject, ISearchable, IL10nText
         return oldValue;
     }
 
-    public override string ToString() => this.values[(int)L10nType.Kor];
+    public override string ToString() => this.values[(int)L10nType.Korean];
 
     internal void Load(JToken token, string prefix)
     {
         for (int i = 0; i < this.values.Length; ++i)
         {
             var l10nType = (L10nType)i;
-            var key = $"{prefix}_{l10nType.ToString().ToUpper()}";
+            var key = $"{prefix}_{GetSuffix(l10nType)}";
             this.values[i] = token.GetString(key, string.Empty);
         }
+
+        string GetSuffix(L10nType l10nType) => l10nType switch
+        {
+            L10nType.Korean => "KOR",
+            L10nType.English => "ENG",
+            L10nType.Japanese => "JPN",
+            L10nType.ChineseSimplified => "CHNS",
+            L10nType.ChineseTraditional => "CHNT",
+            _ => string.Empty,
+        };
     }
 
     internal string? AsNullable(L10nType l10nType)

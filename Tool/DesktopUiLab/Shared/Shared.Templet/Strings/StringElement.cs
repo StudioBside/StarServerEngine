@@ -9,7 +9,7 @@
     using StringStorage.Translation;
     using static StringStorage.Enums;
 
-    public sealed class StringElement : ISearchable, IL10nText
+    public sealed class StringElement : ISearchable
     {
         private readonly List<string> keys = new();
         private readonly string[] values = new string[EnumUtil<L10nType>.Count];
@@ -29,10 +29,10 @@
             }
 
             // 한국어 데이터만 json에서 읽는다.
-            this.values[(int)L10nType.Kor] = token.GetString("Value");
+            this.values[(int)L10nType.Korean] = token.GetString("Value");
 
             // 나머지는 DB에서 읽는다.
-            var textSet = l10nDb?.Get(this.values[(int)L10nType.Kor]);
+            var textSet = l10nDb?.Get(this.values[(int)L10nType.Korean]);
             for (int i = 1; i < this.values.Length; ++i)
             {
                 var l10nType = (L10nType)i;
@@ -43,7 +43,7 @@
         public StringElement(string primeKey, string koreanText)
         {
             this.keys.Add(primeKey);
-            this.values[(int)L10nType.Kor] = koreanText;
+            this.values[(int)L10nType.Korean] = koreanText;
             for (int i = 0; i < this.values.Length; ++i)
             {
                 if (this.values[i] is null)
@@ -59,11 +59,11 @@
         public string PrimeKey => this.keys.First();
         public int KeyCount => this.keys.Count;
         public IEnumerable<string> Keys => this.keys;
-        public string Korean => this.values[(int)L10nType.Kor];
-        public string English => this.values[(int)L10nType.Eng];
-        public string Japanese => this.values[(int)L10nType.Jpn];
-        public string ChineseSimplified => this.values[(int)L10nType.ChnS];
-        public string ChineseTraditional => this.values[(int)L10nType.ChnT];
+        public string Korean => this.values[(int)L10nType.Korean];
+        public string English => this.values[(int)L10nType.English];
+        public string Japanese => this.values[(int)L10nType.Japanese];
+        public string ChineseSimplified => this.values[(int)L10nType.ChineseSimplified];
+        public string ChineseTraditional => this.values[(int)L10nType.ChineseTraditional];
         public bool IsAlphaNumeric => this.Korean.All(c => char.IsAscii(c) || char.IsWhiteSpace(c));
 
         public override string ToString() => this.Korean;
