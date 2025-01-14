@@ -65,10 +65,10 @@ public sealed class SingleTextSet
     {
         return type switch
         {
-            L10nType.Eng => this.ValueEng,
-            L10nType.ChnS => this.ValueChnS,
-            L10nType.ChnT => this.ValueChnT,
-            L10nType.Jpn => this.ValueJpn,
+            L10nType.English => this.ValueEng,
+            L10nType.ChineseSimplified => this.ValueChnS,
+            L10nType.ChineseTraditional => this.ValueChnT,
+            L10nType.Japanese => this.ValueJpn,
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null),
         };
     }
@@ -77,16 +77,16 @@ public sealed class SingleTextSet
     {
         switch (type)
         {
-            case L10nType.Eng:
+            case L10nType.English:
                 this.ValueEng = value;
                 break;
-            case L10nType.ChnS:
+            case L10nType.ChineseSimplified:
                 this.ValueChnS = value;
                 break;
-            case L10nType.ChnT:
+            case L10nType.ChineseTraditional:
                 this.ValueChnT = value;
                 break;
-            case L10nType.Jpn:
+            case L10nType.Japanese:
                 this.ValueJpn = value;
                 break;
             default:
