@@ -80,7 +80,7 @@ public class VmCutPaster : ObservableObject
 
     private void OnPasteToUpside()
     {
-        var command = PasteCut.Create(this.vmCuts, PasteCut.PasteDirection.Upside);
+        var command = PasteCut.Create(this.vmCuts, PasteCut.PasteDirection.Upside, reReserve: true);
         if (command is null)
         {
             return;
@@ -92,7 +92,7 @@ public class VmCutPaster : ObservableObject
     
     private void OnPasteToDownside()
     {
-        var command = PasteCut.Create(this.vmCuts, PasteCut.PasteDirection.Downside);
+        var command = PasteCut.Create(this.vmCuts, PasteCut.PasteDirection.Downside, reReserve: true);
         if (command is null)
         {
             return;

@@ -83,7 +83,10 @@ public sealed class VmCuts : VmPageBase,
             this.cuts.Add(new VmCut(cut, this));
         }
 
-        this.uidSeed = cutList.Max(e => e.Uid);
+        if (cutList.Count > 0)
+        {
+            this.uidSeed = cutList.Max(e => e.Uid);
+        }
 
         this.selectedCuts.CollectionChanged += this.SelectedCuts_CollectionChanged;
 

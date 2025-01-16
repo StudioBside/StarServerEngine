@@ -1,5 +1,6 @@
 ﻿namespace CutEditor.ViewModel.Detail;
 
+using System.ComponentModel.Design;
 using System.Text;
 using Cs.Core.Perforce;
 using Cs.Core.Util;
@@ -122,7 +123,12 @@ internal sealed class CutFileIo
         // -- local function
         static bool OpenForEdit(P4Commander p4Commander, string filePath, string name)
         {
-            if (p4Commander.CheckIfOpened(filePath) != false)
+            if (p4Commander.CheckIfRegistered(filePath) == false)
+            {
+                p4Commander.AddNewFile(filePath);
+                return true;
+            }
+            else if (p4Commander.CheckIfOpened(filePath) != false)
             {
                 return true;
             }
