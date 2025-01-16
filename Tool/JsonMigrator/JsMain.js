@@ -10,7 +10,7 @@ function Run(data, version) {
     var json = JSON.parse(data);
 
     // 만약 버전이 없는 파일인 경우
-    if (json._Version === undefined) {
+    if (!json._Version) {
         if (Array.isArray(json)) {
             var temp = new Object();
             temp._Version = 0;
@@ -27,7 +27,7 @@ function Run(data, version) {
         json.Data.forEach((item, index) => { migrate(item, index) });
     }
     else {
-        migrate(json.Data, 0);
+        migrate(json, 0);
     }
     
     return JSON.stringify(json, replacer, 2);

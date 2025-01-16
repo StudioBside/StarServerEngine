@@ -5,148 +5,64 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Cs.Core.Perforce;
 using Cs.Core.Util;
 using Cs.Logging;
 using JsonMigrator.Config;
+using Microsoft.ClearScript;
 using Microsoft.ClearScript.V8;
-using Newtonsoft.Json.Linq;
 
-public sealed class Migrator
+internal sealed class Migrator
 {
-    private readonly List<MigrationStep> steps = new();
-    private readonly List<string> targets = new();
-    private string jsMain = string.Empty;
+    private IScriptEngine jsEngine;
 
-    private Migrator()
+    private Migrator(IScriptEngine engine)
     {
+        this.jsEngine = engine;
     }
 
     public static Migrator? Create(MigrationConfig config)
     {
-        var migrator = new Migrator();
-        Dictionary<int, MigrationStep> loadSteps = new();
-        foreach (var stepFile in Directory.EnumerateFiles(config.StepScriptPath))
-        {
-            var migration = MigrationStep.Create(stepFile);
-            if (migration is null)
-            {
-                ErrorContainer.Add($"invalid migration step:{stepFile}");
-                return null;
-            }
+        var jsMain = File.ReadAllText("JsMain.js");
 
-            if (loadSteps.TryGetValue(migration.Version, out var exist))
-            {
-                ErrorContainer.Add($"duplicated migration version:{migration.Version} file1:{exist.FilePath} file2:{stepFile}");
-                return null;
-            }
+        var v8Engine = new V8ScriptEngine();
+        v8Engine.AddHostType("Console", typeof(Console)); // 디버그용
+        v8Engine.Execute(jsMain);
 
-            loadSteps.Add(migration.Version, migration);
-        }
-
-        migrator.steps.AddRange(loadSteps.Values.OrderBy(x => x.Version));
-
-        foreach (var targetPath in config.TargetPaths)
-        {
-            var fileAttr = File.GetAttributes(targetPath);
-            if (fileAttr.HasFlag(FileAttributes.Directory))
-            {
-                foreach (var targetFile in Directory.EnumerateFiles(targetPath, "*.*", SearchOption.AllDirectories)
-                    .Where(e => e.Contains("meta", StringComparison.InvariantCultureIgnoreCase) == false))
-                {
-                    var fullPath = Path.GetFullPath(targetFile);
-
-                    migrator.targets.Add(fullPath);
-                }
-            }
-            else
-            {
-                if (Path.Exists(targetPath) == false)
-                {
-                    ErrorContainer.Add($"target file not found. targetPath:{targetPath}");
-                    continue;
-                }
-
-                var extension = Path.GetExtension(targetPath);
-                if (extension.Contains("meta", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    continue;
-                }
-
-                var fullPath = Path.GetFullPath(targetPath);
-                migrator.targets.Add(fullPath);
-            }
-        }
-
-        ErrorContainer.Validate();
-
-        migrator.jsMain = File.ReadAllText("JsMain.js");
-
-        return migrator;
+        return new Migrator(v8Engine);
     }
 
-    public bool Migration(P4Commander p4Commander)
+    public bool Migration(MigrationStepContioner stepContainer, IReadOnlyList<IMigrationTarget> targets)
     {
-        if (this.steps.Count == 0)
+        if (stepContainer.Count == 0)
         {
             Log.Debug("no migration step");
             return true;
         }
 
-        var v8Engine = new V8ScriptEngine();
-        v8Engine.AddHostType("Console", typeof(Console)); // 디버그용
-        v8Engine.Execute(this.jsMain);
-
-        Log.Info($"Migration Start. #target:{this.targets.Count} #step:{this.steps.Count}");
-        Parallel.ForEach(this.targets, target =>
+        Log.Info($"Migration Start. #target:{targets.Count} #step:{stepContainer.Count}");
+        Parallel.ForEach(targets, target =>
         {
-            var debugTarget = Path.GetFileName(target);
-            var rowText = File.ReadAllText(target);
-            var json = JObject.Parse(rowText);
+            var json = target.Load();
             if (json is null)
             {
-                ErrorContainer.Add($"Migration target is not json format. target:{debugTarget}");
+                ErrorContainer.Add($"Migration target is not json format. target:{target.Key}");
                 return;
             }
 
             var version = json.GetInt64("_Version", defValue: 0);
-            if (this.steps.Any(e => e.Version > version) == false)
+            if (stepContainer.Any(e => e.Version > version) == false)
             {
                 return;
             }
 
             var jsonText = json.ToString();
-            foreach (var step in this.steps.Where(e => e.Version > version))
+            foreach (var step in stepContainer.Where(e => e.Version > version))
             {
-                v8Engine.Execute(step.Script);
-                jsonText = v8Engine.Script.Run(jsonText, step.Version);
+                this.jsEngine.Execute(step.Script);
+                jsonText = this.jsEngine.Script.Run(jsonText, step.Version);
             }
 
-            File.SetAttributes(target, FileAttributes.Normal);
-            File.WriteAllText(target, jsonText);
-
-            Log.Info($"Migration Complete. target:{debugTarget}");
-            if (p4Commander.CheckIfOpened(target))
-            {
-                return;
-            }
-
-            if (p4Commander.CheckIfChanged(target, out bool changed) == false)
-            {
-                ErrorContainer.Add($"변경여부 확인 실패. fileName:{debugTarget}");
-                return;
-            }
-
-            if (changed == false)
-            {
-                return;
-            }
-
-            if (p4Commander.OpenForEdit(target, out string p4Output) == false)
-            {
-                ErrorContainer.Add($"p4 edit 실패. p4Output:{p4Output}");
-                return;
-            }
+            target.Save(jsonText);
 
             // For Debug
             //File.WriteAllText("C:\\Users\\rohjongwon\\Desktop\\TestJson\\migrated.json", jsonText);

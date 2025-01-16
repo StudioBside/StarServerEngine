@@ -48,6 +48,17 @@
             }
         }
 
+        public static Process? OpenDefaultSetting(string path)
+        {
+            var psi = new ProcessStartInfo
+            {
+                FileName = path,
+                UseShellExecute = true,
+            };
+
+            return Process.Start(psi);
+        }
+
         public void Dispose()
         {
             this.process.Dispose();

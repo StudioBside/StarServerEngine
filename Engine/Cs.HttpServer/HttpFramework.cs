@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using Cs.Exception;
 using Cs.HttpServer.Mustache;
@@ -87,16 +88,19 @@ public sealed class HttpFramework : IDisposable
         var context = await this.listener.GetContextAsync();
         while (context != null)
         {
-            try
+            ThreadPool.QueueUserWorkItem(async _ =>
             {
-                await this.OnRequest(context);
-            }
-            catch (Exception ex)
-            {
-                string exceptionDetail = ExceptionUtil.FlattenInnerExceptions(ex);
-                Log.Error(exceptionDetail);
-                context.SetResponseJsonError(HttpStatusCode.InternalServerError, exceptionDetail);
-            }
+                try
+                {
+                    await this.OnRequest(context);
+                }
+                catch (Exception ex)
+                {
+                    string exceptionDetail = ExceptionUtil.FlattenInnerExceptions(ex);
+                    Log.Error(exceptionDetail);
+                    context.SetResponseJsonError(HttpStatusCode.InternalServerError, exceptionDetail);
+                }
+            });
 
             context = await this.listener.GetContextAsync();
         }

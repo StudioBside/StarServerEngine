@@ -1,11 +1,12 @@
 ﻿namespace StringStorage.Detail;
 
+using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.IO.Compression;
 using LevelDB;
 using FileLog = Cs.Logging.Log;
 
-internal class LevelDbReadOnly : IDisposable
+public class LevelDbReadOnly : IEnumerable<KeyValuePair<string, string>>, IDisposable
 {
     private readonly string path;
     private readonly DB db;
@@ -47,15 +48,14 @@ internal class LevelDbReadOnly : IDisposable
     protected DB Db => this.db;
     protected string Path => this.path;
 
-    public virtual void Dispose()
+    public void Dispose()
     {
-        this.db.Dispose();
+        this.Dispose(disposing: true);
+    }
 
-        // db 폴더를 삭제한다.
-        if (Directory.Exists(this.path))
-        {
-            Directory.Delete(this.path, recursive: true);
-        }
+    public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
+    {
+        return ((IEnumerable<KeyValuePair<string, string>>)this.db).GetEnumerator();
     }
 
     public bool TryGet<T>(string key, Func<string, T?> factory, [MaybeNullWhen(false)] out T value)
@@ -76,5 +76,21 @@ internal class LevelDbReadOnly : IDisposable
 
         value = converted;
         return true;
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return ((IEnumerable)this.db).GetEnumerator();
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        this.db.Dispose();
+
+        // db 폴더를 삭제한다.
+        if (Directory.Exists(this.path))
+        {
+            Directory.Delete(this.path, recursive: true);
+        }
     }
 }

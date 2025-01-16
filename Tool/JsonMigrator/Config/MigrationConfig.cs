@@ -4,7 +4,14 @@
 
     public sealed class MigrationConfig
     {
-        public string[] TargetPaths { get; set; } = Array.Empty<string>();
+        public enum MigrationLocationType
+        {
+            File,
+            LevelDb,
+        }
+
+        public MigrationLocationType LocationType { get; set; }
+        public string[] TargetLocations { get; set; } = Array.Empty<string>();
         public string StepScriptPath { get; set; } = string.Empty;
     }
 }

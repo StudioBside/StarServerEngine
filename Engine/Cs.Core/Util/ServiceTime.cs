@@ -49,13 +49,7 @@
         {
             UtcOffset = utcOffSet;
             DebugOffset = debugOffSet;
-
-            // serverUtc와 DateTime.UtcNow의 차이를 계산하여 AdjustOffset을 설정합니다. 1분 이상 차이가 날 때만 보정하도록 합니다.
-            TimeSpan deltaUTC = serverUtc - DateTime.UtcNow;
-            if (Math.Abs(deltaUTC.TotalMinutes) > 1)
-            {
-                AdjustOffset = deltaUTC;
-            }
+            AdjustOffset = serverUtc - DateTime.UtcNow;
 
             Log.Info($"[ServiceTime] initialized to {TimezoneInfo}. serverUtc:{serverUtc} utcOffSet:{UtcOffset} debugOffSet:{DebugOffset} AdjustOffSet:{AdjustOffset}");
         }
@@ -138,18 +132,8 @@
 
             if (serverUtc.Ticks >= 0)
             {
-                TimeSpan deltaUTC = serverUtc - DateTime.UtcNow;
-                if (Math.Abs(deltaUTC.TotalMinutes) > 1)
-                {
-                    AdjustOffset = deltaUTC;
-                    lastRecentTicks = 0;
-                }
-                else if (AdjustOffset != TimeSpan.Zero)
-                {
-                    // 보정한 기록이 있는데, 시간 차가 1분 이하로 줄어들었을 경우 local 시간을 사용해야 하므로 초기화 처리합니다.
-                    AdjustOffset = TimeSpan.Zero;
-                    lastRecentTicks = 0;
-                }
+                AdjustOffset = serverUtc - DateTime.UtcNow;
+                lastRecentTicks = 0;
             }
         }
 

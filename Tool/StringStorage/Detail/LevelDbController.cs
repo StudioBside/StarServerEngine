@@ -5,7 +5,7 @@ using Cs.Core.Perforce;
 using Cs.Core.Util;
 using FileLog = Cs.Logging.Log;
 
-internal sealed class LevelDbController : LevelDbReadOnly
+public sealed class LevelDbController : LevelDbReadOnly
 {
     private readonly P4Commander p4Commander;
     private bool isDirty;
@@ -15,7 +15,14 @@ internal sealed class LevelDbController : LevelDbReadOnly
         this.p4Commander = p4Commander;
     }
 
-    public override void Dispose()
+    public void Upsert(string key, object value)
+    {
+        this.Db.Put(key, value.ToString());
+        this.isDirty = true;
+    }
+
+    //// ---------------------------------------------------------------------------------------------
+    protected override void Dispose(bool disposing)
     {
         this.Db.Dispose();
 
@@ -36,14 +43,7 @@ internal sealed class LevelDbController : LevelDbReadOnly
         }
     }
 
-    public void Upsert(string key, object value)
-    {
-        this.Db.Put(key, value.ToString());
-        this.isDirty = true;
-    }
-
     //// ---------------------------------------------------------------------------------------------
-
     private void UpdateZipFile()
     {
         // 기존 zip 파일이 존재한다면 백업을 만든다.

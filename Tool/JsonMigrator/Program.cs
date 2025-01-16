@@ -3,18 +3,20 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using Cs.Core.Perforce;
 using Cs.Core.Util;
 using Cs.Logging;
 
 using JsonMigrator.Config;
+using JsonMigrator.MigrationTargetFactory;
+using static JsonMigrator.Config.MigrationConfig;
 
 internal class Program
 {
     private static int Main(string[] args)
     {
         Console.OutputEncoding = System.Text.Encoding.UTF8;
+
         string configFileName = "config.migration.json";
         if (args.Length > 0)
         {
@@ -27,63 +29,79 @@ internal class Program
         {
             var config = JsonUtil.Load<ConfigHolder>(configFileName).Migration;
 
-            if (string.IsNullOrEmpty(config.StepScriptPath) || config.TargetPaths.Length <= 0)
+            if (string.IsNullOrEmpty(config.StepScriptPath) || config.TargetLocations.Length <= 0)
             {
                 Log.Error("invalid config");
                 return -2;
             }
 
             Log.Debug($"stepScriptPath:{config.StepScriptPath}");
-            Console.WriteLine();
+            Log.Info(string.Empty);
 
-            if (Directory.Exists(config.StepScriptPath) == false)
+            var stepContainer = MigrationStepContioner.Create(config.StepScriptPath);
+            if (stepContainer is null)
             {
-                Log.Info($"마이그레이션 스크립트 폴더가 없습니다. 성공으로 처리됩니다.");
-                return 0;
-            }
-
-            var stopwatch = Stopwatch.StartNew();
-            if (P4Commander.TryCreate(out var p4Commander) == false)
-            {
-                Log.Error($"p4 환경 정보 조회 실패");
                 return -3;
             }
 
-            var targetFullPaths = new List<string>();
-            foreach (var targetPath in config.TargetPaths)
+            // 마이그레이션할 정보가 없음
+            if (stepContainer.Count <= 0)
             {
-                var targetFullPath = Path.GetFullPath(targetPath);
-                targetFullPaths.Add(targetFullPath);
+                return 0;
             }
 
-            var migrator = Migrator.Create(config);
-            if (migrator is null)
+            if (P4Commander.TryCreate(out var p4Commander) == false)
             {
+                Log.Error($"p4 can not found information");
+                return -3;
+            }
+
+            IMigrationTargetFactory? factory = config.LocationType switch
+            {
+                MigrationLocationType.File => new FileMigrationTargetFactory(p4Commander),
+                MigrationLocationType.LevelDb => new LevelDbMigrationTargetFactory(p4Commander),
+                _ => null,
+            };
+
+            if (factory is null)
+            {
+                var validTypes = string.Join(", ", EnumUtil<MigrationLocationType>.GetValues());
+                Log.Error($"invalid location type:{config.LocationType}");
+                Log.Info($"valid types:{validTypes}");
                 return -4;
             }
 
-            Log.DebugBold($"migration Ready. prepare:{stopwatch.Elapsed}");
-            if (migrator.Migration(p4Commander) == false)
+            var stopwatch = Stopwatch.StartNew();
+            var migrator = Migrator.Create(config);
+            if (migrator is null)
             {
                 return -5;
+            }
+
+            List<IMigrationTarget> targetList = new();
+            foreach (var targetLocation in config.TargetLocations)
+            {
+                targetList.AddRange(factory.Create(targetLocation));
+            }
+
+            Log.DebugBold($"migration Ready. prepare:{stopwatch.Elapsed}");
+            if (migrator.Migration(stepContainer, targetList) == false)
+            {
+                return -6;
             }
 
             if (ErrorContainer.HasError)
             {
                 Log.Error($"Migration End. #Error:{ErrorContainer.ErrorCount}");
-                return -6;
+                return -7;
             }
 
-            foreach (var targetFullPath in targetFullPaths)
-            {
-                p4Commander.RevertUnchnaged(targetFullPath, out _);
-            }
-
+            factory.Cleanup();
             Log.DebugBold($"migration End. elapsed:{stopwatch.Elapsed}");
         }
         catch (Exception e)
         {
-            Console.Error.WriteLine(e.Message);
+            Log.Error(e.Message);
             return -1;
         }
 
