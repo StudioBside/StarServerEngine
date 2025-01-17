@@ -38,8 +38,6 @@ Engine/*
 !Engine/Cs.Repl/**
 !Engine/Cs.Gpt/
 !Engine/Cs.Gpt/**
-!Engine/Cs.Kafka/
-!Engine/Cs.Kafka/**
 !Engine/Cs.Cli/
 !Engine/Cs.Cli/**
 
