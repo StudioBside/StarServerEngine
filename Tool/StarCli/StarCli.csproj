@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup Label="Globals">
+    <SccProjectName />
+    <SccProvider />
+    <SccAuxPath />
+    <SccLocalPath />
+  </PropertyGroup>
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsTestProject>true</IsTestProject>
+    <TargetFramework>net9.0</TargetFramework>
+    <Platforms>AnyCPU</Platforms>
+    <Nullable>enable</Nullable>
+    <CodeAnalysisRuleSet>..\..\BaseEnvironment\CodingStyle.ruleset</CodeAnalysisRuleSet>
+    <!--<PublishSingleFile>true</PublishSingleFile>-->
+    <!--<PublishTrimmed>true</PublishTrimmed>-->
+  </PropertyGroup>
+  <PropertyGroup>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DebugType>Full</DebugType>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>star</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.0" />
+    <PackageReference Include="Cs.Core" Version="[0.0.11,)" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Engine\Cs.Cli\Cs.Cli.csproj" />
+    <ProjectReference Include="..\..\Engine\Cs.Kafka\Cs.Kafka.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>StarCliTest</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
