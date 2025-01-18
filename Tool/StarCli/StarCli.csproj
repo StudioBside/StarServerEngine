@@ -23,7 +23,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.0" />
-    <PackageReference Include="Cs.Core" Version="[0.0.11,)" />
+    <!--<PackageReference Include="Cs.Core" Version="[0.0.11,)" />-->
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -32,6 +32,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.0" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Engine\Cs.Core\Cs.Core.csproj" />
     <ProjectReference Include="..\..\Engine\Cs.Cli\Cs.Cli.csproj" />
     <ProjectReference Include="..\..\Engine\Cs.Kafka\Cs.Kafka.csproj" />
   </ItemGroup>
