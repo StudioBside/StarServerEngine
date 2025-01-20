@@ -2,9 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Net;
     using System.Reflection;
+    using System.Runtime.InteropServices;
     using System.Text.RegularExpressions;
     using Cs.Logging;
 
@@ -151,6 +153,34 @@
             }
 
             return streamInfo.Value.Id == (int)P4StreamType.Dev;
+        }
+
+        public static bool IsRunningInLinux()
+        {
+            return RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+        }
+
+        public static bool IsRunningInWsl()
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return false;
+            }
+
+            try
+            {
+                // /proc/version 파일 읽기
+                string procVersion = File.ReadAllText("/proc/version");
+
+                // WSL과 관련된 문자열 확인
+                return procVersion.Contains("Microsoft") || procVersion.Contains("WSL");
+            }
+            catch (Exception ex)
+            {
+                // /proc/version 파일이 없거나 다른 문제가 발생한 경우
+                Console.WriteLine($"Error checking WSL environment: {ex.Message}");
+                return false;
+            }
         }
 
         public readonly struct StreamInfo

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Cs.Exception;
@@ -113,6 +114,11 @@ public sealed class HttpFramework : IDisposable
 
     private void RegisterUrlAcl(int port)
     {
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) == false)
+        {
+            return;
+        }
+
         string uriPrefix = $"http://+:{port}/";
         this.listener.Prefixes.Add(uriPrefix);
 
