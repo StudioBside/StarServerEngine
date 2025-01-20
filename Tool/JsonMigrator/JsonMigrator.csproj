@@ -10,10 +10,6 @@
     <!--https://github.com/dotnet/cli/issues/12723 : 이게 없으면 pwrshplugin.pdb 파일이 없어서 오류발생. 별도 배포해도 해결 불가.-->
     <!--<IncludeSymbolsInSingleFile>true</IncludeSymbolsInSingleFile>-->
   </PropertyGroup>
-  <PropertyGroup>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DebugType>Full</DebugType>
-  </PropertyGroup>
   <ItemGroup>
     <None Remove="JsMain.js" />
   </ItemGroup>

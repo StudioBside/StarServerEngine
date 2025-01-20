@@ -1,6 +1,8 @@
 # 모든 파일을 기본적으로 무시
 *
 
+!Directory.Build.props
+
 !.github/
 !.github/**
 

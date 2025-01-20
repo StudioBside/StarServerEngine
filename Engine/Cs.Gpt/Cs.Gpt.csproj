@@ -6,14 +6,6 @@
     <WarningsAsErrors>true</WarningsAsErrors>
     <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
-  <PropertyGroup>
-    <!--스타일캅 경고를 에러로 취급하려면 아래 구문이 추가로 필요. 차후 props 파일로 설정 적용 검토할 것.-->
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <WarningsAsErrors />
-  </PropertyGroup>
-  <PropertyGroup>
-    <DebugType>Full</DebugType>
-  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Betalgo.Ranul.OpenAI" Version="9.0.0" />
     <PackageReference Include="stylecop.analyzers" Version="1.2.0-beta.556">

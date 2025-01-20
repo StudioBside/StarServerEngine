@@ -6,9 +6,6 @@
     <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
   <PropertyGroup>
-    <DebugType>Full</DebugType>
-  </PropertyGroup>
-  <PropertyGroup>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <PackageId>Cs.Core</PackageId>
     <PackageVersion>0.0.1.0</PackageVersion>

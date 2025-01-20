@@ -3,10 +3,6 @@
     <TargetFramework>net9.0</TargetFramework>
     <CodeAnalysisRuleSet>..\..\BaseEnvironment\CodingStyle.ruleset</CodeAnalysisRuleSet>
     <Platforms>AnyCPU</Platforms>
-  </PropertyGroup>
-  <PropertyGroup>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DebugType>Full</DebugType>
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>

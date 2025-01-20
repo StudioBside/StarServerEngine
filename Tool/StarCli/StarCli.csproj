@@ -16,8 +16,6 @@
     <!--<PublishTrimmed>true</PublishTrimmed>-->
   </PropertyGroup>
   <PropertyGroup>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DebugType>Full</DebugType>
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>star</AssemblyName>
   </PropertyGroup>

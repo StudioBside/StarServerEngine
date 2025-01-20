@@ -14,13 +14,6 @@
     <!--<PublishSingleFile>true</PublishSingleFile>-->
     <!--<PublishTrimmed>true</PublishTrimmed>-->
   </PropertyGroup>
-  <PropertyGroup>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <DebugType>Full</DebugType>
-  </PropertyGroup>
-  <ItemGroup>
-    <None Remove="Log.txt" />
-  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="GameRank.Core" Version="0.0.10" />
     <PackageReference Include="redmine-api" Version="4.6.5" />
