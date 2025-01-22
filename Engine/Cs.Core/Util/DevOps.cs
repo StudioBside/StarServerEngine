@@ -13,7 +13,7 @@
     public static class DevOps
     {
         private const string Separator = "@@";
-        private static readonly Lazy<BuildInfo> BuildInfoValue = new Lazy<BuildInfo>(BuildInfo.Create);
+        private static readonly Lazy<BuildInfo> BuildInfoValue = new Lazy<BuildInfo>(CreateBuildInfo);
 
         public enum P4StreamType
         {
@@ -31,7 +31,58 @@
 
         public static BuildInfo BuildInformation => BuildInfoValue.Value;
 
-        public static StreamInfo? GetStreamInfo()
+        /// <summary>
+        /// p4.exe가 설치된 곳에서만 정상적인 실행이 보장됩니다. 빌드에 포함된 정보를 얻으려면 BuildInfo를 조외하세요.
+        /// </summary>
+        public static bool GetStreamInfoForDev(out StreamInfo result)
+        {
+            var temp = GetStreamInfoForDev();
+            if (temp.HasValue == false)
+            {
+                result = default;
+                return false;
+            }
+
+            result = temp.Value;
+            return true;
+        }
+
+        public static bool IsRunningInLinux()
+        {
+            return RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
+        }
+
+        public static bool IsRunningInWsl()
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return false;
+            }
+
+            try
+            {
+                // /proc/version 파일 읽기
+                string procVersion = File.ReadAllText("/proc/version");
+
+                // WSL과 관련된 문자열 확인
+                return procVersion.Contains("Microsoft") || procVersion.Contains("WSL");
+            }
+            catch (Exception ex)
+            {
+                // /proc/version 파일이 없거나 다른 문제가 발생한 경우
+                Console.WriteLine($"Error checking WSL environment: {ex.Message}");
+                return false;
+            }
+        }
+
+        public static bool IsRunningInContainer()
+        {
+            return Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
+        }
+
+        //// -----------------------------------------------------------------------------------------------
+
+        private static StreamInfo? GetStreamInfoForDev()
         {
             var host = Dns.GetHostName();
             if (string.IsNullOrEmpty(host))
@@ -40,7 +91,7 @@
                 return null;
             }
 
-            if (OutProcess.Run("p4", $"-F \"%Stream%{Separator}%Host%{Separator}%Root%\" -ztag clients", out string p4Output) == false)
+            if (OutProcess.Run("p4.exe", $"-F \"%Stream%{Separator}%Host%{Separator}%Root%\" -ztag clients", out string p4Output) == false)
             {
                 Log.Error($"running p4 process failed.");
                 return null;
@@ -131,56 +182,40 @@
             return new StreamInfo((int)streamType, streamType.ToString());
         }
 
-        public static bool GetStreamInfo(out StreamInfo result)
+        private static BuildInfo CreateBuildInfo()
         {
-            var temp = GetStreamInfo();
-            if (temp.HasValue == false)
+            var entryAssembly = Assembly.GetEntryAssembly(); // note: 실행파일의 어셈블리를 획득.
+            if (entryAssembly == null)
             {
-                result = default;
-                return false;
+                throw new Exception($"[BuildInfo] get entryAssembly failed.");
             }
 
-            result = temp.Value;
-            return true;
-        }
-
-        public static bool IsDevStream()
-        {
-            var streamInfo = GetStreamInfo();
-            if (streamInfo == null)
+            DateTime buildDate = LinkerTime.GetBuildDate(entryAssembly);
+            var assemblyName = entryAssembly.GetName();
+            if (assemblyName.Name == null)
             {
-                return false;
+                throw new Exception($"[BuildInfo] get assemblyName.Name failed.");
             }
 
-            return streamInfo.Value.Id == (int)P4StreamType.Dev;
-        }
+            int revision = assemblyName.Version.GetCustomRevision();
+            sbyte streamId = (sbyte)assemblyName.Version.GetStreamId();
+            int protocol = assemblyName.Version.GetProtocolVersion();
 
-        public static bool IsRunningInLinux()
-        {
-            return RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
-        }
-
-        public static bool IsRunningInWsl()
-        {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            string streamName = "sourceBuild";
+            if (protocol > 0)
             {
-                return false;
+                streamName = ((P4StreamType)streamId).ToString();
+            }
+            else
+            {
+                StreamInfo? streamInfo = GetStreamInfoForDev();
+                if (streamInfo != null)
+                {
+                    streamName = streamInfo.Value.Name;
+                }
             }
 
-            try
-            {
-                // /proc/version 파일 읽기
-                string procVersion = File.ReadAllText("/proc/version");
-
-                // WSL과 관련된 문자열 확인
-                return procVersion.Contains("Microsoft") || procVersion.Contains("WSL");
-            }
-            catch (Exception ex)
-            {
-                // /proc/version 파일이 없거나 다른 문제가 발생한 경우
-                Console.WriteLine($"Error checking WSL environment: {ex.Message}");
-                return false;
-            }
+            return new BuildInfo(assemblyName.Name, buildDate, revision, streamId, streamName, protocol);
         }
 
         public readonly struct StreamInfo
@@ -198,7 +233,7 @@
 
         public readonly struct BuildInfo
         {
-            public BuildInfo(string assemblyName, DateTime buildTime, int revision, sbyte streamId, string streamName, int protocol)
+            internal BuildInfo(string assemblyName, DateTime buildTime, int revision, sbyte streamId, string streamName, int protocol)
             {
                 this.AssemblyName = assemblyName;
                 this.BuildTime = buildTime;
@@ -215,42 +250,6 @@
             public string StreamName { get; }
             public int Protocol { get; }
             public string BuildVersion => $"{this.StreamId}.{this.Revision}.{this.Protocol}";
-
-            public static BuildInfo Create()
-            {
-                var entryAssembly = Assembly.GetEntryAssembly(); // note: 실행파일의 어셈블리를 획득.
-                if (entryAssembly == null)
-                {
-                    throw new Exception($"[BuildInfo] get entryAssembly failed.");
-                }
-
-                DateTime buildDate = LinkerTime.GetBuildDate(entryAssembly);
-                var assemblyName = entryAssembly.GetName();
-                if (assemblyName.Name == null)
-                {
-                    throw new Exception($"[BuildInfo] get assemblyName.Name failed.");
-                }
-
-                int revision = assemblyName.Version.GetCustomRevision();
-                sbyte streamId = (sbyte)assemblyName.Version.GetStreamId();
-                int protocol = assemblyName.Version.GetProtocolVersion();
-
-                string streamName = "sourceBuild";
-                if (protocol > 0)
-                {
-                    streamName = ((P4StreamType)streamId).ToString();
-                }
-                else
-                {
-                    StreamInfo? streamInfo = GetStreamInfo();
-                    if (streamInfo != null)
-                    {
-                        streamName = streamInfo.Value.Name;
-                    }
-                }
-
-                return new BuildInfo(assemblyName.Name, buildDate, revision, streamId, streamName, protocol);
-            }
         }
 
         private readonly struct P4StreamRoot

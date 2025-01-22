@@ -23,7 +23,7 @@ public static class P4Util
             return false;
         }
 
-        if (OutProcess.Run("p4", $"-F \"%client%{Separator}%Host%{Separator}%Root%\" -ztag clients", out string p4Output) == false)
+        if (OutProcess.Run("p4.exe", $"-F \"%client%{Separator}%Host%{Separator}%Root%\" -ztag clients", out string p4Output) == false)
         {
             Log.Error($"Failed to get p4 client|host|root info. output:{p4Output}");
             return false;
@@ -82,7 +82,7 @@ public static class P4Util
 
     public static Dictionary<string, string>? GetEnvironment()
     {
-        if (OutProcess.Run("p4", "set", out string p4Output) == false)
+        if (OutProcess.Run("p4.exe", "set", out string p4Output) == false)
         {
             return null;
         }
