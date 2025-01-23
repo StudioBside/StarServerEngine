@@ -78,7 +78,13 @@ public sealed class SimpleFileLogProvider : ILogProvider, IDisposable
 
         if (string.IsNullOrEmpty(this.fileStream.Name) == false && Console.IsInputRedirected == false)
         {
-            Process.Start("notepad", this.fileStream.Name);
+            var psi = new ProcessStartInfo
+            {
+                FileName = this.fileStream.Name,
+                UseShellExecute = true,
+            };
+
+            Process.Start(psi);
         }
 
         Process.GetCurrentProcess().Kill();

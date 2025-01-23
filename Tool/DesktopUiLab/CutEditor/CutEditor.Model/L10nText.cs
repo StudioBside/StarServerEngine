@@ -15,14 +15,15 @@ public sealed class L10nText : ObservableObject, ISearchable, IL10nText
 
     public L10nText()
     {
+        Array.Fill(this.values, string.Empty);
     }
 
-    public L10nText(string defaultText)
+    public L10nText(string defaultText) : this()
     {
         this.values[(int)L10nType.Korean] = defaultText;
     }
 
-    public L10nText(StringElement stringElement)
+    public L10nText(StringElement stringElement) : this()
     {
         this.values[(int)L10nType.Korean] = stringElement.Korean;
         this.values[(int)L10nType.English] = stringElement.English;
