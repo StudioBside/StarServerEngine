@@ -114,33 +114,29 @@ public sealed class HttpFramework : IDisposable
 
     private void RegisterUrlAcl(int port)
     {
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) == false)
+        this.listener.Prefixes.Add($"http://+:{port}/");
+
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) != false)
         {
-            return;
-        }
-
-        string uriPrefix = $"http://+:{port}/";
-        this.listener.Prefixes.Add(uriPrefix);
-
-        var urlAclList = new UrlAclList();
-
-        foreach (var data in this.listener.Prefixes)
-        {
-            if (urlAclList.Contains(data))
+            var urlAclList = new UrlAclList();
+            foreach (var data in this.listener.Prefixes)
             {
-                continue;
+                if (urlAclList.Contains(data))
+                {
+                    continue;
+                }
+
+                Log.Info($"Add url prefix to netsh urlacl list: {data}");
+                var myProcessInfo = new ProcessStartInfo("netsh", $"http add urlacl url=\"{data}\" user=everyone")
+                {
+                    Verb = "runas",
+                    CreateNoWindow = true,
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    UseShellExecute = true,
+                };
+                var process = Process.Start(myProcessInfo);
+                process?.WaitForExit();
             }
-
-            Log.Info($"Add url prefix to netsh urlacl list: {data}");
-            var myProcessInfo = new ProcessStartInfo("netsh", $"http add urlacl url=\"{data}\" user=everyone")
-            {
-                Verb = "runas",
-                CreateNoWindow = true,
-                WindowStyle = ProcessWindowStyle.Hidden,
-                UseShellExecute = true,
-            };
-            var process = Process.Start(myProcessInfo);
-            process?.WaitForExit();
         }
     }
 

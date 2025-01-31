@@ -7,7 +7,7 @@ using Cs.Core.Util;
 
 public sealed class UrlAclList
 {
-    private readonly HashSet<string> values = new HashSet<string>();
+    private readonly HashSet<string> values = new();
 
     public UrlAclList()
     {

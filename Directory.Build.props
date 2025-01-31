@@ -8,6 +8,6 @@
   <PropertyGroup>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <!--<DebugType>Full</DebugType> : Cs.GameServer.pdb'은(는) Windows PDB이며 플랫폼 간 .NET Core 디버거에서 지원되지 않습니다.-->
-    <DebugType>Portable</DebugType>
+    <DebugType>Full</DebugType>
   </PropertyGroup>
 </Project>

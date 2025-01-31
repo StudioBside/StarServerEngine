@@ -2,18 +2,34 @@
 
 using System;
 using System.Diagnostics;
-using System.Windows;
 using System.Windows.Input;
 using System.Windows.Markup;
 using CommunityToolkit.Mvvm.Input;
 using Cs.Logging;
-using Shared.Templet.Errors;
+using Du.Core.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 
 public sealed class UtilCommandsExtension : MarkupExtension
 {
+    public UtilCommandsExtension(ICommand openInExplorer, ICommand openFile, ICommand copyToClipboard)
+    {
+        this.OpenInExplorer = openInExplorer;
+        this.OpenFile = openFile;
+        this.CopyToClipboard = copyToClipboard;
+    }
+
+    // note: for reflection
     public UtilCommandsExtension()
     {
-        this.OpenInExplorer = new RelayCommand<string>(path =>
+    }
+
+    public ICommand? OpenInExplorer { get; }
+    public ICommand? OpenFile { get; }
+    public ICommand? CopyToClipboard { get; }
+
+    public override object ProvideValue(IServiceProvider serviceProvider)
+    {
+        var openInExplorer = new RelayCommand<string>(path =>
         {
             if (string.IsNullOrWhiteSpace(path))
             {
@@ -36,7 +52,7 @@ public sealed class UtilCommandsExtension : MarkupExtension
             Process.Start("explorer.exe", $"/select,\"{path}\"");
         });
 
-        this.OpenFile = new RelayCommand<string>(path =>
+        var openFile = new RelayCommand<string>(path =>
         {
             if (string.IsNullOrWhiteSpace(path))
             {
@@ -52,24 +68,24 @@ public sealed class UtilCommandsExtension : MarkupExtension
             Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
         });
 
-        this.CopyToClipboard = new RelayCommand<string>(text =>
+        var copyToClipboard = new RelayCommand<string>(text =>
         {
             if (string.IsNullOrWhiteSpace(text))
             {
                 return;
             }
 
-            Clipboard.SetText(text);
+            var clipboard = serviceProvider.GetService<IClipboardWrapper>();
+            if (clipboard is null)
+            {
+                Log.Warn($"클립보드 서비스가 없습니다.");
+                return;
+            }
+
+            clipboard.SetText(text);
             Log.Info($"클립보드에 복사:\n{text}");
         });
-    }
 
-    public ICommand OpenInExplorer { get; }
-    public ICommand OpenFile { get; }
-    public ICommand CopyToClipboard { get; }
-
-    public override object ProvideValue(IServiceProvider serviceProvider)
-    {
-        return new UtilCommandsExtension();
+        return new UtilCommandsExtension(openInExplorer, openFile, copyToClipboard);
     }
 }

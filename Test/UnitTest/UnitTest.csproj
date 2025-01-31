@@ -12,13 +12,14 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageReference Include="Moq" Version="4.20.72" />
-    <PackageReference Include="MSTest.TestAdapter" Version="3.6.3" />
-    <PackageReference Include="MSTest.TestFramework" Version="3.6.3" />
-    <PackageReference Include="StackExchange.Redis" Version="2.8.16" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.7.2" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.7.2" />
+    <PackageReference Include="StackExchange.Redis" Version="2.8.24" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="System.Diagnostics.EventLog" Version="9.0.1" />
     <PackageReference Include="system.management.automation" Version="7.4.6" />
     <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.421302">
       <PrivateAssets>all</PrivateAssets>

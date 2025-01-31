@@ -29,6 +29,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="System.Diagnostics.EventLog" Version="9.0.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Engine\Cs.Core\Cs.Core.csproj" />
