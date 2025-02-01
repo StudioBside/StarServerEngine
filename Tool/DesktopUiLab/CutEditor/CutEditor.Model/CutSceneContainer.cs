@@ -3,6 +3,7 @@
 using Cs.Core;
 using Cs.Core.Util;
 using Cs.Logging;
+using Newtonsoft.Json.Linq;
 
 public sealed class CutSceneContainer
 {
@@ -17,7 +18,7 @@ public sealed class CutSceneContainer
         Log.Debug($"Loading files from {path}");
 
         var list = new List<CutScene>();
-        var json = JsonUtil.Load(path);
+        var json = JsonUtil.Load<JToken>(path);
         json.GetArray("Data", list, (e, i) => new CutScene(e));
 
         foreach (var cutScene in list)

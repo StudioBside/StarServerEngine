@@ -9,7 +9,7 @@ using Cs.Logging;
 
 public readonly record struct P4Commander
 {
-    private const string Seperator = "@@";
+    public static readonly string CommandName = DevOps.IsRunningInLinux() ? "p4.exe" : "p4";
 
     private P4Commander(string stream, string clientRoot)
     {
@@ -22,54 +22,24 @@ public readonly record struct P4Commander
 
     public static bool TryCreate(out P4Commander result)
     {
-        // 현재 위치를 기반으로 workspace 이름을 알아낸다.
-        if (P4Util.TryGetP4Workspace(out var workspace) == false)
+        var p4ClientInfo = DevOps.GetP4ClientInfoForDev();
+        if (p4ClientInfo is null)
         {
             Log.Error($"Failed to get p4 workspace info.");
             result = default;
             return false;
         }
 
-        // 알아낸 workspace 이름으로 stream, clientRoot를 알아낸다.
-        if (OutProcess.Run("p4.exe", $"-F \"%Stream%{Seperator}%Root%\" -ztag clients -E {workspace}", out string p4Output) == false)
-        {
-            Log.Error($"Failed to get p4 stream|root info. output:{p4Output}");
-            result = default;
-            return false;
-        }
-
-        //p4 워크스페이스 정보 가공
-        foreach (var line in p4Output.Split(Environment.NewLine))
-        {
-            var tokens = line.Split(Seperator); // count=2이면 첫 번째 공백에서만 잘라줌. 빈 토큰은 알아서 정리.
-            if (tokens.Length < 2)
-            {
-                continue;
-            }
-
-            string stream = tokens[0];
-            string clientRoot = tokens[1];
-
-            // 예외처리. dev의 virtual stream들은 dev로 변경해주어야 함. 
-            if (stream.StartsWith("//stream/dev"))
-            {
-                stream = stream[..12];
-            }
-
-            result = new P4Commander(stream, clientRoot);
-            return true;
-        }
-
-        Log.Error($"failed to parse p4 stream|root info. output:{p4Output}");
-        result = default;
-        return false;
+        var streamHead = $"//stream/{p4ClientInfo.StreamInfo.NameSensitive}";
+        result = new P4Commander(streamHead, p4ClientInfo.Root);
+        return true;
     }
 
     public bool OpenForEdit(string localFilePath, out string p4Output)
     {
         var depotPath = this.ToSingleDepotPath(localFilePath);
 
-        if (OutProcess.Run("p4.exe", $"edit {depotPath}", out p4Output) == false)
+        if (OutProcess.Run(CommandName, $"edit {depotPath}", out p4Output) == false)
         {
             return false;
         }
@@ -81,7 +51,7 @@ public readonly record struct P4Commander
     {
         var depotPath = this.ToDepotPath(localPath, extension);
 
-        if (OutProcess.Run("p4.exe", $"edit {depotPath}", out p4Output) == false)
+        if (OutProcess.Run(CommandName, $"edit {depotPath}", out p4Output) == false)
         {
             return false;
         }
@@ -107,7 +77,7 @@ public readonly record struct P4Commander
     {
         var depotPath = this.ToSingleDepotPath(localFilePath);
 
-        if (OutProcess.Run("p4.exe", $"delete {depotPath}", out p4Output) == false)
+        if (OutProcess.Run(CommandName, $"delete {depotPath}", out p4Output) == false)
         {
             return false;
         }
@@ -124,7 +94,7 @@ public readonly record struct P4Commander
     {
         var depotPath = this.ToDepotPath(localPath, extension);
 
-        if (OutProcess.Run("p4.exe", $"revert -a {depotPath}", out p4Output) == false)
+        if (OutProcess.Run(CommandName, $"revert -a {depotPath}", out p4Output) == false)
         {
             return false;
         }
@@ -150,7 +120,7 @@ public readonly record struct P4Commander
     {
         var depotPath = this.ToDepotPath(localPath, extension);
 
-        if (OutProcess.Run("p4.exe", $"revert {depotPath}", out p4Output) == false)
+        if (OutProcess.Run(CommandName, $"revert {depotPath}", out p4Output) == false)
         {
             return false;
         }
@@ -177,7 +147,7 @@ public readonly record struct P4Commander
         var depotPath = this.ToDepotPath(localDirPath, extension);
 
         // note: 더할 파일이 없으면 실패처리된다.
-        OutProcess.Run("p4.exe", $"reconcile -a {depotPath}", out var p4Output);
+        OutProcess.Run(CommandName, $"reconcile -a {depotPath}", out var p4Output);
     }
 
     public void AddNewFile(string localFilePath)
@@ -185,7 +155,7 @@ public readonly record struct P4Commander
         var depotPath = this.ToSingleDepotPath(localFilePath);
 
         // note: 더할 파일이 없으면 실패처리된다.
-        OutProcess.Run("p4.exe", $"reconcile -a {depotPath}", out var p4Output);
+        OutProcess.Run(CommandName, $"reconcile -a {depotPath}", out var p4Output);
     }
 
     public void AddNewFiles(IEnumerable<string> localPathList, string extension)
@@ -200,7 +170,7 @@ public readonly record struct P4Commander
     {
         var depotPath = this.ToSingleDepotPath(localFilePath);
 
-        if (OutProcess.Run("p4.exe", $"diff -se {depotPath}", out var p4Output) == false)
+        if (OutProcess.Run(CommandName, $"diff -se {depotPath}", out var p4Output) == false)
         {
             result = false;
             return p4Output.Contains(" - file(s) up-to-date.") // 파일 변경내용이 없거나, 이미 열려있을 때
@@ -216,7 +186,7 @@ public readonly record struct P4Commander
     {
         var depotPath = this.ToSingleDepotPath(localFilePath);
 
-        OutProcess.Run("p4.exe", $"opened {depotPath}", out var p4Output);
+        OutProcess.Run(CommandName, $"opened {depotPath}", out var p4Output);
         return p4Output.Contains(" - edit") || // 이미 열려있을 때
             p4Output.Contains(" - add "); // 신규 생성된 파일
     }
@@ -224,7 +194,7 @@ public readonly record struct P4Commander
     public bool CheckIfRegistered(string localFilePath)
     {
         var depotPath = this.ToSingleDepotPath(localFilePath);
-        OutProcess.Run("p4.exe", $"fstat {depotPath}", out var p4Output);
+        OutProcess.Run(CommandName, $"fstat {depotPath}", out var p4Output);
         return p4Output.Contains("headRev");
     }
 
@@ -232,7 +202,7 @@ public readonly record struct P4Commander
     {
         var depotPath = this.ToDepotPath(localPath, extension);
 
-        if (OutProcess.Run("p4.exe", $"opened {depotPath}", out p4Output) == false)
+        if (OutProcess.Run(CommandName, $"opened {depotPath}", out p4Output) == false)
         {
             if (p4Output.Contains(" - file(s) not opened on this client."))
             {

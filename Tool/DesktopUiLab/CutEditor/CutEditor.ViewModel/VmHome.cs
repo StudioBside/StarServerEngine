@@ -21,12 +21,13 @@ using Microsoft.Extensions.DependencyInjection;
 public sealed class VmHome : VmPageBase
 {
     private const string DefaultFilter = "[All]";
+    private static string searchKeyword = string.Empty;
+    private static string selectedFilter = DefaultFilter;
+
     private readonly HashSet<string> filters = new();
     private readonly IServiceProvider services;
     private readonly ISearchableCollection<CutScene> filteredList;
     private CutScene? selectedCutScene;
-    private string searchKeyword = string.Empty;
-    private string selectedFilter = DefaultFilter;
 
     public VmHome(IServiceProvider services)
     {
@@ -48,8 +49,10 @@ public sealed class VmHome : VmPageBase
 
         this.filteredList.SetSubFilter(e =>
         {
-            return this.selectedFilter == DefaultFilter || e.CutsceneFilter == this.selectedFilter;
+            return selectedFilter == DefaultFilter || e.CutsceneFilter == selectedFilter;
         });
+
+        this.filteredList.Refresh(searchKeyword);
     }
 
     public CutScene? SelectedCutScene
@@ -65,14 +68,14 @@ public sealed class VmHome : VmPageBase
 
     public string SearchKeyword
     {
-        get => this.searchKeyword;
-        set => this.SetProperty(ref this.searchKeyword, value);
+        get => searchKeyword;
+        set => this.SetProperty(ref searchKeyword, value);
     }
 
     public string SelectedFilter
     {
-        get => this.selectedFilter;
-        set => this.SetProperty(ref this.selectedFilter, value);
+        get => selectedFilter;
+        set => this.SetProperty(ref selectedFilter, value);
     }
 
     public ICommand ReadPickedCommand { get; }
@@ -96,7 +99,7 @@ public sealed class VmHome : VmPageBase
                     this.SelectedCutScene = null;
                 }
 
-                this.filteredList.Refresh(this.searchKeyword);
+                this.filteredList.Refresh(searchKeyword);
                 this.OnPropertyChanged(nameof(this.FilteredCount));
                 break;
         }

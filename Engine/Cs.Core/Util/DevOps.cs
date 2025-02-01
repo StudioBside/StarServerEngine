@@ -7,7 +7,6 @@
     using System.Net;
     using System.Reflection;
     using System.Runtime.InteropServices;
-    using System.Text.RegularExpressions;
     using Cs.Logging;
 
     public static class DevOps
@@ -36,14 +35,14 @@
         /// </summary>
         public static bool GetStreamInfoForDev(out StreamInfo result)
         {
-            var temp = GetStreamInfoForDev();
-            if (temp.HasValue == false)
+            var p4ClientInfo = GetP4ClientInfoForDev();
+            if (p4ClientInfo is null)
             {
                 result = default;
                 return false;
             }
 
-            result = temp.Value;
+            result = p4ClientInfo.StreamInfo;
             return true;
         }
 
@@ -80,9 +79,7 @@
             return Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
         }
 
-        //// -----------------------------------------------------------------------------------------------
-
-        private static StreamInfo? GetStreamInfoForDev()
+        public static P4ClientInfo? GetP4ClientInfoForDev()
         {
             var host = Dns.GetHostName();
             if (string.IsNullOrEmpty(host))
@@ -91,96 +88,70 @@
                 return null;
             }
 
-            if (OutProcess.Run("p4.exe", $"-F \"%Stream%{Separator}%Host%{Separator}%Root%\" -ztag clients", out string p4Output) == false)
+            Dictionary<string/*host*/, P4ClientInfo[]> clientsByHost;
+            clientsByHost = GetP4DataForDev(new[] { "Host", "Client", "Root", "Stream" }, "clients")
+                .GroupBy(e => e[0])
+                .ToDictionary(
+                    keySelector: e => e.Key,
+                    elementSelector: e => e.Select(arr => new P4ClientInfo(arr[1], arr[2], arr[3])).ToArray());
+            if (clientsByHost.Count == 0)
             {
-                Log.Error($"running p4 process failed.");
                 return null;
             }
 
-            //p4 워크스페이스 정보 가공
-            var clientList = new Dictionary<string, List<P4StreamRoot>>(StringComparer.OrdinalIgnoreCase);
-            foreach (var line in p4Output.Split(Environment.NewLine))
+            // workspace에 현재 실행 머신의 host 전용으로 설정된 정보가 있다면 여기서 먼저 탐색.
+            string workingDirectory = Directory.GetCurrentDirectory();
+            P4ClientInfo? p4Client = null;
+            if (clientsByHost.TryGetValue(host, out var clients))
             {
-                var tokens = line.Split(Separator, 3, StringSplitOptions.None); // count=2이면 첫 번째 공백에서만 잘라줌. 빈 토큰은 알아서 정리.
-                if (tokens.Length < 3)
-                {
-                    continue;
-                }
-
-                string outputStream = tokens[0];
-                string outputHost = tokens[1].ToLower();
-                string outputRoot = tokens[2].ToLower();
-
-                if (clientList.TryGetValue(outputHost, out var outputList) == false)
-                {
-                    outputList = new List<P4StreamRoot>();
-                    clientList.Add(outputHost, outputList);
-                }
-
-                outputList.Add(new P4StreamRoot(outputStream, outputRoot));
+                p4Client = clients
+                    .FirstOrDefault(e => workingDirectory.StartsWith(e.Root, StringComparison.OrdinalIgnoreCase));
             }
 
-            //host 기반 스트림 검색
-            string workingDirectory = System.IO.Directory.GetCurrentDirectory().ToLower();
-            string? streamName = null;
-            if (clientList.TryGetValue(host, out var list) == true)
+            // host 기반으로 찾지 못했다면 모든 데이터에서 스트림 검색
+            if (p4Client is null)
             {
-                foreach (var data in list)
-                {
-                    if (workingDirectory.StartsWith(data.Root))
-                    {
-                        var match = Regex.Match(data.Stream, @"//stream/(\w+)");
-                        if (match.Success)
-                        {
-                            streamName = match.Groups[1].Value;
-                            break;
-                        }
-                    }
-                }
+                p4Client = clientsByHost.SelectMany(e => e.Value)
+                    .FirstOrDefault(e => workingDirectory.StartsWith(e.Root, StringComparison.OrdinalIgnoreCase));
             }
 
-            //모든 데이터에서 스트림검색
-            if (string.IsNullOrWhiteSpace(streamName))
+            if (p4Client is null)
             {
-                foreach (var data in clientList.SelectMany(e => e.Value))
-                {
-                    if (workingDirectory.StartsWith(data.Root))
-                    {
-                        var match = Regex.Match(data.Stream, @"//stream/(\w+)");
-                        if (match.Success)
-                        {
-                            streamName = match.Groups[1].Value;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (string.IsNullOrWhiteSpace(streamName))
-            {
-                Log.Error($"matched client not found. #target clients:{clientList.Count}");
+                Log.Error($"matched client not found. #target clients:{clientsByHost.Sum(e => e.Value.Length)}");
                 return null;
             }
 
-            if (!Enum.TryParse<P4StreamType>(streamName, ignoreCase: true, out var streamType))
+            string streamLiteral = p4Client.StreamLiteral; // 리터럴은 //stream/... 형태로 되어있음.
+
+            // 가상 스트림인 경우 실제 스트림을 찾아 변경
+            Dictionary<string /*stream*/, (string Type, string Parent)> streamData;
+            streamData = GetP4DataForDev(new[] { "Stream", "Type", "Parent" }, "streams")
+                .ToDictionary(e => e[0], e => (Type: e[1], Parent: e[2]));
+
+            while (streamData.TryGetValue(streamLiteral, out var streamInfo))
             {
-                if (streamName.StartsWith("dev"))
+                if (streamInfo.Type == "virtual")
                 {
-                    streamType = P4StreamType.Dev;
-                }
-                else if (streamName.StartsWith("alpha"))
-                {
-                    streamType = P4StreamType.Alpha;
+                    streamLiteral = streamInfo.Parent;
                 }
                 else
                 {
-                    Log.Error($"not registered stream name:{streamName}");
-                    return null;
+                    break;
                 }
             }
 
-            return new StreamInfo((int)streamType, streamType.ToString());
+            string streamName = streamLiteral.Replace("//stream/", string.Empty); // 이름만 남긴다.
+            if (!Enum.TryParse<P4StreamType>(streamName, ignoreCase: true, out var streamType))
+            {
+                Log.Error($"not registered stream name:{streamName}");
+                return null;
+            }
+
+            p4Client.StreamInfo = new StreamInfo((int)streamType, streamType.ToString());
+            return p4Client;
         }
+
+        //// -----------------------------------------------------------------------------------------------
 
         private static BuildInfo CreateBuildInfo()
         {
@@ -208,14 +179,44 @@
             }
             else
             {
-                StreamInfo? streamInfo = GetStreamInfoForDev();
-                if (streamInfo != null)
+                var p4ClientInfo = GetP4ClientInfoForDev();
+                if (p4ClientInfo is not null)
                 {
-                    streamName = streamInfo.Value.Name;
+                    streamName = p4ClientInfo.StreamInfo.Name;
                 }
             }
 
             return new BuildInfo(assemblyName.Name, buildDate, revision, streamId, streamName, protocol);
+        }
+
+        /// <summary>
+        /// 변수를 %로 감싸고, 구분자(@@)로 합쳐서 인자를 만들어냅니다.
+        /// 형태) -F "%{변수1}%@@%{변수2}%@@%{변수3}%" -ztag {command}
+        /// 예시) Stream, Host, Root를 가져오는 경우: -F "%Stream%@@%Host%@@%Root%" -ztag clients.
+        /// </summary>
+        private static IReadOnlyList<string[]> GetP4DataForDev(string[] variables, string command)
+        {
+            string p4Command = IsRunningInLinux() ? "p4.exe" : "p4";
+            var args = $"-F \"{string.Join(Separator, variables.Select(e => $"%{e}%"))}\" -ztag {command}";
+            if (OutProcess.Run(p4Command, args, out string p4Output) == false)
+            {
+                Log.Error($"running p4 process failed.");
+                return Array.Empty<string[]>();
+            }
+
+            var result = new List<string[]>();
+            foreach (var line in p4Output.Split(Environment.NewLine))
+            {
+                var tokens = line.Split(Separator, variables.Length, StringSplitOptions.None);
+                if (tokens.Length < variables.Length)
+                {
+                    continue;
+                }
+
+                result.Add(tokens);
+            }
+
+            return result;
         }
 
         public readonly struct StreamInfo
@@ -252,16 +253,20 @@
             public string BuildVersion => $"{this.StreamId}.{this.Revision}.{this.Protocol}";
         }
 
-        private readonly struct P4StreamRoot
+        public sealed class P4ClientInfo
         {
-            public P4StreamRoot(string stream, string root)
+            public P4ClientInfo(string client, string root, string streamLiteral)
             {
-                this.Stream = stream;
+                this.Client = client;
                 this.Root = root;
+                this.StreamLiteral = streamLiteral;
             }
 
-            public string Stream { get; }
+            public string Client { get; }
             public string Root { get; }
+            public string StreamLiteral { get; }
+
+            public StreamInfo StreamInfo { get; internal set; }
         }
     }
 }

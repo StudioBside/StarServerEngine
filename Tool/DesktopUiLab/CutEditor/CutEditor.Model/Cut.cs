@@ -520,6 +520,7 @@ public sealed class Cut : ObservableObject
             CameraEase = OutputTransfer.EliminateEnum(this.cameraEase, Ease.Unset),
             CameraOffsetTime = OutputTransfer.EliminateEnum(this.cameraOffsetTime, CameraOffsetTime.NONE),
             EmotionEffect = OutputTransfer.EliminateEnum(this.emotionEffect, EmotionEffect.NONE),
+            UnitEffect = OutputTransfer.EliminateEnum(this.unitEffect, UnitEffect.NONE),
             UnitTalk_KOR = this.unitTalk.AsNullable(L10nType.Korean),
             UnitTalk_ENG = this.unitTalk.AsNullable(L10nType.English),
             UnitTalk_JPN = this.unitTalk.AsNullable(L10nType.Japanese),

@@ -4,12 +4,14 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Cs.Core.Util;
 using Newtonsoft.Json.Linq;
 using Shared.Interfaces;
+using Shared.Templet.Strings;
 using static CutEditor.Model.Enums;
 
 public sealed class CutScene : ObservableObject, ISearchable
 {
     private readonly int cutsceneId;
-    private readonly L10nText title = new();
+    private readonly string titleKey;
+    private L10nText? title;
     private string fileName = string.Empty;
     private CutsceneType cutsceneType;
     private string cutsceneFilter = string.Empty;
@@ -28,7 +30,7 @@ public sealed class CutScene : ObservableObject, ISearchable
         this.sideTitleIcon = token.GetString("SideTitleIcon");
         this.titleFadeout = token.GetBool("TitleFadeout");
         this.titleFadeOutTime = token.GetFloat("TitleFadeOutTime");
-        this.title.Load(token, "Title");
+        this.titleKey = token.GetString("Title");
         this.titleTalkTime = token.GetFloat("TitleTalkTime");
         this.subTitleTalkTime = token.GetFloat("SubTitleTalkTime");
     }
@@ -40,7 +42,7 @@ public sealed class CutScene : ObservableObject, ISearchable
         set => this.SetProperty(ref this.fileName, value);
     }
 
-    public L10nText Title => this.title;
+    public L10nText Title => this.GetTitle();
 
     public CutsceneType CutsceneType
     {
@@ -88,8 +90,25 @@ public sealed class CutScene : ObservableObject, ISearchable
     {
         return this.cutsceneId.ToString().Contains(keyword, StringComparison.CurrentCultureIgnoreCase) ||
             this.fileName.Contains(keyword, StringComparison.CurrentCultureIgnoreCase) ||
-            this.title.IsTarget(keyword);
+            this.Title.IsTarget(keyword);
     }
 
-    public override string ToString() => this.title.Korean;
+    public override string ToString() => this.Title.Korean;
+
+    private L10nText GetTitle()
+    {
+        if (this.title is null)
+        {
+            if (StringTable.Instance.TryGetElement(this.titleKey, out var element))
+            {
+                this.title = new L10nText(element);
+            }
+            else
+            {
+                this.title = new L10nText(this.titleKey);
+            }
+        }
+
+        return this.title;
+    }
 }
