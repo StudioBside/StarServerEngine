@@ -1,11 +1,11 @@
 namespace SlackAssist.Configs
 {
     using System.Collections.Generic;
-    using Cs.Logging;
     using Microsoft.Extensions.Configuration;
 
     internal sealed class SlackAssistConfig
     {
+        private const string Key = nameof(SlackAssistConfig);
         public static SlackAssistConfig Instance { get; private set; } = null!;
 
         internal SlackConfig Slack { get; private set; } = null!;
@@ -15,16 +15,8 @@ namespace SlackAssist.Configs
 
         public static SlackAssistConfig? Load(IConfiguration config)
         {
-            var target = config.GetValue<string>("target");
-            if (string.IsNullOrEmpty(target))
-            {
-                target = "StarSavior";
-            }
-
-            Log.Info($"Configuration target: {target}");
-            var targetConfig = config.GetRequiredSection(target);
-
-            var result = targetConfig.Get<SlackAssistConfig>(e =>
+            var section = config.GetRequiredSection(Key);
+            var result = section.Get<SlackAssistConfig>(e =>
             {
                 e.BindNonPublicProperties = true;
                 e.ErrorOnUnknownConfiguration = true;
@@ -36,11 +28,6 @@ namespace SlackAssist.Configs
             }
 
             Instance = result;
-            if (string.IsNullOrEmpty(Instance.LogPath))
-            {
-                Instance.LogPath = "./";
-            }
-
             return Instance;
         }
 

@@ -30,7 +30,7 @@ public partial class BgFadeEditorDialog : ContentDialog
     {
         if (button == ContentDialogButton.Primary)
         {
-            if (this.Data.Time.IsNearlyZero())
+            if (this.Data.Time < 0)
             {
                 Log.Warn("시간이 유효하지 않습니다.");
                 return;

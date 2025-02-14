@@ -7,6 +7,7 @@ public enum ErrorType
     Skill,
     Buff,
     String,
+    Voice,
 }
 
 public sealed record ErrorMessage(ErrorType ErrorType, string Message, object? Target)

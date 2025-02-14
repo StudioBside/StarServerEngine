@@ -11,7 +11,7 @@ using SlackNet;
 using SlackNet.Blocks;
 using SlackNet.WebApi;
 
-internal class GameRankReaction : StringContainsReaction
+internal sealed class GameRankReaction : StringContainsReaction
 {
     public override string Trigger => "[매출 순위]";
     private string DebugName => $"[MobileGameRank]";
@@ -45,7 +45,6 @@ internal class GameRankReaction : StringContainsReaction
                 Channel = eventRecord.OriginalEvent.Channel,
                 ThreadTs = targetEvent.Ts,
             });
-
             return;
         }
 

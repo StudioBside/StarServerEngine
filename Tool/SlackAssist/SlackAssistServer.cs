@@ -27,7 +27,7 @@ namespace SlackAssist
             }
 
             var logPath = Path.Join(config.LogPath, "Log.txt");
-            Log.Initialize(new SimpleFileLogProvider(logPath), LogLevelConfig.All);
+            Log.Initialize(new SimpleFileLogProvider(logPath, writeToConsole: true), LogLevelConfig.All);
 
             var slackServices = new SlackServiceBuilder()
                 .UseApiToken(config.Slack.ApiBotToken)

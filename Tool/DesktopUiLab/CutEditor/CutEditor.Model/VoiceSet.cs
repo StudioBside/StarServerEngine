@@ -1,29 +1,52 @@
 ﻿namespace CutEditor.Model;
 
 using System;
+using System.Text;
 using Cs.Core.Util;
+using Shared.Interfaces;
 using static StringStorage.Enums;
 
-internal sealed class VoiceSet
+public sealed class VoiceSet : ISearchable
 {
-    private readonly bool[] hasData = new bool[EnumUtil<L10nType>.Count];
+    private readonly VoiceFile[] l10nData = new VoiceFile[EnumUtil<L10nType>.Count];
 
-    public VoiceSet(string fileName, string unitName)
+    public VoiceSet(string fileName, string displayPath)
     {
-        this.FileName = fileName;
-        this.UnitName = unitName;
+        this.DisplayPath = displayPath;
+        this.FileNameOnly = Path.GetFileName(fileName);
     }
 
-    public string FileName { get; }
-    public string UnitName { get; }
+    public string DisplayPath { get; }
+    public string FileNameOnly { get; }
 
-    public bool HasData(L10nType type)
+    public VoiceFile Korean => this.GetData(L10nType.Korean);
+    public VoiceFile Japanese => this.GetData(L10nType.Japanese);
+    public VoiceFile ChineseSimplified => this.GetData(L10nType.ChineseSimplified);
+    public VoiceFile English => this.GetData(L10nType.English);
+
+    public string GetDebugStatus()
     {
-        return this.hasData[(int)type];
+        const string notExists = "X";
+        const string exists = "O";
+
+        StringBuilder builder = new();
+        builder.Append($"[Kr: {(this.Korean == null ? notExists : exists)}]  ");
+        builder.Append($"[Jp: {(this.Japanese == null ? notExists : exists)}]  ");
+        builder.Append($"[En: {(this.English == null ? notExists : exists)}]  ");
+        builder.Append($"[Cn: {(this.ChineseSimplified == null ? notExists : exists)}]");
+
+        return builder.ToString();
     }
 
-    public void SetDataExists(L10nType type)
+    public VoiceFile GetData(L10nType type)
     {
-        this.hasData[(int)type] = true;
+        return this.l10nData[(int)type];
     }
+
+    public void SetData(L10nType type, VoiceFile voiceFile)
+    {
+        this.l10nData[(int)type] = voiceFile;
+    }
+
+    public bool IsTarget(string keyword) => this.FileNameOnly.Contains(keyword, StringComparison.OrdinalIgnoreCase);
 }

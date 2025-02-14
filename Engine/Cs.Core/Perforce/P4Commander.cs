@@ -182,6 +182,20 @@ public readonly record struct P4Commander
         return true;
     }
 
+    public bool CheckIfChangedNotDepotPath(string localFilePath, out bool result)
+    {
+        if (OutProcess.Run(CommandName, $"diff -se {localFilePath}", out var p4Output) == false)
+        {
+            result = false;
+            return p4Output.Contains(" - file(s) up-to-date.") // 파일 변경내용이 없거나, 이미 열려있을 때
+                || p4Output.Contains(" - file(s) not on client.") // 해당 폴더에 검색 조건인 파일이 없을 때
+                ;
+        }
+
+        result = string.IsNullOrEmpty(p4Output) == false;
+        return true;
+    }
+
     public bool CheckIfOpened(string localFilePath)
     {
         var depotPath = this.ToSingleDepotPath(localFilePath);

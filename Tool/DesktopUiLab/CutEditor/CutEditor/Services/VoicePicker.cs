@@ -11,10 +11,7 @@ internal sealed class VoicePicker(IContentDialogService contentDialogService)
 {
     public async Task<IAssetPicker.PickResult> PickAsset(string? defaultValue)
     {
-        var dialog = new AssetPickerDialog(
-            "voice 파일 선택",
-            AssetList.Instance.VoiceFiles,
-            contentDialogService.GetDialogHost());
+        var dialog = new VoicePickerDialog(contentDialogService.GetDialogHost());
         var result = await dialog.ShowAsync();
         return result switch
         {

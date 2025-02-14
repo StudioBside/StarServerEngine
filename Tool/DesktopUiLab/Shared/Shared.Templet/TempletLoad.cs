@@ -48,7 +48,7 @@ public static class TempletLoad
             "CLIENT_UNIT_TEMPLET_BASE4.exported",
         ];
         TempletLoader.BuildContainer(fileNames, e => new Unit(e), e => e.StrId);
-        TempletLoader.BuildContainer("CLIENT_LOBBY_ITEM_TEMPLET.exported", e => new LobbyItem(e));
+        TempletLoader.BuildContainer("CLIENT_SPECIAL_LOBBY_TEMPLET.exported", e => new LobbyItem(e));
         TempletLoader.BuildContainer("CLIENT_BUFF_TEMPLET.exported", e => new BuffTemplet(e), e => e.StrId);
         TempletLoader.BuildGroupContainer<BuffImmuneTemplet>("CLIENT_BUFF_IMMUNE_TEMPLET.exported", "ImmuneGroupId");
 
@@ -58,6 +58,13 @@ public static class TempletLoad
             "SKILL/CLIENT_SKILL_TEMPLET_2.exported",
         ];
         TempletLoader.BuildContainer(fileNames, e => new SkillTemplet(e), e => e.StrId);
+
+        fileNames =
+        [
+            "SKILL/CLIENT_SKILL_LEVEL_GROUP_TEMPLET_1.exported",
+            "SKILL/CLIENT_SKILL_LEVEL_GROUP_TEMPLET_2.exported",
+        ];
+        TempletLoader.BuildGroupContainer<SkillLevelTemplet>(fileNames, "SkillLevelGroupID");
 
         UnitScriptContainer.Instance.Load(unitScriptRoot);
     }

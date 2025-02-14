@@ -106,6 +106,7 @@ public partial class App : Application
         var assetList = this.Services.GetRequiredService<AssetList>();
         EasingGraph.Instance.Initialize(assetList);
         CameraOffsetController.Instance.Initialize(assetList);
+        VoiceL10nSorter.Instance.Initialize(assetList);
 
         var config = this.Services.GetRequiredService<IConfiguration>();
         VmGlobalState.Instance.Initialize(config);

@@ -11,6 +11,8 @@
     ui:Design.Background="{DynamicResource ApplicationBackgroundBrush}"
     ui:Design.Foreground="{DynamicResource TextFillColorPrimaryBrush}"
     Title="Text Input"
+    PrimaryButtonText="확인"
+    CloseButtonText="취소"
     DialogMaxWidth="750">
 
     <ui:ContentDialog.Resources>

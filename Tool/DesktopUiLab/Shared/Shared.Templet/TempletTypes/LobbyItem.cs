@@ -12,20 +12,20 @@ using Shared.Templet.Strings;
 
 public sealed class LobbyItem : ITemplet, ISearchable
 {
-    private string nameStringId = string.Empty;
+    private string lobbyNameStringId = string.Empty;
 
     public LobbyItem(JToken token)
     {
-        this.Id = token.GetInt32("ItemId");
-        this.SubType = token.GetEnum("NormalItemSubType", NormalItemSubType.STN_NORMAL);
-        this.nameStringId = token.GetString("ItemName");
+        this.Id = token.GetInt32("SpecialLobbyId");
+        this.LobbyType = token.GetEnum("SpecialLobbyType", SpecialLobbyType.SLT_ARCPOINT);
+        this.lobbyNameStringId = token.GetString("LobbyName");
         this.ImageFileName = token.GetString("LobbyThumbnail", string.Empty);
     }
 
     public static string ImageRootPath { get; set; } = string.Empty;
     int ITemplet.Key => this.Id;
     public int Id { get; }
-    public NormalItemSubType SubType { get; }
+    public SpecialLobbyType LobbyType { get; }
     public string ImageFileName { get; }
     public string ImageFullPath { get; private set; } = string.Empty;
     public string Name { get; private set; } = string.Empty;
@@ -43,7 +43,7 @@ public sealed class LobbyItem : ITemplet, ISearchable
             this.ImageFullPath = Path.GetFullPath(this.ImageFullPath);
         }
 
-        this.Name = StringTable.Instance.Find(this.nameStringId);
+        this.Name = StringTable.Instance.Find(this.lobbyNameStringId);
     }
 
     public void Validate()

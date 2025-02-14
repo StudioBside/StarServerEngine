@@ -1,31 +1,43 @@
 ﻿namespace CutEditor.Dialogs;
 
 using System.Collections;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
+using CutEditor.Model;
+using CutEditor.Services;
 using Du.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
-using NKM;
-using Shared.Templet.Base;
-using Shared.Templet.TempletTypes;
+using NPOI.HPSF;
+using Shared.Interfaces;
 using Wpf.Ui.Controls;
+using static StringStorage.Enums;
 
-public partial class ArcpointPickerDialog : ContentDialog
+public partial class VoicePickerDialog : ContentDialog
 {
-    private readonly ISearchableCollection<LobbyItem> filteredList;
+    private readonly ISearchableCollection<VoiceSet> filteredList;
     private string searchKeyword = string.Empty;
 
-    public ArcpointPickerDialog(ContentPresenter? dialogHost) : base(dialogHost)
+    public VoicePickerDialog(
+        ContentPresenter? contentPresenter)
+        : base(contentPresenter)
     {
         this.DataContext = this;
 
-        var list = TempletContainer<LobbyItem>.Values.Where(e => e.LobbyType == SpecialLobbyType.SLT_ARCPOINT);
-        this.filteredList = App.Current.Services.GetRequiredService<ISearchableCollectionProvider>().Build(list);
+        var voiceKoreanExists = VoiceL10nSorter.Instance.VoiceSetsKoreanExists;
+
+        this.Title = $"보이스 선택 ({voiceKoreanExists.Count} groups)";
+        this.filteredList = App.Current.Services.GetRequiredService<ISearchableCollectionProvider>().Build(voiceKoreanExists);
+
         this.InitializeComponent();
     }
 
     public IEnumerable FilteredFiles => this.filteredList.List;
-    public LobbyItem? Selected { get; set; }
+    public VoiceSet? Selected { get; set; }
     public string SearchKeyword
     {
         get => this.searchKeyword;

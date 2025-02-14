@@ -15,8 +15,12 @@ public sealed class SimpleFileLogProvider : ILogProvider, IDisposable
     public SimpleFileLogProvider(string fileName)
     {
         this.fileStream = File.Open(fileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-        
         this.fileStream.Write(Encoding.UTF8.GetPreamble());
+    }
+
+    public SimpleFileLogProvider(string fileName, bool writeToConsole) : this(fileName)
+    {
+        this.WriteToConsole = writeToConsole;
     }
 
     public bool WriteToConsole { get; private set; }

@@ -6,1413 +6,1556 @@ namespace NKM
 {
     using System.ComponentModel;
 
-   public enum NKM_UNIT_TYPE_TEMP : short
-   {
-       [Description("설명 : NUT_INVALID")]
-       NUT_INVALID = 0,
-       [Description("설명 : NUT_SYSTEM")]
-       NUT_SYSTEM,
-       NUT_SAVIOR,
-       [Description("설명 : NUT_MERCENARY")]
-       NUT_MERCENARY,
-       [Description("설명 : NUT_MONSTER")]
-       NUT_MONSTER,
-       [Description("설명 : NUT_RAID_MONSTER")]
-       NUT_RAID_MONSTER,
-       [Description("설명 : NUT_ENV")]
-       NUT_ENV,
-       [Description("설명 : NUT_ENV2")]
-       NUT_ENV2,
-       [Description("설명 : NUT_ORBITAL_ARRAY")]
-       NUT_ORBITAL_ARRAY,
-   }
-
-   public enum MainPhaseType
-   {
-       MPT_SCHEDULE_NORMAL,
-       MPT_BATTLE_BOSS,
-       MPT_BATTLE_ELITE,
-       MPT_MOVE_TOWN,
-       MPT_ENDING,
-       MPT_RETURN,
-       MPT_BADEND,
-       MPT_SHOP,
-   }
-
-   public enum STAT_GRADE_TYPE
-   {
-       SG_G,
-       SG_G_PLUS,
-       SG_F,
-       SG_F_PLUS,
-       SG_E,
-       SG_E_PLUS,
-       SG_D,
-       SG_D_PLUS,
-       SG_C,
-       SG_C_PLUS,
-       SG_B,
-       SG_B_PLUS,
-       SG_A,
-       SG_A_PLUS,
-       SG_SG,
-       SG_SG_PLUS,
-       SG_SF,
-       SG_SF_PLUS,
-       SG_SE,
-       SG_SE_PLUS,
-       SG_SD,
-       SG_SD_PLUS,
-       SG_SC,
-       SG_SC_PLUS,
-       SG_SB,
-       SG_SB_PLUS,
-       SG_SA,
-       SG_SA_PLUS,
-       SG_SSG,
-       SG_SSG_PLUS,
-       SG_SSF,
-       SG_SSF_PLUS,
-       SG_SSE,
-       SG_SSE_PLUS,
-       SG_SSD,
-       SG_SSD_PLUS,
-       SG_SSC,
-       SG_SSC_PLUS,
-       SG_SSB,
-       SG_SSB_PLUS,
-       SG_SSA,
-       SG_SSA_PLUS,
-       SG_SSS,
-   }
-
-   public enum JOURNEY_GRADE_TYPE
-   {
-       AG_G,
-       AG_G_PLUS,
-       AG_F,
-       AG_F_PLUS,
-       AG_E,
-       AG_E_PLUS,
-       AG_D,
-       AG_D_PLUS,
-       AG_C,
-       AG_C_PLUS,
-       AG_B,
-       AG_B_PLUS,
-       AG_A,
-       AG_A_PLUS,
-       AG_SG,
-       AG_SG_PLUS,
-       AG_SF,
-       AG_SF_PLUS,
-       AG_SE,
-       AG_SE_PLUS,
-       AG_SD,
-       AG_SD_PLUS,
-       AG_SC,
-       AG_SC_PLUS,
-       AG_SB,
-       AG_SB_PLUS,
-       AG_SA,
-       AG_SA_PLUS,
-       AG_SSG,
-       AG_SSG_PLUS,
-       AG_SSF,
-       AG_SSF_PLUS,
-       AG_SSE,
-       AG_SSE_PLUS,
-       AG_SSD,
-       AG_SSD_PLUS,
-       AG_SSC,
-       AG_SSC_PLUS,
-       AG_SSB,
-       AG_SSB_PLUS,
-       AG_SSA,
-       AG_SSA_PLUS,
-       AG_SSS,
-   }
-
-   public enum CutsceneFilterType
-   {
-       NONE,
-       CFT_NORMAL,
-       CFT_SEPIA,
-       CFT_SEPIASTATIC,
-       CFT_GRAY,
-       CFT_FULL_TITLE,
-       CFT_FULL_UI,
-       CFT_TEXT_BOX_INVISIBLE,
-   }
-
-   public enum CutsceneUnitPos
-   {
-       NONE,
-       POS1,
-       POS2,
-       POS3,
-       POS4,
-       POS5,
-       POS6,
-       POS7,
-       POS8,
-       POS9,
-   }
-
-   public enum CutsceneUnitCondition
-   {
-       NONE,
-       NORMAL,
-       MOVE,
-       DARK,
-   }
-
-   public enum CutsceneSoundLoopControl
-   {
-       NONE,
-       NCSC_LOOP,
-       NCSC_STOP,
-   }
-
-   public enum CutsceneChangeType
-   {
-       NONE,
-       CT_COLOR,
-       CT_SDRUN,
-       CT_TEAM_SAVIOR,
-       CT_FIGHT,
-   }
-
-   public enum CutsceneAutoHighlight
-   {
-       NONE,
-       False,
-       True,
-       ON,
-       OFF,
-       LIGHT,
-       DARK,
-   }
-
-   public enum CutsceneType
-   {
-       NCT_MAIN,
-       NCT_JOURNEY,
-       NCT_UNIT,
-       NCT_ARCANA,
-       NCT_REST,
-       NCT_ETC,
-       NCT_TEST,
-       NCT_REQUEST,
-       NCT_TRAINING,
-       NCT_PERSONAL,
-       NCT_EVENT,
-   }
-
-   public enum CutsceneClearType
-   {
-       NONE,
-       CLEARTEXT,
-       CLEARUNIT,
-       CLEARALL,
-   }
-
-   public enum TalkPositionControlType
-   {
-       NONE,
-       TALKCENTER,
-       TALKCAPTION,
-   }
-
-   public enum SlateControlType
-   {
-       NONE,
-       SLATE_WAIT,
-       SLATE_NEXT,
-       SLATE_RESUME,
-       SLATE_JUMP,
-       SLATE_JUMPFORWARD,
-   }
-
-   public enum EmotionEffect
-   {
-       NONE,
-       THINK,
-       EMARK,
-       FUN,
-       UPSET,
-       HEART,
-       THINK2,
-       STRESS,
-       QMARK,
-   }
-
-   public enum TownOpenType
-   {
-       NONE,
-       TOT_TURN,
-       TOT_CLEAR_AREA,
-       TOT_CLEAR_COUNT,
-   }
-
-   public enum AllClearRewardType
-   {
-       NONE,
-       RT_STACK,
-       RT_EQUIP,
-   }
-
-   public enum BattleMissionType
-   {
-       NONE,
-       BMT_WIN,
-       BMT_LIMIT_TURN,
-       BMT_ALL_SURVIVE,
-       BMT_NON_BATTLE,
-   }
-
-   public enum BattleMissionBonusType
-   {
-       NONE,
-       BT_GOLD,
-       BT_COIN,
-       BT_EXP,
-   }
-
-   public enum JourneyBattleRewardBonusType
-   {
-       NONE,
-       BT_COIN,
-   }
-
-   public enum NormalBattleRewardBonusType
-   {
-       NONE,
-       BT_GOLD,
-   }
-
-   public enum HurdleType
-   {
-       HT_MOVE_TOWN,
-       HT_MOVE_TOWN_ANY,
-       HT_BATTLE_WIN,
-       HT_BATTLE_ATTEND,
-       HT_BATTLE_COUNT,
-       HT_ITEM,
-       HT_WAIT,
-   }
-
-   public enum ItemSubType
-   {
-       ST_NORMAL,
-       ST_CONSUME,
-       ST_CHARM,
-   }
-
-   public enum NormalItemSubType
-   {
-       STN_INVISIBLE,
-       STN_NORMAL,
-       STN_CONSUME,
-       STN_ARCANA_PIECE,
-       STN_UNIT_PIECE,
-       STN_ICON,
-       STN_FRAME,
-       STN_LOBBY_BG,
-       STN_ARCPOINT,
-       STN_WALLPAPER,
-       STN_GUILD,
-       STN_EMOTICON,
-       STN_FAVOR,
-       STN_MISSION_POINT,
-       STN_EVENT_POINT,
-   }
-
-   public enum PackageType
-   {
-       PACKAGE_ALL,
-       PACKAGE_SELECT,
-       PACKAGE_RANDOM,
-   }
-
-   public enum UseType
-   {
-       UT_STAMINA,
-       UT_CONDITION,
-       UT_PP,
-       UT_JST_POWER,
-       UT_JST_HEALTH,
-       UT_JST_ENDURANCE,
-       UT_JST_FOCUS,
-       UT_JST_PROTECT,
-       UT_SE_POTEN,
-       UT_BUFF_ADD,
-       UT_BUFF_DELETE,
-       UT_BUFF_DELETE_NEGATIVE,
-   }
-
-   public enum NormalUseType
-   {
-       NUT_UNUSABLE,
-       NUT_PACKAGE,
-       NUT_WILLPOWER,
-       NUT_USER_EXP,
-       NUT_ACCRUE_REWARD_01,
-       NUT_ACCRUE_REWARD_02,
-       NUT_ACCRUE_REWARD_03,
-   }
-
-   public enum BodySize
-   {
-       BODY_S,
-       BODY_M,
-       BODY_L,
-       FEMALE_BODY_S,
-       FEMALE_BODY_M,
-       FEMALE_BODY_L,
-       MALE_BODY_S,
-       MALE_BODY_M,
-       MALE_BODY_L,
-       MONSTER_BODY_S,
-       MONSTER_BODY_M,
-       MONSTER_BODY_L,
-   }
-
-   public enum ImageNameFadeEffect
-   {
-       NONE,
-       IMG_NO_EFFECT,
-       IMG_FADEINOUT,
-   }
-
-   public enum BattleConditionTarget
-   {
-       BCT_A_LEADER,
-       BCT_A_TEAM_NOT_LEADER,
-       BCT_A_TEAM_ALL,
-       BCT_B_LEADER,
-       BCT_B_TEAM_NOT_LEADER,
-       BCT_B_TEAM_ALL,
-   }
-
-   public enum PromoteActiveType
-   {
-       PT_JOURNEY_START,
-       PT_TRAINNING,
-       PT_TRAINNING_TAG,
-   }
-
-   public enum PromoteValueType
-   {
-       PT_START_STAT,
-       PT_START_MAX_STAMINA,
-       PT_START_COIN,
-       PT_START_PP,
-       PT_START_ARCANAPOINT,
-       TRAINING_VALUE_UP,
-       TRAINING_SUPPORT_RATE_UP,
-       TRAINING_BONUS_PP,
-       TRAINING_FAIL_DOWN,
-       TRAINING_BIG_SUCCESS_BONUS,
-       TRAINING_BONUS_TAG,
-       TRAINING_VALUE_UP_TAG ,
-       TRAINING_VALUE_RATE_UP_TAG,
-   }
-
-   public enum CharmTarget
-   {
-       BCT_TEAM_ALL,
-       BCT_LEADER,
-       BCT_TEAM_NOT_LEADER,
-       BCT_SUN,
-       BCT_MOON,
-       BCT_STAR,
-       BCT_UNIVERSAL,
-       BCT_VOID,
-       BCT_DEFENDER,
-       BCT_STRIKER,
-       BCT_RANGER,
-       BCT_CASTER,
-       BCT_ASSASSIN,
-       BCT_SUPPORTER,
-   }
-
-   public enum TownType
-   {
-       TT_RED,
-       TT_BLUE,
-       TT_GREEN,
-       TT_WHITE,
-       TT_BLACK,
-   }
-
-   public enum ArcanaExtraType
-   {
-       AET_TRAINNING,
-       AET_TRADE,
-   }
-
-   public enum NKM_UNIT_GRADE
-   {
-       NUG_NORMAL,
-       NUG_BOSS,
-   }
-
-   public enum Difficulty
-   {
-       EASY,
-       NORMAL,
-       HARD,
-       ELITE,
-       BOSS,
-   }
-
-   public enum CaptionType
-   {
-       CCT_GET,
-       CCT_LOBBY,
-       CCT_JOURNEY_MAIN,
-       CCT_LEADER_CONFIRM,
-       CCT_REINFORCE,
-       CCT_GIFT,
-       CCT_JOURNEY_BUY,
-       CCT_ARC_POINT,
-       CCT_BATTLE_READY,
-       CCT_BATTLE_SKIP_VICTORY,
-       CCT_BATTLE_VICTORY,
-       CCT_BATTLE_SKIP_DEFEAT,
-       CCT_BATTLE_DEFEAT,
-       CCT_STROKE,
-       CCT_TRACKING,
-   }
-
-   public enum ReqReactType
-   {
-       NONE,
-       REACT_NEGLECT,
-       REACT_BUY_FOOD,
-       REACT_BUY_CHARM,
-       REACT_BUY_COMMON,
-       REACT_UNIT_BIRTHDAY,
-       REACT_PLAYER_BIRTHDAY,
-       REACT_VALENTINE,
-       REACT_HALLOWEEN,
-       REACT_CHRISTMAS,
-       REACT_NEWYEAR,
-   }
-
-   public enum CondConditionBoundary
-   {
-       CONDITION_LESS,
-       CONDITION_MORE,
-       CONDITION_JUST,
-       NONE,
-   }
-
-   public enum PotenUnlockType
-   {
-       POTEN_COMMON_UNLOCK,
-       NONE,
-   }
-
-   public enum EquipType
-   {
-       ET_WEAPON,
-       ET_HEAD,
-       ET_ARMOR,
-       ET_NECKLACE,
-       ET_RING,
-       ET_SHOES,
-   }
-
-   public enum BattleContentsType
-   {
-       NORMAL,
-       EVENT,
-       MAINSTORY,
-       OPERATION,
-       CUBE,
-   }
-
-   public enum BattleTabType
-   {
-       NORMAL,
-       HARD,
-       EVENT_STORY,
-       EVENT_RAID,
-       EVENT_CHALLENGE,
-   }
-
-   public enum BattleTabUnlockType
-   {
-       NONE,
-       PLAYER_LEVEL,
-       BATTLE_CLEAR,
-       GET_NORMAL_ITEM,
-   }
-
-   public enum IntervalTargetType
-   {
-       BATTLE_TAB,
-       BATTLE_CONTENTS,
-   }
-
-   public enum ArcanaType
-   {
-       AT_FOOL,
-       AT_MAGICIAN,
-       AT_PRIESTESS,
-       AT_EMPRESS,
-       AT_EMPEROR,
-       AT_HIEROPHANT,
-       AT_LOVERS,
-       AT_CHARIOT,
-       AT_STRENGTH,
-       AT_HERMIT,
-       AT_WOF,
-       AT_JUSTICE,
-       AT_HANGEDMAN,
-       AT_DEATH,
-       AT_TEMPERANCE,
-       AT_DEVIL,
-       AT_TOWER,
-       AT_STAR,
-       AT_MOON,
-       AT_SUN,
-       AT_JUDGEMENT,
-       AT_WORLD,
-   }
-
-   public enum ScenarioType
-   {
-       NONE,
-       TUTORIAL,
-   }
-
-   public enum ScenarioUnlockType
-   {
-       SUT_SENARIO,
-       SUT_USER_LEVEL,
-       SUT_NONE,
-   }
-
-   public enum ScenarioDifficulty
-   {
-       SD_EASY,
-       SD_NORMAL,
-       SD_HARD,
-   }
-
-   public enum RandomEventCategory
-   {
-       REC_ALL,
-       REC_SCENARIO,
-       REC_ARCANA,
-   }
-
-   public enum ArcanaSpecialTag
-   {
-       AST_ATK,
-       AST_HP,
-       AST_DEF,
-       AST_TURN_SPEED,
-       AST_RATE_CRITICAL,
-       AST_RATE_CRITICAL_DAMAGE,
-       AST_RATE_EFFECT_HIT,
-       AST_RATE_EFFECT_EVADE,
-       NONE,
-   }
-
-   public enum ArcanaClassTag
-   {
-       NURT_DEFENDER,
-       NURT_STRIKER,
-       NURT_RANGER,
-       NURT_CASTER,
-       NURT_ASSASSIN,
-       NURT_SUPPORTER,
-       NONE,
-   }
-
-   public enum SpecialTagType
-   {
-       NONE,
-       SPECIAL,
-       RAID,
-       EVALUATION,
-       COLLECT,
-       EXPLORE,
-       COOK,
-       CLEAN,
-       DOCUMENT,
-   }
-
-   public enum CutsceneRewardRequestType
-   {
-       RR_STAT,
-       RR_ITEM_CHECK,
-       RR_ITEM_USE,
-       RR_COIN_USE,
-       RR_STAMINA_USE,
-       RR_PP_USE,
-   }
-
-   public enum UnitGrade
-   {
-       R,
-       SR,
-       SSR,
-   }
-
-   public enum TradeTag
-   {
-       NONE,
-       TRADE_TRAVEL,
-       TRADE_SPECIAL,
-   }
-
-   public enum CURRENTTOWN
-   {
-       NONE,
-       CURRENT_TOWN,
-       CURRENT_TOWN_STREET,
-       CURRENT_TOWN_SQUARE,
-       CURRENT_TOWN_DOWNTOWN,
-       CURRENT_TOWN_CANDLE,
-       CURRENT_TOWN_REQUEST,
-       CURRENT_TOWN_SHOP,
-       CURRENT_TOWN_REST,
-       CURRENT_TOWN_RECRUIT,
-       CURRENT_TOWN_TRAINING,
-   }
-
-   public enum UnitEffect
-   {
-       NONE,
-       RADIOS,
-   }
-
-   public enum ObserveType
-   {
-       OT_UNIT,
-       OT_ARCANA,
-   }
-
-   public enum CutsceneTransitionType
-   {
-       CTT_UNIT,
-       CTT_ARCANA,
-       CTT_TRAIN,
-       CTT_JOURNEY1,
-   }
-
-   public enum CameraOffset
-   {
-       NONE,
-       DEFAULT,
-       ALL,
-       ONE_1,
-       ONE_2,
-       ONE_3,
-       ONE_4,
-       ONE_5,
-       ONE_6,
-       ONE_7,
-       ONE_8,
-       ONE_9,
-       TWIN_1,
-       TWIN_2,
-       TWIN_3,
-       TWIN_4,
-       TWIN_5,
-       TWIN_6,
-       TWIN_7,
-       TRIPLE_1,
-       TRIPLE_2,
-       TRIPLE_3,
-       TRIPLE_4,
-       TRIPLE_5,
-       POS1_2X,
-       POS2_2X,
-       POS3_2X,
-       POS4_2X,
-       POS5_2X,
-       POS6_2X,
-       POS7_2X,
-       POS8_2X,
-       POS9_2X,
-   }
-
-   public enum CameraOffsetTime
-   {
-       NONE,
-       SL,
-       NR,
-       FA,
-   }
-
-   public enum PotenType
-   {
-       POTEN_PASSIVE,
-   }
-
-   public enum RequestType
-   {
-       RT_BATTLE,
-       RT_NON_BATTLE,
-   }
-
-   public enum AbilityBonusType
-   {
-       ABT_COIN_BONUS,
-       ABT_PP_BONUS,
-       ABT_STAMINA_BONUS,
-       ABT_GREAT_SUCCESS_COIN_BONUS,
-   }
-
-   public enum JourneyBuffType
-   {
-       JBT_TS_UP,
-       JBT_TS_DOWN,
-       JBT_AP_BONUS,
-       JBT_PP_BONUS,
-       JBT_TRAINING_PP_BONUS,
-       JBT_TRAINING_PP_RATE_BONUS,
-       JBT_TRADE_DISCOUNT,
-       JBT_TRADE_SURCHARGE,
-       JBT_CONDITION_UP_HOLD,
-       JBT_POWER_TRAINING_HOLD,
-       JBT_HEALTH_TRAINING_HOLD,
-       JBT_ENDURANCE_TRAINING_HOLD,
-       JBT_FOCUS_TRAINING_HOLD,
-       JBT_PROTECT_TRAINING_HOLD,
-       JBT_POWER_TRAINING_UP,
-       JBT_HEALTH_TRAINING_UP,
-       JBT_ENDURANCE_TRAINING_UP,
-       JBT_FOCUS_TRAINING_UP,
-       JBT_PROTECT_TRAINING_UP,
-       JBT_POWER_TRAINING_DOWN,
-       JBT_HEALTH_TRAINING_DOWN,
-       JBT_ENDURANCE_TRAINING_DOWN,
-       JBT_FOCUS_TRAINING_DOWN,
-       JBT_PROTECT_TRAINING_DOWN,
-   }
-
-   public enum SkillActionType
-   {
-       SAT_ATTACK,
-       SAT_NONATTACK,
-   }
-
-   public enum RequestReqType
-   {
-       RRT_POWER,
-       RRT_HEALTH,
-       RRT_ENDURANCE,
-       RRT_FOCUS,
-       RRT_PROTECT,
-       RRT_LEADER_BATTLE_POWER,
-   }
-
-   public enum RewardUnitMotion
-   {
-       NONE,
-       SURPRISE,
-       SMILE,
-       NORMAL,
-       SERIOUS,
-       SAD,
-       ANGRY,
-   }
-
-   public enum JourneySdEventType
-   {
-       JSET_REQUEST_COLLECT,
-       JSET_REQUEST_EXPLORE,
-       JSET_REQUEST_DOCUMME,
-       JSET_REQUEST_COOK,
-       JSET_REQUEST_CLEAN,
-       JSET_REST_HOMELESS,
-       JSET_REST_HOME,
-       JSET_REST_MEDITATION,
-       JSET_TRADE_BOX_COMMON,
-       JSET_TRADE_FOOD,
-       JSET_TRADE_BOX_QUESTION,
-       JSET_JOURNEY_BUFF_WIN,
-       JSET_BATTLE_SKIP,
-   }
-
-   public enum FacilityBonusType
-   {
-       NONE,
-       SYNCHRO_SLOT_PLUS,
-       ACCRUE_BONUS_REWARD_01,
-       ACCRUE_BONUS_REWARD_02,
-       ACCRUE_BONUS_REWARD_03,
-       ACCRUE_BONUS_REWARD_04,
-       ACCRUE_BONUS_USER_EXP,
-       CRAFT_LIST_LEVEL,
-       CRAFT_GOLD_SALE,
-       TACTICS_COMMON_ATTACK,
-       TACTICS_COMMON_HP,
-       TACTICS_COMMON_DEFENSE,
-       TACTICS_COMMON_RATE_CRITICAL,
-       TACTICS_COMMON_RATE_CRITICAL_DAMAGE,
-       TACTICS_COMMON_RATE_EFFECT_HIT,
-       TACTICS_COMMON_RATE_EFFECT_EVADE,
-       TACTICS_COMMON_RATE_TRINITY,
-   }
-
-   public enum ContentsUnlockType
-   {
-       ACCOUNT_LEVEL,
-       NORMAL_BATTLE_CLEAR,
-       ALWAYS_OPEN,
-       JOURNEY_CLEAR,
-       SYNCHRO_LEVEL,
-   }
-
-   public enum ContentsTargetType
-   {
-       CT_CENTRAL_FACILITY_OFFICE,
-       CT_OBSERVE,
-       CT_SAVIOR_CENTRAL,
-       CT_SHOP,
-       CT_COMMUNITY,
-       CT_PVP,
-       CT_ACCRUE,
-       CT_SYNCHRO,
-       CT_BATTLE,
-       CT_CAMPAIGN,
-       CT_CRAFT,
-       CT_TACTICS,
-       CT_GUILD,
-       CT_FRIEND,
-       CT_FORTUNE,
-       CT_DECK_SLOT_1,
-       CT_DECK_SLOT_2,
-       CT_SAVIOR_LEVEL_UP,
-       CT_SAVIOR_SKILL_UP,
-       CT_SAVIOR_RESONANCE,
-       CT_SAVIOR_LIMIT_BREAK,
-       CT_SAVIOR_EQUIP,
-       CT_MISSION,
-       CT_DICTIONARY,
-       CT_LOBBY_MENU,
-       CT_LOBBY_NEWS_BANNER,
-       CT_MAINSTREAM_STORY,
-       CT_MAINSTREAM_OPERATION,
-       CT_EVENT,
-       CT_SYNCHRO_ENHANCE,
-       CT_CUBE_PALACE,
-   }
-
-   public enum DispelCondition
-   {
-       DC_NONE,
-       DC_ATTACK,
-       DC_DAMAGE,
-   }
-
-   public enum TransitionEffect
-   {
-       WIPE,
-       FADE,
-   }
-
-   public enum PvpRule
-   {
-       PR_DRAFT,
-       PR_BLIND,
-   }
-
-   public enum ShopType
-   {
-       RECOMMEND,
-       NORMAL_SHOP,
-       CASH_SHOP,
-       RANDOM_SHOP,
-       EVENT_SHOP,
-       GUILD_MEMBER_SHOP,
-       GUILD_MANAGER_SHOP,
-       GUILD_SHOP,
-   }
-
-   public enum PurchaseEventType
-   {
-       NONE,
-       SUBSCRIBE_30_DAY,
-   }
-
-   public enum QuantityLimitType
-   {
-       NONE,
-       DAY,
-       WEEK,
-       MONTH,
-       FIXED,
-       FIXED_HIDE,
-   }
-
-   public enum ProductUnlockReqType
-   {
-       NONE,
-       ACCOUNT_LEVEL,
-       BUY_SHOP_PRODUCT,
-       BUY_SHOP_PRODUCT_HIDE,
-       GUILD_LEVEL,
-   }
-
-   public enum ProductTag
-   {
-       NONE,
-       NEW,
-       HOT,
-   }
-
-   public enum ProductType
-   {
-       SPT_NORMAL,
-       SPT_EQUIP,
-   }
-
-   public enum RestType
-   {
-       RT_HOMELESS,
-       RT_HOME,
-       RT_MEDITATION,
-   }
-
-   public enum ItemEventType
-   {
-       IET_NORMAL,
-       IET_FOOD,
-       IET_RANDOM_BOX,
-   }
-
-   public enum BuffEffectType
-   {
-       BE_NONE,
-       BE_BURN,
-       BE_BLEEDING,
-       BE_POISON,
-       BE_FREEZING,
-       BE_COSMIC,
-       BE_HEAL,
-       BE_STUN,
-       BE_SLEEP,
-       BE_SILENCE,
-       BE_AGGRO,
-       BE_IMMORTAL,
-       BE_NOVABURST_REBOUND,
-       BE_RESURRECTION,
-       BE_INVINCIBLE,
-       BE_THUNDERBOLT,
-       BE_EXPLOSION,
-       BE_BLADE,
-       BE_ICE_EXPLOSION,
-   }
-
-   public enum BuffEffectHitTiming
-   {
-       BHT_NONE,
-       BHT_DAMAGE,
-       BHT_HEAL,
-       BHT_EXTRA_TURN,
-       BHT_RESURRECTION,
-   }
-
-   public enum BuffVfxHeight
-   {
-       BVH_ZERO,
-       BVH_HEAD,
-       BVH_BODY,
-   }
-
-   public enum EffectNodeSoundEventType
-   {
-       NONE,
-       PLAY_ONCE,
-       PLAY_LOOP,
-       PLAY_LOOP_MYTURN,
-   }
-
-   public enum BodyModelCategory
-   {
-       NONE,
-       TRAINING,
-       SWIM,
-       BATH,
-   }
-
-   public enum JourneyOpenType
-   {
-       OPEN,
-       CLOSE,
-       HIDE,
-   }
-
-   public enum PvpType
-   {
-       PT_ASYNC,
-       PT_RANK,
-       PT_PRIVATE,
-   }
-
-   public enum PvpMatchingRule
-   {
-       PMR_NPC_ONLY,
-       PMR_PROTECT,
-       PMR_NORMAL,
-   }
-
-   public enum NpcDeckType
-   {
-       NULL,
-       NDT_ASYNC_NPC_BATTLE,
-   }
-
-   public enum PvpSeasonType
-   {
-       PT_ASYNC_MAIN,
-       PT_ASYNC_FREE,
-       PT_RANK_MAIN,
-       PT_RANK_FREE,
-   }
-
-   public enum CraftFilterType
-   {
-       CFT_MIX,
-       CFT_WEAPON,
-       CFT_HEAD,
-       CFT_ARMOR,
-       CFT_NECKLACE,
-       CFT_RING,
-       CFT_SHOES,
-   }
-
-   public enum CraftRewardType
-   {
-       CRAFT_NORMAL,
-       CRAFT_RANDOM,
-   }
-
-   public enum DeckSlotType
-   {
-       ST_FREE,
-       ST_NPC,
-       ST_GUEST,
-       ST_CLOSE,
-   }
-
-   public enum CraftUnlockType
-   {
-       NONE,
-       CRAFT_LIST_LEVEL,
-   }
-
-   public enum NarrativeTag
-   {
-       NT_COOK,
-       NT_SNACK,
-       NT_GIFT,
-       NT_CHARM,
-       NT_VALUABLES,
-   }
-
-   public enum BuffFrequency
-   {
-       BF_ALWAYS,
-       BF_OFTEN,
-       BF_RARELY,
-   }
-
-   public enum BlessSuccessionType
-   {
-       BST_NONE,
-       BST_START,
-       BST_JOIN_1,
-       BST_JOIN_2,
-   }
-
-   public enum TacticsLevelUnlockType
-   {
-       SYNCHRO_LEVEL,
-       COMMON_LEVEL,
-   }
-
-   public enum GuildEmblemType
-   {
-       GE_EMBLEM,
-       GE_FRAME,
-       GE_EMBLEM_COLOR,
-       GE_FRAME_COLOR,
-       GE_COLOR,
-   }
-
-   public enum GuildAttendanceType
-   {
-       BASIC,
-       ADD,
-   }
-
-   public enum AiUnlockType
-   {
-       AUT_AI_TEAM_CLEAR,
-       NONE,
-   }
-
-   public enum PointPositionSpine
-   {
-       NONE,
-       SPINE_JOURNEY_NPC_1,
-       SPINE_JOURNEY_NPC_2,
-       SPINE_JOURNEY_NPC_3,
-       SPINE_JOURNEY_NPC_4,
-       SPINE_JOURNEY_NPC_5,
-       SPINE_JOURNEY_NPC_6,
-       SPINE_JOURNEY_NPC_7,
-       SPINE_JOURNEY_NPC_8,
-       SPINE_JOURNEY_NPC_9,
-       SPINE_JOURNEY_NPC_10,
-   }
-
-   public enum NKM_MAP_POS_TYPE
-   {
-       NMPT_NORMAL,
-       NMPT_BOSS,
-       NMPT_RAID_BOSS,
-       NMPT_NORMAL_A,
-       NMPT_NORMAL_B,
-       NMPT_NORMAL_C,
-       NMPT_NORMAL_D,
-       NMPT_BOSS_A,
-       NMPT_BOSS_B,
-       NMPT_BOSS_C,
-       NMPT_BOSS_D,
-       NMPT_RAID_BOSS_A,
-       NMPT_MAINSTORY_A,
-       NMPT_MAINSTORY_BOSS_A,
-       NMPT_TEST_NORMAL_1,
-       NMPT_TEST_NORMAL_2,
-       NMPT_TEST_NORMAL_3,
-       NMPT_TEST_BOSS_1,
-   }
-
-   public enum FavorType
-   {
-       FT_BASIC,
-       FT_DESSERT,
-       FT_TOOL,
-       FT_BOOK,
-       FT_FLOWER,
-       FT_COSMETICS,
-   }
-
-   public enum MissionTabType
-   {
-       MT_DAILY,
-       MT_WEEKLY,
-       MT_ACHIEVEMENT,
-       MT_GUILD,
-       MT_EVENT,
-   }
-
-   public enum MissionType
-   {
-       LOGIN_COUNT,
-       OBSERVE_COUNT,
-       JOURNEY_END_COUNT,
-       JOURNEY_TOTAL_SCORE,
-       ACCRUE_REWARD,
-       ACCRUE_FAST_REWARD,
-       NORMAL_BATTLE_CLEAR_COUNT,
-       JOURNEY_BATTLE_CLEAR_COUNT,
-       PVP_ASYNC_WIN,
-       PVP_ASYNC_PLAY,
-       PVP_RANK_WIN,
-       PVP_RANK_PLAY,
-       USE_WILL_POWER,
-       USE_NORMAL_ITEM,
-       GET_NORMAL_ITEM,
-       BUY_NORMAL_ITEM,
-       ACCOUNT_LEVEL,
-       NORMAL_BATTLE_CLEARED,
-       JOURNEY_BATTLE_CLEARED,
-       SAVIOR_SKILL_UP,
-       SAVIOR_RESONANCE_UP,
-       SAVIOR_UPGRADE_LIMIT,
-       ARCANA_UPGRADE_LIMIT,
-       SAVIOR_UPGRADE_STAR,
-       COLLECT_SAVIOR,
-       COLLECT_LIMIT_BREAK_SAVIOR,
-       COLLECT_STAR_GRADE_SAVIOR,
-       COLLECT_ARCANA,
-       COLLECT_ARCPOINT,
-       GUILD_ATTENDANCE_COUNT,
-       GUILD_DONATION_COUNT,
-       BUY_SHOP_TAB_ITEM,
-   }
-
-   public enum StoryTabType
-   {
-       STT_MAIN_STORY,
-       STT_JOURNEY_UNIT_STORY,
-       STT_JOURNEY_ARCANA_STORY,
-       STT_JOURNEY_SCENARIO_STORY,
-       STT_ARCHIVE,
-   }
-
-   public enum StoryUnlockType
-   {
-       SUT_NORMAL_BATTLE_CLEAR,
-       SUT_JOURNEY_EVENT_CLEAR,
-       SUT_CUTSCENE_VIEW,
-       SUT_SECENARIO_CLEAR,
-   }
-
-   public enum ShortCutType
-   {
-       SC_NONE,
-       SC_JOURNEY,
-       SC_ACCURE,
-       SC_CAMPAIGN,
-       SC_SHOP,
-       SC_SAVIOR,
-       SC_ARCANA,
-       SC_OBSERVE,
-       SC_GUNTLET_LOBBY,
-       SC_SHOP_PRODUCT,
-       SC_MISSION,
-   }
-
-   public enum BannerType
-   {
-       BTT_UNIT,
-       BTT_ARCANA,
-       BTT_SHOP,
-       BTT_EVENT,
-       BTT_STORY_EVENT,
-   }
-
-   public enum ProgressType
-   {
-       HIGHLIGHT_UI,
-       TOUCH_UI,
-       TOUCH_OPEN_UI,
-       TOUCH_CLOSE_UI,
-       MESSAGE_BOX_LEFT,
-       MESSAGE_BOX_MID,
-       MESSAGE_BOX_RIGHT,
-       TEXT,
-       WAIT_SECONDS,
-       SET_SCREEN_BG_ALPHA,
-       MARK_COMPLETE,
-       HIGHLIGHT_UNIT,
-       TOUCH_UNIT,
-       CLICK_UNIT,
-       WAIT_SKILL,
-       SCREEN_TOUCH,
-       PLAY_CUTSCENE,
-       WAIT_OPEN_UI,
-       WAIT_CLOSE_UI,
-   }
-
-   public enum TUTORIAL_REQ_Type
-   {
-       PROGRESS_CLEAR,
-       SCENARIO_CLEAR,
-       NORMAL_BATTLE_CLEAR,
-       JOURNEY_BATTLE_CLEAR,
-       JOURNEY_SCENARIO_PLAY,
-       PLAYER_LEVEL,
-       JOURNEY_EVENT_GROUPID,
-       JOURNEY_CUTSCENE_PLAY,
-   }
-
-   public enum ProgressPoint
-   {
-       LOBBY,
-       SCENARIO_SELECT,
-       SCENARIO_SETTING,
-       ARCANA,
-       ARCANA_LEVELUP,
-       ARCANA_LIMIT_BREAK,
-       ORIGIN_UNIT,
-       STELLAR_INVENTORY,
-       ITEM_INVENTORY,
-       EQUIP_INVENTORY,
-       EQUIP_ENCHANTMENT,
-       NORMAL_UNIT_DECK_SET,
-       NORMAL_BATTLE_RESULT,
-       JOURNEY_MAIN,
-       JOURNEY_EVENT_REWARD,
-       JOURNEY_TRAINING,
-       JOURNEY_BATTLE_INFO,
-       JOURNEY_BATTLE_RESULT,
-       JOURNEY_SHOP,
-       JOURNEY_REST,
-       JOURNEY_RESULT,
-       JOURNEY_RESULT_CHARM,
-       JOURNEY_END_SCORE,
-       JOURNEY_END_STELLAR_SAVE,
-       JOURNEY_CUTSCENE ,
-       MAINSTREAM_MAINSTORY,
-       MAINSTREAM_OPERATION,
-   }
-
-   public enum GuideType
-   {
-       GT_DESC,
-       GT_PREFAB,
-   }
-
-   public enum TUTORIAL_REQ_MarkType
-   {
-       NONE,
-       START,
-       END,
-   }
-
-   public enum BattleSkipCondition
-   {
-       BattleWin,
-       MissionAllClear,
-       AlwaysSkip,
-       UnableSkip,
-   }
-
-   public enum DifficultyMark
-   {
-       DM_VERY_EASY,
-       DM_EASY,
-       DM_NORMAL,
-       DM_HARD,
-       DM_VERY_HARD,
-   }
-
-   public enum PositiveType
-   {
-       PT_POSITIVE,
-       PT_NEGATIVE,
-   }
-
-   public enum TimeUnits
-   {
-       TU_MINUTE,
-       TU_HOUR,
-   }
-
-   public enum JourneySelectType
-   {
-       FIX,
-       RANDOM,
-   }
-
-   public enum ShopPanel
-   {
-       SP_NONE,
-       SP_CASH_SHOP,
-       SP_CONTENTS_SHOP,
-   }
+    public enum NKM_UNIT_TYPE_TEMP : short
+    {
+        [Description("설명 : NUT_INVALID")]
+        NUT_INVALID = 0,
+        [Description("설명 : NUT_SYSTEM")]
+        NUT_SYSTEM,
+        NUT_SAVIOR,
+        [Description("설명 : NUT_MERCENARY")]
+        NUT_MERCENARY,
+        [Description("설명 : NUT_MONSTER")]
+        NUT_MONSTER,
+        [Description("설명 : NUT_RAID_MONSTER")]
+        NUT_RAID_MONSTER,
+        [Description("설명 : NUT_ENV")]
+        NUT_ENV,
+        [Description("설명 : NUT_ENV2")]
+        NUT_ENV2,
+        [Description("설명 : NUT_ORBITAL_ARRAY")]
+        NUT_ORBITAL_ARRAY,
+    }
+
+    public enum MainPhaseType
+    {
+        MPT_SCHEDULE_NORMAL,
+        MPT_BATTLE_BOSS,
+        MPT_BATTLE_ELITE,
+        MPT_MOVE_TOWN,
+        MPT_ENDING,
+        MPT_RETURN,
+        MPT_BADEND,
+        MPT_SHOP,
+    }
+
+    public enum STAT_GRADE_TYPE
+    {
+        SG_G,
+        SG_G_PLUS,
+        SG_F,
+        SG_F_PLUS,
+        SG_E,
+        SG_E_PLUS,
+        SG_D,
+        SG_D_PLUS,
+        SG_C,
+        SG_C_PLUS,
+        SG_B,
+        SG_B_PLUS,
+        SG_A,
+        SG_A_PLUS,
+        SG_SG,
+        SG_SG_PLUS,
+        SG_SF,
+        SG_SF_PLUS,
+        SG_SE,
+        SG_SE_PLUS,
+        SG_SD,
+        SG_SD_PLUS,
+        SG_SC,
+        SG_SC_PLUS,
+        SG_SB,
+        SG_SB_PLUS,
+        SG_SA,
+        SG_SA_PLUS,
+        SG_SSG,
+        SG_SSG_PLUS,
+        SG_SSF,
+        SG_SSF_PLUS,
+        SG_SSE,
+        SG_SSE_PLUS,
+        SG_SSD,
+        SG_SSD_PLUS,
+        SG_SSC,
+        SG_SSC_PLUS,
+        SG_SSB,
+        SG_SSB_PLUS,
+        SG_SSA,
+        SG_SSA_PLUS,
+        SG_SSS,
+    }
+
+    public enum JOURNEY_GRADE_TYPE
+    {
+        AG_G,
+        AG_G_PLUS,
+        AG_F,
+        AG_F_PLUS,
+        AG_E,
+        AG_E_PLUS,
+        AG_D,
+        AG_D_PLUS,
+        AG_C,
+        AG_C_PLUS,
+        AG_B,
+        AG_B_PLUS,
+        AG_A,
+        AG_A_PLUS,
+        AG_SG,
+        AG_SG_PLUS,
+        AG_SF,
+        AG_SF_PLUS,
+        AG_SE,
+        AG_SE_PLUS,
+        AG_SD,
+        AG_SD_PLUS,
+        AG_SC,
+        AG_SC_PLUS,
+        AG_SB,
+        AG_SB_PLUS,
+        AG_SA,
+        AG_SA_PLUS,
+        AG_SSG,
+        AG_SSG_PLUS,
+        AG_SSF,
+        AG_SSF_PLUS,
+        AG_SSE,
+        AG_SSE_PLUS,
+        AG_SSD,
+        AG_SSD_PLUS,
+        AG_SSC,
+        AG_SSC_PLUS,
+        AG_SSB,
+        AG_SSB_PLUS,
+        AG_SSA,
+        AG_SSA_PLUS,
+        AG_SSS,
+    }
+
+    public enum CutsceneFilterType
+    {
+        NONE,
+        CFT_NORMAL,
+        CFT_SEPIA,
+        CFT_SEPIASTATIC,
+        CFT_GRAY,
+        CFT_FULL_TITLE,
+        CFT_FULL_UI,
+        CFT_TEXT_BOX_INVISIBLE,
+    }
+
+    public enum CutsceneUnitPos
+    {
+        POS1,
+        POS2,
+        POS3,
+        POS4,
+        POS5,
+        POS6,
+        POS7,
+        POS8,
+        POS9,
+        NONE,
+    }
+
+    public enum CutsceneUnitCondition
+    {
+        NONE,
+        NORMAL,
+        MOVE,
+        DARK,
+    }
+
+    public enum CutsceneSoundLoopControl
+    {
+        NONE,
+        NCSC_LOOP,
+        NCSC_STOP,
+    }
+
+    public enum CutsceneChangeType
+    {
+        NONE,
+        CT_COLOR,
+        CT_SDRUN,
+        CT_TEAM_SAVIOR,
+        CT_FIGHT,
+    }
+
+    public enum CutsceneAutoHighlight
+    {
+        NONE,
+        False,
+        True,
+        ON,
+        OFF,
+        LIGHT,
+        DARK,
+    }
+
+    public enum CutsceneType
+    {
+        NCT_MAIN,
+        NCT_JOURNEY,
+        NCT_UNIT,
+        NCT_ARCANA,
+        NCT_REST,
+        NCT_ETC,
+        NCT_TEST,
+        NCT_REQUEST,
+        NCT_TRAINING,
+        NCT_PERSONAL,
+        NCT_EVENT,
+    }
+
+    public enum CutsceneClearType
+    {
+        NONE,
+        CLEARTEXT,
+        CLEARUNIT,
+        CLEARALL,
+    }
+
+    public enum TalkPositionControlType
+    {
+        NONE,
+        TALKCENTER,
+        TALKCAPTION,
+    }
+
+    public enum SlateControlType
+    {
+        NONE,
+        SLATE_WAIT,
+        SLATE_NEXT,
+        SLATE_RESUME,
+        SLATE_JUMP,
+        SLATE_JUMPFORWARD,
+    }
+
+    public enum EmotionEffect
+    {
+        NONE,
+        THINK,
+        EMARK,
+        FUN,
+        UPSET,
+        HEART,
+        THINK2,
+        STRESS,
+        QMARK,
+    }
+
+    public enum TownOpenType
+    {
+        NONE,
+        TOT_TURN,
+        TOT_CLEAR_AREA,
+        TOT_CLEAR_COUNT,
+    }
+
+    public enum AllClearRewardType
+    {
+        NONE,
+        RT_STACK,
+        RT_EQUIP,
+    }
+
+    public enum BattleMissionType
+    {
+        NONE,
+        BMT_WIN,
+        BMT_LIMIT_TURN,
+        BMT_SURVIVE,
+        BMT_ALL_SURVIVE,
+        BMT_NON_BATTLE,
+    }
+
+    public enum BattleMissionBonusType
+    {
+        NONE,
+        BT_GOLD,
+        BT_COIN,
+        BT_EXP,
+    }
+
+    public enum JourneyBattleRewardBonusType
+    {
+        NONE,
+        BT_COIN,
+    }
+
+    public enum NormalBattleRewardBonusType
+    {
+        NONE,
+        BT_GOLD,
+    }
+
+    public enum HurdleType
+    {
+        HT_MOVE_TOWN,
+        HT_MOVE_TOWN_ANY,
+        HT_BATTLE_WIN,
+        HT_BATTLE_ATTEND,
+        HT_BATTLE_COUNT,
+        HT_ITEM,
+        HT_WAIT,
+    }
+
+    public enum ItemSubType
+    {
+        ST_NORMAL,
+        ST_CONSUME,
+        ST_CHARM,
+    }
+
+    public enum NormalItemSubType
+    {
+        STN_INVISIBLE,
+        STN_NORMAL,
+        STN_CONSUME,
+        STN_ARCANA_PIECE,
+        STN_UNIT_PIECE,
+        STN_ICON,
+        STN_FRAME,
+        STN_LOBBY_BG,
+        STN_ARCPOINT,
+        STN_WALLPAPER,
+        STN_GUILD,
+        STN_EMOTICON,
+        STN_FAVOR,
+        STN_MISSION_POINT,
+        STN_EVENT_POINT,
+    }
+
+    public enum SpecialLobbyType
+    {
+        SLT_ARCPOINT,
+    }
+
+    public enum PackageType
+    {
+        PACKAGE_ALL,
+        PACKAGE_SELECT,
+        PACKAGE_RANDOM,
+    }
+
+    public enum UseType
+    {
+        UT_STAMINA,
+        UT_CONDITION,
+        UT_PP,
+        UT_JST_POWER,
+        UT_JST_HEALTH,
+        UT_JST_ENDURANCE,
+        UT_JST_FOCUS,
+        UT_JST_PROTECT,
+        UT_SE_POTEN,
+        UT_BUFF_ADD,
+        UT_BUFF_DELETE,
+        UT_BUFF_DELETE_NEGATIVE,
+    }
+
+    public enum NormalUseType
+    {
+        NUT_UNUSABLE,
+        NUT_PACKAGE,
+        NUT_OBSERVE,
+        NUT_WILLPOWER,
+        NUT_USER_EXP,
+        NUT_ACCRUE_REWARD_01,
+        NUT_ACCRUE_REWARD_02,
+        NUT_ACCRUE_REWARD_03,
+    }
+
+    public enum BodySize
+    {
+        BODY_S,
+        BODY_M,
+        BODY_L,
+        FEMALE_BODY_S,
+        FEMALE_BODY_M,
+        FEMALE_BODY_L,
+        MALE_BODY_S,
+        MALE_BODY_M,
+        MALE_BODY_L,
+        MONSTER_BODY_S,
+        MONSTER_BODY_M,
+        MONSTER_BODY_L,
+        MONSTER_BODY_XL,
+    }
+
+    public enum ImageNameFadeEffect
+    {
+        NONE,
+        IMG_NO_EFFECT,
+        IMG_FADEINOUT,
+    }
+
+    public enum BattleConditionTarget
+    {
+        BCT_A_LEADER,
+        BCT_A_TEAM_NOT_LEADER,
+        BCT_A_TEAM_ALL,
+        BCT_B_LEADER,
+        BCT_B_TEAM_NOT_LEADER,
+        BCT_B_TEAM_ALL,
+    }
+
+    public enum PromoteActiveType
+    {
+        PT_JOURNEY_START,
+        PT_TRAINNING,
+        PT_TRAINNING_TAG,
+    }
+
+    public enum PromoteValueType
+    {
+        PT_START_STAT,
+        PT_START_MAX_STAMINA,
+        PT_START_COIN,
+        PT_START_PP,
+        PT_START_ARCANAPOINT,
+        TRAINING_VALUE_UP,
+        TRAINING_SUPPORT_RATE_UP,
+        TRAINING_BONUS_PP,
+        TRAINING_FAIL_DOWN,
+        TRAINING_BIG_SUCCESS_BONUS,
+        TRAINING_BONUS_TAG,
+        TRAINING_VALUE_UP_TAG,
+        TRAINING_VALUE_RATE_UP_TAG,
+    }
+
+    public enum CharmTarget
+    {
+        BCT_TEAM_ALL,
+        BCT_LEADER,
+        BCT_TEAM_NOT_LEADER,
+        BCT_SUN,
+        BCT_MOON,
+        BCT_STAR,
+        BCT_ORDER,
+        BCT_CHAOS,
+        BCT_DEFENDER,
+        BCT_STRIKER,
+        BCT_RANGER,
+        BCT_CASTER,
+        BCT_ASSASSIN,
+        BCT_SUPPORTER,
+    }
+
+    public enum TownType
+    {
+        TT_RED,
+        TT_BLUE,
+        TT_GREEN,
+        TT_WHITE,
+        TT_BLACK,
+    }
+
+    public enum ArcanaExtraType
+    {
+        AET_TRAINNING,
+        AET_TRADE,
+    }
+
+    public enum NKM_UNIT_GRADE
+    {
+        NUG_NORMAL,
+        NUG_BOSS,
+    }
+
+    public enum Difficulty
+    {
+        EASY,
+        NORMAL,
+        HARD,
+        ELITE,
+        BOSS,
+    }
+
+    public enum CaptionType
+    {
+        CCT_GET,
+        CCT_LOBBY,
+        CCT_JOURNEY_MAIN,
+        CCT_LEADER_CONFIRM,
+        CCT_REINFORCE,
+        CCT_GIFT,
+        CCT_JOURNEY_BUY,
+        CCT_ARC_POINT,
+        CCT_BATTLE_READY,
+        CCT_BATTLE_SKIP_VICTORY,
+        CCT_BATTLE_VICTORY,
+        CCT_BATTLE_SKIP_DEFEAT,
+        CCT_BATTLE_DEFEAT,
+        CCT_STROKE,
+        CCT_TRACKING,
+    }
+
+    public enum ReqReactType
+    {
+        NONE,
+        REACT_NEGLECT,
+        REACT_BUY_FOOD,
+        REACT_BUY_CHARM,
+        REACT_BUY_COMMON,
+        REACT_UNIT_BIRTHDAY,
+        REACT_PLAYER_BIRTHDAY,
+        REACT_VALENTINE,
+        REACT_HALLOWEEN,
+        REACT_CHRISTMAS,
+        REACT_NEWYEAR,
+    }
+
+    public enum CondConditionBoundary
+    {
+        CONDITION_LESS,
+        CONDITION_MORE,
+        CONDITION_JUST,
+        NONE,
+    }
+
+    public enum PotenUnlockType
+    {
+        POTEN_COMMON_UNLOCK,
+        NONE,
+    }
+
+    public enum EquipType
+    {
+        ET_WEAPON,
+        ET_HEAD,
+        ET_ARMOR,
+        ET_NECKLACE,
+        ET_RING,
+        ET_SHOES,
+    }
+
+    public enum BattleContentsType
+    {
+        NORMAL,
+        EVENT,
+        MAINSTORY,
+        OPERATION,
+        CUBE,
+        SPECIAL_RAID,
+        CLOISTER,
+    }
+
+    public enum BattleTabType
+    {
+        NORMAL,
+        HARD,
+        EVENT_STORY,
+        EVENT_RAID,
+        EVENT_CHALLENGE,
+        CLOISTER_NORMAL,
+        CLOISTER_SUN,
+        CLOISTER_MOON,
+        CLOISTER_STAR,
+        CLOISTER_ORDER,
+        CLOISTER_CHAOS,
+    }
+
+    public enum BattleTabUnlockType
+    {
+        NONE,
+        PLAYER_LEVEL,
+        BATTLE_CLEAR,
+        GET_NORMAL_ITEM,
+        BATTLE_ALL_MISSION_CLEAR,
+    }
+
+    public enum IntervalTargetType
+    {
+        BATTLE_TAB,
+        BATTLE_CONTENTS,
+    }
+
+    public enum ArcanaType
+    {
+        AT_FOOL,
+        AT_MAGICIAN,
+        AT_PRIESTESS,
+        AT_EMPRESS,
+        AT_EMPEROR,
+        AT_HIEROPHANT,
+        AT_LOVERS,
+        AT_CHARIOT,
+        AT_STRENGTH,
+        AT_HERMIT,
+        AT_WOF,
+        AT_JUSTICE,
+        AT_HANGEDMAN,
+        AT_DEATH,
+        AT_TEMPERANCE,
+        AT_DEVIL,
+        AT_TOWER,
+        AT_STAR,
+        AT_MOON,
+        AT_SUN,
+        AT_JUDGEMENT,
+        AT_WORLD,
+    }
+
+    public enum ScenarioType
+    {
+        NONE,
+        TUTORIAL,
+    }
+
+    public enum ScenarioUnlockType
+    {
+        SUT_SENARIO,
+        SUT_USER_LEVEL,
+        SUT_NONE,
+    }
+
+    public enum ScenarioDifficulty
+    {
+        SD_EASY,
+        SD_NORMAL,
+        SD_HARD,
+    }
+
+    public enum RandomEventCategory
+    {
+        REC_ALL,
+        REC_SCENARIO,
+        REC_ARCANA,
+    }
+
+    public enum ArcanaSpecialTag
+    {
+        AST_ATK,
+        AST_HP,
+        AST_DEF,
+        AST_TURN_SPEED,
+        AST_RATE_CRITICAL,
+        AST_RATE_CRITICAL_DAMAGE,
+        AST_RATE_EFFECT_HIT,
+        AST_RATE_EFFECT_EVADE,
+        NONE,
+    }
+
+    public enum ArcanaClassTag
+    {
+        NURT_DEFENDER,
+        NURT_STRIKER,
+        NURT_RANGER,
+        NURT_CASTER,
+        NURT_ASSASSIN,
+        NURT_SUPPORTER,
+        NONE,
+    }
+
+    public enum SpecialTagType
+    {
+        NONE,
+        SPECIAL,
+        RAID,
+        EVALUATION,
+        COLLECT,
+        EXPLORE,
+        COOK,
+        CLEAN,
+        DOCUMENT,
+    }
+
+    public enum CutsceneRewardRequestType
+    {
+        RR_STAT,
+        RR_ITEM_CHECK,
+        RR_ITEM_USE,
+        RR_COIN_USE,
+        RR_STAMINA_USE,
+        RR_PP_USE,
+    }
+
+    public enum UnitGrade
+    {
+        R,
+        SR,
+        SSR,
+    }
+
+    public enum TradeTag
+    {
+        NONE,
+        TRADE_TRAVEL,
+        TRADE_SPECIAL,
+    }
+
+    public enum CURRENTTOWN
+    {
+        NONE,
+        CURRENT_TOWN,
+        CURRENT_TOWN_STREET,
+        CURRENT_TOWN_SQUARE,
+        CURRENT_TOWN_DOWNTOWN,
+        CURRENT_TOWN_CANDLE,
+        CURRENT_TOWN_REQUEST,
+        CURRENT_TOWN_SHOP,
+        CURRENT_TOWN_REST,
+        CURRENT_TOWN_RECRUIT,
+        CURRENT_TOWN_TRAINING,
+    }
+
+    public enum UnitEffect
+    {
+        NONE,
+        RADIOS,
+    }
+
+    public enum ObserveType
+    {
+        OT_UNIT,
+        OT_ARCANA,
+    }
+
+    public enum CutsceneTransitionType
+    {
+        CTT_UNIT,
+        CTT_ARCANA,
+        CTT_TRAIN,
+        CTT_JOURNEY1,
+    }
+
+    public enum CameraOffset
+    {
+        NONE,
+        DEFAULT,
+        ALL,
+        ONE_1,
+        ONE_2,
+        ONE_3,
+        ONE_4,
+        ONE_5,
+        ONE_6,
+        ONE_7,
+        ONE_8,
+        ONE_9,
+        TWIN_1,
+        TWIN_2,
+        TWIN_3,
+        TWIN_4,
+        TWIN_5,
+        TWIN_6,
+        TWIN_7,
+        TRIPLE_1,
+        TRIPLE_2,
+        TRIPLE_3,
+        TRIPLE_4,
+        TRIPLE_5,
+        POS1_2X,
+        POS2_2X,
+        POS3_2X,
+        POS4_2X,
+        POS5_2X,
+        POS6_2X,
+        POS7_2X,
+        POS8_2X,
+        POS9_2X,
+    }
+
+    public enum CameraOffsetTime
+    {
+        NONE,
+        SL,
+        NR,
+        FA,
+    }
+
+    public enum PotenType
+    {
+        POTEN_PASSIVE,
+    }
+
+    public enum RequestType
+    {
+        RT_BATTLE,
+        RT_NON_BATTLE,
+    }
+
+    public enum AbilityBonusType
+    {
+        ABT_COIN_BONUS,
+        ABT_PP_BONUS,
+        ABT_STAMINA_BONUS,
+        ABT_GREAT_SUCCESS_COIN_BONUS,
+    }
+
+    public enum JourneyBuffType
+    {
+        JBT_TS_UP,
+        JBT_TS_DOWN,
+        JBT_AP_BONUS,
+        JBT_PP_BONUS,
+        JBT_TRAINING_PP_BONUS,
+        JBT_TRAINING_PP_RATE_BONUS,
+        JBT_TRADE_DISCOUNT,
+        JBT_TRADE_SURCHARGE,
+        JBT_CONDITION_UP_HOLD,
+        JBT_POWER_TRAINING_HOLD,
+        JBT_HEALTH_TRAINING_HOLD,
+        JBT_ENDURANCE_TRAINING_HOLD,
+        JBT_FOCUS_TRAINING_HOLD,
+        JBT_PROTECT_TRAINING_HOLD,
+        JBT_POWER_TRAINING_UP,
+        JBT_HEALTH_TRAINING_UP,
+        JBT_ENDURANCE_TRAINING_UP,
+        JBT_FOCUS_TRAINING_UP,
+        JBT_PROTECT_TRAINING_UP,
+        JBT_POWER_TRAINING_DOWN,
+        JBT_HEALTH_TRAINING_DOWN,
+        JBT_ENDURANCE_TRAINING_DOWN,
+        JBT_FOCUS_TRAINING_DOWN,
+        JBT_PROTECT_TRAINING_DOWN,
+    }
+
+    public enum SkillActionType
+    {
+        SAT_ATTACK,
+        SAT_NONATTACK,
+    }
+
+    public enum RequestReqType
+    {
+        RRT_POWER,
+        RRT_HEALTH,
+        RRT_ENDURANCE,
+        RRT_FOCUS,
+        RRT_PROTECT,
+        RRT_LEADER_BATTLE_POWER,
+    }
+
+    public enum RewardUnitMotion
+    {
+        NONE,
+        SURPRISE,
+        SMILE,
+        NORMAL,
+        SERIOUS,
+        SAD,
+        ANGRY,
+    }
+
+    public enum JourneySdEventType
+    {
+        JSET_REQUEST_COLLECT,
+        JSET_REQUEST_EXPLORE,
+        JSET_REQUEST_DOCUMME,
+        JSET_REQUEST_COOK,
+        JSET_REQUEST_CLEAN,
+        JSET_REST_HOMELESS,
+        JSET_REST_HOME,
+        JSET_REST_MEDITATION,
+        JSET_TRADE_BOX_COMMON,
+        JSET_TRADE_FOOD,
+        JSET_TRADE_BOX_QUESTION,
+        JSET_JOURNEY_BUFF_WIN,
+        JSET_BATTLE_SKIP,
+    }
+
+    public enum FacilityBonusType
+    {
+        NONE,
+        SYNCHRO_SLOT_PLUS,
+        ACCRUE_BONUS_REWARD_01,
+        ACCRUE_BONUS_REWARD_02,
+        ACCRUE_BONUS_REWARD_03,
+        ACCRUE_BONUS_REWARD_04,
+        ACCRUE_BONUS_USER_EXP,
+        CRAFT_LIST_LEVEL,
+        CRAFT_GOLD_SALE,
+        TACTICS_COMMON_ATTACK,
+        TACTICS_COMMON_HP,
+        TACTICS_COMMON_DEFENSE,
+        TACTICS_COMMON_RATE_CRITICAL,
+        TACTICS_COMMON_RATE_CRITICAL_DAMAGE,
+        TACTICS_COMMON_RATE_EFFECT_HIT,
+        TACTICS_COMMON_RATE_EFFECT_EVADE,
+        TACTICS_COMMON_RATE_TRINITY,
+        DISPATCH_LIST_LEVEL,
+        DISPATCH_TASK_LIMIT_ADD,
+    }
+
+    public enum ContentsUnlockType
+    {
+        ACCOUNT_LEVEL,
+        NORMAL_BATTLE_CLEAR,
+        ALWAYS_OPEN,
+        ALWAYS_CLOSE,
+        JOURNEY_CLEAR,
+        SYNCHRO_LEVEL,
+    }
+
+    public enum ContentsTargetType
+    {
+        CT_CENTRAL_FACILITY_OFFICE,
+        CT_OBSERVE,
+        CT_SAVIOR_CENTRAL,
+        CT_SHOP,
+        CT_COMMUNITY,
+        CT_PVP,
+        CT_PVP_PRIVATE,
+        CT_PVP_RANK,
+        CT_ACCRUE,
+        CT_SYNCHRO,
+        CT_BATTLE,
+        CT_CAMPAIGN,
+        CT_CRAFT,
+        CT_DISPATCH,
+        CT_TACTICS,
+        CT_GUILD,
+        CT_FRIEND,
+        CT_FORTUNE,
+        CT_DECK_SLOT_1,
+        CT_DECK_SLOT_2,
+        CT_SAVIOR_LEVEL_UP,
+        CT_SAVIOR_SKILL_UP,
+        CT_SAVIOR_RESONANCE,
+        CT_SAVIOR_LIMIT_BREAK,
+        CT_SAVIOR_EQUIP,
+        CT_SAVIOR_FAVOR,
+        CT_MISSION,
+        CT_DICTIONARY,
+        CT_LOBBY_MENU,
+        CT_LOBBY_NEWS_BANNER,
+        CT_MAINSTREAM_STORY,
+        CT_MAINSTREAM_OPERATION,
+        CT_EVENT,
+        CT_SYNCHRO_ENHANCE,
+        CT_CUBE_PALACE,
+        CT_MANAGEMENT,
+        CT_MANAGEMENT_SAVIOR,
+        CT_MANAGEMENT_ARCANA,
+        CT_MANAGEMENT_ORGANIZE,
+        CT_MANAGEMENT_INVENTORY,
+        CT_SHOP_CONTENT,
+        CT_SHOP_CASH,
+        CT_NOVA_BURST,
+        CT_BATTLE_OVERLAP,
+        CT_BATTLE_AUTO,
+        CT_BATTLE_SPEED,
+        CT_BATTLE_SKIP,
+        CT_LOBBY_BATTLE_BUTTON,
+        CT_SPECIAL_RAID,
+        CT_ORBITAL_ARRAY,
+        CT_ORBITAL_ARRAY_REINFORCE,
+        CT_CLOISTER,
+    }
+
+    public enum DispelCondition
+    {
+        DC_NONE,
+        DC_ATTACK,
+        DC_DAMAGE,
+    }
+
+    public enum TransitionEffect
+    {
+        WIPE,
+        FADE,
+    }
+
+    public enum PvpRule
+    {
+        PR_DRAFT,
+        PR_BLIND,
+    }
+
+    public enum ShopType
+    {
+        RECOMMEND,
+        NORMAL_SHOP,
+        CASH_SHOP,
+        RANDOM_SHOP,
+        CASH_SHOP_POPUP,
+        EVENT_SHOP,
+        SUBSCRIPTION_SHOP,
+        GUILD_MEMBER_SHOP,
+        GUILD_MANAGER_SHOP,
+        GUILD_SHOP,
+    }
+
+    public enum ShopTabUnlockReqType
+    {
+        PLAYER_LEVEL,
+        FIRST_UNIT_LEVEL,
+        FIRST_STAR_GRADE,
+        BATTLE_CLEAR,
+    }
+
+    public enum ShopSlotDisplayType
+    {
+        NORMAL,
+        STARSTONE,
+    }
+
+    public enum PurchaseEventType
+    {
+        NONE,
+        SUBSCRIBE_30_DAY,
+    }
+
+    public enum QuantityLimitType
+    {
+        NONE,
+        DAY,
+        WEEK,
+        MONTH,
+        FIXED,
+        FIXED_HIDE,
+    }
+
+    public enum ProductUnlockReqType
+    {
+        NONE,
+        ACCOUNT_LEVEL,
+        BUY_SHOP_PRODUCT,
+        BUY_SHOP_PRODUCT_HIDE,
+        GUILD_LEVEL,
+    }
+
+    public enum ProductTag
+    {
+        NONE,
+        NEW,
+        HOT,
+    }
+
+    public enum ProductType
+    {
+        SPT_NORMAL,
+        SPT_EQUIP,
+    }
+
+    public enum PackageElementType
+    {
+        NORMAL,
+        EQUIP,
+        UNIT,
+        ARCANA,
+    }
+
+    public enum RestType
+    {
+        RT_HOMELESS,
+        RT_HOME,
+        RT_MEDITATION,
+    }
+
+    public enum ItemEventType
+    {
+        IET_NORMAL,
+        IET_FOOD,
+        IET_RANDOM_BOX,
+    }
+
+    public enum BuffEffectType
+    {
+        BE_NONE,
+        BE_BURN,
+        BE_BLEEDING,
+        BE_POISON,
+        BE_FREEZING,
+        BE_COSMIC,
+        BE_HEAL,
+        BE_STUN,
+        BE_SLEEP,
+        BE_SILENCE,
+        BE_AGGRO,
+        BE_IMMORTAL,
+        BE_NOVABURST_REBOUND,
+        BE_RESURRECTION,
+        BE_INVINCIBLE,
+        BE_THUNDERBOLT,
+        BE_EXPLOSION,
+        BE_BLADE,
+        BE_ICE_EXPLOSION,
+        BE_PERSES_SWORD_1
+    }
+
+    public enum BuffEffectHitTiming
+    {
+        BHT_NONE,
+        BHT_DAMAGE,
+        BHT_HEAL,
+        BHT_EXTRA_TURN,
+        BHT_RESURRECTION,
+    }
+
+    public enum BuffVfxHeight
+    {
+        BVH_ZERO,
+        BVH_HEAD,
+        BVH_BODY,
+    }
+
+    public enum EffectNodeSoundEventType
+    {
+        NONE,
+        PLAY_ONCE,
+        PLAY_LOOP,
+        PLAY_LOOP_MYTURN,
+    }
+
+    public enum BodyModelCategory
+    {
+        NONE,
+        TRAINING,
+        SWIM,
+        BATH,
+    }
+
+    public enum JourneyOpenType
+    {
+        OPEN,
+        CLOSE,
+        HIDE,
+    }
+
+    public enum PvpType
+    {
+        PT_ASYNC,
+        PT_RANK,
+        PT_PRIVATE,
+    }
+
+    public enum PvpMatchingRule
+    {
+        PMR_NPC_ONLY,
+        PMR_PROTECT,
+        PMR_NORMAL,
+    }
+
+    public enum NpcDeckType
+    {
+        NULL,
+        NDT_ASYNC_NPC_BATTLE,
+    }
+
+    public enum PvpSeasonType
+    {
+        PT_ASYNC_MAIN,
+        PT_ASYNC_FREE,
+        PT_RANK_MAIN,
+        PT_RANK_FREE,
+    }
+
+    public enum CraftFilterType
+    {
+        CFT_MIX,
+        CFT_WEAPON,
+        CFT_HEAD,
+        CFT_ARMOR,
+        CFT_NECKLACE,
+        CFT_RING,
+        CFT_SHOES,
+    }
+
+    public enum CraftRewardType
+    {
+        CRAFT_NORMAL,
+        CRAFT_RANDOM,
+    }
+
+    public enum DeckSlotType
+    {
+        ST_FREE,
+        ST_NPC,
+        ST_GUEST,
+        ST_LOCK,
+    }
+
+    public enum CraftUnlockType
+    {
+        NONE,
+        CRAFT_LIST_LEVEL,
+    }
+
+    public enum NarrativeTag
+    {
+        NT_COOK,
+        NT_SNACK,
+        NT_GIFT,
+        NT_CHARM,
+        NT_VALUABLES,
+    }
+
+    public enum BuffFrequency
+    {
+        BF_ALWAYS,
+        BF_OFTEN,
+        BF_RARELY,
+    }
+
+    public enum BlessSuccessionType
+    {
+        BST_NONE,
+        BST_START,
+        BST_JOIN_1,
+        BST_JOIN_2,
+    }
+
+    public enum TacticsLevelUnlockType
+    {
+        SYNCHRO_LEVEL,
+        COMMON_LEVEL,
+    }
+
+    public enum GuildEmblemType
+    {
+        GE_EMBLEM,
+        GE_FRAME,
+        GE_EMBLEM_COLOR,
+        GE_FRAME_COLOR,
+        GE_COLOR,
+    }
+
+    public enum GuildAttendanceType
+    {
+        BASIC,
+        ADD,
+    }
+
+    public enum AiUnlockType
+    {
+        AUT_AI_TEAM_CLEAR,
+        NONE,
+    }
+
+    public enum PointPositionSpine
+    {
+        NONE,
+        SPINE_JOURNEY_NPC_1,
+        SPINE_JOURNEY_NPC_2,
+        SPINE_JOURNEY_NPC_3,
+        SPINE_JOURNEY_NPC_4,
+        SPINE_JOURNEY_NPC_5,
+        SPINE_JOURNEY_NPC_6,
+        SPINE_JOURNEY_NPC_7,
+        SPINE_JOURNEY_NPC_8,
+        SPINE_JOURNEY_NPC_9,
+        SPINE_JOURNEY_NPC_10,
+    }
+
+    public enum NKM_MAP_POS_TYPE
+    {
+        NMPT_NORMAL,
+        NMPT_BOSS,
+        NMPT_RAID_BOSS,
+        NMPT_NORMAL_A,
+        NMPT_NORMAL_B,
+        NMPT_NORMAL_C,
+        NMPT_NORMAL_D,
+        NMPT_BOSS_A,
+        NMPT_BOSS_B,
+        NMPT_BOSS_C,
+        NMPT_BOSS_D,
+        NMPT_RAID_BOSS_A,
+        NMPT_MAINSTORY_A,
+        NMPT_MAINSTORY_BOSS_A,
+        NMPT_TEST_NORMAL_1,
+        NMPT_TEST_NORMAL_2,
+        NMPT_TEST_NORMAL_3,
+        NMPT_TEST_BOSS_1,
+        NMPT_TUTORIAL_JOURNEY,
+        NMPT_TEST_BATTLE_3,
+        NMPT_TEST_BATTLE_2,
+        NMPT_TEST_BATTLE_1,
+        NMPT_BATTLE_SLOT_4_A,
+        NMPT_BATTLE_SLOT_4_B,
+        NMPT_BATTLE_SLOT_4_C,
+        NMPT_BATTLE_SLOT_4_BOSS_A,
+        NMPT_BATTLE_SLOT_3_A,
+        NMPT_BATTLE_SLOT_3_B,
+        NMPT_BATTLE_SLOT_3_C,
+        NMPT_BATTLE_SLOT_3_BOSS_A,
+        NMPT_BATTLE_SLOT_2_A,
+        NMPT_BATTLE_SLOT_2_B,
+        NMPT_BATTLE_SLOT_2_C,
+        NMPT_BATTLE_SLOT_2_BOSS_A,
+        NMPT_BATTLE_SLOT_1_A,
+        NMPT_BATTLE_SLOT_1_B,
+        NMPT_BATTLE_SLOT_1_C,
+        NMPT_BATTLE_SLOT_1_BOSS_A,
+        NMPT_BATTLE_SLOT_4_RAID_BOSS_A,
+        NMPT_BATTLE_SLOT_3_RAID_BOSS_A,
+    }
+
+    public enum DeckSlotMax
+    {
+        BATTLE_SLOT_1 = 1,
+        BATTLE_SLOT_2 = 2,
+        BATTLE_SLOT_3 = 3,
+        BATTLE_SLOT_4 = 4,
+        BATTLE_SLOT_5 = 5,
+    }
+
+    public enum FavorType
+    {
+        FT_BASIC,
+        FT_DESSERT,
+        FT_TOOL,
+        FT_BOOK,
+        FT_FLOWER,
+        FT_COSMETICS,
+    }
+
+    public enum MissionTabType
+    {
+        MT_DAILY,
+        MT_WEEKLY,
+        MT_ACHIEVEMENT,
+        MT_GUILD,
+        MT_EVENT,
+    }
+
+    public enum MissionType
+    {
+        LOGIN_COUNT,
+        OBSERVE_COUNT,
+        JOURNEY_END_COUNT,
+        JOURNEY_TOTAL_SCORE,
+        ACCRUE_REWARD,
+        ACCRUE_FAST_REWARD,
+        NORMAL_BATTLE_CLEAR_COUNT,
+        JOURNEY_BATTLE_CLEAR_COUNT,
+        PVP_ASYNC_WIN,
+        PVP_ASYNC_PLAY,
+        PVP_RANK_WIN,
+        PVP_RANK_PLAY,
+        USE_WILL_POWER,
+        USE_NORMAL_ITEM,
+        GET_NORMAL_ITEM,
+        BUY_NORMAL_ITEM,
+        ACCOUNT_LEVEL,
+        NORMAL_BATTLE_CLEARED,
+        JOURNEY_BATTLE_CLEARED,
+        SAVIOR_SKILL_UP,
+        SAVIOR_RESONANCE_UP,
+        SAVIOR_UPGRADE_LIMIT,
+        ARCANA_UPGRADE_LIMIT,
+        SAVIOR_UPGRADE_STAR,
+        COLLECT_SAVIOR,
+        COLLECT_LIMIT_BREAK_SAVIOR,
+        COLLECT_STAR_GRADE_SAVIOR,
+        COLLECT_ARCANA,
+        COLLECT_ARCPOINT,
+        GUILD_ATTENDANCE_COUNT,
+        GUILD_DONATION_COUNT,
+        BUY_SHOP_TAB_ITEM,
+    }
+
+    public enum StoryTabType
+    {
+        STT_MAIN_STORY,
+        STT_JOURNEY_UNIT_STORY,
+        STT_JOURNEY_ARCANA_STORY,
+        STT_JOURNEY_SCENARIO_STORY,
+        STT_ARCHIVE,
+    }
+
+    public enum StoryUnlockType
+    {
+        SUT_NORMAL_BATTLE_CLEAR,
+        SUT_JOURNEY_EVENT_CLEAR,
+        SUT_CUTSCENE_VIEW,
+        SUT_SECENARIO_CLEAR,
+    }
+
+    public enum ShortCutType
+    {
+        SC_NONE,
+        SC_JOURNEY,
+        SC_ACCURE,
+        SC_CAMPAIGN,
+        SC_SHOP,
+        SC_SAVIOR,
+        SC_ARCANA,
+        SC_OBSERVE,
+        SC_GUNTLET_LOBBY,
+        SC_SHOP_PRODUCT,
+        SC_MISSION,
+    }
+
+    public enum BannerType
+    {
+        BTT_UNIT,
+        BTT_ARCANA,
+        BTT_SHOP,
+        BTT_EVENT,
+        BTT_STORY_EVENT,
+    }
+
+    public enum ProgressType
+    {
+        HIGHLIGHT_UI,
+        TOUCH_UI,
+        TOUCH_OPEN_UI,
+        TOUCH_CLOSE_UI,
+        MESSAGE_BOX_LEFT,
+        MESSAGE_BOX_MID,
+        MESSAGE_BOX_RIGHT,
+        TEXT,
+        WAIT_SECONDS,
+        SET_SCREEN_BG_ALPHA,
+        MARK_COMPLETE,
+        HIGHLIGHT_UNIT,
+        TOUCH_UNIT,
+        CLICK_UNIT,
+        WAIT_SKILL,
+        SCREEN_TOUCH,
+        PLAY_CUTSCENE,
+        WAIT_OPEN_UI,
+        WAIT_CLOSE_UI,
+        JOURNEY_AUTO_SET,
+        LONG_TOUCH_UI,
+        LONG_TOUCH_OPEN_UI,
+        LONG_TOUCH_CLOSE_UI,
+        GUIDE_VIEW,
+        CIRCLE_HIGHLIGHT_UI,
+        CIRCLE_HIGHLIGHT_UNIT,
+        CIRCLE_TOUCH_UI,
+        CIRCLE_TOUCH_OPEN_UI,
+        CIRCLE_TOUCH_CLOSE_UI,
+        CIRCLE_TOUCH_UNIT,
+        CIRCLE_CLICK_UNIT,
+        PRIORITY_SORTING_SAVIOR,
+        PRIORITY_SORTING_ARCHIVE,
+        PRIORITY_SORTING_ARCANA,
+        INPUT_BLOCK,
+    }
+
+    public enum TUTORIAL_REQ_Type
+    {
+        PROGRESS_CLEAR,
+        SCENARIO_CLEAR,
+        NORMAL_BATTLE_CLEAR,
+        JOURNEY_BATTLE_CLEAR,
+        JOURNEY_SCENARIO_PLAY,
+        PLAYER_LEVEL,
+        JOURNEY_EVENT_GROUPID,
+        JOURNEY_CUTSCENE_PLAY,
+    }
+
+    public enum ProgressPoint
+    {
+        LOBBY,
+        SCENARIO_SELECT,
+        SCENARIO_SETTING,
+        ARCANA,
+        ARCANA_LEVELUP,
+        ARCANA_LIMIT_BREAK,
+        ORIGIN_UNIT,
+        STELLAR_INVENTORY,
+        ITEM_INVENTORY,
+        EQUIP_INVENTORY,
+        EQUIP_ENCHANTMENT,
+        NORMAL_UNIT_DECK_SET,
+        NORMAL_BATTLE_RESULT,
+        OBSERVE,
+        OBSERVE_RESULT,
+        OBSERVE_CUTSCENE,
+        JOURNEY_MAIN,
+        JOURNEY_EVENT_REWARD,
+        JOURNEY_TRAINING,
+        JOURNEY_BATTLE_INFO,
+        JOURNEY_BATTLE_RESULT,
+        JOURNEY_SHOP,
+        JOURNEY_REST,
+        JOURNEY_CUTSCENE,
+        MAINSTREAM_MAINSTORY,
+        MAINSTREAM_OPERATION,
+        JOURNEY_END,
+        JOURNEY_END_CHARM,
+        JOURNEY_RESULT_SCORE,
+        JOURNEY_RESULT_STELLAR_SAVE,
+        SHOP_CONTENT,
+        SHOP_CASH,
+    }
+
+    public enum GuideType
+    {
+        GT_DESC,
+        GT_PREFAB,
+    }
+
+    public enum TUTORIAL_REQ_MarkType
+    {
+        NONE,
+        START,
+        END,
+    }
+
+    public enum BattleSkipCondition
+    {
+        BattleWin,
+        MissionAllClear,
+        AlwaysSkip,
+        UnableSkip,
+    }
+
+    public enum DifficultyMark
+    {
+        DM_VERY_EASY,
+        DM_EASY,
+        DM_NORMAL,
+        DM_HARD,
+        DM_VERY_HARD,
+    }
+
+    public enum PositiveType
+    {
+        PT_POSITIVE,
+        PT_NEGATIVE,
+    }
+
+    public enum TimeUnits
+    {
+        TU_MINUTE,
+        TU_HOUR,
+    }
+
+    public enum JourneySelectType
+    {
+        FIX,
+        RANDOM,
+    }
+
+    public enum ShopPanel
+    {
+        SP_NONE,
+        SP_CASH_SHOP,
+        SP_CONTENTS_SHOP,
+    }
+
+    public enum CubeType
+    {
+        CUBE_LIMIT_TURN_WAVE,
+        CUBE_LIMIT_TURN_GLOBAL,
+    }
+
+    public enum CubeSkillUnlockType
+    {
+        CUBE_PALACE_CLEAR,
+        CUBE_PALACE_LEVEL,
+    }
+
+    public enum BreakSkillType
+    {
+        SYSTEM_BREAK_SKILL,
+        NORMAL_BREAK_SKILL,
+    }
+
+    public enum UnitObserveType
+    {
+        UOT_NORMAL,
+        UOT_ANOTHER,
+        UOT_COSMIC,
+    }
 }

@@ -25,7 +25,7 @@ internal sealed record class FileMigrationTarget(string Location, string Key, in
             return;
         }
 
-        if (this.P4.CheckIfChanged(this.Location, out bool changed) == false)
+        if (this.P4.CheckIfChangedNotDepotPath(this.Location, out bool changed) == false)
         {
             ErrorContainer.Add($"변경여부 확인 실패. fileName:{this.Key}");
             return;

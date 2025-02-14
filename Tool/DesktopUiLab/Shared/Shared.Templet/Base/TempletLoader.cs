@@ -66,6 +66,12 @@ internal static class TempletLoader
         BuildGroupContainer<T>(filePath, groupIdName, strKeySelector: null);
     }
 
+    public static void BuildGroupContainer<T>(IEnumerable<string> filePathList, string groupIdName)
+    where T : class, IGroupTemplet, new()
+    {
+        BuildGroupContainer<T>(filePathList, groupIdName, strKeySelector: null);
+    }
+
     public static void BuildGroupContainer<T>(string filePath, string groupIdName, Func<T, string>? strKeySelector)
         where T : class, IGroupTemplet, new()
     {
@@ -89,6 +95,38 @@ internal static class TempletLoader
             }
 
             templet.Load(jToken);
+        }
+
+        TempletContainer<T>.SetData(templets, strKeySelector);
+    }
+
+    public static void BuildGroupContainer<T>(IEnumerable<string> filePathList, string groupIdName, Func<T, string>? strKeySelector)
+    where T : class, IGroupTemplet, new()
+    {
+        Dictionary<int, T> templets = new();
+
+        foreach (var filePath in filePathList)
+        {
+            var fullPath = Path.Combine(TempletRootPath, filePath);
+            var json = JsonUtil.Load(fullPath);
+            if (json["Data"] is not JArray jArray)
+            {
+                Log.ErrorAndExit($"[TempletContainer] file loading failed. fileName:{filePath} type:{typeof(T).Name}");
+                return;
+            }
+
+            foreach (var jToken in jArray)
+            {
+                int groupId = jToken.GetInt32(groupIdName);
+                if (templets.TryGetValue(groupId, out var templet) == false)
+                {
+                    templet = new T();
+                    templet.LoadGroupData(groupId, jToken);
+                    templets.Add(groupId, templet);
+                }
+
+                templet.Load(jToken);
+            }
         }
 
         TempletContainer<T>.SetData(templets, strKeySelector);
