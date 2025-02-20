@@ -114,6 +114,11 @@ public partial class App : Application
 
         CutSceneContainer.Instance.Load(VmGlobalState.Instance.CutSceneDataFilePath);
 
+        if (ErrorContainer.HasError)
+        {
+            Log.ErrorAndExit($"{ErrorContainer.ErrorCount}개의 에러 발생");
+        }
+
         if (Directory.Exists(ImageHelper.ThumbnailRoot) == false)
         {
             Log.Debug($"Creating thumbnail directory: {ImageHelper.ThumbnailRoot}");

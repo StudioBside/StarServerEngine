@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Cs.Core.Util;
 using Cs.Logging;
@@ -22,7 +23,8 @@ internal sealed class Migrator
 
     public static Migrator? Create(MigrationConfig config)
     {
-        var jsMain = File.ReadAllText("JsMain.js");
+        var assembly = Assembly.GetExecutingAssembly();
+        var jsMain = assembly.GetResourceString("JsonMigrator.EmbedScript.JsMain.js");
 
         var v8Engine = new V8ScriptEngine();
         v8Engine.AddHostType("Console", typeof(Console)); // 디버그용

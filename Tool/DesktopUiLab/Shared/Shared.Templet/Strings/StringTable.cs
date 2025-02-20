@@ -76,15 +76,25 @@ public sealed class StringTable
                     continue;
                 }
 
-                this.uniqueElements.Add(element.PrimeKey, element);
+                if (this.uniqueElements.ContainsKey(element.PrimeKey))
+                {
+                    ErrorContainer.Add($"[StringTable] duplicated key. key:{element.PrimeKey}");
+                }
+                else
+                {
+                    this.uniqueElements.Add(element.PrimeKey, element);
+                }
+
                 foreach (var key in element.Keys)
                 {
                     if (this.allKeysElements.ContainsKey(key))
                     {
-                        Log.ErrorAndExit($"[StringTable] duplicated key. key:{key}");
+                        ErrorContainer.Add($"[StringTable] duplicated key. key:{key}");
                     }
-
-                    this.allKeysElements.Add(key, element);
+                    else
+                    {
+                        this.allKeysElements.Add(key, element);
+                    }
                 }
 
                 set.Add(element);

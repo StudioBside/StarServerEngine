@@ -14,8 +14,8 @@
     <None Remove="JsMain.js" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="JsMain.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <EmbeddedResource Include="EmbedScript\JsMain.js">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -39,7 +39,7 @@
         }
 
         public static bool WriteFileLine { get; set; } = true;
-        internal static ILogProvider Provider { get; set; } = new ConsoleLogProvider();
+        public static ILogProvider Provider { get; internal set; } = new ConsoleLogProvider();
 
         public static void Initialize(ILogProvider? logProvider, LogLevelConfig levelConfig)
         {
