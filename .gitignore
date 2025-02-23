@@ -75,8 +75,6 @@ Tool/JsonMigrator/Steps/**
 !Tool/DesktopUiLab/**
 !Tool/StringStorage/
 !Tool/StringStorage/**
-!Tool/StarCli/
-!Tool/StarCli/**
 
 # Tool/ 하위 json 파일들은 모두 비공개
 Tool/**/*.json
