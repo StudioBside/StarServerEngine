@@ -1,40 +1,47 @@
-﻿namespace Cs.Slack.Exceptions
+﻿namespace Cs.Slack.Exceptions;
+
+using System.Collections.Generic;
+using System.Drawing;
+using Cs.Exception;
+using Cs.Logging;
+using Cs.Slack.Elements;
+
+public sealed class ExceptionSlackSender : IExceptionSlackSender
 {
-    using System.Collections.Generic;
-    using Cs.Exception;
-    using Cs.Logging;
-
-    public sealed class ExceptionSlackSender : ISlackSender
+    private readonly SlackEndpoint[] slackEndponts;
+   
+    public ExceptionSlackSender(SlackEndpoint[] slackEndponts)
     {
-        private readonly SlackEndpoint[] slackEndponts;
-       
-        public ExceptionSlackSender(SlackEndpoint[] slackEndponts)
+        List<SlackEndpoint> validEndpoints = new();
+        foreach (var endpoint in slackEndponts)
         {
-            List<SlackEndpoint> validEndpoints = new();
-            foreach (var endpoint in slackEndponts)
+            if (SlackGlobalSetting.TryGetChannelId(endpoint.Channel, out var channelId) == false)
             {
-                if (SlackGlobalSetting.TryGetChannelId(endpoint.Channel, out var channelId) == false)
-                {
-                    Log.Error($"크래시 리포트 할 슬랙 체널의 아이디를 찾지 못했습니다 channel:{endpoint.Channel}");
-                    continue;
-                }
-
-                validEndpoints.Add(new SlackEndpoint(endpoint.Token, channelId));
+                Log.Error($"크래시 리포트 할 슬랙 채널의 아이디를 찾지 못했습니다 channel:{endpoint.Channel}");
+                continue;
             }
 
-            this.slackEndponts = validEndpoints.ToArray();
+            validEndpoints.Add(new SlackEndpoint(endpoint.Token, channelId));
         }
 
-        public void SendSnippet(string title, string text)
-        {
-            using var builder = new SlackMessageBuilder(this.slackEndponts);
-            builder.PresetSnippet(title, text);
-        }
+        this.slackEndponts = validEndpoints.ToArray();
+    }
 
-        public void SendMessage(string userName, string authorName, string title, string text)
+    public void SendCrashReport(string title, string text)
+    {
+        using var writer = new SlackWriter(this.slackEndponts, SlackGlobalSetting.UserName);
+        writer.AddSnippet(title, text);
+    }
+
+    public void SendWarningMessage(string userName, string authorName, string title, string text)
+    {
+        using var writer = new SlackWriter(this.slackEndponts, userName);
+        writer.AddAttachment(new Attachment
         {
-            using var builder = new SlackMessageBuilder(this.slackEndponts);
-            builder.PresetAttachment(userName, authorName, title, text);
-        }
+            AuthorName = authorName,
+            Color = "#7CD197",
+            Title = title,
+            Text = text,
+        });
     }
 }

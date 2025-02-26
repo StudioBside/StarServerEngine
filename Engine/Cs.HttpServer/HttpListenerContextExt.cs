@@ -83,12 +83,6 @@ public static class HttpListenerContextExt
         }
     }
 
-    public static void SetResponse(this HttpListenerContext context, HttpStatusCode statusCode, object json)
-    {
-        byte[] buffer = JsonUtil.ToJsonBuffer(json);
-        context.SetResponseJson(buffer, statusCode);
-    }
-
     public static void SetLowCaseResponse(this HttpListenerContext context, HttpStatusCode statusCode, object json)
     {
         byte[] buffer = JsonUtil.ToLowCaseJsonBuffer(json);

@@ -8,6 +8,7 @@ public static class ServiceCollectionExt
     public static IServiceCollection AddCsDotCliServices(this IServiceCollection services)
     {
         return services
-            .AddSingleton<IHomePathConfig, HomePathConfig>();
+            .AddSingleton<IHomePathConfig, HomePathConfig>()
+            ;
     }
 }

@@ -1,25 +1,31 @@
-﻿namespace Cs.Slack.Blocks
+﻿namespace Cs.Slack.Blocks;
+
+using System.Collections.Generic;
+using Cs.Slack.Abstracts;
+using Cs.Slack.Objects;
+
+// https://api.slack.com/reference/block-kit/blocks#section
+public sealed class Section : IBlock
 {
-    using System.Collections.Generic;
-    using Cs.Slack.Abstracts;
+    public string Type => "section";
+    public TextObject? Text { get; private set; }
+    public List<TextObject>? Fields { get; private set; }
 
-    public sealed class Section : IBlock
+    public TextObject AddTextObject()
     {
-        public string Type => "section";
-        public TextBlock? Text { get; private set; }
-        public List<TextBlock> Fields { get; private set; } = new();
+        this.Text = new TextObject();
+        return this.Text;
+    }
 
-        public TextBlock AddText()
+    public TextObject AddField()
+    {
+        if (this.Fields is null)
         {
-            this.Text = new TextBlock();
-            return this.Text;
+            this.Fields = new List<TextObject>();
         }
 
-        public TextBlock AddField()
-        {
-            var result = new TextBlock();
-            this.Fields.Add(result);
-            return result;
-        }
+        var result = new TextObject();
+        this.Fields.Add(result);
+        return result;
     }
 }

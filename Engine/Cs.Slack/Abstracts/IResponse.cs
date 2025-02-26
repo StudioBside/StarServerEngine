@@ -1,8 +1,7 @@
-﻿namespace Cs.Slack.Abstracts
+﻿namespace Cs.Slack.Abstracts;
+
+public interface IResponse
 {
-    public interface IResponse
-    {
-        public bool Ok { get; }
-        public string Error { get; }
-    }
+    public bool Ok { get; }
+    public string Error { get; }
 }

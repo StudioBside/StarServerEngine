@@ -206,8 +206,8 @@ internal sealed class HomePathConfig : IHomePathConfig
 
     private string GetFilePath(HomePathConfigType type)
     {
-        var executeName = Path.GetFileNameWithoutExtension(Environment.ProcessPath);
-        var fileName = $".{executeName}Config";
+        var executableName = Path.GetFileNameWithoutExtension(Environment.ProcessPath);
+        var fileName = $".{executableName}Config";
 
         string homeDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 

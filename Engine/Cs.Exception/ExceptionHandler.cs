@@ -11,10 +11,10 @@ using System.Threading.Tasks;
 using Cs.Core.Util;
 using Cs.Logging;
 
-public interface ISlackSender
+public interface IExceptionSlackSender
 {
-    void SendSnippet(string title, string text);
-    void SendMessage(string userName, string authorName, string title, string text);
+    void SendCrashReport(string title, string text);
+    void SendWarningMessage(string userName, string authorName, string title, string text);
 }
 
 public sealed class ExceptionHandler
@@ -25,7 +25,7 @@ public sealed class ExceptionHandler
 
     private static string crashTarget = null!;
     private static CrashConfig crashConfig = null!;
-    private static ISlackSender slackSender = null!;
+    private static IExceptionSlackSender slackSender = null!;
     private static IDisposable sentryResource = null!;
     private static IReadOnlyList<Type> ignoreUnobservedTypes = null!;
 
@@ -38,7 +38,7 @@ public sealed class ExceptionHandler
         TaskScheduler.UnobservedTaskException += UnobserveredTaskExceptionHandler;
     }
 
-    public static void InitSlackSender(ISlackSender slackSender)
+    public static void InitSlackSender(IExceptionSlackSender slackSender)
     {
         ExceptionHandler.slackSender = slackSender;
     }
@@ -99,7 +99,7 @@ public sealed class ExceptionHandler
         var authorName = $"stream:{buildInfo.StreamName} revision:{buildInfo.Revision}";
 
         Log.Warn($"[SlackWarning] {authorName} {message}");
-        slackSender.SendMessage("Slack Warning", authorName, $"[{Hostname}] {crashTarget}", message);
+        slackSender.SendWarningMessage("Slack Warning", authorName, $"[{Hostname}] {crashTarget}", message);
     }
 
     private static bool GuardExceptionHandling()
@@ -161,7 +161,7 @@ public sealed class ExceptionHandler
         Log.Info("Sending crash slack...");
 
         // send slack
-        slackSender.SendSnippet($"{crashTarget} Crash", BuildMessage(ex, includeSummary: true));
+        slackSender.SendCrashReport($"{crashTarget} Crash", BuildMessage(ex, includeSummary: true));
     }
 
     private static void HandleException(Exception e)

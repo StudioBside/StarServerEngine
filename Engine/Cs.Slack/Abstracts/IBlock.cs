@@ -1,7 +1,6 @@
-﻿namespace Cs.Slack.Abstracts
+﻿namespace Cs.Slack.Abstracts;
+
+public interface IBlock
 {
-    public interface IBlock
-    {
-        string Type { get; }
-    }
+    string Type { get; }
 }

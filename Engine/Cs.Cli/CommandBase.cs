@@ -6,12 +6,19 @@ using Cs.Logging;
 public abstract class CommandBase : Command
 {
     private readonly IHomePathConfig config;
-    protected CommandBase(IHomePathConfig config, string name, string description) : base(name, description)
+    private readonly IAuthenticator authenticator = new Authentication.Authenticator();
+
+    protected CommandBase(
+        IHomePathConfig config,
+        string name,
+        string description)
+        : base(name, description)
     {
         this.config = config;
     }
 
     protected IHomePathConfig Config => this.config;
+    protected IAuthenticator Authenticator => this.authenticator;
 
     protected string? GetBranchConfig(string key)
     {

@@ -3,17 +3,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Betalgo.Ranul.OpenAI.ObjectModels;
 using Betalgo.Ranul.OpenAI.ObjectModels.RequestModels;
 using Betalgo.Ranul.OpenAI.ObjectModels.ResponseModels;
 using Cs.Logging;
 
-public sealed class GptTranslator(string apiKey) : GptClient(apiKey)
+public sealed class GptTranslator(string apiKey, int apiRpd) : GptClient(apiKey, apiRpd)
 {
-    private static readonly string PrimaryModelName = Models.Gpt_4o;
-    private static readonly string SecondaryModelName = Models.Gpt_3_5_Turbo_0125;
-    private long apiCallCount;
+    private static readonly string PrimaryModelName = Models.Gpt_4_turbo;
+    private static readonly string SecondaryModelName = Models.Gpt_4o;
     private string modelName = PrimaryModelName;
 
     public enum TranslationMode
@@ -23,8 +23,6 @@ public sealed class GptTranslator(string apiKey) : GptClient(apiKey)
         ToChineseTraditional,
         ToJapanese,
     }
-
-    public long ApiCallCount => this.apiCallCount;
 
     public static bool ValidateResult(string source, string translated, TranslationMode mode)
     {
@@ -95,13 +93,17 @@ public sealed class GptTranslator(string apiKey) : GptClient(apiKey)
         }
     }
 
-    public Task<string> Translate(TranslationMode mode, string sourceText)
+    public Task<string> Translate(TranslationMode mode, string sourceText, CancellationToken cancellation)
     {
         var request = CreateRequest(mode, sourceText, this.modelName);
-        return this.GetResponse(request);
+        return this.GetResponse(request, cancellation);
     }
 
-    public async Task<SingleProcessResult> Translate(TranslationMode mode, string sourceText, string translatedOld)
+    public async Task<SingleProcessResult> Translate(
+        TranslationMode mode,
+        string sourceText,
+        string translatedOld,
+        CancellationToken cancellation)
     {
         // 예전 번역이 존재하는 경우
         if (string.IsNullOrEmpty(translatedOld) == false)
@@ -124,15 +126,13 @@ public sealed class GptTranslator(string apiKey) : GptClient(apiKey)
         }
         else
         {
-            translatedNew = await this.Translate(mode, sourceText);
-            ++this.apiCallCount;
+            translatedNew = await this.Translate(mode, sourceText, cancellation);
         }
 
         if (ValidateResult(sourceText, translatedNew, mode) == false)
         {
             Log.Warn($"번역 결과가 유효하지 않아 재번역 합니다. mode:{mode} translated:{translatedNew}");
-            translatedNew = await this.ReTranslate(mode, sourceText, translatedNew);
-            ++this.apiCallCount;
+            translatedNew = await this.ReTranslate(mode, sourceText, translatedNew, cancellation);
 
             if (ValidateResult(sourceText, translatedNew, mode) == false)
             {
@@ -149,11 +149,11 @@ public sealed class GptTranslator(string apiKey) : GptClient(apiKey)
         TranslationMode mode,
         string sourceKor,
         string sourceEng,
-        string translatedOld)
+        string translatedOld,
+        CancellationToken cancellation)
     {
         var request = CreateRequest(mode, sourceKor, sourceEng, this.modelName);
-        var translatedNew = await this.GetResponse(request);
-        ++this.apiCallCount;
+        var translatedNew = await this.GetResponse(request, cancellation);
         var translated = true;
 
         if (ValidateResult(sourceKor, translatedNew, mode) == false)
@@ -168,11 +168,6 @@ public sealed class GptTranslator(string apiKey) : GptClient(apiKey)
         }
 
         return new SingleProcessResult(translated, translatedNew);
-    }
-
-    public void ResetApiCallCount()
-    {
-        this.apiCallCount = 0;
     }
 
     //// -----------------------------------------------------------------------------------------------
@@ -283,7 +278,7 @@ public sealed class GptTranslator(string apiKey) : GptClient(apiKey)
         };
     }
 
-    private Task<string> ReTranslate(TranslationMode mode, string input, string firstResponse)
+    private Task<string> ReTranslate(TranslationMode mode, string input, string firstResponse, CancellationToken cancellation)
     {
         var languageName = ToLanguageName(mode);
 
@@ -291,7 +286,7 @@ public sealed class GptTranslator(string apiKey) : GptClient(apiKey)
         request.Messages.Add(ChatMessage.FromAssistant(firstResponse));
         request.Messages.Add(ChatMessage.FromSystem($"You must translate it into {languageName}, not into English."));
         request.Messages.Add(ChatMessage.FromUser(input));
-        return this.GetResponse(request);
+        return this.GetResponse(request, cancellation);
     }
 
     public sealed record SingleProcessResult(bool Translated, string TranslatedText);

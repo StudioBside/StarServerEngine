@@ -43,6 +43,18 @@
             return PerThreadRandom.Instance.Next();
         }
 
+        public static string RandomString(int length)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            char[] stringChars = new char[length];
+            for (int i = 0; i < length; i++)
+            {
+                stringChars[i] = chars[PerThreadRandom.Instance.Next(chars.Length)];
+            }
+
+            return new string(stringChars);
+        }
+
         public static double NextDouble()
         {
             return PerThreadRandom.Instance.NextDouble();

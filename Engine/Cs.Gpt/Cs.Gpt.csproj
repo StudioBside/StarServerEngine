@@ -20,6 +20,7 @@
     </AssemblyAttribute>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Cs.Core\Cs.Core.csproj" />
     <ProjectReference Include="..\Cs.Logging\Cs.Logging.csproj" />
   </ItemGroup>
 </Project>

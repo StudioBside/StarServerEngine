@@ -1,4 +1,3 @@
-﻿namespace Cs.Slack.Elements
-{
-    public sealed record SnippetData(string Title, string Content);
-}
+﻿namespace Cs.Slack.Elements;
+
+public sealed record SnippetData(string Title, string Content);
