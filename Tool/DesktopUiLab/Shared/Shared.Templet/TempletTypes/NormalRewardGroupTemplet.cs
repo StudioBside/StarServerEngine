@@ -54,6 +54,17 @@ public sealed class NormalRewardGroupTemplet : IGroupTemplet
         }
     }
 
+    public List<(NormalRewardTemplet Reward, float Value)> GetRatio()
+    {
+        var result = new List<(NormalRewardTemplet, float)>();
+        foreach (var data in this.lottery)
+        {
+            result.Add((data.Value, (float)data.Ratio / this.TotalRatio));
+        }
+
+        return result;
+    }
+
     public readonly struct CaseData
     {
         public CaseData(int ratio, int accumulatedRatio, NormalRewardTemplet value)

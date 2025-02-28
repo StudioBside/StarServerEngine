@@ -1,4 +1,4 @@
-﻿namespace Cs.Core.Perforce;
+namespace Cs.Core.Perforce;
 
 using System;
 using System.Collections.Generic;
@@ -37,9 +37,9 @@ public readonly record struct P4Commander
 
     public bool OpenForEdit(string localFilePath, out string p4Output)
     {
-        var depotPath = this.ToSingleDepotPath(localFilePath);
+        var path = this.ConvertPath(localFilePath);
 
-        if (OutProcess.Run(CommandName, $"edit {depotPath}", out p4Output) == false)
+        if (OutProcess.Run(CommandName, $"edit {path}", out p4Output) == false)
         {
             return false;
         }
@@ -49,9 +49,9 @@ public readonly record struct P4Commander
 
     public bool OpenForEdit(string localPath, string extension, out string p4Output)
     {
-        var depotPath = this.ToDepotPath(localPath, extension);
+        var path = this.ConvertPath(localPath, extension);
 
-        if (OutProcess.Run(CommandName, $"edit {depotPath}", out p4Output) == false)
+        if (OutProcess.Run(CommandName, $"edit {path}", out p4Output) == false)
         {
             return false;
         }
@@ -75,9 +75,9 @@ public readonly record struct P4Commander
 
     public bool Delete(string localFilePath, out string p4Output)
     {
-        var depotPath = this.ToSingleDepotPath(localFilePath);
+        var path = this.ConvertPath(localFilePath);
 
-        if (OutProcess.Run(CommandName, $"delete {depotPath}", out p4Output) == false)
+        if (OutProcess.Run(CommandName, $"delete {path}", out p4Output) == false)
         {
             return false;
         }
@@ -92,9 +92,9 @@ public readonly record struct P4Commander
 
     public bool RevertUnchnaged(string localPath, string extension, out string p4Output)
     {
-        var depotPath = this.ToDepotPath(localPath, extension);
+        var path = this.ConvertPath(localPath, extension);
 
-        if (OutProcess.Run(CommandName, $"revert -a {depotPath}", out p4Output) == false)
+        if (OutProcess.Run(CommandName, $"revert -a {path}", out p4Output) == false)
         {
             return false;
         }
@@ -118,9 +118,9 @@ public readonly record struct P4Commander
 
     public bool RevertAll(string localPath, string extension, out string p4Output)
     {
-        var depotPath = this.ToDepotPath(localPath, extension);
+        var path = this.ConvertPath(localPath, extension);
 
-        if (OutProcess.Run(CommandName, $"revert {depotPath}", out p4Output) == false)
+        if (OutProcess.Run(CommandName, $"revert {path}", out p4Output) == false)
         {
             return false;
         }
@@ -144,18 +144,18 @@ public readonly record struct P4Commander
     
     public void AddNewFiles(string localDirPath, string extension)
     {
-        var depotPath = this.ToDepotPath(localDirPath, extension);
+        var path = this.ConvertPath(localDirPath, extension);
 
         // note: 더할 파일이 없으면 실패처리된다.
-        OutProcess.Run(CommandName, $"reconcile -a {depotPath}", out var p4Output);
+        OutProcess.Run(CommandName, $"reconcile -a {path}", out var p4Output);
     }
 
     public void AddNewFile(string localFilePath)
     {
-        var depotPath = this.ToSingleDepotPath(localFilePath);
+        var path = this.ConvertPath(localFilePath);
 
         // note: 더할 파일이 없으면 실패처리된다.
-        OutProcess.Run(CommandName, $"reconcile -a {depotPath}", out var p4Output);
+        OutProcess.Run(CommandName, $"reconcile -a {path}", out var p4Output);
     }
 
     public void AddNewFiles(IEnumerable<string> localPathList, string extension)
@@ -168,9 +168,9 @@ public readonly record struct P4Commander
 
     public bool CheckIfChanged(string localFilePath, out bool result)
     {
-        var depotPath = this.ToSingleDepotPath(localFilePath);
+        var path = this.ConvertPath(localFilePath);
 
-        if (OutProcess.Run(CommandName, $"diff -se {depotPath}", out var p4Output) == false)
+        if (OutProcess.Run(CommandName, $"diff -se {path}", out var p4Output) == false)
         {
             result = false;
             return p4Output.Contains(" - file(s) up-to-date.") // 파일 변경내용이 없거나, 이미 열려있을 때
@@ -182,7 +182,7 @@ public readonly record struct P4Commander
         return true;
     }
 
-    public bool CheckIfChangedNotDepotPath(string localFilePath, out bool result)
+    public bool CheckIfChangedNotpath(string localFilePath, out bool result)
     {
         if (OutProcess.Run(CommandName, $"diff -se {localFilePath}", out var p4Output) == false)
         {
@@ -198,25 +198,25 @@ public readonly record struct P4Commander
 
     public bool CheckIfOpened(string localFilePath)
     {
-        var depotPath = this.ToSingleDepotPath(localFilePath);
+        var path = this.ConvertPath(localFilePath);
 
-        OutProcess.Run(CommandName, $"opened {depotPath}", out var p4Output);
+        OutProcess.Run(CommandName, $"opened {path}", out var p4Output);
         return p4Output.Contains(" - edit") || // 이미 열려있을 때
             p4Output.Contains(" - add "); // 신규 생성된 파일
     }
 
     public bool CheckIfRegistered(string localFilePath)
     {
-        var depotPath = this.ToSingleDepotPath(localFilePath);
-        OutProcess.Run(CommandName, $"fstat {depotPath}", out var p4Output);
+        var path = this.ConvertPath(localFilePath);
+        OutProcess.Run(CommandName, $"fstat {path}", out var p4Output);
         return p4Output.Contains("headRev");
     }
 
     public List<string>? GetOpenedFiles(string localPath, string extension, out string p4Output)
     {
-        var depotPath = this.ToDepotPath(localPath, extension);
+        var path = this.ConvertPath(localPath, extension);
 
-        if (OutProcess.Run(CommandName, $"opened {depotPath}", out p4Output) == false)
+        if (OutProcess.Run(CommandName, $"opened {path}", out p4Output) == false)
         {
             if (p4Output.Contains(" - file(s) not opened on this client."))
             {
@@ -238,19 +238,14 @@ public readonly record struct P4Commander
 
     //// --------------------------------------------------------------------------------------------------------
 
-    private string ToSingleDepotPath(string localFilePath)
+    private string ConvertPath(string localFilePath)
     {
-        return Path.GetFullPath(localFilePath)
-            .Replace(this.ClientRoot, this.Stream)
-            .Replace('\\', '/');
+        return Path.GetFullPath(localFilePath).Replace('\\', '/');
     }
 
-    private string ToDepotPath(string localPath, string extension)
+    private string ConvertPath(string localFilePath, string extension)
     {
-        var temp = Path.GetFullPath(localPath)
-            .Replace(this.ClientRoot, this.Stream);
-
-        return Path.Combine(temp, $"...{extension}")
+        return Path.Combine(Path.GetFullPath(localFilePath), $"...{extension}")
             .Replace('\\', '/');
     }
 
