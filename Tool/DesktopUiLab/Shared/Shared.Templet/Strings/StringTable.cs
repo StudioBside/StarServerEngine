@@ -2,11 +2,14 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using Cs.Core;
 using Cs.Core.Util;
 using Cs.Logging;
 using Newtonsoft.Json.Linq;
 using StringStorage.SystemStrings;
+using StringStorage.Translation;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 public sealed class StringTable
 {
@@ -44,60 +47,20 @@ public sealed class StringTable
     internal void Load(string texTempletPath, SystemStringReader stringReader)
     {
         var l10nRoot = Path.Combine(texTempletPath, "L10N");
-        foreach (var file in Directory.EnumerateFiles(l10nRoot, "*.exported", SearchOption.TopDirectoryOnly))
+        foreach (var filePath in Directory.EnumerateFiles(l10nRoot, "*.exported", SearchOption.TopDirectoryOnly))
         {
-            var json = JsonUtil.Load(file);
-            if (json["Data"] is not JArray jArray)
+            switch (Path.GetFileName(filePath))
             {
-                Log.ErrorAndExit($"[StringTable] file loading failed. fileName:{file}");
-                return;
-            }
+                case var f when f.StartsWith("STRING_"):
+                    this.LoadValueString(filePath, stringReader);
+                    break;
+                case var f when f.StartsWith("KEY_STRING_"):
+                    //this.LoadKeyString(filePath, stringReader);
+                    break;
 
-            var categoryName = Path.GetFileNameWithoutExtension(file).Split('_')[^1];
-            if (string.IsNullOrEmpty(categoryName))
-            {
-                Log.ErrorAndExit($"[StringTable] categoryName is empty. fileName:{file}");
-                return;
-            }
-
-            var set = new StringCategory(categoryName);
-            this.categories.Add(categoryName, set);
-
-            if (stringReader.TryGetDb(categoryName, out var l10nDb) == false)
-            {
-                Log.Warn($"[StringTable] l10nDb 를 찾을 수 없습니다. categoryName:{categoryName}");
-            }
-
-            foreach (var token in jArray)
-            {
-                var element = new StringElement(token, categoryName, l10nDb);
-                if (element == null)
-                {
-                    continue;
-                }
-
-                if (this.uniqueElements.ContainsKey(element.PrimeKey))
-                {
-                    ErrorContainer.Add($"[StringTable] duplicated key. key:{element.PrimeKey}");
-                }
-                else
-                {
-                    this.uniqueElements.Add(element.PrimeKey, element);
-                }
-
-                foreach (var key in element.Keys)
-                {
-                    if (this.allKeysElements.ContainsKey(key))
-                    {
-                        ErrorContainer.Add($"[StringTable] duplicated key. key:{key}");
-                    }
-                    else
-                    {
-                        this.allKeysElements.Add(key, element);
-                    }
-                }
-
-                set.Add(element);
+                default:
+                    Log.Warn($"[StringTable] unknown file. filePath:{filePath}");
+                    break;
             }
         }
 
@@ -114,5 +77,126 @@ public sealed class StringTable
         }
 
         Log.Info($"[StringTable] loaded. uniqueCount:{this.uniqueElements.Count} allKeyCount:{this.allKeysElements.Count}");
+    }
+
+    private void LoadValueString(string filePath, SystemStringReader stringReader)
+    {
+        var json = JsonUtil.Load(filePath);
+        if (json["Data"] is not JArray jArray)
+        {
+            Log.ErrorAndExit($"[StringTable] file loading failed. fileName:{filePath}");
+            return;
+        }
+
+        var categoryName = Path.GetFileNameWithoutExtension(filePath).Split('_')[^1];
+        if (string.IsNullOrEmpty(categoryName))
+        {
+            Log.ErrorAndExit($"[StringTable] categoryName is empty. fileName:{filePath}");
+            return;
+        }
+
+        var category = new StringCategory(categoryName);
+        this.categories.Add(categoryName, category);
+
+        if (stringReader.TryGetDb(categoryName, out var l10nDb) == false)
+        {
+            Log.Warn($"[StringTable] l10nDb 를 찾을 수 없습니다. categoryName:{categoryName}");
+        }
+
+        foreach (var token in jArray)
+        {
+            var element = new StringElement(token, categoryName, l10nDb);
+            if (element == null)
+            {
+                continue;
+            }
+
+            if (this.uniqueElements.ContainsKey(element.PrimeKey))
+            {
+                ErrorContainer.Add($"[StringTable] duplicated key. key:{element.PrimeKey}");
+            }
+            else
+            {
+                this.uniqueElements.Add(element.PrimeKey, element);
+            }
+
+            foreach (var key in element.Keys)
+            {
+                if (this.allKeysElements.ContainsKey(key))
+                {
+                    ErrorContainer.Add($"[StringTable] duplicated key. key:{key}");
+                }
+                else
+                {
+                    this.allKeysElements.Add(key, element);
+                }
+            }
+
+            category.Add(element);
+        }
+    }
+
+    private void LoadKeyString(string filePath, SystemStringReader stringReader)
+    {
+        var json = JsonUtil.Load(filePath);
+        if (json["Data"] is not JArray jArray)
+        {
+            Log.ErrorAndExit($"[StringTable] file loading failed. fileName:{filePath}");
+            return;
+        }
+
+        var baseCategoryName = Path.GetFileNameWithoutExtension(filePath).Split('_')[^1];
+        if (string.IsNullOrEmpty(baseCategoryName))
+        {
+            Log.ErrorAndExit($"[StringTable] categoryName is empty. fileName:{filePath}");
+            return;
+        }
+
+        foreach (var token in jArray)
+        {
+            var categoryName = token.TryGetString("SubCategory", out var subCategoryName)
+                ? subCategoryName : baseCategoryName;
+
+            L10nReadOnlyDb? l10nDb = null;
+            if (this.categories.TryGetValue(categoryName, out var category) == false)
+            {
+                category = new StringCategory(categoryName);
+                this.categories.Add(categoryName, category);
+
+                if (stringReader.TryGetDb(baseCategoryName, out l10nDb) == false)
+                {
+                    Log.Warn($"[StringTable] l10nDb 를 찾을 수 없습니다. categoryName:{baseCategoryName}");
+                }
+            }
+
+            var element = new StringElement(token, baseCategoryName, l10nDb);
+            if (element == null)
+            {
+                continue;
+            }
+
+            if (this.uniqueElements.ContainsKey(element.PrimeKey))
+            {
+                ErrorContainer.Add($"[StringTable] duplicated key. key:{element.PrimeKey}");
+            }
+            else
+            {
+                this.uniqueElements.Add(element.PrimeKey, element);
+            }
+
+            foreach (var key in element.Keys)
+            {
+                if (this.allKeysElements.ContainsKey(key))
+                {
+                    ErrorContainer.Add($"[StringTable] duplicated key. key:{key}");
+                }
+                else
+                {
+                    this.allKeysElements.Add(key, element);
+                }
+            }
+
+            category.Add(element);
+        }
     }
 }
