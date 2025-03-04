@@ -21,7 +21,7 @@
             Sandbox,
             Cinematic,
 
-            Stage = 10,
+            Extern = 10,
             Review,
             Live,
 

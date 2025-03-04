@@ -12,8 +12,8 @@ using Cs.Logging;
 
 public sealed class GptTranslator(string apiKey, int apiRpd) : GptClient(apiKey, apiRpd)
 {
-    private static readonly string PrimaryModelName = Models.Gpt_4_turbo;
-    private static readonly string SecondaryModelName = Models.Gpt_4o;
+    private static readonly string PrimaryModelName = Models.Gpt_4o_mini;
+    private static readonly string SecondaryModelName = Models.Gpt_3_5_Turbo;
     private string modelName = PrimaryModelName;
 
     public enum TranslationMode
