@@ -37,10 +37,4 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Engine\Cs.Core\Cs.Core.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <None Update="README.md">
-      <PackagePath>\</PackagePath>
-      <Pack>true</Pack>
-    </None>
-  </ItemGroup>
 </Project>
