@@ -82,6 +82,14 @@
             <ListView.View>
                 <GridView>
                     <GridViewColumn
+                        Header="Category"
+                        Width="Auto"
+                        DisplayMemberBinding="{Binding CategoryName}"/>
+                    <GridViewColumn
+                        Header="Group"
+                        Width="Auto"
+                        DisplayMemberBinding="{Binding GroupName}"/>
+                    <GridViewColumn
                         Header="PrimeKey"
                         Width="400"
                         DisplayMemberBinding="{Binding PrimeKey}"/>
@@ -90,9 +98,9 @@
                         Width="50"
                         DisplayMemberBinding="{Binding KeyCount}"/>
                     <GridViewColumn
-                        Header="Category"
-                        Width="Auto"
-                        DisplayMemberBinding="{Binding CategoryName}"/>
+                        Header="Tag"
+                        Width="50"
+                        DisplayMemberBinding="{Binding Tag}"/>
                     <GridViewColumn Header="Text" Width="1000">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>

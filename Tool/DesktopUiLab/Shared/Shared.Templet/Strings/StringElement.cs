@@ -14,9 +14,19 @@
         private readonly List<string> keys = new();
         private readonly string[] values = new string[EnumUtil<L10nType>.Count];
 
-        public StringElement(JToken token, string categoryName, L10nReadOnlyDb? l10nDb)
+        public StringElement(
+            JToken token,
+            string categoryName,
+            string groupName,
+            L10nReadOnlyDb? l10nDb)
         {
             this.CategoryName = categoryName;
+            this.GroupName = groupName;
+
+            if (token.TryGetString("Tag", out var tag))
+            {
+                this.Tag = tag;
+            }
 
             if (token.TryGetString("Key", out var key))
             {
@@ -53,9 +63,12 @@
             }
 
             this.CategoryName = string.Empty;
+            this.GroupName = string.Empty;
         }
 
         public string CategoryName { get; }
+        public string GroupName { get; }
+        public string Tag { get; } = string.Empty;
         public string PrimeKey => this.keys.First();
         public int KeyCount => this.keys.Count;
         public IEnumerable<string> Keys => this.keys;

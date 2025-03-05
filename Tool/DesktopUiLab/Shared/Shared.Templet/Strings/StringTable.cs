@@ -9,7 +9,6 @@ using Cs.Logging;
 using Newtonsoft.Json.Linq;
 using StringStorage.SystemStrings;
 using StringStorage.Translation;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 public sealed class StringTable
 {
@@ -55,7 +54,7 @@ public sealed class StringTable
                     this.LoadValueString(filePath, stringReader);
                     break;
                 case var f when f.StartsWith("KEY_STRING_"):
-                    //this.LoadKeyString(filePath, stringReader);
+                    this.LoadKeyString(filePath, stringReader);
                     break;
 
                 default:
@@ -103,36 +102,46 @@ public sealed class StringTable
             Log.Warn($"[StringTable] l10nDb 를 찾을 수 없습니다. categoryName:{categoryName}");
         }
 
-        foreach (var token in jArray)
+        foreach (var groupToken in jArray)
         {
-            var element = new StringElement(token, categoryName, l10nDb);
-            if (element == null)
+            var groupName = groupToken.GetString("Name");
+            if (groupToken["DataList"] is not JArray dataList)
             {
-                continue;
+                Log.ErrorAndExit($"[StringTable] DataList is not found. fileName:{filePath}");
+                return;
             }
 
-            if (this.uniqueElements.ContainsKey(element.PrimeKey))
+            foreach (var token in dataList)
             {
-                ErrorContainer.Add($"[StringTable] duplicated key. key:{element.PrimeKey}");
-            }
-            else
-            {
-                this.uniqueElements.Add(element.PrimeKey, element);
-            }
-
-            foreach (var key in element.Keys)
-            {
-                if (this.allKeysElements.ContainsKey(key))
+                var element = new StringElement(token, categoryName, groupName, l10nDb);
+                if (element == null)
                 {
-                    ErrorContainer.Add($"[StringTable] duplicated key. key:{key}");
+                    continue;
+                }
+
+                if (this.uniqueElements.ContainsKey(element.PrimeKey))
+                {
+                    ErrorContainer.Add($"[StringTable] duplicated key. key:{element.PrimeKey}");
                 }
                 else
                 {
-                    this.allKeysElements.Add(key, element);
+                    this.uniqueElements.Add(element.PrimeKey, element);
                 }
-            }
 
-            category.Add(element);
+                foreach (var key in element.Keys)
+                {
+                    if (this.allKeysElements.ContainsKey(key))
+                    {
+                        ErrorContainer.Add($"[StringTable] duplicated key. key:{key}");
+                    }
+                    else
+                    {
+                        this.allKeysElements.Add(key, element);
+                    }
+                }
+
+                category.Add(element);
+            }
         }
     }
 
@@ -145,58 +154,65 @@ public sealed class StringTable
             return;
         }
 
-        var baseCategoryName = Path.GetFileNameWithoutExtension(filePath).Split('_')[^1];
-        if (string.IsNullOrEmpty(baseCategoryName))
+        var categoryName = Path.GetFileNameWithoutExtension(filePath).Split('_')[^1];
+        if (string.IsNullOrEmpty(categoryName))
         {
             Log.ErrorAndExit($"[StringTable] categoryName is empty. fileName:{filePath}");
             return;
         }
 
-        foreach (var token in jArray)
+        foreach (var groupToken in jArray)
         {
-            var categoryName = token.TryGetString("SubCategory", out var subCategoryName)
-                ? subCategoryName : baseCategoryName;
-
-            L10nReadOnlyDb? l10nDb = null;
-            if (this.categories.TryGetValue(categoryName, out var category) == false)
+            var groupName = groupToken.GetString("Name");
+            if (groupToken["DataList"] is not JArray dataList)
             {
-                category = new StringCategory(categoryName);
-                this.categories.Add(categoryName, category);
-
-                if (stringReader.TryGetDb(baseCategoryName, out l10nDb) == false)
+                Log.ErrorAndExit($"[StringTable] DataList is not found. fileName:{filePath}");
+                return;
+            }
+            
+            foreach (var token in dataList)
+            {
+                L10nReadOnlyDb? l10nDb = null;
+                if (this.categories.TryGetValue(categoryName, out var category) == false)
                 {
-                    Log.Warn($"[StringTable] l10nDb 를 찾을 수 없습니다. categoryName:{baseCategoryName}");
+                    category = new StringCategory(categoryName);
+                    this.categories.Add(categoryName, category);
+
+                    if (stringReader.TryGetDb(categoryName, out l10nDb) == false)
+                    {
+                        Log.Warn($"[StringTable] l10nDb 를 찾을 수 없습니다. categoryName:{categoryName}");
+                    }
                 }
-            }
 
-            var element = new StringElement(token, baseCategoryName, l10nDb);
-            if (element == null)
-            {
-                continue;
-            }
-
-            if (this.uniqueElements.ContainsKey(element.PrimeKey))
-            {
-                ErrorContainer.Add($"[StringTable] duplicated key. key:{element.PrimeKey}");
-            }
-            else
-            {
-                this.uniqueElements.Add(element.PrimeKey, element);
-            }
-
-            foreach (var key in element.Keys)
-            {
-                if (this.allKeysElements.ContainsKey(key))
+                var element = new StringElement(token, categoryName, groupName, l10nDb);
+                if (element == null)
                 {
-                    ErrorContainer.Add($"[StringTable] duplicated key. key:{key}");
+                    continue;
+                }
+
+                if (this.uniqueElements.ContainsKey(element.PrimeKey))
+                {
+                    ErrorContainer.Add($"[StringTable] duplicated key. key:{element.PrimeKey}");
                 }
                 else
                 {
-                    this.allKeysElements.Add(key, element);
+                    this.uniqueElements.Add(element.PrimeKey, element);
                 }
-            }
 
-            category.Add(element);
+                foreach (var key in element.Keys)
+                {
+                    if (this.allKeysElements.ContainsKey(key))
+                    {
+                        ErrorContainer.Add($"[StringTable] duplicated key. key:{key}");
+                    }
+                    else
+                    {
+                        this.allKeysElements.Add(key, element);
+                    }
+                }
+
+                category.Add(element);
+            }
         }
     }
 }
