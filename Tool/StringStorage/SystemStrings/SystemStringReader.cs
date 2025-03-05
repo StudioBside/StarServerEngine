@@ -12,7 +12,7 @@ using StringStorage.Translation;
 /// </summary>
 public sealed class SystemStringReader : IDisposable
 {
-    private readonly Dictionary<string /*category*/, L10nReadOnlyDb> dbList = new();
+    private readonly Dictionary<string /*dbName*/, L10nReadOnlyDb> dbList = new();
     public bool Initialize(string dbRoot)
     {
         // root에 존재하는 zip 파일을 대상으로 초기 로딩
@@ -36,16 +36,16 @@ public sealed class SystemStringReader : IDisposable
         }
     }
 
-    public bool TryGetDb(string category, [MaybeNullWhen(false)] out L10nReadOnlyDb db)
+    public bool TryGetDb(string dbName, [MaybeNullWhen(false)] out L10nReadOnlyDb db)
     {
-        return this.dbList.TryGetValue(category, out db);
+        return this.dbList.TryGetValue(dbName, out db);
     }
 
-    public SingleTextSet GetTextSet(string category, string key)
+    public SingleTextSet GetTextSet(string dbName, string key)
     {
-        if (this.dbList.TryGetValue(category, out var db) == false)
+        if (this.dbList.TryGetValue(dbName, out var db) == false)
         {
-            Log.Error($"string category not found. category:{category} key:{key}");
+            Log.Error($"string category not found. dbName:{dbName} key:{key}");
             return SingleTextSet.Empty;
         }
 

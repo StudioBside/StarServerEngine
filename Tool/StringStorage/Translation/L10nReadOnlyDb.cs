@@ -6,6 +6,9 @@ using StringStorage.Detail;
 
 public sealed class L10nReadOnlyDb(string path) : IDisposable
 {
+    public const string ValueStringDbName = "ValueString.db";
+    public const string KeyStringDbName = "KeyString.db";
+
     private readonly LevelDbReadOnly dbController = new(path);
 
     public void Dispose()
