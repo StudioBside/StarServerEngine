@@ -97,10 +97,16 @@
                         Header="KeyCount"
                         Width="50"
                         DisplayMemberBinding="{Binding KeyCount}"/>
-                    <GridViewColumn
-                        Header="Tag"
-                        Width="50"
-                        DisplayMemberBinding="{Binding Tag}"/>
+                    <GridViewColumn Header="Tag" Width="Auto">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <ui:HyperlinkButton Content="{Binding Tag}"
+                                    Command="{Binding DataContext.TagCommand,
+                                    RelativeSource={RelativeSource AncestorType=ListView}}"
+                                    CommandParameter="{Binding .}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                     <GridViewColumn Header="Text" Width="1000">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
@@ -170,10 +176,6 @@
                            Command="{Binding OpenInExplorer, Source={extensions:UtilCommands}}"
                            CommandParameter="{Binding ExportRoot, Source={services:DataExposure}}"/>
                 
-                <ui:Button Margin="0,0,10,0"
-                           IsEnabled="False"
-                       Content="번역 파일 적용"/>
-
                 <CheckBox Content="중복 텍스트만 보기"
                           IsChecked="{Binding ShowDupeOnly}"/>
 

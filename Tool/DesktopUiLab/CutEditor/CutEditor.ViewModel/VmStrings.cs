@@ -12,7 +12,9 @@ using CutEditor.Model.ExcelFormats;
 using Du.Core.Bases;
 using Du.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+using Shared.Templet.Base;
 using Shared.Templet.Strings;
+using Shared.Templet.TempletTypes;
 
 public sealed class VmStrings : VmPageBase
 {
@@ -35,6 +37,7 @@ public sealed class VmStrings : VmPageBase
         this.filteredList = provider.Build(StringTable.Instance.Elements);
         this.Filters = new string[] { DefaultFilter }.Concat(StringTable.Instance.CategoryNames).ToArray();
         this.ExportCommand = new RelayCommand(this.OnExport, () => this.selectedFilter != DefaultFilter);
+        this.TagCommand = new RelayCommand<StringElement>(this.OnTag);
 
         this.filteredList.SetSubFilter(e =>
         {
@@ -60,6 +63,7 @@ public sealed class VmStrings : VmPageBase
     public int TotalCount => this.filteredList.SourceCount;
     public IRelayCommand ExportCommand { get; }
     public IReadOnlyList<string> Filters { get; }
+    public IRelayCommand<StringElement> TagCommand { get; }
 
     public string SearchKeyword
     {
@@ -161,5 +165,19 @@ public sealed class VmStrings : VmPageBase
         }
 
         Log.Info($"파일 생성 완료. fileName:{nameOnly}");
+    }
+
+    private void OnTag(StringElement? element)
+    {
+        if (element is null)
+        {
+            return;
+        }
+
+        if (int.TryParse(element.Tag, out var unitId) && TempletContainer<Unit>.TryGet(unitId, out var unit))
+        {
+            IPageRouter router = this.services.GetRequiredService<IPageRouter>();
+            router.Route(unit);
+        }
     }
 }
