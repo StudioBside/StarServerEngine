@@ -97,7 +97,7 @@ public sealed class StringTable
         var category = new StringCategory(categoryName);
         this.categories.Add(categoryName, category);
 
-        if (stringReader.TryGetDb(categoryName, out var l10nDb) == false)
+        if (stringReader.TryGetDb(L10nReadOnlyDb.ValueStringDbName, out var l10nDb) == false)
         {
             Log.Warn($"[StringTable] l10nDb 를 찾을 수 없습니다. categoryName:{categoryName}");
         }
@@ -113,7 +113,7 @@ public sealed class StringTable
 
             foreach (var token in dataList)
             {
-                var element = new StringElement(token, categoryName, groupName, l10nDb);
+                var element = new StringElement(token, categoryName, groupName, l10nDb, isKeyString: false);
                 if (element == null)
                 {
                     continue;
@@ -161,6 +161,11 @@ public sealed class StringTable
             return;
         }
 
+        if (stringReader.TryGetDb(L10nReadOnlyDb.KeyStringDbName, out var l10nDb) == false)
+        {
+            Log.Warn($"[StringTable] l10nDb 를 찾을 수 없습니다. categoryName:{categoryName}");
+        }
+
         foreach (var groupToken in jArray)
         {
             var groupName = groupToken.GetString("Name");
@@ -172,19 +177,13 @@ public sealed class StringTable
             
             foreach (var token in dataList)
             {
-                L10nReadOnlyDb? l10nDb = null;
                 if (this.categories.TryGetValue(categoryName, out var category) == false)
                 {
                     category = new StringCategory(categoryName);
                     this.categories.Add(categoryName, category);
-
-                    if (stringReader.TryGetDb(categoryName, out l10nDb) == false)
-                    {
-                        Log.Warn($"[StringTable] l10nDb 를 찾을 수 없습니다. categoryName:{categoryName}");
-                    }
                 }
 
-                var element = new StringElement(token, categoryName, groupName, l10nDb);
+                var element = new StringElement(token, categoryName, groupName, l10nDb, isKeyString: true);
                 if (element == null)
                 {
                     continue;

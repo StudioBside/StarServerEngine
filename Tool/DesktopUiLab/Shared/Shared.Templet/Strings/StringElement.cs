@@ -18,7 +18,8 @@
             JToken token,
             string categoryName,
             string groupName,
-            L10nReadOnlyDb? l10nDb)
+            L10nReadOnlyDb? l10nDb,
+            bool isKeyString)
         {
             this.CategoryName = categoryName;
             this.GroupName = groupName;
@@ -42,7 +43,8 @@
             this.values[(int)L10nType.Korean] = token.GetString("Value");
 
             // 나머지는 DB에서 읽는다.
-            var textSet = l10nDb?.Get(this.values[(int)L10nType.Korean]);
+            var dbKey = isKeyString ? this.keys.First() : this.values[(int)L10nType.Korean];
+            var textSet = l10nDb?.Get(dbKey);
             for (int i = 1; i < this.values.Length; ++i)
             {
                 var l10nType = (L10nType)i;
