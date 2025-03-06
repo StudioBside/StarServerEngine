@@ -22,4 +22,24 @@ public static class FileSystem
         Log.Debug($"[FileSystem] create target path:{directoryPath}");
         Directory.CreateDirectory(directoryPath);
     }
+
+    public static bool SafeDelete(string filePath)
+    {
+        if (File.Exists(filePath) == false)
+        {
+            // 파일이 없는 경우도 성공으로 간주한다.
+            return true;
+        }
+
+        try
+        {
+            File.Delete(filePath);
+            return true;
+        }
+        catch (IOException e)
+        {
+            Log.Error($"[FileSystem] failed to delete file. path:{filePath} e:{e}");
+            return false;
+        }
+    }
 }
