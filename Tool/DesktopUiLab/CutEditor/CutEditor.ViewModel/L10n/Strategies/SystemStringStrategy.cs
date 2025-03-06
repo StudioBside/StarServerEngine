@@ -15,7 +15,7 @@ using StringStorage.SystemStrings;
 using static CutEditor.Model.Enums;
 using static StringStorage.Enums;
 
-internal sealed class SystemStringStrategy(VmL10n viewModel) : L10nStrategyBase(L10nSourceType.SystemString)
+internal sealed class SystemStringStrategy(VmL10n viewModel) : L10nStrategyBase(L10nSourceType.ValueString)
 {
     private readonly ObservableCollection<L10nMappingString> mappings = new();
     private string categoryName = string.Empty;

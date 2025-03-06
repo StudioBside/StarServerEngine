@@ -143,9 +143,9 @@ public sealed class VmHome : VmPageBase
         var nameOnly = Path.GetFileNameWithoutExtension(fileName);
 
         // 동일한 이름의 파일이 존재한다면 삭제.
-        if (File.Exists(fileName))
+        if (FileSystem.SafeDelete(fileName) == false)
         {
-            File.Delete(fileName);
+            return;
         }
 
         var cuts = CutFileIo.LoadCutData(scene.FileName, isShorten: false);

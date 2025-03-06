@@ -11,6 +11,7 @@ using CutEditor.ViewModel.L10n;
 using CutEditor.ViewModel.L10n.Strategies;
 using Du.Core.Bases;
 using Du.Core.Interfaces;
+using Shared.Templet.Strings;
 using static CutEditor.Model.Enums;
 using static StringStorage.Enums;
 
@@ -164,7 +165,8 @@ public sealed class VmL10n : VmPageBase,
         {
             L10nSourceType.CutsceneNormal => new CutsceneNormalStrategy(this),
             L10nSourceType.CutsceneShorten => new CutsceneShortenStrategy(this),
-            L10nSourceType.SystemString => new SystemStringStrategy(this),
+            L10nSourceType.ValueString => new SystemStringStrategy(this),
+            L10nSourceType.KeyString => new SystemStringStrategy(this),
             _ => throw new NotSupportedException($"지원하지 않는 타입입니다. type:{sourceType}"),
         };
 
@@ -188,13 +190,20 @@ public sealed class VmL10n : VmPageBase,
     {
         var nameOnly = Path.GetFileNameWithoutExtension(file);
 
-        // 파일 이름으로 데이터 타입을 판별.
-        var sourceType = nameOnly switch
+        L10nSourceType sourceType = L10nSourceType.CutsceneNormal;
+        if (StringCategory.GuessStringTypeByFileName(nameOnly, out var systemStringType))
         {
-            _ when nameOnly.StartsWith("SYSTEM_STRING_") => L10nSourceType.SystemString,
-            _ when nameOnly.StartsWith("SHORTEN_") => L10nSourceType.CutsceneShorten,
-            _ => L10nSourceType.CutsceneNormal,
-        };
+            sourceType = systemStringType switch
+            {
+                SystemStringType.ValueString => L10nSourceType.ValueString,
+                SystemStringType.KeyString => L10nSourceType.KeyString,
+                _ => throw new Exception($"지원하지 않는 시스템 스트링 타입입니다. systemStringType:{systemStringType}"),
+            };
+        }
+        else if (nameOnly.StartsWith("SHORTEN_"))
+        {
+            sourceType = L10nSourceType.CutsceneShorten;
+        }
 
         this.WriteLog($"소스 데이터 타입:{sourceType}");
 

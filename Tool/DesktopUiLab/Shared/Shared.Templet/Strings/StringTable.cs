@@ -94,7 +94,7 @@ public sealed class StringTable
             return;
         }
 
-        var category = new StringCategory(categoryName);
+        var category = new StringCategory(categoryName, SystemStringType.ValueString);
         this.categories.Add(categoryName, category);
 
         if (stringReader.TryGetDb(L10nReadOnlyDb.ValueStringDbName, out var l10nDb) == false)
@@ -179,7 +179,7 @@ public sealed class StringTable
             {
                 if (this.categories.TryGetValue(categoryName, out var category) == false)
                 {
-                    category = new StringCategory(categoryName);
+                    category = new StringCategory(categoryName, SystemStringType.KeyString);
                     this.categories.Add(categoryName, category);
                 }
 

@@ -8,6 +8,8 @@ public sealed class StringOutputExcelFormat : IL10nText
 {
     public StringOutputExcelFormat(StringElement element)
     {
+        this.GroupName = element.GroupName;
+    
         this.PrimeKey = element.PrimeKey;
         this.Korean = element.Korean;
         this.English = element.English;
@@ -21,6 +23,7 @@ public sealed class StringOutputExcelFormat : IL10nText
         // note: file에서 읽어들일 때 사용하기 때문에 빈 생성자를 만들어둡니다.
     }
 
+    public string GroupName { get; set; } = string.Empty;
     public string PrimeKey { get; set; } = string.Empty;
     public string Korean { get; set; } = string.Empty;
     public string English { get; set; } = string.Empty;

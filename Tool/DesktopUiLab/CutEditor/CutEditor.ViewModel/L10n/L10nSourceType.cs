@@ -4,5 +4,6 @@ public enum L10nSourceType
 {
     CutsceneNormal,
     CutsceneShorten,
-    SystemString,
+    ValueString,
+    KeyString,
 }

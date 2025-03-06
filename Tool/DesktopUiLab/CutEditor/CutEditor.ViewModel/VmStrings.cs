@@ -3,11 +3,9 @@
 using System;
 using System.Collections;
 using System.ComponentModel;
-using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
+using Cs.Core.Util;
 using Cs.Logging;
-using CutEditor.Model;
-using CutEditor.Model.Detail;
 using CutEditor.Model.ExcelFormats;
 using Du.Core.Bases;
 using Du.Core.Interfaces;
@@ -36,7 +34,7 @@ public sealed class VmStrings : VmPageBase
         this.Title = "시스템 스트링 리스트";
         this.filteredList = provider.Build(StringTable.Instance.Elements);
         this.Filters = new string[] { DefaultFilter }.Concat(StringTable.Instance.CategoryNames).ToArray();
-        this.ExportCommand = new RelayCommand(this.OnExport, () => this.selectedFilter != DefaultFilter);
+        this.ExportCommand = new AsyncRelayCommand(this.OnExport, () => this.selectedFilter != DefaultFilter);
         this.TagCommand = new RelayCommand<StringElement>(this.OnTag);
 
         this.filteredList.SetSubFilter(e =>
@@ -133,7 +131,7 @@ public sealed class VmStrings : VmPageBase
         }
     }
 
-    private void OnExport()
+    private async Task OnExport()
     {
         if (this.selectedFilter == DefaultFilter)
         {
@@ -147,24 +145,30 @@ public sealed class VmStrings : VmPageBase
             return;
         }
 
-        Log.Debug($"시스템 스트링 추출. category:{category.Name}");
-        var fileName = $"{VmGlobalState.ExportRoot}/SYSTEM_STRING_{category.Name}.xlsx";
-        var nameOnly = Path.GetFileNameWithoutExtension(fileName);
+        var notifier = this.services.GetRequiredService<IUserWaitingNotifier>();
+        using var closer = await notifier.StartWait($"exporting {category.GetExportFileName()} ...");
 
-        // 동일한 이름의 파일이 존재한다면 삭제.
-        if (File.Exists(fileName))
+        await Task.Run(() =>
         {
-            File.Delete(fileName);
-        }
- 
-        var writer = this.services.GetRequiredService<IExcelFileWriter>();
-        if (writer.Write(fileName, category.Elements.Select(e => new StringOutputExcelFormat(e))) == false)
-        {
-            Log.Error($"파일 생성에 실패했습니다. fileName:{nameOnly}");
-            return;
-        }
+            Log.Debug($"시스템 스트링 추출. category:{category.Name}");
+            var fileName = Path.Join(VmGlobalState.ExportRoot, category.GetExportFileName());
+            var nameOnly = Path.GetFileNameWithoutExtension(fileName);
 
-        Log.Info($"파일 생성 완료. fileName:{nameOnly}");
+            // 동일한 이름의 파일이 존재한다면 삭제.
+            if (FileSystem.SafeDelete(fileName) == false)
+            {
+                return;
+            }
+
+            var writer = this.services.GetRequiredService<IExcelFileWriter>();
+            if (writer.Write(fileName, category.Elements.Select(e => new StringOutputExcelFormat(e))) == false)
+            {
+                Log.Error($"파일 생성에 실패했습니다. fileName:{nameOnly}");
+                return;
+            }
+
+            Log.Info($"파일 생성 완료. fileName:{nameOnly}");
+        });
     }
 
     private void OnTag(StringElement? element)
