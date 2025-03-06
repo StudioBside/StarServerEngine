@@ -12,10 +12,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Templet.Strings;
 using StringStorage.SystemStrings;
+using StringStorage.Translation;
 using static CutEditor.Model.Enums;
 using static StringStorage.Enums;
 
-internal sealed class SystemStringStrategy(VmL10n viewModel) : L10nStrategyBase(L10nSourceType.ValueString)
+internal sealed class ValueStringStrategy(VmL10n viewModel) : L10nStrategyBase(L10nSourceType.ValueString)
 {
     private readonly ObservableCollection<L10nMappingString> mappings = new();
     private string categoryName = string.Empty;
@@ -96,9 +97,10 @@ internal sealed class SystemStringStrategy(VmL10n viewModel) : L10nStrategyBase(
         var config = viewModel.Services.GetRequiredService<IConfiguration>();
         var stringDbPath = config["StringDbPath"] ?? throw new Exception("StringDbPath is not set in the configuration file.");
 
-        if (SystemStringWriter.Create(stringDbPath, this.categoryName, out var writer) == false)
+        var dbName = L10nReadOnlyDb.ValueStringDbName;
+        if (SystemStringWriter.Create(stringDbPath, dbName, out var writer) == false)
         {
-            Log.Error($"시스템 스트링 database에 연결할 수 없습니다. categoryName:{this.categoryName}");
+            Log.Error($"시스템 스트링 database에 연결할 수 없습니다. categoryName:{this.categoryName} dbName:{dbName}");
             return false;
         }
 

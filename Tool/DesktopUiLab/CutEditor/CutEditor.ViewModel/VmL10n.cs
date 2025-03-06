@@ -165,8 +165,8 @@ public sealed class VmL10n : VmPageBase,
         {
             L10nSourceType.CutsceneNormal => new CutsceneNormalStrategy(this),
             L10nSourceType.CutsceneShorten => new CutsceneShortenStrategy(this),
-            L10nSourceType.ValueString => new SystemStringStrategy(this),
-            L10nSourceType.KeyString => new SystemStringStrategy(this),
+            L10nSourceType.ValueString => new ValueStringStrategy(this),
+            L10nSourceType.KeyString => new KeyStringStrategy(this),
             _ => throw new NotSupportedException($"지원하지 않는 타입입니다. type:{sourceType}"),
         };
 

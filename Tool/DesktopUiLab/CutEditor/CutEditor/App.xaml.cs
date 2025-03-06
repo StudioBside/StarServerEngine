@@ -81,6 +81,7 @@ public partial class App : Application
         services.AddKeyedTransient<IModelEditor<IList<StringElement>>, UnitNameEditor>("unitName");
         services.AddTransient<IModelEditor<BgFadeInOut>, BgFadeEditor>();
         services.AddTransient<IUnitReplaceQuery, UnitReplaceQuery>();
+        services.AddTransient<IUnitPopup, UnitPopup>();
         services.AddScoped<UndoController>();
         services.AddSingleton<IClipboardWrapper, ClipboardWrapper>();
 

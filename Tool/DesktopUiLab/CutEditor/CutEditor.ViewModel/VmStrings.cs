@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.Input;
 using Cs.Core.Util;
 using Cs.Logging;
 using CutEditor.Model.ExcelFormats;
+using CutEditor.Model.Interfaces;
 using Du.Core.Bases;
 using Du.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
@@ -178,10 +179,14 @@ public sealed class VmStrings : VmPageBase
             return;
         }
 
-        if (int.TryParse(element.Tag, out var unitId) && TempletContainer<Unit>.TryGet(unitId, out var unit))
+        if (!int.TryParse(element.Tag, out var unitId) || !TempletContainer<Unit>.TryGet(unitId, out var unit))
         {
-            IPageRouter router = this.services.GetRequiredService<IPageRouter>();
-            router.Route(unit);
+            return;
         }
+
+        //IPageRouter router = this.services.GetRequiredService<IPageRouter>();
+        //router.Route(unit);
+        var popup = this.services.GetRequiredService<IUnitPopup>();
+        popup.Show(unit);
     }
 }
