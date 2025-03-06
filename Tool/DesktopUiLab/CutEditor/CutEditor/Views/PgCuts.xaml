@@ -211,6 +211,12 @@
                     <MenuItem Header="텍스트 일괄 수정" Command="{Binding BulkEditTextCommand}"/>
                     <MenuItem Header="캐릭터 일괄 수정" Command="{Binding BulkEditCharacterCommand}"/>
                     <MenuItem Header="UnitName 일괄 수정" Command="{Binding BulkEditUnitNameCommand}"/>
+                    <Separator/>
+                    <MenuItem Header="프리셋">
+                        <MenuItem Header="새 프리셋으로 저장"/>
+                        <MenuItem Header="위로 프리셋 붙이기..."/>
+                        <MenuItem Header="아래로 프리셋 붙이기..."/>
+                    </MenuItem>
                 </ContextMenu>
             </ui:ListView.ContextMenu>
         </ui:ListView>

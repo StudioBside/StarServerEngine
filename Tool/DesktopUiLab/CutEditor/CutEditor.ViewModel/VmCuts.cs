@@ -252,79 +252,14 @@ public sealed class VmCuts : VmPageBase,
 
     private async Task<bool> HandlePastedTextAsync(string text)
     {
-        text = text.Trim();
-
-        if (string.IsNullOrEmpty(text))
+        var command = await CreateCutFromText.Create(this, text);
+        if (command is null)
         {
             return false;
         }
 
-        var sb = new StringBuilder();
-        var tokens = text.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
-        sb.AppendLine($"다음의 텍스트를 이용해 {tokens.Length}개의 cut 데이터를 생성합니다.");
-        sb.AppendLine();
-        int previewCharacterCount = 60;
-        if (text.Length > previewCharacterCount)
-        {
-            sb.AppendLine($"{text[..previewCharacterCount]} ... (and {text.Length - previewCharacterCount} more)");
-        }
-        else
-        {
-            sb.AppendLine(text);
-        }
-
-        var boolProvider = this.services.GetRequiredService<IUserInputProvider<bool>>();
-        if (await boolProvider.PromptAsync("새로운 Cut을 만듭니다", sb.ToString()) == false)
-        {
-            return false;
-        }
-
-        int positionIndex = this.cuts.Count - 1;
-        if (this.selectedCuts.Count > 0)
-        {
-            positionIndex = this.cuts.IndexOf(this.selectedCuts[^1]);
-        }
-
-        var targets = new List<VmCut>();
-        foreach (var token in tokens)
-        {
-            // 유닛이름 : 텍스트 형식인 경우, 이름을 파싱해 유효한 값인지 확인
-            Unit? unit = null;
-            string talkText = token;
-            var idx = token.IndexOf(':');
-            if (idx > 0)
-            {
-                var unitName = token[..idx].Trim();
-                unit = Unit.Values.FirstOrDefault(e => e.Name == unitName);
-                if (unit is not null)
-                {
-                    talkText = token[(idx + 1)..].Trim();
-                }
-            }
-
-            var cut = this.CreateNewCut();
-            cut.Unit = unit;
-
-            // < ~ > 로 둘러싸인 경우 선택지 포맷으로 인식
-            if (unit is null && talkText.StartsWith('<') && talkText.EndsWith('>'))
-            {
-                var newChoice = new ChoiceOption(cut.Uid, choiceUid: 1, talkText[1..^1]);
-                cut.Choices.Add(newChoice);
-            }
-            else
-            {
-                // 아닐 땐 일반 unitTalk.
-                cut.UnitTalk.Korean = talkText;
-                cut.TalkTime = Cut.TalkTimeDefault;
-            }
-
-            targets.Add(new VmCut(cut, this));
-        }
-
-        var command = new PasteCut(this, targets, positionIndex, PasteDirection.Downside, reReserveWhenUndo: false);
         command.Redo();
         this.undoController.Add(command);
-
         return true;
     }
 
