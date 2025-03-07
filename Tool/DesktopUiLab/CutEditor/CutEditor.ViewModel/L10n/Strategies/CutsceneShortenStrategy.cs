@@ -119,8 +119,12 @@ internal sealed class CutsceneShortenStrategy(VmL10n viewModel) : L10nStrategyBa
                 continue;
             }
 
+            var cuts = this.mappings
+                .Select(e => e.Cut)
+                .DistinctBy(e => e.Uid);
+
             Log.Debug($"단축 컷신 번역 적용. 파일명:{fileName} 업데이트 데이터 개수:{changedCount}");
-            if (CutFileIo.SaveCutData(fileName, mappings.Select(e => e.Cut), isShorten: true) == false)
+            if (CutFileIo.SaveCutData(fileName, cuts, isShorten: true) == false)
             {
                 Log.Error($"{fileName} 파일 저장 실패.");
                 continue;

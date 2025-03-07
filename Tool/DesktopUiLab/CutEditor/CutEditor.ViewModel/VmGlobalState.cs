@@ -5,6 +5,7 @@ using System.Reflection;
 using Cs.Core;
 using Cs.Core.Util;
 using Cs.Logging;
+using CutEditor.Model;
 using CutEditor.ViewModel.Detail;
 using Microsoft.Extensions.Configuration;
 

@@ -26,7 +26,7 @@ using Shared.Templet.Strings;
 using Shared.Templet.TempletTypes;
 using static CutEditor.Model.Messages;
 using static CutEditor.ViewModel.Enums;
-using static CutEditor.ViewModel.UndoCommands.PasteCut;
+using static CutEditor.ViewModel.UndoCommands.PasteReservedCut;
 using static Du.Core.Messages;
 
 public sealed class VmCuts : VmPageBase,
@@ -211,7 +211,7 @@ public sealed class VmCuts : VmPageBase,
     {
         if (ctrl && key == 'v')
         {
-            if (this.CutPaster.HasReserved)
+            if (this.CutPaster.HasAnyData)
             {
                 this.CutPaster.PasteToDownsideCommand.Execute(parameter: null);
                 return Task.FromResult(true);
@@ -228,6 +228,8 @@ public sealed class VmCuts : VmPageBase,
     }
 
     public Cut CreateNewCut() => new Cut(++this.uidSeed);
+
+    public long NewCutUid() => ++this.uidSeed;
 
     //// --------------------------------------------------------------------------------------------
 

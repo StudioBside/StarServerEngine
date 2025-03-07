@@ -111,7 +111,11 @@ internal sealed class CutsceneNormalStrategy(VmL10n viewModel) : L10nStrategyBas
             return false;
         }
 
-        if (CutFileIo.SaveCutData(name, this.mappings.Select(e => e.Cut), isShorten: false) == false)
+        var cuts = this.mappings
+            .Select(e => e.Cut)
+            .DistinctBy(e => e.Uid);
+
+        if (CutFileIo.SaveCutData(name, cuts, isShorten: false) == false)
         {
             viewModel.WriteLog("적용에 실패했습니다.");
             return false;

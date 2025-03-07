@@ -4,22 +4,15 @@ using System;
 using CutEditor.Model.Interfaces;
 using Du.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
-using static CutEditor.ViewModel.UndoCommands.PasteCut;
+using static CutEditor.ViewModel.VmCutPaster;
 
-internal sealed class PasteCut(
+internal sealed class PasteReservedCut(
     VmCuts vmCuts,
     IReadOnlyList<VmCut> targets,
     int positionIndex,
-    PasteDirection direction,
-    bool reReserveWhenUndo) : IDormammu
+    PasteDirection direction) : IDormammu
 {
-    public enum PasteDirection
-    {
-        Upside,
-        Downside,
-    }
-
-    public static PasteCut? Create(VmCuts vmCuts, PasteDirection direction, bool reReserve)
+    public static PasteReservedCut? Create(VmCuts vmCuts, PasteDirection direction)
     {
         if (vmCuts.CutPaster.Reserved.Count == 0)
         {
@@ -32,7 +25,7 @@ internal sealed class PasteCut(
             positionIndex = vmCuts.Cuts.IndexOf(vmCuts.SelectedCuts[0]);
         }
 
-        return new PasteCut(vmCuts, vmCuts.CutPaster.Reserved.ToArray(), positionIndex, direction, reReserve);
+        return new PasteReservedCut(vmCuts, vmCuts.CutPaster.Reserved.ToArray(), positionIndex, direction);
     }
 
     public void Redo()
@@ -76,17 +69,12 @@ internal sealed class PasteCut(
             vmCuts.Cuts.Remove(cut);
         }
 
-        var selected = vmCuts.Cuts[selectedIndex];
         vmCuts.SelectedCuts.Clear();
         vmCuts.SelectedCuts.Add(vmCuts.Cuts[selectedIndex]);
 
         var controller = vmCuts.Services.GetRequiredService<ICutsListController>();
         controller.FocusElement(selectedIndex);
 
-        if (reReserveWhenUndo)
-        {
-            // 클립보드 텍스트에서 붙여넣은 경우는 undo할 때 reserve에 유지하지 않는다.
-            vmCuts.CutPaster.SetReserved(targets);
-        }
+        vmCuts.CutPaster.SetReserved(targets);
     }
 }

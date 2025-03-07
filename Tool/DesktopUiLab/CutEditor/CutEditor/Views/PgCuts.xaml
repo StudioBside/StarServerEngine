@@ -31,7 +31,8 @@
                     CommandParameter="{x:Static viewmodels:Enums+CutDataType.Branch}"/>
         <KeyBinding Key="F" Modifiers="Ctrl" Command="{Binding FindFlyout.OpenCommand}"/>
         <KeyBinding Key="X" Modifiers="Ctrl" Command="{Binding CutPaster.CutCommand}"/>
-        <KeyBinding Key="Esc" Command="{Binding CutPaster.CancelCommand}"/>
+        <KeyBinding Key="Esc" Command="{Binding CutPaster.ClearAllCommand}"/>
+        <KeyBinding Key="C" Modifiers="Ctrl" Command="{Binding CutPaster.CopyCommand}"/>
     </Page.InputBindings>
     <b:Interaction.Behaviors>
         <behaviors:PageBehavior HandleKeyDown="True"/>
@@ -106,12 +107,21 @@
 
                 <Border Margin="10,0" Padding="10,0" BorderBrush="{StaticResource ClopboardNotifyBrush}"
                         BorderThickness="1"
-                        Visibility="{Binding CutPaster.HasReserved, Converter={converters:BoolToVisibilityConverter}}">
-                    <TextBlock VerticalAlignment="Center" Foreground="{StaticResource ClopboardNotifyBrush}">
-                        클립보드에
+                        Visibility="{Binding CutPaster.HasAnyData, Converter={converters:BoolToVisibilityConverter}}">
+                    <Grid>
+                        <TextBlock VerticalAlignment="Center" Foreground="{StaticResource ClopboardNotifyBrush}"
+                               Visibility="{Binding CutPaster.HasReserved, Converter={converters:BoolToVisibilityConverter}}">
+                        잘라내기
                         <Run Text="{Binding CutPaster.Reserved.Count, Mode=OneWay}"/>
                         개 데이터
-                    </TextBlock>
+                        </TextBlock>
+                        <TextBlock VerticalAlignment="Center" Foreground="{StaticResource ClopboardNotifyBrush}"
+                               Visibility="{Binding CutPaster.PresetCount, Converter={converters:IntToVisibilityConverter}}">
+                        복사하기
+                        <Run Text="{Binding CutPaster.PresetCount, Mode=OneWay}"/>
+                        개 데이터
+                        </TextBlock>
+                    </Grid>
                 </Border>
             </StackPanel>
 
@@ -201,8 +211,10 @@
             </b:Interaction.Behaviors>
             <ui:ListView.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="잘라내기"
+                    <MenuItem Header="잘라내기 (Ctrl + X)"
                               Command="{Binding CutPaster.CutCommand}"/>
+                    <MenuItem Header="복사하기 (Ctrl + C)"
+                              Command="{Binding CutPaster.CopyCommand}"/>
                     <MenuItem Header="위로 붙여넣기"
                               Command="{Binding CutPaster.PasteToUpsideCommand}"/>
                     <MenuItem Header="아래에 붙여넣기"

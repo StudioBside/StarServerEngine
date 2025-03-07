@@ -5,11 +5,11 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-public sealed class BoolToVisibilityConverter : ConverterMarkupExtension<BoolToVisibilityConverter>
+public sealed class IntToVisibilityConverter : ConverterMarkupExtension<IntToVisibilityConverter>
 {
     public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        if (value is not bool boolValue)
+        if (value is not int intValue)
         {
             return Binding.DoNothing;
         }
@@ -30,7 +30,7 @@ public sealed class BoolToVisibilityConverter : ConverterMarkupExtension<BoolToV
             }
         }
 
-        return boolValue ? positiveType : negativeType;
+        return intValue > 0 ? positiveType : negativeType;
     }
 
     public override object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

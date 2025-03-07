@@ -112,8 +112,6 @@ internal sealed class CreateCutFromText : IDormammu
 
         var controller = this.vmCuts.Services.GetRequiredService<ICutsListController>();
         controller.FocusElement(index);
-
-        this.vmCuts.CutPaster.ClearReserved();
     }
 
     public void Undo()

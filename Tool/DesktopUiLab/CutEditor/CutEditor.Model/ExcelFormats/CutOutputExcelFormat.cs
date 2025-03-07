@@ -50,9 +50,12 @@ public class CutOutputExcelFormat : IL10nText
     public EmotionEffect? Emotion { get; set; }
     public string Korean { get; set; } = string.Empty;
     public string English { get; set; } = string.Empty;
+    public string EnglishComment { get; set; } = string.Empty;
     public string Japanese { get; set; } = string.Empty;
+    public string JapaneseComment { get; set; } = string.Empty;
     public string ChineseSimplified { get; set; } = string.Empty;
     public string ChineseTraditional { get; set; } = string.Empty;
+    public string ChineseComment { get; set; } = string.Empty;
 
     public string Get(L10nType l10nType)
     {
