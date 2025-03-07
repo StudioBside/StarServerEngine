@@ -50,7 +50,7 @@ public sealed class Cut : ObservableObject
     private Unit? unit;
     private UnitIdConst? unitIdConst;
     private bool unitQuickSet;
-    private CutsceneUnitPos unitPos;
+    private CutsceneUnitPos unitPos = CutsceneUnitPos.NONE;
     private float talkTime;
     private TalkPositionControlType talkPositionControl;
     private bool talkAppend;
