@@ -8,6 +8,7 @@ using Cs.Core.Util;
 using CutEditor.Model.Detail;
 using Newtonsoft.Json.Linq;
 using static CutEditor.Model.Enums;
+using static CutEditor.Model.Messages;
 using static Du.Core.Messages;
 using static StringStorage.Enums;
 
@@ -94,6 +95,7 @@ public sealed class ChoiceOption : ObservableObject
     protected override void OnPropertyChanged(PropertyChangedEventArgs e)
     {
         WeakReferenceMessenger.Default.Send(new DataChangedMessage());
+        WeakReferenceMessenger.Default.Send(new UpdateChoicePreviewMessage());
     }
 
     private void Text_PropertyChanged(object? sender, PropertyChangedEventArgs e)

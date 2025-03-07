@@ -695,6 +695,7 @@ public sealed class Cut : ObservableObject
             case nameof(this.UnitPos):
             case nameof(this.CutsceneClear):
             case nameof(this.BgFileName):
+            case nameof(this.JumpAnchor):
                 WeakReferenceMessenger.Default.Send(new UpdatePreviewMessage(this));
                 break;
 

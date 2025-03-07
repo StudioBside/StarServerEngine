@@ -57,6 +57,7 @@ public sealed class VmCuts : VmPageBase,
         this.BulkEditUnitNameCommand = new AsyncRelayCommand(this.OnBulkEditUnitName, () => this.selectedCuts.Count > 1);
         this.ReplaceUnitCommand = new AsyncRelayCommand(this.OnReplaceUnit);
         WeakReferenceMessenger.Default.Register<UpdatePreviewMessage>(this, this.OnUpdatePreview);
+        WeakReferenceMessenger.Default.Register<UpdateChoicePreviewMessage>(this, this.OnUpdatePreview);
         WeakReferenceMessenger.Default.Register<DataChangedMessage>(this, this.OnDataChanged);
 
         this.Name = param.FileName;
@@ -164,18 +165,22 @@ public sealed class VmCuts : VmPageBase,
 
         HashSet<int> cutHash = [];
 
-        Calculate(this.cuts[startIndex], null);
+        VmCut? prevCut = startIndex > 0
+            ? this.cuts[startIndex - 1]
+            : null;
+
+        Calculate(this.cuts[startIndex], prevCut);
         void Calculate(VmCut targetCut, VmCut? prevCut)
         {
-            targetCut.Cut.Preview.Calculate(prevCut?.Cut);
-            prevCut = targetCut;
-
             var index = this.cuts.IndexOf(targetCut);
             if (!cutHash.Add(index))
             {
                 // FINISH_ANCHOR 사용 시 분기가 합쳐지므로 중복 발생함.
                 return;
             }
+
+            targetCut.Cut.Preview.Calculate(prevCut?.Cut);
+            prevCut = targetCut;
 
             if (index + 1 >= this.cuts.Count)
             {
@@ -433,6 +438,12 @@ public sealed class VmCuts : VmPageBase,
 
         var startIndex = this.cuts.IndexOf(vmCut);
         this.UpdatePreview(startIndex);
+    }
+
+    private void OnUpdatePreview(object recipient, UpdateChoicePreviewMessage message)
+    {
+        // 분기 선택지 업데이트 시, 처음부터 다시 계산해야 함.
+        this.UpdatePreview(startIndex: 0);
     }
 
     private void OnGoToReadPage()

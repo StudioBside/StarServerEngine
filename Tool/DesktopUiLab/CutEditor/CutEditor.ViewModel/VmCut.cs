@@ -18,6 +18,7 @@ using NKM;
 using Shared.Templet.Strings;
 using Shared.Templet.TempletTypes;
 using static CutEditor.Model.Enums;
+using static CutEditor.Model.Messages;
 using static CutEditor.ViewModel.Enums;
 using static Du.Core.Messages;
 
@@ -93,6 +94,7 @@ public sealed class VmCut : ObservableObject
                 this.AddChoiceOptionCommand.NotifyCanExecuteChanged();
                 this.DeleteChoiceOptionCommand.NotifyCanExecuteChanged();
                 WeakReferenceMessenger.Default.Send(new DataChangedMessage());
+                WeakReferenceMessenger.Default.Send(new UpdateChoicePreviewMessage());
             };
         }
     }
