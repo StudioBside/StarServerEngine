@@ -7,6 +7,8 @@ using System.Text;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Cs.Core.Perforce;
+using Cs.Core.Util;
 using Cs.Logging;
 using CutEditor.Model;
 using CutEditor.Model.Interfaces;
@@ -17,10 +19,15 @@ using Du.Core.Interfaces;
 using Du.Core.Util;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Linq;
 using Shared.Templet.Strings;
 using Shared.Templet.TempletTypes;
+using static CutEditor.Model.Enums;
 using static CutEditor.Model.Messages;
 using static CutEditor.ViewModel.Enums;
+using static CutEditor.ViewModel.UndoCommands.PasteCut;
 using static Du.Core.Messages;
 
 public sealed class VmCuts : VmPageBase,
@@ -161,14 +168,76 @@ public sealed class VmCuts : VmPageBase,
     {
         Log.Debug($"{this.DebugName} preview 업데이트 시작. startIndex:{startIndex}");
 
-        Cut? prevCut = startIndex > 0
-            ? this.cuts[startIndex - 1].Cut
-            : null;
+        HashSet<int> cutHash = [];
 
-        for (int i = startIndex; i < this.cuts.Count; i++)
+        Calculate(this.cuts[startIndex], null);
+        void Calculate(VmCut targetCut, VmCut? prevCut)
         {
-            this.cuts[i].Cut.Preview.Calculate(prevCut);
-            prevCut = this.cuts[i].Cut;
+            targetCut.Cut.Preview.Calculate(prevCut?.Cut);
+            prevCut = targetCut;
+
+            var index = this.cuts.IndexOf(targetCut);
+            if (!cutHash.Add(index))
+            {
+                // FINISH_ANCHOR 사용 시 분기가 합쳐지므로 중복 발생함.
+                return;
+            }
+
+            if (index + 1 >= this.cuts.Count)
+            {
+                return;
+            }
+
+            var choices = prevCut.Cut.Choices.Where(e => e.JumpAnchor != StartAnchorType.None);
+            if (choices.Any())
+            {
+                foreach (var option in choices)
+                {
+                    List<DestAnchorType> dests = [];
+                    switch (option.JumpAnchor)
+                    {
+                        case StartAnchorType.REWARD_ANCHOR_1:
+                            dests.AddRange([DestAnchorType.JUMPANCHOR_1, DestAnchorType.JUMPANCHOR_1_SUCCESS, DestAnchorType.JUMPANCHOR_1_FAIL]);
+                            break;
+                        case StartAnchorType.REWARD_ANCHOR_2:
+                            dests.AddRange([DestAnchorType.JUMPANCHOR_2, DestAnchorType.JUMPANCHOR_2_SUCCESS, DestAnchorType.JUMPANCHOR_2_FAIL]);
+                            break;
+                        case StartAnchorType.REWARD_ANCHOR_3:
+                            dests.AddRange([DestAnchorType.JUMPANCHOR_3, DestAnchorType.JUMPANCHOR_3_SUCCESS, DestAnchorType.JUMPANCHOR_3_FAIL]);
+                            break;
+                        case StartAnchorType.REWARD_ANCHOR_4:
+                            dests.AddRange([DestAnchorType.JUMPANCHOR_4, DestAnchorType.JUMPANCHOR_4_SUCCESS, DestAnchorType.JUMPANCHOR_4_FAIL]);
+                            break;
+                        case StartAnchorType.REWARD_ANCHOR_5:
+                            dests.AddRange([DestAnchorType.JUMPANCHOR_5, DestAnchorType.JUMPANCHOR_5_SUCCESS, DestAnchorType.JUMPANCHOR_5_FAIL]);
+                            break;
+                    }
+
+                    foreach (var dest in dests)
+                    {
+                        var startCut = this.cuts.FirstOrDefault(e => e.Cut.JumpAnchor == dest);
+                        if (startCut != null)
+                        {
+                            Calculate(startCut, prevCut);
+                        }
+                    }
+                }
+
+                return;
+            }
+
+            if (this.cuts[index + 1].Cut.JumpAnchor != DestAnchorType.None)
+            {
+                var finishCut = this.cuts.FirstOrDefault(e => e.Cut.JumpAnchor == DestAnchorType.JUMPANCHOR_FINISH);
+                if (finishCut != null)
+                {
+                    Calculate(finishCut, prevCut);
+                }
+
+                return;
+            }
+
+            Calculate(this.cuts[index + 1], prevCut);
         }
     }
 
@@ -205,12 +274,7 @@ public sealed class VmCuts : VmPageBase,
     {
         if (ctrl && key == 'v')
         {
-            if (shift)
-            {
-                this.CutPaster.ReloadReg0Preset();
-            }
-
-            if (this.CutPaster.HasAnyData)
+            if (this.CutPaster.HasReserved)
             {
                 this.CutPaster.PasteToDownsideCommand.Execute(parameter: null);
                 return Task.FromResult(true);
@@ -227,8 +291,6 @@ public sealed class VmCuts : VmPageBase,
     }
 
     public Cut CreateNewCut() => new Cut(++this.uidSeed);
-
-    public long NewCutUid() => ++this.uidSeed;
 
     //// --------------------------------------------------------------------------------------------
 
@@ -253,14 +315,79 @@ public sealed class VmCuts : VmPageBase,
 
     private async Task<bool> HandlePastedTextAsync(string text)
     {
-        var command = await CreateCutFromText.Create(this, text);
-        if (command is null)
+        text = text.Trim();
+
+        if (string.IsNullOrEmpty(text))
         {
             return false;
         }
 
+        var sb = new StringBuilder();
+        var tokens = text.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
+        sb.AppendLine($"다음의 텍스트를 이용해 {tokens.Length}개의 cut 데이터를 생성합니다.");
+        sb.AppendLine();
+        int previewCharacterCount = 60;
+        if (text.Length > previewCharacterCount)
+        {
+            sb.AppendLine($"{text[..previewCharacterCount]} ... (and {text.Length - previewCharacterCount} more)");
+        }
+        else
+        {
+            sb.AppendLine(text);
+        }
+
+        var boolProvider = this.services.GetRequiredService<IUserInputProvider<bool>>();
+        if (await boolProvider.PromptAsync("새로운 Cut을 만듭니다", sb.ToString()) == false)
+        {
+            return false;
+        }
+
+        int positionIndex = this.cuts.Count - 1;
+        if (this.selectedCuts.Count > 0)
+        {
+            positionIndex = this.cuts.IndexOf(this.selectedCuts[^1]);
+        }
+
+        var targets = new List<VmCut>();
+        foreach (var token in tokens)
+        {
+            // 유닛이름 : 텍스트 형식인 경우, 이름을 파싱해 유효한 값인지 확인
+            Unit? unit = null;
+            string talkText = token;
+            var idx = token.IndexOf(':');
+            if (idx > 0)
+            {
+                var unitName = token[..idx].Trim();
+                unit = Unit.Values.FirstOrDefault(e => e.Name == unitName);
+                if (unit is not null)
+                {
+                    talkText = token[(idx + 1)..].Trim();
+                }
+            }
+
+            var cut = this.CreateNewCut();
+            cut.Unit = unit;
+
+            // < ~ > 로 둘러싸인 경우 선택지 포맷으로 인식
+            if (unit is null && talkText.StartsWith('<') && talkText.EndsWith('>'))
+            {
+                var newChoice = new ChoiceOption(cut.Uid, choiceUid: 1, talkText[1..^1]);
+                cut.Choices.Add(newChoice);
+            }
+            else
+            {
+                // 아닐 땐 일반 unitTalk.
+                cut.UnitTalk.Korean = talkText;
+                cut.TalkTime = Cut.TalkTimeDefault;
+            }
+
+            targets.Add(new VmCut(cut, this));
+        }
+
+        var command = new PasteCut(this, targets, positionIndex, PasteDirection.Downside, reReserveWhenUndo: false);
         command.Redo();
         this.undoController.Add(command);
+
         return true;
     }
 
