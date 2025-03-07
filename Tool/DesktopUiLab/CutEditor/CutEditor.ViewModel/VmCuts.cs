@@ -7,8 +7,6 @@ using System.Text;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using Cs.Core.Perforce;
-using Cs.Core.Util;
 using Cs.Logging;
 using CutEditor.Model;
 using CutEditor.Model.Interfaces;
@@ -19,14 +17,10 @@ using Du.Core.Interfaces;
 using Du.Core.Util;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Linq;
 using Shared.Templet.Strings;
 using Shared.Templet.TempletTypes;
 using static CutEditor.Model.Messages;
 using static CutEditor.ViewModel.Enums;
-using static CutEditor.ViewModel.UndoCommands.PasteReservedCut;
 using static Du.Core.Messages;
 
 public sealed class VmCuts : VmPageBase,
@@ -211,6 +205,11 @@ public sealed class VmCuts : VmPageBase,
     {
         if (ctrl && key == 'v')
         {
+            if (shift)
+            {
+                this.CutPaster.ReloadReg0Preset();
+            }
+
             if (this.CutPaster.HasAnyData)
             {
                 this.CutPaster.PasteToDownsideCommand.Execute(parameter: null);

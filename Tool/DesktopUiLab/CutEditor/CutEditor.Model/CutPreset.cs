@@ -29,6 +29,8 @@ public sealed class CutPreset
         this.token = JToken.FromObject(cut.ToOutputJsonType(), JsonSerializer);
     }
 
+    public JToken Token => this.token;
+
     public Cut CreateCut(long newUid)
     {
         this.token["Uid"] = newUid;

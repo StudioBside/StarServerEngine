@@ -6,13 +6,18 @@ using System.ComponentModel;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Cs.Core.Util;
+using Cs.Logging;
 using CutEditor.Model;
 using CutEditor.ViewModel.UndoCommands;
 using Du.Core.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Linq;
 
 public class VmCutPaster : ObservableObject
 {
+    private const string PresetPath = "./CutPreset/";
+    private const string PresetReg0 = "_reg0.preset";
     private static readonly List<CutPreset> Presets = [];
     private readonly VmCuts vmCuts;
     private readonly ObservableCollection<VmCut> reserved = [];
@@ -74,9 +79,47 @@ public class VmCutPaster : ObservableObject
 
         this.OnPropertyChanged(nameof(this.HasAnyData));
         this.OnPropertyChanged(nameof(this.PresetCount));
+
+        SaveReg0();
+    }
+
+    internal void ReloadReg0Preset()
+    {
+        var reg0FilePath = Path.Combine(PresetPath, PresetReg0);
+        if (File.Exists(reg0FilePath) == false)
+        {
+            return;
+        }
+
+        if (JsonUtil.TryLoad<List<JToken>>(reg0FilePath, out var tokens) == false)
+        {
+            return;
+        }
+
+        Presets.Clear();
+        foreach (var token in tokens)
+        {
+            Presets.Add(new CutPreset(new Cut(token, debugName: "presetReg0")));
+        }
+
+        this.OnPropertyChanged(nameof(this.HasAnyData));
+        this.OnPropertyChanged(nameof(this.PresetCount));
     }
 
     //// --------------------------------------------------------------------------------------------
+
+    private static void SaveReg0()
+    {
+        var reg0FilePath = Path.Combine(PresetPath, PresetReg0);
+        if (FileSystem.SafeDelete(reg0FilePath) == false)
+        {
+            Log.Error($"Failed to delete {reg0FilePath}");
+            return;
+        }
+
+        FileSystem.GuaranteePath(PresetPath);
+        JsonUtil.WriteToFile(reg0FilePath, Presets.Select(e => e.Token).ToList());
+    }
 
     private void VmCuts_PropertyChanged(object? sender, PropertyChangedEventArgs e)
     {

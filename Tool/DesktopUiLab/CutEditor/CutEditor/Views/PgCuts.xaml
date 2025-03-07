@@ -206,7 +206,7 @@
                 </Style>
             </ListView.ItemContainerStyle>
             <b:Interaction.Behaviors>
-                <behaviors:ListViewBehavior ReorderByDragDrop="True"/>
+                <!--<behaviors:ListViewBehavior ReorderByDragDrop="True"/>-->
                 <lbh:CutsListController/>
             </b:Interaction.Behaviors>
             <ui:ListView.ContextMenu>
