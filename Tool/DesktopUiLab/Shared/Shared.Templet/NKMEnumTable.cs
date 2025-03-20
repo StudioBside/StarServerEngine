@@ -332,6 +332,7 @@ namespace NKM
     public enum SpecialLobbyType
     {
         SLT_ARCPOINT,
+        SLT_EXTRA_MOMENT,
     }
 
     public enum PackageType

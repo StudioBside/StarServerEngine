@@ -44,24 +44,22 @@ public sealed class BgFadeInOut : ObservableObject
 
     public static BgFadeInOut? Create(JToken token)
     {
-        var time = token.GetFloat("BgFadeInTime", 0f);
-        if (time.IsNearlyZero() == false)
+        if (token["BgFadeInTime"] != null)
         {
             return new BgFadeInOut
             {
-                time = time,
+                time = token.GetFloat("BgFadeInTime", 0f),
                 fadeType = BgFadeType.FadeIn,
                 startColor = JsonLoadHelper.LoadColor(token, "BgFadeInStartCol") ?? Color.White,
                 endColor = JsonLoadHelper.LoadColor(token, "BgFadeInCol") ?? Color.White,
             };
         }
 
-        time = token.GetFloat("BgFadeOutTime", 0f);
-        if (time.IsNearlyZero() == false)
+        if (token["BgFadeOutTime"] != null)
         {
             return new BgFadeInOut
             {
-                time = time,
+                time = token.GetFloat("BgFadeOutTime", 0f),
                 fadeType = BgFadeType.FadeOut,
                 startColor = Color.White, // no start color for fade out
                 endColor = JsonLoadHelper.LoadColor(token, "BgFadeOutCol") ?? Color.White,
@@ -96,12 +94,12 @@ public sealed class BgFadeInOut : ObservableObject
         {
             output.BgFadeInStartCol = CutOutputJsonFormat.ConvertColor(this.StartColor);
             output.BgFadeInCol = CutOutputJsonFormat.ConvertColor(this.EndColor);
-            output.BgFadeInTime = CutOutputJsonFormat.EliminateZero(this.Time);
+            output.BgFadeInTime = this.Time;
         }
         else
         {
             output.BgFadeOutCol = CutOutputJsonFormat.ConvertColor(this.EndColor);
-            output.BgFadeOutTime = CutOutputJsonFormat.EliminateZero(this.Time);
+            output.BgFadeOutTime = this.Time;
         }
     }
 

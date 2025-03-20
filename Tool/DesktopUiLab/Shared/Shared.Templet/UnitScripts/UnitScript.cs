@@ -27,7 +27,7 @@ public sealed class UnitScript : ISearchable
             return;
         }
 
-        token.GetArray("BattleStates", this.battleStates, (e, i) => new BattleState(e));
+        token.TryGetArray("BattleStates", this.battleStates, (e, i) => new BattleState(e));
         token.TryGetArray("UiStates", this.uiStates, (e, i) => new UiState(e));
     }
 

@@ -161,6 +161,11 @@ public sealed class VmCuts : VmPageBase,
 
     public void UpdatePreview(int startIndex)
     {
+        if (this.cuts.Count == 0)
+        {
+            return;
+        }
+
         Log.Debug($"{this.DebugName} preview 업데이트 시작. startIndex:{startIndex}");
 
         HashSet<int> cutHash = [];
