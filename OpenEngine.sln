@@ -41,8 +41,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SlackAssist", "Tool\SlackAs
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StringStorage", "Tool\StringStorage\StringStorage.csproj", "{9670CF27-C06B-4AF0-93B4-85EF603327BB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cs.Cli", "Engine\Cs.Cli\Cs.Cli.csproj", "{0E248AD2-DFED-4930-8957-ADC570528C02}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -113,10 +111,6 @@ Global
 		{9670CF27-C06B-4AF0-93B4-85EF603327BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9670CF27-C06B-4AF0-93B4-85EF603327BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9670CF27-C06B-4AF0-93B4-85EF603327BB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0E248AD2-DFED-4930-8957-ADC570528C02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0E248AD2-DFED-4930-8957-ADC570528C02}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0E248AD2-DFED-4930-8957-ADC570528C02}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0E248AD2-DFED-4930-8957-ADC570528C02}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -138,7 +132,6 @@ Global
 		{86CEA33D-C829-4EE0-B143-D92FB66C987B} = {B3B57015-5868-489F-AB82-CFB7D785B18A}
 		{5122C142-1CA4-47BC-9C16-FD3E0DD3C677} = {3C8BDD0D-6092-4AF3-82AB-A0BCBB557DE8}
 		{9670CF27-C06B-4AF0-93B4-85EF603327BB} = {3C8BDD0D-6092-4AF3-82AB-A0BCBB557DE8}
-		{0E248AD2-DFED-4930-8957-ADC570528C02} = {B3B57015-5868-489F-AB82-CFB7D785B18A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9AF6D16B-AA70-42FB-BC55-BE2E4E5406C3}
