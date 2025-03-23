@@ -13,6 +13,9 @@ using StringStorage.Translation;
 public sealed class SystemStringReader : IDisposable
 {
     private readonly Dictionary<string /*dbName*/, L10nReadOnlyDb> dbList = new(StringComparer.OrdinalIgnoreCase);
+
+    public IEnumerable<string> DbNames => this.dbList.Keys;
+
     public bool Initialize(string dbRoot, bool verbose)
     {
         // root에 존재하는 zip 파일을 대상으로 초기 로딩
