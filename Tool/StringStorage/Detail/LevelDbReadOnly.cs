@@ -11,7 +11,7 @@ public class LevelDbReadOnly : IEnumerable<KeyValuePair<string, string>>, IDispo
     private readonly string path;
     private readonly DB db;
 
-    public LevelDbReadOnly(string path)
+    public LevelDbReadOnly(string path, bool verbose)
     {
         this.path = path;
         this.ZipFileName = path + ".zip";
@@ -21,27 +21,35 @@ public class LevelDbReadOnly : IEnumerable<KeyValuePair<string, string>>, IDispo
         {
             if (Directory.Exists(path))
             {
-                FileLog.Debug($"이전에 사용하던 db 폴더 정리. path:{path}");
+                Log(verbose, $"이전에 사용하던 db 폴더 정리. path:{path}");
                 Directory.Delete(path, true);
             }
 
             ZipFile.ExtractToDirectory(this.ZipFileName, path);
-            FileLog.Debug($"db를 새롭게 초기화합니다. zipFile:{this.ZipFileName}");
+            Log(verbose, $"db를 새롭게 초기화합니다. zipFile:{this.ZipFileName}");
         }
         else if (Directory.Exists(path))
         {
             // zip 파일은 없는데 로컬에 db 폴더가 있다면 재활용한다.
-            FileLog.Debug($"기존 db 폴더를 재활용합니다. path:{path}");
+            Log(verbose, $"기존 db 폴더를 재활용합니다. path:{path}");
         }
         else
         {
             // zip 파일도 없고 로컬에 db 폴더도 없다면 새로 생성한다.
-            FileLog.Debug($"새로운 db 폴더를 생성합니다. path:{path}");
+            Log(verbose, $"새로운 db 폴더를 생성합니다. path:{path}");
             Directory.CreateDirectory(path);
         }
 
         var options = new Options { CreateIfMissing = true };
         this.db = new DB(options, path);
+
+        static void Log(bool verbose, string message)
+        {
+            if (verbose)
+            {
+                FileLog.Debug(message);
+            }
+        }
     }
 
     protected string ZipFileName { get; private set; }

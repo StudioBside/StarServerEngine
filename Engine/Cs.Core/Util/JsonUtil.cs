@@ -86,6 +86,11 @@
             return JsonConvert.SerializeObject(data);
         }
 
+        public static string ToJsonString(object data, Formatting formatting)
+        {
+            return JsonConvert.SerializeObject(data, formatting);
+        }
+
         public static string ToLowerKeyJson(object target)
         {
             return JsonConvert.SerializeObject(target, JsonSerializerSettings);

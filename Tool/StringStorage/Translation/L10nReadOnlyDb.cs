@@ -1,15 +1,16 @@
 ﻿namespace StringStorage.Translation;
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Cs.Core.Util;
 using StringStorage.Detail;
 
-public sealed class L10nReadOnlyDb(string path) : IDisposable
+public sealed class L10nReadOnlyDb(string path, bool verbose) : IDisposable
 {
     public const string ValueStringDbName = "ValueString.db";
     public const string KeyStringDbName = "KeyString.db";
 
-    private readonly LevelDbReadOnly dbController = new(path);
+    private readonly LevelDbReadOnly dbController = new(path, verbose);
 
     public void Dispose()
     {
@@ -27,5 +28,15 @@ public sealed class L10nReadOnlyDb(string path) : IDisposable
         }
 
         return textSet;
+    }
+
+    public IEnumerable<string> GetKeys()
+    {
+        return this.dbController.Select(e => e.Key);
+    }
+
+    public bool TryGet(string key, [MaybeNullWhen(false)] out SingleTextSet textSet)
+    {
+        return this.dbController.TryGet(key, SingleTextSet.TryCreate, out textSet);
     }
 }

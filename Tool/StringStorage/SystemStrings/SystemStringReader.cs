@@ -12,19 +12,23 @@ using StringStorage.Translation;
 /// </summary>
 public sealed class SystemStringReader : IDisposable
 {
-    private readonly Dictionary<string /*dbName*/, L10nReadOnlyDb> dbList = new();
-    public bool Initialize(string dbRoot)
+    private readonly Dictionary<string /*dbName*/, L10nReadOnlyDb> dbList = new(StringComparer.OrdinalIgnoreCase);
+    public bool Initialize(string dbRoot, bool verbose)
     {
         // root에 존재하는 zip 파일을 대상으로 초기 로딩
         var zipFiles = Directory.GetFiles(dbRoot, "*.zip");
         foreach (var zipFile in zipFiles)
         {
-            var category = Path.GetFileNameWithoutExtension(zipFile);
-            var db = new L10nReadOnlyDb(Path.Combine(dbRoot, category));
-            this.dbList.Add(category, db);
+            var dbName = Path.GetFileNameWithoutExtension(zipFile);
+            var db = new L10nReadOnlyDb(Path.Combine(dbRoot, dbName), verbose);
+            this.dbList.Add(dbName, db);
         }
 
-        Log.Debug($"SystemStringReader.Initialize. rootPath:{dbRoot} dbList:{this.dbList.Count}");
+        if (verbose)
+        {
+            Log.Debug($"SystemStringReader.Initialize. rootPath:{dbRoot} dbList:{this.dbList.Count}");
+        }
+
         return true;
     }
 

@@ -10,7 +10,7 @@ public sealed class LevelDbController : LevelDbReadOnly
     private readonly P4Commander p4Commander;
     private bool isDirty;
 
-    public LevelDbController(string path, P4Commander p4Commander) : base(path)
+    public LevelDbController(string path, P4Commander p4Commander) : base(path, verbose: true)
     {
         this.p4Commander = p4Commander;
     }
