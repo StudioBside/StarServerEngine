@@ -14,7 +14,7 @@ public sealed class PreviewUnitSlot : ObservableObject
     }
 
     public CutsceneUnitPos Position { get; }
-    public int VisualNumber => (int)this.Position;
+    public int VisualNumber => (int)this.Position + 1;
 
     public Unit? Unit
     {

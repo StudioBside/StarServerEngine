@@ -1,15 +1,12 @@
-﻿namespace SlackAssist.Fremawork.Slack;
+namespace SlackAssist.Fremawork.Slack;
 
 using System.Threading.Tasks;
+using SlackAssist.Fremawork.Workflow;
 using SlackNet;
-using SlackNet.Events;
-using SlackNet.Interaction;
 
-internal interface IWorkflowStep : IWorkflowStepEditHandler, IViewSubmissionHandler
+internal interface IWorkflowStep
 {
     string StepCallbackId { get; }
-    string ConfigCallbackId { get; }
-    ISlackApiClient Slack { set; }
 
-    Task OnRecv(WorkflowStepExecute slackEvent);
+    Task OnRecv(ISlackApiClient slack, FunctionExecuted slackEvent);
 }

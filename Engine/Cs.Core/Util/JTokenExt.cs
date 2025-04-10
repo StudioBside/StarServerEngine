@@ -187,8 +187,13 @@
             return true;
         }
 
-        public static float GetFloat(this JToken self, string key)
+        public static float GetFloat(this JToken self, string key, [CallerFilePath] string file = "", [CallerLineNumber] int line = 0)
         {
+            if (self[key] is null)
+            {
+                ErrorContainer.Add($"[JTokenExt] invalid key:{key}", file, line);
+            }
+            
             return self.Value<float>(key);
         }
 

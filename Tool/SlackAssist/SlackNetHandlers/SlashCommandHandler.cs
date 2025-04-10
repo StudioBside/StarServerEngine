@@ -8,7 +8,6 @@ namespace SlackAssist.SlackNetHandlers
     using System.Threading.Tasks;
     using Cs.Dynamic;
     using Cs.Logging;
-    using SlackAssist.Configs;
     using SlackAssist.Fremawork.Slack;
     using SlackNet;
     using SlackNet.Blocks;
@@ -18,18 +17,18 @@ namespace SlackAssist.SlackNetHandlers
     internal sealed class SlashCommandHandler : ISlashCommandHandler
     {
         private static readonly Dictionary<string, SlashCommandHolder> Commands = new();
+        private static string prefix = string.Empty;
         private readonly ISlackApiClient slack;
-        public SlashCommandHandler(ISlackApiClient slack) => this.slack = slack;
+        private SlashCommandHandler(ISlackApiClient slack) => this.slack = slack;
 
         public static string BuildCommand(string command)
         {
-            var commandPrefix = SlackAssistConfig.Instance.Slack.SlashCommandPrefix;
-            return $"/{commandPrefix}{command}".ToLowerInvariant();
+            return $"/{prefix}{command}".ToLowerInvariant();
         }
 
-        public static void Initialize(SlackServiceBuilder slackServices, ISlackApiClient slack, string commandPrefix)
+        public static void Initialize(SlackServiceBuilder service, string commandPrefix)
         {
-            var instance = new SlashCommandHandler(slack);
+            prefix = commandPrefix;
             var subCommandTypes = Assembly.GetExecutingAssembly()
                 .GetTypes()
                 .Where(Filter);
@@ -41,15 +40,20 @@ namespace SlackAssist.SlackNetHandlers
                     continue;
                 }
 
-                var command = subCommand.Command.ToLowerInvariant();
+                var command = subCommand.Command;
                 if (Commands.TryGetValue(command, out var holder) == false)
                 {
                     holder = new SlashCommandHolder();
                     Commands.Add(command, holder);
-                    slackServices.RegisterSlashCommandHandler(command, instance);
                 }
 
                 holder.Add(subCommand);
+            }
+
+            var commandSet = Commands.Select(e => e.Key).Distinct();
+            foreach (var command in commandSet)
+            {
+                service.RegisterSlashCommandHandler(command, ctx => new SlashCommandHandler(ctx.ServiceProvider.GetApiClient()));
             }
 
             static bool Filter(Type type)

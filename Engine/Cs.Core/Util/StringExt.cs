@@ -127,7 +127,20 @@
         public static string EncodeBase64(this byte[] data) => Convert.ToBase64String(data);
         public static string DecodeBase64(this string data) => Encoding.UTF8.GetString(Convert.FromBase64String(data));
         public static byte[] DecodeBase64ToBytes(this string data) => Convert.FromBase64String(data);
-    
+
+        public static string DecodeBase64Url(this string data)
+        {
+            string base64 = data.Replace('-', '+').Replace('_', '/');
+            switch (base64.Length % 4)
+            {
+                case 2: base64 += "=="; break;
+                case 3: base64 += "="; break;
+            }
+
+            byte[] bytes = Convert.FromBase64String(base64);
+            return Encoding.UTF8.GetString(bytes);
+        }
+
         public static string CalcMd5Checksum(this string data)
         {
             if (string.IsNullOrEmpty(data))

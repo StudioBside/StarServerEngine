@@ -742,6 +742,11 @@ public sealed class Cut : ObservableObject
             return string.Join(", ", this.unitNames.Select(e => e.Get(l10nType)));
         }
 
+        if (this.unit != null)
+        {
+            return this.unit.NameElement?.Get(l10nType) ?? this.FinalUnitId;
+        }
+
         return this.FinalUnitId;
     }
 

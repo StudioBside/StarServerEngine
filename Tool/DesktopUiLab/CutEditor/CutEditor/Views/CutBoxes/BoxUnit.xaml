@@ -425,20 +425,20 @@
                 </Grid.RowDefinitions>
 
                 <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center">
-                    <ui:Button Content="TalkVoice" Margin="0,0,5,0"
-                               Command="{Binding PickVoiceCommand}"
-                               ToolTip="{Binding Cut.TalkVoice}">
-                        <!--값이 없을 때는 한글 표기. 값이 있을때는 배경색을 다르게 표기-->
-                        <ui:Button.Style>
-                            <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
-                                <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Cut.TalkVoice}" Value="{x:Null}">
-                                        <Setter Property="Background" Value="White"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </ui:Button.Style>
+                    <ui:Button Content="TalkVoice" Margin="0,0,5,0"  
+                              Command="{Binding PickVoiceCommand}"  
+                              ToolTip="{Binding Cut.TalkVoice, Converter={converters:TruncateStringConverter}, ConverterParameter=30}">  
+                       <!--값이 없을 때는 한글 표기. 값이 있을때는 배경색을 다르게 표기-->  
+                       <ui:Button.Style>  
+                           <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">  
+                               <Setter Property="Background" Value="{StaticResource HasValueBrush}"/>  
+                               <Style.Triggers>  
+                                   <DataTrigger Binding="{Binding Cut.TalkVoice}" Value="{x:Null}">  
+                                       <Setter Property="Background" Value="White"/>  
+                                   </DataTrigger>  
+                               </Style.Triggers>  
+                           </Style>  
+                       </ui:Button.Style>  
                     </ui:Button>
 
                     <ui:Button Content="환경음"

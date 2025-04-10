@@ -27,6 +27,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Contents\Cs.Backend\Cs.Backend.csproj" />
+    <ProjectReference Include="..\..\Contents\Cs.Firebase\Cs.Firebase.csproj" />
     <ProjectReference Include="..\..\Contents\Cs.Templets\Cs.Templets.csproj" />
     <ProjectReference Include="..\..\Engine\Cs.Core\Cs.Core.csproj" />
     <ProjectReference Include="..\..\Engine\Cs.HttpServer\Cs.HttpServer.csproj" />

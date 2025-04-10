@@ -5,16 +5,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Cs.Core.Util;
 using Cs.Dynamic;
 using SlackAssist.Fremawork.Slack;
+using SlackAssist.Fremawork.Workflow;
 using SlackNet;
 using SlackNet.Events;
 
-internal class WorkflowStepHandler : IEventHandler<WorkflowStepExecute>
+internal class WorkflowStepHandler : IEventHandler<FunctionExecuted>
 {
     private static readonly Dictionary<string /*stepCallbackId*/, IWorkflowStep> Handlers = new();
+    private readonly ISlackApiClient slack;
 
-    public static void Initialize(SlackServiceBuilder slackServices, ISlackApiClient slack)
+    public WorkflowStepHandler(ISlackApiClient slack) => this.slack = slack;
+
+    public static void Initialize()
     {
         var handlerTypes = Assembly.GetExecutingAssembly()
            .GetTypes()
@@ -23,12 +28,6 @@ internal class WorkflowStepHandler : IEventHandler<WorkflowStepExecute>
         foreach (var type in handlerTypes)
         {
             var handler = (IWorkflowStep)type.CreateInstance();
-            handler.Slack = slack;
-
-            slackServices
-                .RegisterWorkflowStepEditHandler(handler.StepCallbackId, ctx => handler)
-                .RegisterViewSubmissionHandler(handler.ConfigCallbackId, ctx => handler)
-                ;
 
             Handlers.Add(handler.StepCallbackId, handler);
         }
@@ -39,13 +38,14 @@ internal class WorkflowStepHandler : IEventHandler<WorkflowStepExecute>
         }
     }
 
-    public Task Handle(WorkflowStepExecute slackEvent)
+    public async Task Handle(FunctionExecuted slackEvent)
     {
-        if (Handlers.TryGetValue(slackEvent.CallbackId, out var workflowStep) == false)
+        if (Handlers.TryGetValue(slackEvent.Function.CallbackId, out var workflowStep) == false)
         {
-            return Task.CompletedTask;
+            // note: 다른 봇의 이벤트일 수 있기 때문에 실패처리 하지 않습니다.
+            return;
         }
 
-        return workflowStep.OnRecv(slackEvent);
+        await workflowStep.OnRecv(this.slack, slackEvent);
     }
 }
