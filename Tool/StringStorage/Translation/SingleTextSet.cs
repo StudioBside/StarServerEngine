@@ -93,6 +93,32 @@ public sealed class SingleTextSet
         return $"({prefix}) {defaultValue}";
     }
 
+    public string GetValueString(L10nType type, L10nType fallbackType, string defaultValue)
+    {
+        var value = this.GetValueString(type);
+        if (string.IsNullOrEmpty(value) == false)
+        {
+            return value;
+        }
+
+        value = this.GetValueString(fallbackType);
+        if (string.IsNullOrEmpty(value) == false)
+        {
+            return value;
+        }
+
+        var prefix = type switch
+        {
+            L10nType.English => "Eng",
+            L10nType.ChineseSimplified => "ChnS",
+            L10nType.ChineseTraditional => "ChnT",
+            L10nType.Japanese => "Jpn",
+            _ => throw new ArgumentOutOfRangeException(nameof(type), type, null),
+        };
+
+        return $"({prefix}) {defaultValue}";
+    }
+
     public void SetValueString(L10nType type, string value)
     {
         switch (type)
