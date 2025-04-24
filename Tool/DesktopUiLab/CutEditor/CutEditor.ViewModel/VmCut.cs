@@ -67,6 +67,7 @@ public sealed class VmCut : ObservableObject
         this.SetFilterTypeCommand = new RelayCommand<CutsceneFilterType>(e => this.Cut.FilterType = e);
         this.SetCutsceneClearCommand = new RelayCommand<CutsceneClearType>(e => this.Cut.CutsceneClear = e);
         this.OpenScreenCrashFlyoutCommand = new RelayCommand(() => this.ScreenCrashFlyoutOpen = true);
+        this.CloseScreenCrashFlyoutCommand = new RelayCommand(() => this.ScreenCrashFlyoutOpen = false);
         this.ClearScreenFlashCrashCommand = new RelayCommand(this.OnClearScreenFlashCrash);
         this.OpenSlateFlyoutCommand = new RelayCommand(() => this.SlateFlyoutOpen = true);
         this.OpenMinorityFlyoutCommand = new RelayCommand(() => this.MinorityFlyoutOpen = true);
@@ -124,6 +125,7 @@ public sealed class VmCut : ObservableObject
     public ICommand SetFilterTypeCommand { get; }
     public ICommand SetCutsceneClearCommand { get; }
     public ICommand OpenScreenCrashFlyoutCommand { get; }
+    public ICommand CloseScreenCrashFlyoutCommand { get; }
     public ICommand ClearScreenFlashCrashCommand { get; }
     public ICommand OpenSlateFlyoutCommand { get; }
     public ICommand OpenMinorityFlyoutCommand { get; }

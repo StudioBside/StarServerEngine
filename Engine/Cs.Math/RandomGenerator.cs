@@ -1,4 +1,4 @@
-﻿namespace Cs.Math
+namespace Cs.Math
 {
     using System;
     using System.Collections.Generic;
@@ -53,6 +53,19 @@
             }
 
             return new string(stringChars);
+        }
+
+        public static string RandomStringPretty(int length)
+        {
+            const string chars = "abcdefghkrstwxyz123456789"; // 혼동하기 쉬운 문자 제외
+            char[] resultChars = new char[length];
+
+            for (int i = 0; i < 8; i++)
+            {
+                resultChars[i] = chars[PerThreadRandom.Instance.Next(chars.Length)];
+            }
+
+            return new string(resultChars);
         }
 
         public static double NextDouble()

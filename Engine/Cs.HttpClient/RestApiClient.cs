@@ -49,7 +49,7 @@ public sealed class RestApiClient
         }
         catch (Exception ex)
         {
-            Log.Error($"[HttpClientPool] {ex.Message}");
+            Log.Error($"[RestApiClient] {ex.Message}");
             return new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound };
         }
     }
@@ -63,7 +63,7 @@ public sealed class RestApiClient
         }
         catch (Exception ex)
         {
-            Log.Error($"[HttpClientPool] {ex.Message}");
+            Log.Error($"[RestApiClient] {ex.Message}");
             return new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound };
         }
     }
@@ -72,6 +72,20 @@ public sealed class RestApiClient
     {
         var request = new HttpRequestMessage(HttpMethod.Post, requestUri);
         return this.SendAsync(request);
+    }
+
+    public async Task<HttpResponseMessage> GetAsync(string requestUri)
+    {
+        try
+        {
+            using var client = this.CreateClient();
+            return await client.GetAsync(requestUri);
+        }
+        catch (Exception ex)
+        {
+            Log.Error($"[RestApiClient] {ex.Message}");
+            return new HttpResponseMessage { StatusCode = HttpStatusCode.NotFound };
+        }
     }
 
     public async Task<string> GetStringAsync(string requestUri)

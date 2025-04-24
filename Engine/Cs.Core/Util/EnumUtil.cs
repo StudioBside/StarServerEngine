@@ -6,25 +6,15 @@
 
     public static class EnumUtil<T> where T : Enum
     {
-        private static string[]? nameCache = null;
+        private static readonly T[] Values = (T[])Enum.GetValues(typeof(T));
 
-        public static int Count
-        {
-            get
-            {
-                nameCache ??= Enum.GetNames(typeof(T));
-                return nameCache.Length;
-            }
-        }
+        public static int Count => Values.Length;
 
-        public static IEnumerable<T> GetValues()
-        {
-            return Enum.GetValues(typeof(T)).Cast<T>();
-        }
+        public static IEnumerable<T> GetValues() => Values;
 
         public static IEnumerable<string> GetDescriptions()
         {
-            return Enum.GetValues(typeof(T)).Cast<T>().Select(e => e.GetDescription());
+            return Values.Select(e => e.GetDescription());
         }
 
         public static bool IsDefined(T value)

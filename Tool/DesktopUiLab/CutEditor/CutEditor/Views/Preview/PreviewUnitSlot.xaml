@@ -22,7 +22,7 @@
             <Ellipse.ToolTip>
                 <StackPanel>
                     <ui:Image CornerRadius="5" Source="{Binding Unit.SmallImageFullPath}"/>
-                    <TextBlock Margin="5,10,0,0" Text="{Binding Unit.Name}"/>
+                    <TextBlock Margin="5,10,0,0" Text="{Binding Unit.DebugName}"/>
                 </StackPanel>
             </Ellipse.ToolTip>
             <Ellipse.Style>

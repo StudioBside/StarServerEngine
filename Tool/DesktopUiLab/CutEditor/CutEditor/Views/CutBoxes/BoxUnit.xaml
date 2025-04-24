@@ -76,7 +76,9 @@
                                     <Setter Property="Content">
                                         <Setter.Value>
                                             <ui:Image CornerRadius="8" BorderBrush="Black" BorderThickness="1"
-                                                      Source="{Binding Cut.Unit.SmallImageFullPath}"/>
+                                                      Source="{Binding Cut.Unit.SmallImageFullPath}"
+                                                      ToolTip="{Binding Cut.Unit.DebugName}">
+                                            </ui:Image>
                                         </Setter.Value>
                                     </Setter>
                                 </DataTrigger>
@@ -237,7 +239,7 @@
                             Grid.Column="0" Grid.Row="1">
                     <ui:Button Margin="0,0,5,0"
                                Command="{Binding PickSfxACommand}"
-                               ToolTip="{Binding Cut.StartFxSoundName}">
+                               ToolTip="{Binding Cut.StartFxSoundName, Converter={converters:TruncateStringConverter}, ConverterParameter=30}">
                         <!--값이 있을때는 배경색을 다르게 표기-->
                         <ui:Button.Style>
                             <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">
@@ -361,7 +363,7 @@
                 <StackPanel Orientation="Horizontal"
                             Grid.Column="2" Grid.Row="1">
                     <ui:Button Margin="0,0,5,0" Command="{Binding PickSfxBCommand}"
-                               ToolTip="{Binding Cut.EndFxSoundName}">
+                               ToolTip="{Binding Cut.EndFxSoundName, Converter={converters:TruncateStringConverter}, ConverterParameter=30}">
                         <!--값이 있을때는 배경색을 다르게 표기-->
                         <ui:Button.Style>
                             <Style TargetType="ui:Button" BasedOn="{StaticResource {x:Type ui:Button}}">

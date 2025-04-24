@@ -3,6 +3,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Text;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
@@ -662,6 +663,37 @@ public sealed class Cut : ObservableObject
     public override string ToString()
     {
         return $"Cut. Uid:{this.Uid}";
+    }
+
+    public bool ContainsSearchKeyword(string keyword)
+    {
+        if (this.unitTalk.Korean.Contains(keyword, StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        return this.choices.Any(e => e.Text.Korean.Contains(keyword, StringComparison.OrdinalIgnoreCase));
+    }
+
+    public bool TryReplaceText(string keyword, string replaceText)
+    {
+        bool replaced = false;
+        if (this.unitTalk.Korean.Contains(keyword, StringComparison.OrdinalIgnoreCase))
+        {
+            this.unitTalk.Korean = this.unitTalk.Korean.Replace(keyword, replaceText, StringComparison.OrdinalIgnoreCase);
+            replaced = true;
+        }
+
+        foreach (var choice in this.choices)
+        {
+            if (choice.Text.Korean.Contains(keyword, StringComparison.OrdinalIgnoreCase))
+            {
+                choice.Text.Korean = choice.Text.Korean.Replace(keyword, replaceText, StringComparison.OrdinalIgnoreCase);
+                replaced = true;
+            }
+        }
+
+        return replaced;
     }
 
     //// --------------------------------------------------------------------------------

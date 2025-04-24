@@ -40,6 +40,7 @@ public sealed class VmHome : VmPageBase
         this.ExportCommand = new RelayCommand<CutScene>(this.OnExport);
         this.EditShortenCommand = new AsyncRelayCommand<CutScene>(this.OnEditShorten);
         this.ExportShortenCommand = new AsyncRelayCommand(this.OnExportShorten);
+        this.ApplySearchKeywordCommand = new RelayCommand(this.OnApplySearchKeyword);
 
         this.filters.Add(DefaultFilter);
         foreach (var filter in CutSceneContainer.Instance.CutScenes.Select(e => e.CutsceneFilter).Distinct())
@@ -83,6 +84,7 @@ public sealed class VmHome : VmPageBase
     public ICommand ExportCommand { get; }
     public ICommand EditShortenCommand { get; }
     public ICommand ExportShortenCommand { get; }
+    public ICommand ApplySearchKeywordCommand { get; }
 
     //// --------------------------------------------------------------------------------------------
 
@@ -94,13 +96,14 @@ public sealed class VmHome : VmPageBase
         {
             case nameof(this.SearchKeyword):
             case nameof(this.SelectedFilter):
-                if (this.selectedCutScene is not null)
-                {
-                    this.SelectedCutScene = null;
-                }
+                // 입력마다 필터가 갱신되면서 버벅이는 현상의 개선 요청이 있어, 별개 트리거(엔터키입력)로 변경합니다.
+                //if (this.selectedCutScene is not null)
+                //{
+                //    this.SelectedCutScene = null;
+                //}
 
-                this.filteredList.Refresh(searchKeyword);
-                this.OnPropertyChanged(nameof(this.FilteredCount));
+                //this.filteredList.Refresh(searchKeyword);
+                //this.OnPropertyChanged(nameof(this.FilteredCount));
                 break;
         }
     }
@@ -222,5 +225,16 @@ public sealed class VmHome : VmPageBase
         {
             IsShorten = true,
         });
+    }
+
+    private void OnApplySearchKeyword()
+    {
+        if (this.selectedCutScene is not null)
+        {
+            this.SelectedCutScene = null;
+        }
+
+        this.filteredList.Refresh(searchKeyword);
+        this.OnPropertyChanged(nameof(this.FilteredCount));
     }
 }

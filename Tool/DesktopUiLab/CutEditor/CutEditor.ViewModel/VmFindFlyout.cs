@@ -93,7 +93,7 @@ public sealed class VmFindFlyout : ObservableObject
         var controller = this.owner.Services.GetRequiredService<ICutsListController>();
         for (int i = this.index - 1; i >= 0; i--)
         {
-            if (this.owner.Cuts[i].Cut.UnitTalk.Korean.Contains(this.FindText, StringComparison.OrdinalIgnoreCase))
+            if (this.owner.Cuts[i].Cut.ContainsSearchKeyword(this.findText))
             {
                 this.owner.SelectedCuts.Clear();
                 this.owner.SelectedCuts.Add(this.owner.Cuts[i]);
@@ -111,7 +111,7 @@ public sealed class VmFindFlyout : ObservableObject
         var controller = this.owner.Services.GetRequiredService<ICutsListController>();
         for (int i = this.index + 1; i < this.owner.Cuts.Count; i++)
         {
-            if (this.owner.Cuts[i].Cut.UnitTalk.Korean.Contains(this.FindText, StringComparison.OrdinalIgnoreCase))
+            if (this.owner.Cuts[i].Cut.ContainsSearchKeyword(this.findText))
             {
                 this.owner.SelectedCuts.Clear();
                 this.owner.SelectedCuts.Add(this.owner.Cuts[i]);
@@ -135,10 +135,8 @@ public sealed class VmFindFlyout : ObservableObject
         int count = 0;
         foreach (var data in this.owner.Cuts)
         {
-            var originText = data.Cut.UnitTalk.Korean;
-            if (originText.Contains(this.findText))
+            if (data.Cut.TryReplaceText(this.findText, this.replaceText))
             {
-                data.Cut.UnitTalk.Korean = originText.Replace(this.findText, this.replaceText);
                 count++;
             }
         }
