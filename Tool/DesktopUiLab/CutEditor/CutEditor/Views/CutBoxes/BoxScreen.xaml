@@ -151,8 +151,8 @@
             <ui:Flyout Placement="Top"
                        VerticalAlignment="Top"
                        IsOpen="{Binding ScreenCrashFlyoutOpen, Mode=TwoWay}">
-                <StackPanel Width="250">
-                    <Border BorderThickness="0.5" BorderBrush="Gray"
+                <StackPanel Width="280">
+                    <Border BorderThickness="0.6" BorderBrush="DarkGray"
                             CornerRadius="5" Padding="5" Margin="0,0,0,10">
                         <StackPanel Orientation="Horizontal" Margin="5,0">
                             <TextBlock Text="Flash : " VerticalAlignment="Center" Width="50"/>
@@ -166,15 +166,19 @@
                         </StackPanel>
                     </Border>
 
-                    <Border BorderThickness="0.5" BorderBrush="Gray"
+                    <Border BorderThickness="0.6" BorderBrush="DarkGray"
                             CornerRadius="5" Padding="5" Margin="0,0,0,10">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
 
-                            <DockPanel Grid.Row="0" Margin="5,0,0,5" LastChildFill="True">
+                            <StackPanel Grid.Row="0" Grid.Column="0" Margin="5,0,0,5" Orientation="Horizontal">
                                 <TextBlock Text="Crash : " VerticalAlignment="Center" Width="50"/>
                                 <ui:NumberBox Width="50" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False"
                                           Text="{Binding Cut.BgCrashTime, UpdateSourceTrigger=PropertyChanged}">
@@ -183,14 +187,22 @@
                                     </ui:NumberBox.InputBindings>
                                 </ui:NumberBox>
                                 <TextBlock Text=" Sec" VerticalAlignment="Center"/>
+                            </StackPanel>
 
-                                <ui:NumberBox Width="50" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False"
-                                              HorizontalAlignment="Right" IsReadOnly="True"
-                                              Background="LightGray"
-                                              Text="{Binding Cut.BgCrash, StringFormat=F2, UpdateSourceTrigger=PropertyChanged}" />
-                            </DockPanel>
+                            <StackPanel Grid.Row="0" Grid.Column="1" Margin="5,0,0,5" Orientation="Horizontal"
+                                        HorizontalAlignment="Right">
+                                <TextBlock Text="Pow : " VerticalAlignment="Center"
+                                              HorizontalAlignment="Right" />
+                                <ui:NumberBox Width="60" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False"
+                                              HorizontalAlignment="Right"
+                                              Text="{Binding Cut.BgCrash}">
+                                    <ui:NumberBox.InputBindings>
+                                        <KeyBinding Key="Return" Command="{Binding CloseScreenCrashFlyoutCommand}"/>
+                                    </ui:NumberBox.InputBindings>
+                                </ui:NumberBox>
+                            </StackPanel>
 
-                            <Slider Grid.Row="1"
+                            <Slider Grid.Row="1" Grid.ColumnSpan="2"
                                     TickFrequency="0.05" IsSnapToTickEnabled="True"
                                     TickPlacement="BottomRight"
                                     Value="{Binding Cut.BgCrash}" Maximum="1"/>
