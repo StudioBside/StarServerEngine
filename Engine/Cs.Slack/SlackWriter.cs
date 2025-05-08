@@ -22,6 +22,13 @@ public sealed class SlackWriter : IDisposable
         this.slackBuilder.UserName = userName;
     }
 
+    public SlackWriter(SlackEndpoint[] enspoints, string userName, string icon)
+    {
+        this.slackBuilder = new SlackMessageBuilder(enspoints);
+        this.slackBuilder.UserName = userName;
+        this.slackBuilder.IconEmoji = icon;
+    }
+
     public void AddAttachment(Attachment attachment)
     {
         this.slackBuilder.Attachments.Add(attachment);

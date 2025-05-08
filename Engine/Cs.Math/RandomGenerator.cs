@@ -60,7 +60,7 @@ namespace Cs.Math
             const string chars = "abcdefghkrstwxyz123456789"; // 혼동하기 쉬운 문자 제외
             char[] resultChars = new char[length];
 
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < length; i++)
             {
                 resultChars[i] = chars[PerThreadRandom.Instance.Next(chars.Length)];
             }

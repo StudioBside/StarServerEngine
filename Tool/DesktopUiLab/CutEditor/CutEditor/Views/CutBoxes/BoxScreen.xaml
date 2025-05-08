@@ -151,13 +151,13 @@
             <ui:Flyout Placement="Top"
                        VerticalAlignment="Top"
                        IsOpen="{Binding ScreenCrashFlyoutOpen, Mode=TwoWay}">
-                <StackPanel Width="250">
+                <StackPanel Width="280">
                     <Border BorderThickness="0.5" BorderBrush="Gray"
                             CornerRadius="5" Padding="5" Margin="0,0,0,10">
                         <StackPanel Orientation="Horizontal" Margin="5,0">
                             <TextBlock Text="Flash : " VerticalAlignment="Center" Width="50"/>
-                            <ui:NumberBox Width="50" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False"
-                                          Text="{Binding Cut.BgFlashBang, UpdateSourceTrigger=PropertyChanged}">
+                            <ui:NumberBox Width="60" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False"
+                                          Text="{Binding Cut.BgFlashBang}">
                                 <ui:NumberBox.InputBindings>
                                     <KeyBinding Key="Return" Command="{Binding CloseScreenCrashFlyoutCommand}"/>
                                 </ui:NumberBox.InputBindings>
@@ -176,17 +176,21 @@
 
                             <DockPanel Grid.Row="0" Margin="5,0,0,5" LastChildFill="True">
                                 <TextBlock Text="Crash : " VerticalAlignment="Center" Width="50"/>
-                                <ui:NumberBox Width="50" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False"
-                                          Text="{Binding Cut.BgCrashTime, UpdateSourceTrigger=PropertyChanged}">
+                                <ui:NumberBox Width="60" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False"
+                                          Text="{Binding Cut.BgCrashTime}">
                                     <ui:NumberBox.InputBindings>
                                         <KeyBinding Key="Return" Command="{Binding CloseScreenCrashFlyoutCommand}"/>
                                     </ui:NumberBox.InputBindings>
                                 </ui:NumberBox>
                                 <TextBlock Text=" Sec" VerticalAlignment="Center"/>
 
-                                <ui:NumberBox Width="50" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False"
+                                <ui:NumberBox Width="60" SpinButtonPlacementMode="Hidden" ClearButtonEnabled="False"
                                               HorizontalAlignment="Right"
-                                              Text="{Binding Cut.BgCrash, StringFormat=F2, UpdateSourceTrigger=PropertyChanged}" />
+                                              Text="{Binding Cut.BgCrash}">
+                                    <ui:NumberBox.InputBindings>
+                                        <KeyBinding Key="Return" Command="{Binding CloseScreenCrashFlyoutCommand}"/>
+                                    </ui:NumberBox.InputBindings>
+                                </ui:NumberBox>
                             </DockPanel>
 
                             <Slider Grid.Row="1"
